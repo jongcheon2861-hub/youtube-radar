@@ -22,7 +22,7 @@
   --bg-main: #f0f4ff;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
-  --bg-header: rgba(255,255,255,0.95);
+  --bg-header: rgba(255,255,255,0.97);
   --bg-input: #f5f7ff;
   --text-primary: #1a1d2e;
   --text-secondary: #5a6072;
@@ -46,838 +46,451 @@
   --radius-xl: 28px;
   --header-h: 64px;
   --sidebar-w: 220px;
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* ===== RESET & BASE ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg-main);
-  color: var(--text-primary);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg-main);
+  color:var(--text-primary);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow-x:hidden;
 }
-a { text-decoration: none; color: inherit; }
-button { cursor: pointer; border: none; background: none; font-family: inherit; }
-input, textarea, select { font-family: inherit; }
-img { max-width: 100%; }
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea,select{font-family:inherit}
+img{max-width:100%}
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-main); }
-::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 99px; opacity: 0.5; }
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg-main)}
+::-webkit-scrollbar-thumb{background:var(--accent-primary);border-radius:99px;opacity:.5}
 
 /* ===== HEADER ===== */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  height: var(--header-h);
-  background: var(--bg-header);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 16px;
-  box-shadow: 0 2px 16px rgba(91,94,244,0.08);
+.header{
+  position:sticky;top:0;z-index:200;
+  height:var(--header-h);
+  background:var(--bg-header);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 20px;gap:16px;
+  box-shadow:0 2px 16px rgba(91,94,244,0.07);
 }
-.header-logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+.header-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{
+  width:36px;height:36px;
+  background:var(--accent-gradient);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-size:16px;
+  box-shadow:0 4px 12px var(--accent-glow);
+  animation:logoFlicker 3s infinite;
 }
-.logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--accent-gradient);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 16px;
-  box-shadow: 0 4px 12px var(--accent-glow);
-  animation: logoFlicker 3s infinite;
+@keyframes logoFlicker{
+  0%,100%{box-shadow:0 4px 12px rgba(91,94,244,.35)}
+  50%{box-shadow:0 4px 20px rgba(91,94,244,.65)}
 }
-@keyframes logoFlicker {
-  0%,100%{box-shadow:0 4px 12px rgba(91,94,244,0.35)}
-  50%{box-shadow:0 4px 20px rgba(91,94,244,0.6)}
-}
-.logo-text { font-size: 18px; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px; }
-.logo-badge { font-size: 9px; font-weight: 700; background: var(--accent-gradient); color: white; padding: 2px 6px; border-radius: 99px; -webkit-text-fill-color: white; margin-top: -8px; }
+.logo-text{font-size:18px;font-weight:800;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.5px}
+.logo-badge{font-size:9px;font-weight:700;background:var(--accent-gradient);color:white;padding:2px 6px;border-radius:99px;-webkit-text-fill-color:white;margin-top:-8px}
 
-.header-search {
-  flex: 1;
-  max-width: 480px;
-  position: relative;
-  margin: 0 auto;
+.header-search{flex:1;max-width:480px;position:relative;margin:0 auto}
+.header-search input{
+  width:100%;height:40px;
+  background:var(--bg-input);
+  border:1.5px solid var(--border);
+  border-radius:99px;
+  padding:0 44px 0 16px;
+  font-size:14px;color:var(--text-primary);
+  outline:none;transition:var(--transition);
 }
-.header-search input {
-  width: 100%;
-  height: 40px;
-  background: var(--bg-input);
-  border: 1.5px solid var(--border);
-  border-radius: 99px;
-  padding: 0 44px 0 16px;
-  font-size: 14px;
-  color: var(--text-primary);
-  outline: none;
-  transition: var(--transition);
-}
-.header-search input:focus { border-color: var(--accent-primary); background: white; box-shadow: 0 0 0 3px var(--accent-glow); }
-.header-search input::placeholder { color: var(--text-muted); }
-.header-search button {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--accent-primary);
-  font-size: 15px;
-}
+.header-search input:focus{border-color:var(--accent-primary);background:white;box-shadow:0 0 0 3px var(--accent-glow)}
+.header-search input::placeholder{color:var(--text-muted)}
+.header-search button{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--accent-primary);font-size:15px}
 
-.header-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-.header-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-size: 15px;
-  transition: var(--transition);
+.header-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.header-btn{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--bg-input);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-secondary);font-size:15px;
+  transition:var(--transition);
 }
-.header-btn:hover { background: var(--accent-primary); color: white; border-color: var(--accent-primary); transform: translateY(-1px); }
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(16,185,129,0.1);
-  color: var(--success);
-  border: 1px solid rgba(16,185,129,0.25);
-  border-radius: 99px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 600;
+.header-btn:hover{background:var(--accent-primary);color:white;border-color:var(--accent-primary);transform:translateY(-1px)}
+.live-badge{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(16,185,129,.1);color:var(--success);
+  border:1px solid rgba(16,185,129,.25);
+  border-radius:99px;padding:5px 12px;
+  font-size:12px;font-weight:600;
 }
-.live-dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+.live-dot{width:7px;height:7px;background:var(--success);border-radius:50%;animation:livePulse 1.5s infinite}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
 /* ===== LAYOUT ===== */
-.layout {
-  display: flex;
-  flex: 1;
-  min-height: calc(100vh - var(--header-h));
-}
+.layout{display:flex;flex:1;min-height:calc(100vh - var(--header-h))}
 
-/* ===== SIDEBAR NAV ===== */
-.sidebar {
-  width: var(--sidebar-w);
-  flex-shrink: 0;
-  background: var(--bg-sidebar);
-  border-right: 1px solid var(--border);
-  position: sticky;
-  top: var(--header-h);
-  height: calc(100vh - var(--header-h));
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 12px;
-  gap: 4px;
-  z-index: 100;
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  background:var(--bg-sidebar);
+  border-right:1px solid var(--border);
+  position:sticky;top:var(--header-h);
+  height:calc(100vh - var(--header-h));
+  overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;
+  padding:20px 12px;gap:2px;z-index:100;
 }
-.sidebar-section-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 12px 12px 6px;
+.sidebar-section-label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;padding:12px 12px 6px}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;border-radius:var(--radius-sm);
+  font-size:14px;font-weight:500;color:var(--text-secondary);
+  transition:var(--transition);cursor:pointer;position:relative;
 }
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: var(--transition);
-  cursor: pointer;
-  position: relative;
+.nav-item:hover{background:var(--bg-input);color:var(--text-primary)}
+.nav-item.active{
+  background:linear-gradient(135deg,rgba(91,94,244,.12),rgba(124,58,237,.08));
+  color:var(--accent-primary);font-weight:600;
 }
-.nav-item:hover { background: var(--bg-input); color: var(--text-primary); }
-.nav-item.active {
-  background: linear-gradient(135deg, rgba(91,94,244,0.12) 0%, rgba(124,58,237,0.08) 100%);
-  color: var(--accent-primary);
-  font-weight: 600;
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:20%;height:60%;width:3px;
+  background:var(--accent-gradient);border-radius:0 3px 3px 0;
 }
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 20%;
-  height: 60%;
-  width: 3px;
-  background: var(--accent-gradient);
-  border-radius: 0 3px 3px 0;
-}
-.nav-item i { width: 20px; text-align: center; font-size: 15px; }
-.nav-badge {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 99px;
-  background: var(--accent-gradient);
-  color: white;
-}
-.sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
-.sidebar-footer {
-  margin-top: auto;
-  padding: 12px;
-}
-.sidebar-ad-slot {
-  background: linear-gradient(135deg, rgba(91,94,244,0.05), rgba(124,58,237,0.05));
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-muted);
-}
+.nav-item i{width:20px;text-align:center;font-size:15px}
+.nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--accent-gradient);color:white}
+.sidebar-divider{height:1px;background:var(--border);margin:8px 12px}
+.sidebar-footer{margin-top:auto;padding:12px}
 
-/* ===== MAIN CONTENT ===== */
-.main-content {
-  flex: 1;
-  min-width: 0;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+/* ===== MAIN ===== */
+.main-content{flex:1;min-width:0;padding:24px;display:flex;flex-direction:column;gap:20px}
 
 /* ===== TAB SECTIONS ===== */
-.tab-section { display: none; animation: fadeIn 0.3s ease; }
-.tab-section.active { display: block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.tab-section{display:none;animation:fadeIn .3s ease}
+.tab-section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ===== CARDS ===== */
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  box-shadow: var(--shadow-card);
-  transition: var(--transition);
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;
+  box-shadow:var(--shadow-card);transition:var(--transition);
 }
-.card:hover { box-shadow: var(--shadow-md); }
-.card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.card-title i { color: var(--accent-primary); }
-.card-desc { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+.card:hover{box-shadow:var(--shadow-md)}
+.card-title{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-title i{color:var(--accent-primary)}
+.card-desc{font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.5}
 
 /* ===== PAGE HEADER ===== */
-.page-header {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px 32px;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  background-image: radial-gradient(circle at 80% 50%, rgba(91,94,244,0.04) 0%, transparent 70%);
+.page-header{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px 32px;
+  box-shadow:var(--shadow-card);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background-image:radial-gradient(circle at 80% 50%,rgba(91,94,244,.04) 0%,transparent 70%);
 }
-.page-header-text h1 { font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; }
-.page-header-text p { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
-.page-header-icon {
-  width: 56px;
-  height: 56px;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  flex-shrink: 0;
-  box-shadow: 0 8px 20px var(--accent-glow);
+.page-header-text h1{font-size:22px;font-weight:800;color:var(--text-primary);letter-spacing:-.5px}
+.page-header-text p{font-size:14px;color:var(--text-secondary);margin-top:4px}
+.page-header-icon{
+  width:56px;height:56px;background:var(--accent-gradient);
+  border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;
+  color:white;font-size:24px;flex-shrink:0;box-shadow:0 8px 20px var(--accent-glow);
 }
 
 /* ===== FILTER BAR ===== */
-.filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+.filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  padding:7px 16px;border-radius:99px;
+  border:1.5px solid var(--border);background:var(--bg-card);
+  color:var(--text-secondary);font-size:13px;font-weight:500;
+  transition:var(--transition);
 }
-.filter-btn {
-  padding: 8px 18px;
-  border-radius: 99px;
-  border: 1.5px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-  transition: var(--transition);
-}
-.filter-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
-.filter-btn.active { background: var(--accent-gradient); color: white; border-color: transparent; box-shadow: 0 4px 12px var(--accent-glow); }
+.filter-btn:hover{border-color:var(--accent-primary);color:var(--accent-primary)}
+.filter-btn.active{background:var(--accent-gradient);color:white;border-color:transparent;box-shadow:0 4px 12px var(--accent-glow)}
 
 /* ===== VIDEO GRID ===== */
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+.video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.video-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-md);overflow:hidden;
+  transition:var(--transition);cursor:pointer;
 }
-.video-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  transition: var(--transition);
-  cursor: pointer;
+.video-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--accent-primary)}
+.video-thumb{position:relative;width:100%;padding-top:56.25%;overflow:hidden;background:var(--bg-input)}
+.video-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.video-card:hover .video-thumb img{transform:scale(1.05)}
+.video-thumb-rank{
+  position:absolute;top:8px;left:8px;
+  background:var(--accent-gradient);color:white;
+  font-size:11px;font-weight:800;padding:3px 9px;
+  border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
-.video-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent-primary); }
-.video-thumb {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  overflow: hidden;
-  background: var(--bg-input);
+.video-thumb-dur{
+  position:absolute;bottom:8px;right:8px;
+  background:rgba(0,0,0,.75);color:white;
+  font-size:11px;font-weight:600;padding:2px 6px;
+  border-radius:4px;backdrop-filter:blur(4px);
 }
-.video-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-.video-card:hover .video-thumb img { transform: scale(1.05); }
-.video-thumb-rank {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: var(--accent-gradient);
-  color: white;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 3px 9px;
-  border-radius: 99px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.video-thumb-dur {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0,0,0,0.75);
-  color: white;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  backdrop-filter: blur(4px);
-}
-.video-info { padding: 14px; }
-.video-title { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.5; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.video-channel { font-size: 12px; color: var(--accent-primary); font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
-.video-meta { display: flex; align-items: center; justify-content: space-between; }
-.video-stat { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-.video-stat i { font-size: 10px; }
-.score-pill {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 99px;
-  background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(16,185,129,0.06));
-  color: var(--success);
-  border: 1px solid rgba(16,185,129,0.2);
-}
+.video-info{padding:14px}
+.video-title{font-size:13px;font-weight:600;color:var(--text-primary);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.video-channel{font-size:12px;color:var(--accent-primary);font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:4px}
+.video-meta{display:flex;align-items:center;justify-content:space-between}
+.video-stat{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+.score-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;background:rgba(16,185,129,.1);color:var(--success);border:1px solid rgba(16,185,129,.2)}
 
 /* ===== SKELETON ===== */
-.skeleton {
-  background: linear-gradient(90deg, var(--bg-input) 25%, var(--border) 50%, var(--bg-input) 75%);
-  background-size: 400% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
-}
-@keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
-.skeleton-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-.skeleton-thumb { width: 100%; padding-top: 56.25%; position: relative; }
-.skeleton-thumb-inner { position: absolute; inset: 0; }
-.skeleton-info { padding: 14px; display: flex; flex-direction: column; gap: 8px; }
-.skeleton-line { height: 12px; }
-.skeleton-line.w-80 { width: 80%; }
-.skeleton-line.w-60 { width: 60%; }
-.skeleton-line.w-40 { width: 40%; }
+.skeleton{background:linear-gradient(90deg,var(--bg-input) 25%,var(--border) 50%,var(--bg-input) 75%);background-size:400% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm)}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.skeleton-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+.skeleton-thumb{width:100%;padding-top:56.25%;position:relative}
+.skeleton-thumb-inner{position:absolute;inset:0}
+.skeleton-info{padding:14px;display:flex;flex-direction:column;gap:8px}
+.skeleton-line{height:12px}
+.skeleton-line.w-80{width:80%}
+.skeleton-line.w-60{width:60%}
+.skeleton-line.w-40{width:40%}
 
-/* ===== INPUT STYLES ===== */
-.input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-.input-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
-.input-field {
-  width: 100%;
-  padding: 12px 16px;
-  background: var(--bg-input);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  color: var(--text-primary);
-  outline: none;
-  transition: var(--transition);
+/* ===== INPUTS ===== */
+.input-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.input-label{font-size:13px;font-weight:600;color:var(--text-secondary)}
+.input-field{
+  width:100%;padding:12px 16px;
+  background:var(--bg-input);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-size:14px;color:var(--text-primary);
+  outline:none;transition:var(--transition);
 }
-.input-field:focus { border-color: var(--accent-primary); background: white; box-shadow: 0 0 0 3px var(--accent-glow); }
-.input-field::placeholder { color: var(--text-muted); }
-.input-field.textarea { min-height: 80px; resize: vertical; }
+.input-field:focus{border-color:var(--accent-primary);background:white;box-shadow:0 0 0 3px var(--accent-glow)}
+.input-field::placeholder{color:var(--text-muted)}
 
 /* ===== BUTTONS ===== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: var(--radius-sm);
-  font-size: 14px;
-  font-weight: 600;
-  transition: var(--transition);
-  cursor: pointer;
-  border: none;
-}
-.btn-primary {
-  background: var(--accent-gradient);
-  color: white;
-  box-shadow: 0 4px 14px var(--accent-glow);
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
-.btn-primary:active { transform: translateY(0); }
-.btn-secondary { background: var(--bg-input); color: var(--text-secondary); border: 1.5px solid var(--border); }
-.btn-secondary:hover { background: var(--border); color: var(--text-primary); }
-.btn-sm { padding: 8px 16px; font-size: 13px; }
-.btn-block { width: 100%; }
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:var(--transition);cursor:pointer;border:none}
+.btn-primary{background:var(--accent-gradient);color:white;box-shadow:0 4px 14px var(--accent-glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px var(--accent-glow)}
+.btn-primary:active{transform:translateY(0)}
+.btn-secondary{background:var(--bg-input);color:var(--text-secondary);border:1.5px solid var(--border)}
+.btn-secondary:hover{background:var(--border);color:var(--text-primary)}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn-block{width:100%}
 
-/* ===== RESULT CARDS ===== */
-.result-section {
-  margin-top: 20px;
-  padding: 20px;
-  background: linear-gradient(135deg, rgba(91,94,244,0.04), rgba(124,58,237,0.02));
-  border: 1px solid rgba(91,94,244,0.15);
-  border-radius: var(--radius-md);
-}
-.result-title { font-size: 14px; font-weight: 700; color: var(--accent-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-.result-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
-.result-stat {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px;
-  text-align: center;
-}
-.result-stat-value { font-size: 22px; font-weight: 800; color: var(--text-primary); }
-.result-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+/* ===== RESULT SECTIONS ===== */
+.result-section{margin-top:20px;padding:20px;background:linear-gradient(135deg,rgba(91,94,244,.04),rgba(124,58,237,.02));border:1px solid rgba(91,94,244,.15);border-radius:var(--radius-md)}
+.result-title{font-size:14px;font-weight:700;color:var(--accent-primary);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.result-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.result-stat-value{font-size:22px;font-weight:800;color:var(--text-primary)}
+.result-stat-label{font-size:11px;color:var(--text-muted);margin-top:2px}
 
 /* ===== SCORE BAR ===== */
-.score-bar-wrap { margin-bottom: 12px; }
-.score-bar-label { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
-.score-bar-label span:last-child { font-weight: 700; color: var(--text-primary); }
-.score-bar-track { height: 8px; background: var(--bg-input); border-radius: 99px; overflow: hidden; }
-.score-bar-fill { height: 100%; border-radius: 99px; background: var(--accent-gradient); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+.score-bar-wrap{margin-bottom:12px}
+.score-bar-label{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-secondary);margin-bottom:6px}
+.score-bar-label span:last-child{font-weight:700;color:var(--text-primary)}
+.score-bar-track{height:8px;background:var(--bg-input);border-radius:99px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:99px;background:var(--accent-gradient);transition:width .8s cubic-bezier(.4,0,.2,1)}
 
 /* ===== KW CARDS ===== */
-.kw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-.kw-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-.kw-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent-primary); }
-.kw-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.kw-tag { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
-.kw-tag.hot { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
-.kw-tag.rising { background: rgba(245,158,11,0.1); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
-.kw-tag.stable { background: rgba(16,185,129,0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
-.kw-tag.niche { background: rgba(91,94,244,0.1); color: var(--accent-primary); border: 1px solid rgba(91,94,244,0.2); }
-.kw-score { font-size: 20px; font-weight: 800; color: var(--text-primary); }
-.kw-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
-.kw-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
-.kw-meta { display: flex; gap: 10px; margin-top: 10px; }
-.kw-meta-item { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.kw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.kw-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;cursor:pointer;transition:var(--transition)}
+.kw-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--accent-primary)}
+.kw-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.kw-tag{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px}
+.kw-tag.hot{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.2)}
+.kw-tag.rising{background:rgba(245,158,11,.1);color:var(--warning);border:1px solid rgba(245,158,11,.2)}
+.kw-tag.stable{background:rgba(16,185,129,.1);color:var(--success);border:1px solid rgba(16,185,129,.2)}
+.kw-tag.niche{background:rgba(91,94,244,.1);color:var(--accent-primary);border:1px solid rgba(91,94,244,.2)}
+.kw-score{font-size:20px;font-weight:800;color:var(--text-primary)}
+.kw-name{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.kw-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.kw-meta{display:flex;gap:10px;margin-top:10px}
+.kw-meta-item{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
 
-/* ===== LEVEL DISPLAY ===== */
-.level-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.level-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at center, rgba(91,94,244,0.04), transparent 70%);
-  pointer-events: none;
-}
-.level-flame-wrap { margin: 0 auto 16px; position: relative; display: inline-block; }
-#flameCanvas { display: block; }
-.level-tier {
-  font-size: 32px;
-  font-weight: 800;
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 4px;
-}
-.level-name { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
-.level-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-width: 360px; margin: 0 auto; }
-.level-progress { margin-top: 20px; }
-.level-next-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-.level-bar-track { height: 10px; background: var(--bg-input); border-radius: 99px; overflow: hidden; }
-.level-bar-fill {
-  height: 100%;
-  border-radius: 99px;
-  background: var(--accent-gradient);
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px var(--accent-glow);
-}
+/* ===== LEVEL ===== */
+.level-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-align:center;position:relative;overflow:hidden}
+.level-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at center,rgba(91,94,244,.04),transparent 70%);pointer-events:none}
+.level-flame-wrap{margin:0 auto 16px;position:relative;display:inline-block}
+.level-tier{font-size:32px;font-weight:800;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.level-name{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.level-desc{font-size:13px;color:var(--text-secondary);line-height:1.6;max-width:360px;margin:0 auto}
+.level-progress{margin-top:20px}
+.level-next-label{font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.level-bar-track{height:10px;background:var(--bg-input);border-radius:99px;overflow:hidden}
+.level-bar-fill{height:100%;border-radius:99px;background:var(--accent-gradient);transition:width 1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px var(--accent-glow)}
 
-/* ===== REVENUE SLIDER ===== */
-.slider-wrap { margin: 16px 0; }
-.slider-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-.slider-label span:last-child { font-weight: 700; color: var(--accent-primary); }
-.range-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 99px; background: var(--bg-input); outline: none; cursor: pointer; }
-.range-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent-gradient); box-shadow: 0 2px 8px var(--accent-glow); cursor: pointer; border: 2px solid white; }
-.range-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--accent-gradient); box-shadow: 0 2px 8px var(--accent-glow); cursor: pointer; border: 2px solid white; }
-.revenue-result {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px;
-  margin-top: 20px;
-}
-.revenue-item {
-  background: linear-gradient(135deg, rgba(91,94,244,0.06), rgba(124,58,237,0.03));
-  border: 1px solid rgba(91,94,244,0.12);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  text-align: center;
-}
-.revenue-value { font-size: 20px; font-weight: 800; color: var(--accent-primary); }
-.revenue-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+/* ===== REVENUE ===== */
+.slider-wrap{margin:16px 0}
+.slider-label{display:flex;justify-content:space-between;font-size:13px;color:var(--text-secondary);margin-bottom:8px}
+.slider-label span:last-child{font-weight:700;color:var(--accent-primary)}
+.range-slider{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:99px;background:var(--bg-input);outline:none;cursor:pointer}
+.range-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent-gradient);box-shadow:0 2px 8px var(--accent-glow);cursor:pointer;border:2px solid white}
+.range-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent-gradient);box-shadow:0 2px 8px var(--accent-glow);cursor:pointer;border:2px solid white}
+.revenue-result{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:20px}
+.revenue-item{background:linear-gradient(135deg,rgba(91,94,244,.06),rgba(124,58,237,.03));border:1px solid rgba(91,94,244,.12);border-radius:var(--radius-md);padding:16px;text-align:center}
+.revenue-value{font-size:20px;font-weight:800;color:var(--accent-primary)}
+.revenue-label{font-size:11px;color:var(--text-muted);margin-top:2px}
 
 /* ===== TOAST ===== */
-#toastContainer { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-.toast {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 18px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: toastIn 0.3s ease;
-  pointer-events: all;
-  max-width: 300px;
-}
-@keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
-.toast.success i { color: var(--success); }
-.toast.error i { color: var(--danger); }
-.toast.info i { color: var(--accent-primary); }
-.toast.fade-out { animation: toastOut 0.3s ease forwards; }
-@keyframes toastOut { to{opacity:0;transform:translateX(20px)} }
+#toastContainer{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 18px;font-size:13px;font-weight:500;color:var(--text-primary);box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;animation:toastIn .3s ease;pointer-events:all;max-width:300px}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast.success i{color:var(--success)}
+.toast.error i{color:var(--danger)}
+.toast.info i{color:var(--accent-primary)}
+.toast.warning i{color:var(--warning)}
+.toast.fade-out{animation:toastOut .3s ease forwards}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
 
 /* ===== AD OVERLAY ===== */
-.ad-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15,20,40,0.7);
-  backdrop-filter: blur(6px);
-  z-index: 8000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.3s ease;
-}
-.ad-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 28px;
-  max-width: 460px;
-  width: calc(100% - 40px);
-  box-shadow: var(--shadow-lg);
-}
-.ad-box-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.ad-box-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-.ad-close-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition);
-}
-.ad-close-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
-.ad-countdown { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
-.ad-countdown span { color: var(--accent-primary); font-weight: 700; }
+.ad-overlay{position:fixed;inset:0;background:rgba(15,20,40,.7);backdrop-filter:blur(6px);z-index:8000;display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease}
+.ad-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:460px;width:calc(100% - 40px);box-shadow:var(--shadow-lg)}
+.ad-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ad-box-title{font-size:16px;font-weight:700;color:var(--text-primary)}
+.ad-close-btn{width:32px;height:32px;border-radius:8px;background:var(--bg-input);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-secondary);cursor:pointer;transition:var(--transition)}
+.ad-close-btn:hover{background:var(--danger);color:white;border-color:var(--danger)}
+.ad-close-btn:disabled{opacity:.4;cursor:not-allowed}
+.ad-countdown{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+.ad-countdown span{color:var(--accent-primary);font-weight:700}
 
-/* ===== ADBLOCK OVERLAY ===== */
-.adblock-overlay { position:fixed;inset:0;background:rgba(15,20,40,0.85);backdrop-filter:blur(8px);z-index:9000;display:none;align-items:center;justify-content:center; }
-.adblock-overlay.show { display:flex; }
-.adblock-box { background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px;max-width:440px;width:calc(100% - 40px);text-align:center;box-shadow:var(--shadow-lg); }
-.adblock-icon { font-size:48px;margin-bottom:16px; }
-.adblock-box h2 { font-size:20px;font-weight:800;color:var(--text-primary);margin-bottom:8px; }
-.adblock-box p { font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:20px; }
-.adblock-steps { text-align:left;background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px; }
-.adblock-step { font-size:13px;color:var(--text-secondary);padding:4px 0;display:flex;align-items:center;gap:8px; }
-.adblock-step-num { width:22px;height:22px;border-radius:50%;background:var(--accent-gradient);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-.adblock-btns { display:flex;gap:10px; }
-.adblock-btn-primary { flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:white;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:var(--transition); }
-.adblock-btn-primary:hover { opacity:0.9;transform:translateY(-1px); }
-.adblock-btn-secondary { flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text-secondary);font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);transition:var(--transition); }
-.adblock-btn-secondary:hover { background:var(--border); }
-.adblock-banner { position:fixed;top:var(--header-h);left:0;right:0;z-index:500;background:linear-gradient(135deg,rgba(91,94,244,0.95),rgba(124,58,237,0.95));backdrop-filter:blur(8px);color:white;padding:10px 20px;display:none;align-items:center;justify-content:space-between;font-size:13px;font-weight:500; }
-.adblock-banner.show { display:flex; }
-.adblock-banner button { background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition); }
-.adblock-banner button:hover { background:rgba(255,255,255,0.35); }
-.feature-locked { opacity:0.4;pointer-events:none;filter:blur(2px); }
+/* ===== ADBLOCK ===== */
+.adblock-overlay{position:fixed;inset:0;background:rgba(15,20,40,.85);backdrop-filter:blur(8px);z-index:9000;display:none;align-items:center;justify-content:center}
+.adblock-overlay.show{display:flex}
+.adblock-box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:36px;max-width:440px;width:calc(100% - 40px);text-align:center;box-shadow:var(--shadow-lg)}
+.adblock-icon{font-size:48px;margin-bottom:16px}
+.adblock-box h2{font-size:20px;font-weight:800;color:var(--text-primary);margin-bottom:8px}
+.adblock-box p{font-size:14px;color:var(--text-secondary);line-height:1.6;margin-bottom:20px}
+.adblock-steps{text-align:left;background:var(--bg-input);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px}
+.adblock-step{font-size:13px;color:var(--text-secondary);padding:4px 0;display:flex;align-items:center;gap:8px}
+.adblock-step-num{width:22px;height:22px;border-radius:50%;background:var(--accent-gradient);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.adblock-btns{display:flex;gap:10px}
+.adblock-btn-primary{flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--accent-gradient);color:white;font-weight:700;font-size:14px;cursor:pointer;border:none;transition:var(--transition)}
+.adblock-btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.adblock-btn-secondary{flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--bg-input);color:var(--text-secondary);font-weight:600;font-size:13px;cursor:pointer;border:1px solid var(--border);transition:var(--transition)}
+.adblock-btn-secondary:hover{background:var(--border)}
+.adblock-banner{position:fixed;top:var(--header-h);left:0;right:0;z-index:500;background:linear-gradient(135deg,rgba(91,94,244,.95),rgba(124,58,237,.95));backdrop-filter:blur(8px);color:white;padding:10px 20px;display:none;align-items:center;justify-content:space-between;font-size:13px;font-weight:500}
+.adblock-banner.show{display:flex}
+.adblock-banner button{background:rgba(255,255,255,.2);border:none;color:white;padding:6px 14px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition)}
+.adblock-banner button:hover{background:rgba(255,255,255,.35)}
 
 /* ===== STICKY AD BAR ===== */
-.sticky-ad-bar {
-  position: fixed;
-  bottom: 0;
-  left: var(--sidebar-w);
-  right: 0;
-  z-index: 400;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--border);
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 -4px 20px rgba(91,94,244,0.1);
+.sticky-ad-bar{
+  position:fixed;bottom:0;
+  left:var(--sidebar-w);right:0;
+  z-index:400;
+  background:rgba(255,255,255,.97);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--border);
+  padding:10px 20px;
+  display:flex;align-items:center;gap:16px;
+  transform:translateY(100%);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -4px 20px rgba(91,94,244,.1);
 }
-.sticky-ad-bar.visible { transform: translateY(0); }
-.sticky-ad-icon { width: 40px; height: 40px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
-.sticky-ad-icon img { width: 100%; height: 100%; object-fit: cover; }
-.sticky-ad-content { flex: 1; min-width: 0; }
-.sticky-ad-title { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sticky-ad-desc { font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sticky-ad-cta { flex-shrink: 0; padding: 8px 18px; border-radius: 99px; font-size: 12px; font-weight: 700; color: white; border: none; cursor: pointer; transition: var(--transition); }
-.sticky-ad-cta:hover { opacity: 0.9; transform: scale(1.03); }
-.sticky-ad-close { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--bg-input); border: 1px solid var(--border); font-size: 12px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-.sticky-ad-close:hover { background: var(--danger); color: white; border-color: var(--danger); }
+.sticky-ad-bar.visible{transform:translateY(0)}
+.sticky-ad-icon{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg-input);display:flex;align-items:center;justify-content:center;font-size:20px}
+.sticky-ad-content{flex:1;min-width:0}
+.sticky-ad-title{font-size:13px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sticky-ad-desc{font-size:11px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sticky-ad-cta{flex-shrink:0;padding:8px 18px;border-radius:99px;font-size:12px;font-weight:700;color:white;border:none;cursor:pointer;transition:var(--transition)}
+.sticky-ad-cta:hover{opacity:.9;transform:scale(1.03)}
+.sticky-ad-close{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--bg-input);border:1px solid var(--border);font-size:12px;color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.sticky-ad-close:hover{background:var(--danger);color:white;border-color:var(--danger)}
 
-/* ===== RIGHT AD COLUMN ===== */
-.right-ad-col {
-  width: 160px;
-  flex-shrink: 0;
-  padding: 20px 12px 20px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.ad-slot-vertical {
-  background: var(--bg-card);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-md);
-  min-height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: var(--text-muted);
-  text-align: center;
-  padding: 8px;
-}
-
-/* ===== SEARCH HISTORY ===== */
-.search-history {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 8px;
-}
-.history-chip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: 99px;
-  font-size: 12px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: var(--transition);
-}
-.history-chip:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
-.history-chip button { color: var(--text-muted); font-size: 10px; display: flex; align-items: center; }
-.history-chip button:hover { color: var(--danger); }
-
-/* ===== STATS OVERVIEW ===== */
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px; }
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 20px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  box-shadow: var(--shadow-card);
-  transition: var(--transition);
-}
-.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-.stat-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-.stat-icon.purple { background: rgba(91,94,244,0.1); color: var(--accent-primary); }
-.stat-icon.green { background: rgba(16,185,129,0.1); color: var(--success); }
-.stat-icon.orange { background: rgba(245,158,11,0.1); color: var(--warning); }
-.stat-icon.red { background: rgba(239,68,68,0.1); color: var(--danger); }
-.stat-info { flex: 1; }
-.stat-value { font-size: 22px; font-weight: 800; color: var(--text-primary); }
-.stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.stat-change { font-size: 11px; font-weight: 600; margin-top: 4px; }
-.stat-change.up { color: var(--success); }
-.stat-change.down { color: var(--danger); }
+/* ===== STATS GRID ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:20px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px;display:flex;align-items:flex-start;gap:14px;box-shadow:var(--shadow-card);transition:var(--transition)}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-icon{width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.stat-icon.purple{background:rgba(91,94,244,.1);color:var(--accent-primary)}
+.stat-icon.green{background:rgba(16,185,129,.1);color:var(--success)}
+.stat-icon.orange{background:rgba(245,158,11,.1);color:var(--warning)}
+.stat-icon.red{background:rgba(239,68,68,.1);color:var(--danger)}
+.stat-info{flex:1}
+.stat-value{font-size:22px;font-weight:800;color:var(--text-primary)}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:2px}
+.stat-change{font-size:11px;font-weight:600;margin-top:4px}
+.stat-change.up{color:var(--success)}
+.stat-change.down{color:var(--danger)}
 
 /* ===== SECTION HEADER ===== */
-.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-.section-title { font-size: 18px; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-.section-title i { color: var(--accent-primary); font-size: 16px; }
-.section-actions { display: flex; gap: 8px; }
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:18px;font-weight:800;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.section-title i{color:var(--accent-primary);font-size:16px}
 
 /* ===== MOBILE TABS ===== */
-.mobile-tab-bar {
-  display: none;
-  position: sticky;
-  top: var(--header-h);
-  z-index: 150;
-  background: var(--bg-header);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.mobile-tab-bar::-webkit-scrollbar { display: none; }
-.mobile-tabs { display: flex; padding: 8px 12px; gap: 6px; width: max-content; }
-.mobile-tab-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 99px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  transition: var(--transition);
-  border: 1.5px solid transparent;
-}
-.mobile-tab-btn.active { background: var(--accent-gradient); color: white; box-shadow: 0 4px 12px var(--accent-glow); }
-.mobile-tab-btn:not(.active):hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+.mobile-tab-bar{display:none;position:sticky;top:var(--header-h);z-index:150;background:var(--bg-header);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+.mobile-tab-bar::-webkit-scrollbar{display:none}
+.mobile-tabs{display:flex;padding:8px 12px;gap:6px;width:max-content}
+.mobile-tab-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:99px;font-size:13px;font-weight:600;color:var(--text-secondary);white-space:nowrap;transition:var(--transition);border:1.5px solid transparent}
+.mobile-tab-btn.active{background:var(--accent-gradient);color:white;box-shadow:0 4px 12px var(--accent-glow)}
+.mobile-tab-btn:not(.active):hover{border-color:var(--accent-primary);color:var(--accent-primary)}
+
+/* ===== SEARCH HISTORY ===== */
+.search-history{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.history-chip{display:flex;align-items:center;gap:6px;padding:5px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:99px;font-size:12px;color:var(--text-secondary);cursor:pointer;transition:var(--transition)}
+.history-chip:hover{border-color:var(--accent-primary);color:var(--accent-primary)}
+.history-chip button{color:var(--text-muted);font-size:10px;display:flex;align-items:center}
+.history-chip button:hover{color:var(--danger)}
+
+/* ===== ERROR STATE ===== */
+.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px}
+.empty-state .empty-icon{font-size:48px;margin-bottom:16px}
+.empty-state h3{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.empty-state p{font-size:13px;color:var(--text-secondary);margin-bottom:20px}
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 1200px) {
-  .right-ad-col { display: none; }
+@media(max-width:1100px){
+  /* 우측 광고 컬럼 숨김 */
+  .right-ad-col{display:none!important}
 }
-@media (max-width: 900px) {
-  :root { --sidebar-w: 68px; }
-  .nav-item span { display: none; }
-  .nav-item { justify-content: center; padding: 12px; }
-  .nav-item i { width: auto; font-size: 18px; }
-  .nav-item.active::before { display: none; }
-  .sidebar-section-label { display: none; }
-  .nav-badge { display: none; }
-  .sidebar-footer { display: none; }
-  .logo-text { display: none; }
-  .logo-badge { display: none; }
-  .live-badge span { display: none; }
-  .sticky-ad-bar { left: var(--sidebar-w); }
+@media(max-width:900px){
+  :root{--sidebar-w:64px}
+  .nav-item span,.sidebar-section-label,.nav-badge,.sidebar-footer,.logo-text,.logo-badge{display:none}
+  .nav-item{justify-content:center;padding:12px}
+  .nav-item i{width:auto;font-size:18px}
+  .nav-item.active::before{display:none}
+  .live-badge span{display:none}
+  .sticky-ad-bar{left:var(--sidebar-w)}
 }
-@media (max-width: 640px) {
-  .sidebar { display: none; }
-  .mobile-tab-bar { display: block; }
-  .main-content { padding: 16px; }
-  .page-header { padding: 20px; }
-  .page-header-icon { display: none; }
-  .header-search { display: none; }
-  .sticky-ad-bar { left: 0; }
-  .video-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+@media(max-width:640px){
+  .sidebar{display:none}
+  .mobile-tab-bar{display:block}
+  .main-content{padding:16px}
+  .page-header{padding:20px}
+  .page-header-icon{display:none}
+  .header-search{display:none}
+  .sticky-ad-bar{left:0}
+  .video-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
 }
 </style>
 </head>
 <body>
 
-<!-- AdBlock Bait -->
-<div id="adBlockBait" class="adsbygoogle ad-slot ad-banner" style="position:absolute;left:-9999px;width:1px;height:1px;pointer-events:none" aria-hidden="true"></div>
+<!-- AdBlock Bait (hidden) -->
+<div id="adBlockBait" class="adsbygoogle" style="position:absolute;left:-9999px;width:1px;height:1px;pointer-events:none;visibility:hidden" aria-hidden="true"></div>
 
 <!-- AdBlock Overlay -->
 <div class="adblock-overlay" id="adblockOverlay">
   <div class="adblock-box">
     <div class="adblock-icon">🛡️</div>
     <h2>광고 차단기가 감지되었습니다</h2>
-    <p>YTAnalytics Pro는 광고 수익으로 무료로 서비스되고 있습니다. 광고를 허용해 주시면 모든 기능을 무제한으로 이용하실 수 있습니다.</p>
+    <p>YTAnalytics Pro는 광고 수익으로 무료 서비스를 운영합니다. 광고를 허용해 주시면 모든 기능을 무제한 이용하실 수 있습니다.</p>
     <div class="adblock-steps">
       <div class="adblock-step"><div class="adblock-step-num">1</div> 브라우저 확장 프로그램 목록 열기</div>
-      <div class="adblock-step"><div class="adblock-step-num">2</div> AdBlock/uBlock 비활성화</div>
+      <div class="adblock-step"><div class="adblock-step-num">2</div> AdBlock / uBlock 비활성화</div>
       <div class="adblock-step"><div class="adblock-step-num">3</div> 페이지 새로고침</div>
     </div>
     <div class="adblock-btns">
-      <button class="adblock-btn-primary" onclick="recheckAdBlock()">✅ 해제했어요 (새로고침)</button>
-      <button class="adblock-btn-secondary" onclick="allowLimitedAccess()">제한 모드로 이용</button>
+      <button class="adblock-btn-primary" onclick="recheckAdBlock()">✅ 해제했어요</button>
+      <button class="adblock-btn-secondary" onclick="allowLimitedAccess()">제한 모드 이용</button>
     </div>
   </div>
 </div>
 
-<!-- AdBlock Banner (soft) -->
+<!-- AdBlock Soft Banner -->
 <div class="adblock-banner" id="adblockBanner">
   <span id="adblockBannerText">💡 광고 차단기를 해제하면 모든 기능을 무제한으로 이용할 수 있어요!</span>
   <button onclick="recheckAdBlock()">해제 확인</button>
@@ -887,21 +500,24 @@ img { max-width: 100%; }
 <div id="adOverlay" class="ad-overlay" style="display:none">
   <div class="ad-box">
     <div class="ad-box-header">
-      <div class="ad-box-title">📢 잠깐, 광고를 확인해 주세요</div>
+      <div class="ad-box-title">📢 광고를 확인해 주세요</div>
       <button class="ad-close-btn" id="adCloseBtn" onclick="closeAdOverlay()" disabled>
         <i class="fa fa-times"></i>
       </button>
     </div>
-    <div class="ad-countdown">광고 닫기까지 <span id="adCountdown">5</span>초 남았습니다</div>
-    <ins class="adsbygoogle" style="display:block;width:100%;height:250px" data-ad-client="ca-pub-4409875039737384" data-ad-slot="3958032824" data-ad-format="auto"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    <div class="ad-countdown"><span id="adCountdown">5</span>초 후 닫기 버튼이 활성화됩니다</div>
+    <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px"
+      data-ad-client="ca-pub-4409875039737384"
+      data-ad-slot="3958032824"
+      data-ad-format="auto"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script>
   </div>
 </div>
 
-<!-- Toast Container -->
+<!-- Toast -->
 <div id="toastContainer"></div>
 
-<!-- HEADER -->
+<!-- ==================== HEADER ==================== -->
 <header class="header">
   <div class="header-logo">
     <div class="logo-icon"><i class="fab fa-youtube"></i></div>
@@ -909,101 +525,114 @@ img { max-width: 100%; }
     <span class="logo-badge">PRO</span>
   </div>
   <div class="header-search">
-    <input type="text" id="headerSearchInput" placeholder="채널명, 영상 URL, 키워드 검색..." onkeydown="handleHeaderSearch(event)">
+    <input type="text" id="headerSearchInput" placeholder="채널명, 영상 URL, 키워드 검색..." onkeydown="if(event.key==='Enter')doHeaderSearch()">
     <button onclick="doHeaderSearch()"><i class="fa fa-search"></i></button>
   </div>
   <div class="header-actions">
     <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
-    <button class="header-btn" onclick="showToast('새로고침 중...','info')" title="새로고침"><i class="fa fa-refresh"></i></button>
-    <button class="header-btn" title="설정"><i class="fa fa-cog"></i></button>
+    <button class="header-btn" onclick="refreshCurrentTab()" title="새로고침"><i class="fa fa-rotate-right"></i></button>
+    <button class="header-btn" title="설정"><i class="fa fa-gear"></i></button>
   </div>
 </header>
 
 <!-- MOBILE TAB BAR -->
 <div class="mobile-tab-bar">
   <div class="mobile-tabs">
-    <button class="mobile-tab-btn active" id="mtab-trend" onclick="switchTab('trend')"><i class="fa fa-fire"></i> 급상승</button>
-    <button class="mobile-tab-btn" id="mtab-chanwhy" onclick="switchTab('chanwhy')"><i class="fa fa-chart-bar"></i> 채널분석</button>
-    <button class="mobile-tab-btn" id="mtab-level" onclick="switchTab('level')"><i class="fa fa-trophy"></i> 채널레벨</button>
-    <button class="mobile-tab-btn" id="mtab-vidscore" onclick="switchTab('vidscore')"><i class="fa fa-star"></i> 영상점수</button>
-    <button class="mobile-tab-btn" id="mtab-keyword" onclick="switchTab('keyword')"><i class="fa fa-search"></i> 키워드</button>
-    <button class="mobile-tab-btn" id="mtab-revenue" onclick="switchTab('revenue')"><i class="fa fa-won-sign"></i> 수익계산</button>
+    <button class="mobile-tab-btn active" id="mtab-trend"    onclick="switchTab('trend')"><i class="fa fa-fire"></i> 급상승</button>
+    <button class="mobile-tab-btn"        id="mtab-chanwhy"  onclick="switchTab('chanwhy')"><i class="fa fa-chart-bar"></i> 채널분석</button>
+    <button class="mobile-tab-btn"        id="mtab-level"    onclick="switchTab('level')"><i class="fa fa-trophy"></i> 채널레벨</button>
+    <button class="mobile-tab-btn"        id="mtab-vidscore" onclick="switchTab('vidscore')"><i class="fa fa-star"></i> 영상점수</button>
+    <button class="mobile-tab-btn"        id="mtab-keyword"  onclick="switchTab('keyword')"><i class="fa fa-magnifying-glass"></i> 키워드</button>
+    <button class="mobile-tab-btn"        id="mtab-revenue"  onclick="switchTab('revenue')"><i class="fa fa-won-sign"></i> 수익계산</button>
   </div>
 </div>
 
-<!-- LAYOUT -->
+<!-- ==================== LAYOUT ==================== -->
 <div class="layout">
 
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="sidebar-section-label">메인 분석</div>
-    <div class="nav-item active" id="nav-trend" onclick="switchTab('trend')">
-      <i class="fa fa-fire"></i><span>급상승 영상</span>
-      <span class="nav-badge">NEW</span>
+    <div class="nav-item active" id="nav-trend"    onclick="switchTab('trend')">
+      <i class="fa fa-fire"></i><span>급상승 영상</span><span class="nav-badge">NEW</span>
     </div>
-    <div class="nav-item" id="nav-chanwhy" onclick="switchTab('chanwhy')">
-      <i class="fa fa-chart-bar"></i><span>채널분석</span>
+    <div class="nav-item" id="nav-chanwhy"  onclick="switchTab('chanwhy')">
+      <i class="fa fa-chart-bar"></i><span>채널 분석</span>
     </div>
-    <div class="nav-item" id="nav-level" onclick="switchTab('level')">
+    <div class="nav-item" id="nav-level"    onclick="switchTab('level')">
       <i class="fa fa-trophy"></i><span>채널 레벨</span>
     </div>
     <div class="nav-item" id="nav-vidscore" onclick="switchTab('vidscore')">
       <i class="fa fa-star"></i><span>영상 점수</span>
     </div>
-    <div class="nav-item" id="nav-keyword" onclick="switchTab('keyword')">
-      <i class="fa fa-search"></i><span>키워드 분석</span>
+    <div class="nav-item" id="nav-keyword"  onclick="switchTab('keyword')">
+      <i class="fa fa-magnifying-glass"></i><span>키워드 분석</span>
     </div>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-label">도구</div>
-    <div class="nav-item" id="nav-revenue" onclick="switchTab('revenue')">
+    <div class="nav-item" id="nav-revenue"  onclick="switchTab('revenue')">
       <i class="fa fa-won-sign"></i><span>수익 계산기</span>
     </div>
-
     <div class="sidebar-footer">
-      <div class="sidebar-ad-slot">
-        <ins class="adsbygoogle" style="display:block;width:100%;min-height:80px" data-ad-client="ca-pub-4409875039737384" data-ad-slot="1234567890" data-ad-format="auto"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-      </div>
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:100px"
+        data-ad-client="ca-pub-4409875039737384"
+        data-ad-slot="1234567890"
+        data-ad-format="auto"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script>
     </div>
   </nav>
 
-  <!-- MAIN -->
+  <!-- MAIN CONTENT -->
   <main class="main-content">
 
-    <!-- ===== TAB: TREND ===== -->
+    <!-- ========== TREND TAB ========== -->
     <section class="tab-section active" id="tab-trend">
       <div class="page-header">
         <div class="page-header-text">
-          <h1><i class="fa fa-fire" style="color:var(--accent-primary);margin-right:8px"></i>급상승 영상</h1>
-          <p>현재 대한민국 유튜브에서 가장 빠르게 성장 중인 영상을 분석합니다</p>
+          <h1>🔥 급상승 영상</h1>
+          <p>대한민국 유튜브에서 가장 빠르게 성장 중인 영상을 실시간으로 분석합니다</p>
         </div>
         <div class="page-header-icon"><i class="fab fa-youtube"></i></div>
       </div>
 
-      <!-- Stats Overview -->
-      <div class="stats-grid" id="trendStats">
+      <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon purple"><i class="fa fa-fire"></i></div>
-          <div class="stat-info"><div class="stat-value" id="statTrendCount">0</div><div class="stat-label">분석 영상 수</div><div class="stat-change up" id="statTrendChange">로딩 중...</div></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statTrendCount">-</div>
+            <div class="stat-label">분석 영상 수</div>
+            <div class="stat-change up" id="statTrendChange">로딩 중...</div>
+          </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon green"><i class="fa fa-eye"></i></div>
-          <div class="stat-info"><div class="stat-value" id="statAvgViews">-</div><div class="stat-label">평균 조회수</div><div class="stat-change up">TOP 50 기준</div></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statAvgViews">-</div>
+            <div class="stat-label">평균 조회수</div>
+            <div class="stat-change up">TOP 50 기준</div>
+          </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon orange"><i class="fa fa-clock"></i></div>
-          <div class="stat-info"><div class="stat-value" id="statLastUpdated">-</div><div class="stat-label">마지막 업데이트</div><div class="stat-change up">실시간 반영</div></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statLastUpdated">-</div>
+            <div class="stat-label">마지막 업데이트</div>
+            <div class="stat-change up">실시간 반영</div>
+          </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon red"><i class="fa fa-chart-line"></i></div>
-          <div class="stat-info"><div class="stat-value" id="statApiStatus">연결중</div><div class="stat-label">API 상태</div><div class="stat-change" id="statApiStatusChange">확인 중...</div></div>
+          <div class="stat-icon red"><i class="fa fa-signal"></i></div>
+          <div class="stat-info">
+            <div class="stat-value" id="statApiStatus" style="font-size:16px">확인중</div>
+            <div class="stat-label">API 상태</div>
+            <div class="stat-change" id="statApiStatusChange">연결 중...</div>
+          </div>
         </div>
       </div>
 
-      <!-- Filter Bar -->
       <div class="card" style="padding:16px 20px">
         <div class="filter-bar">
-          <button class="filter-btn active" onclick="filterTrend(this,'0')">🎯 전체</button>
+          <button class="filter-btn active" onclick="filterTrend(this,'')">🎯 전체</button>
           <button class="filter-btn" onclick="filterTrend(this,'10')">🎵 음악</button>
           <button class="filter-btn" onclick="filterTrend(this,'17')">⚽ 스포츠</button>
           <button class="filter-btn" onclick="filterTrend(this,'20')">🎮 게임</button>
@@ -1014,95 +643,96 @@ img { max-width: 100%; }
         </div>
       </div>
 
-      <!-- Video Grid -->
       <div class="section-header">
         <div class="section-title"><i class="fa fa-play-circle"></i> 실시간 트렌드</div>
-        <div class="section-actions">
-          <button class="btn btn-secondary btn-sm" onclick="loadTrend(currentCategory)"><i class="fa fa-refresh"></i> 새로고침</button>
-        </div>
+        <button class="btn btn-secondary btn-sm" onclick="loadTrend(currentCategory)">
+          <i class="fa fa-rotate-right"></i> 새로고침
+        </button>
       </div>
       <div id="trendGrid" class="video-grid"></div>
 
-      <!-- Inline Ad -->
       <div style="margin:24px 0;text-align:center">
-        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px" data-ad-client="ca-pub-4409875039737384" data-ad-slot="5834628721" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        <ins class="adsbygoogle" style="display:block;width:100%;min-height:90px"
+          data-ad-client="ca-pub-4409875039737384"
+          data-ad-slot="5834628721"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script>
       </div>
     </section>
 
-    <!-- ===== TAB: CHANWHY ===== -->
+    <!-- ========== CHANWHY TAB ========== -->
     <section class="tab-section" id="tab-chanwhy">
       <div class="page-header">
         <div class="page-header-text">
-          <h1><i class="fa fa-chart-bar" style="color:var(--accent-primary);margin-right:8px"></i>채널 분석</h1>
+          <h1>📊 채널 분석</h1>
           <p>유튜브 채널의 성장 요인과 핵심 지표를 심층 분석합니다</p>
         </div>
         <div class="page-header-icon"><i class="fa fa-chart-bar"></i></div>
       </div>
-
       <div class="card">
         <div class="card-title"><i class="fa fa-search"></i> 채널 검색</div>
         <div class="card-desc">채널 URL 또는 채널명을 입력하여 상세 분석을 시작하세요</div>
         <div class="input-group">
           <label class="input-label">채널 URL / 채널명</label>
-          <input type="text" class="input-field" id="chanwhyInput" placeholder="https://youtube.com/@channelname 또는 채널명">
+          <input type="text" class="input-field" id="chanwhyInput"
+            placeholder="https://youtube.com/@channelname 또는 채널명"
+            onkeydown="if(event.key==='Enter')analyzeWhy()">
         </div>
         <div id="chanwhyHistory" class="search-history"></div>
         <button class="btn btn-primary" onclick="analyzeWhy()" style="margin-top:12px">
           <i class="fa fa-search"></i> 채널 분석 시작
         </button>
       </div>
-
       <div id="chanwhyResult"></div>
     </section>
 
-    <!-- ===== TAB: LEVEL ===== -->
+    <!-- ========== LEVEL TAB ========== -->
     <section class="tab-section" id="tab-level">
       <div class="page-header">
         <div class="page-header-text">
-          <h1><i class="fa fa-trophy" style="color:var(--accent-primary);margin-right:8px"></i>채널 레벨</h1>
-          <p>구독자 수 기반으로 내 채널의 현재 레벨과 성장 단계를 확인합니다</p>
+          <h1>🏆 채널 레벨</h1>
+          <p>구독자 수 기반으로 채널의 현재 레벨과 성장 단계를 확인합니다</p>
         </div>
         <div class="page-header-icon"><i class="fa fa-trophy"></i></div>
       </div>
-
       <div class="card">
         <div class="card-title"><i class="fa fa-users"></i> 구독자 수 입력</div>
-        <div class="card-desc">현재 채널의 구독자 수를 입력하면 레벨과 등급을 바로 확인할 수 있습니다</div>
+        <div class="card-desc">채널의 구독자 수를 입력하면 레벨과 등급을 바로 확인할 수 있습니다</div>
         <div class="input-group">
           <label class="input-label">구독자 수</label>
-          <input type="number" class="input-field" id="levelInput" placeholder="예: 10000" min="0">
+          <input type="number" class="input-field" id="levelInput" placeholder="예: 10000" min="0"
+            onkeydown="if(event.key==='Enter')analyzeLevel()">
         </div>
         <button class="btn btn-primary" onclick="analyzeLevel()">
           <i class="fa fa-trophy"></i> 레벨 확인하기
         </button>
       </div>
-
       <div id="levelResult"></div>
     </section>
 
-    <!-- ===== TAB: VIDSCORE ===== -->
+    <!-- ========== VIDSCORE TAB ========== -->
     <section class="tab-section" id="tab-vidscore">
       <div class="page-header">
         <div class="page-header-text">
-          <h1><i class="fa fa-star" style="color:var(--accent-primary);margin-right:8px"></i>영상 점수 분석</h1>
+          <h1>⭐ 영상 점수 분석</h1>
           <p>특정 영상의 성과와 품질을 다각도로 점수화하여 분석합니다</p>
         </div>
         <div class="page-header-icon"><i class="fa fa-star"></i></div>
       </div>
-
       <div class="card">
         <div class="card-title"><i class="fa fa-link"></i> URL로 분석</div>
         <div class="card-desc">YouTube 영상 URL을 입력하여 자동으로 데이터를 가져옵니다</div>
         <div class="input-group">
           <label class="input-label">영상 URL</label>
-          <input type="text" class="input-field" id="vidUrlInput" placeholder="https://youtube.com/watch?v=...">
+          <input type="text" class="input-field" id="vidUrlInput"
+            placeholder="https://youtube.com/watch?v=..."
+            onkeydown="if(event.key==='Enter')analyzeVidByUrl()">
         </div>
         <button class="btn btn-primary" onclick="analyzeVidByUrl()">
-          <i class="fa fa-search"></i> URL 분석
+          <i class="fa fa-magnifying-glass"></i> URL 분석
         </button>
       </div>
-
       <div class="card" style="margin-top:16px">
         <div class="card-title"><i class="fa fa-keyboard"></i> 수동 입력 분석</div>
         <div class="card-desc">데이터를 직접 입력하여 영상 점수를 계산합니다</div>
@@ -1120,60 +750,57 @@ img { max-width: 100%; }
             <input type="number" class="input-field" id="vidComments" placeholder="예: 300">
           </div>
           <div class="input-group">
-            <label class="input-label">업로드 일수</label>
+            <label class="input-label">업로드 후 일수</label>
             <input type="number" class="input-field" id="vidDays" placeholder="예: 7">
           </div>
         </div>
-        <input type="text" class="input-field" id="vidTitle" placeholder="영상 제목 (선택사항)" style="margin-top:4px;margin-bottom:12px">
+        <input type="text" class="input-field" id="vidTitle" placeholder="영상 제목 (선택사항)" style="margin-bottom:12px">
         <button class="btn btn-primary" onclick="analyzeVidManual()">
           <i class="fa fa-calculator"></i> 점수 계산
         </button>
       </div>
-
       <div id="vidscoreResult"></div>
     </section>
 
-    <!-- ===== TAB: KEYWORD ===== -->
+    <!-- ========== KEYWORD TAB ========== -->
     <section class="tab-section" id="tab-keyword">
       <div class="page-header">
         <div class="page-header-text">
-          <h1><i class="fa fa-search" style="color:var(--accent-primary);margin-right:8px"></i>키워드 분석</h1>
+          <h1>🔑 키워드 분석</h1>
           <p>유튜브 콘텐츠 최적화를 위한 키워드 발굴 및 경쟁도 분석</p>
         </div>
         <div class="page-header-icon"><i class="fa fa-key"></i></div>
       </div>
-
       <div class="card">
         <div class="card-title"><i class="fa fa-search"></i> 키워드 검색</div>
         <div class="card-desc">분석할 키워드를 입력하세요. 카테고리별 추천 키워드도 확인할 수 있습니다</div>
         <div style="display:flex;gap:10px">
-          <input type="text" class="input-field" id="kwInput" placeholder="키워드 입력 (예: 유튜브 수익화)" style="flex:1" onkeydown="if(event.key==='Enter')analyzeKw()">
+          <input type="text" class="input-field" id="kwInput"
+            placeholder="키워드 입력 (예: 유튜브 수익화)"
+            style="flex:1"
+            onkeydown="if(event.key==='Enter')analyzeKw()">
           <button class="btn btn-primary" onclick="analyzeKw()"><i class="fa fa-search"></i> 분석</button>
         </div>
       </div>
-
       <div class="section-header" style="margin-top:20px">
         <div class="section-title"><i class="fa fa-th-large"></i> 카테고리별 추천 키워드</div>
       </div>
       <div id="kwCatGrid" class="kw-grid"></div>
-
       <div id="kwResult"></div>
     </section>
 
-    <!-- ===== TAB: REVENUE ===== -->
+    <!-- ========== REVENUE TAB ========== -->
     <section class="tab-section" id="tab-revenue">
       <div class="page-header">
         <div class="page-header-text">
-          <h1><i class="fa fa-won-sign" style="color:var(--accent-primary);margin-right:8px"></i>수익 계산기</h1>
+          <h1>💰 수익 계산기</h1>
           <p>예상 광고 수익과 채널 성장에 따른 수익 시뮬레이션</p>
         </div>
         <div class="page-header-icon"><i class="fa fa-calculator"></i></div>
       </div>
-
       <div class="card">
-        <div class="card-title"><i class="fa fa-sliders-h"></i> 수익 시뮬레이션</div>
+        <div class="card-title"><i class="fa fa-sliders"></i> 수익 시뮬레이션</div>
         <div class="card-desc">슬라이더를 조정하여 다양한 시나리오의 예상 수익을 계산하세요</div>
-
         <div class="slider-wrap">
           <div class="slider-label"><span>💰 CPM (1000회당 단가)</span><span id="cpmVal">₩1,500</span></div>
           <input type="range" class="range-slider" id="cpmSlider" min="300" max="8000" value="1500" step="100" oninput="updateSlider()">
@@ -1187,14 +814,11 @@ img { max-width: 100%; }
           <input type="range" class="range-slider" id="adRateSlider" min="10" max="80" value="45" step="1" oninput="updateSlider()">
         </div>
         <div class="slider-wrap">
-          <div class="slider-label"><span>📅 유튜브 수수료 제외(%)</span><span id="ytFeeVal">45%</span></div>
+          <div class="slider-label"><span>📺 유튜브 수수료</span><span id="ytFeeVal">45%</span></div>
           <input type="range" class="range-slider" id="ytFeeSlider" min="30" max="60" value="45" step="1" oninput="updateSlider()">
         </div>
-
         <div class="revenue-result" id="revenueResult"></div>
       </div>
-
-      <!-- Revenue Strategy Info -->
       <div class="card" style="margin-top:16px">
         <div class="card-title"><i class="fa fa-lightbulb"></i> 수익 다각화 전략</div>
         <div class="card-desc">광고 수익 외에도 다양한 방법으로 채널 수익을 극대화할 수 있습니다</div>
@@ -1205,7 +829,7 @@ img { max-width: 100%; }
           </div>
           <div class="result-stat" style="border-left:3px solid var(--success)">
             <div class="result-stat-value" style="font-size:16px">슈퍼챗</div>
-            <div class="result-stat-label">라이브 방송 후원</div>
+            <div class="result-stat-label">라이브 방송 후원금</div>
           </div>
           <div class="result-stat" style="border-left:3px solid var(--warning)">
             <div class="result-stat-value" style="font-size:16px">제휴 마케팅</div>
@@ -1217,72 +841,67 @@ img { max-width: 100%; }
           </div>
         </div>
       </div>
-
       <div style="margin:24px 0;text-align:center">
-        <ins class="adsbygoogle" style="display:block;min-height:90px" data-ad-client="ca-pub-4409875039737384" data-ad-slot="9876543210" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        <ins class="adsbygoogle" style="display:block;min-height:90px"
+          data-ad-client="ca-pub-4409875039737384"
+          data-ad-slot="9876543210"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle=window.adsbygoogle||[]).push({})</script>
       </div>
     </section>
 
   </main>
-
-  <!-- RIGHT AD COLUMN -->
-  <aside class="right-ad-col">
-    <ins class="adsbygoogle ad-slot-vertical" data-ad-client="ca-pub-4409875039737384" data-ad-slot="1122334455" data-ad-format="vertical"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-    <ins class="adsbygoogle ad-slot-vertical" data-ad-client="ca-pub-4409875039737384" data-ad-slot="5544332211" data-ad-format="vertical"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </aside>
-
-</div>
+  <!-- 우측 광고 컬럼 완전 제거 - CSS로만 제어 -->
+</div><!-- /.layout -->
 
 <!-- Sticky Ad Bar -->
 <div class="sticky-ad-bar" id="stickyAdBar">
-  <div class="sticky-ad-icon"><img id="stickyAdIcon" src="" alt=""></div>
+  <div class="sticky-ad-icon" id="stickyAdIcon">🎯</div>
   <div class="sticky-ad-content">
-    <div class="sticky-ad-title" id="stickyAdTitle"></div>
+    <div class="sticky-ad-title" id="stickyAdTitle">로딩 중...</div>
     <div class="sticky-ad-desc" id="stickyAdDesc"></div>
   </div>
-  <button class="sticky-ad-cta" id="stickyAdCta" onclick="stickyAdClick()"></button>
+  <button class="sticky-ad-cta" id="stickyAdCta" onclick="stickyAdClick()">바로가기</button>
   <button class="sticky-ad-close" onclick="closeStickyAd()"><i class="fa fa-times"></i></button>
 </div>
 
+<!-- ==================== JAVASCRIPT ==================== -->
 <script>
-/* ===================================================
-   CONSTANTS & CONFIG
-=================================================== */
-const API_KEYS = [
-  'AIzaSyBPn-YOUR-API-KEY-1-HERE',
-  'AIzaSyBPn-YOUR-API-KEY-2-HERE',
-  'AIzaSyBPn-YOUR-API-KEY-3-HERE'
-];
-let currentKeyIdx = 0;
-function getApiKey() { return API_KEYS[currentKeyIdx % API_KEYS.length]; }
-function rotateApiKey() { currentKeyIdx++; showToast('API 키 자동 교체됨','info'); }
+'use strict';
 
-const YT_BASE = 'https://www.googleapis.com/youtube/v3';
-let currentCategory = '0';
+/* =====================================================
+   CONFIG – API 키를 여기에 설정
+===================================================== */
+const API_KEYS = [
+  'AIzaSyCySRGVUW8FVz7m3ALEnr_KQvJqEcFIR5Y'
+  // 추가 키가 생기면 아래에 계속 추가
+  // 'AIzaSy...-KEY-2',
+  // 'AIzaSy...-KEY-3'
+];
+let _keyIdx = 0;
+function getApiKey() { return API_KEYS[_keyIdx % API_KEYS.length]; }
+function rotateApiKey() {
+  _keyIdx++;
+  if (_keyIdx >= API_KEYS.length) _keyIdx = 0;
+  showToast('API 키 자동 교체 (' + (_keyIdx + 1) + '/' + API_KEYS.length + ')', 'info');
+}
+
+const YT = 'https://www.googleapis.com/youtube/v3';
+let currentCategory = '';   // 빈 문자열 = 전체
 let activeTab = 'trend';
-let tabSwitchCount = 0;
 let kwCatLoaded = false;
 
-/* ===================================================
+/* =====================================================
    AD GUARD
-=================================================== */
+===================================================== */
 const AdGuard = {
-  maxAds: 5,
-  cooldown: 120000,
-  tabInterval: 4,
-  count: 0,
-  lastShown: 0,
-  tabCount: 0,
-  canShow() {
-    const now = Date.now();
-    return this.count < this.maxAds && (now - this.lastShown) > this.cooldown;
-  },
+  max: 5, cooldown: 120000, interval: 4,
+  count: 0, lastShown: 0, tabCount: 0,
+  canShow() { return this.count < this.max && Date.now() - this.lastShown > this.cooldown; },
   checkTab() {
     this.tabCount++;
-    if (this.tabCount % this.tabInterval === 0 && this.canShow()) {
+    if (this.tabCount % this.interval === 0 && this.canShow()) {
       this.count++;
       this.lastShown = Date.now();
       return true;
@@ -1291,183 +910,231 @@ const AdGuard = {
   }
 };
 
-/* ===================================================
+/* =====================================================
    CACHE (5 min TTL)
-=================================================== */
+===================================================== */
 const Cache = {
-  store: {},
-  ttl: 300000,
-  set(k, v) { this.store[k] = { v, t: Date.now() }; },
+  _s: {}, ttl: 300000,
+  set(k, v) { this._s[k] = { v, t: Date.now() }; },
   get(k) {
-    const item = this.store[k];
-    if (!item) return null;
-    if (Date.now() - item.t > this.ttl) { delete this.store[k]; return null; }
-    return item.v;
+    const i = this._s[k];
+    if (!i) return null;
+    if (Date.now() - i.t > this.ttl) { delete this._s[k]; return null; }
+    return i.v;
   }
 };
 
-/* ===================================================
+/* =====================================================
    HISTORY
-=================================================== */
+===================================================== */
 const Hist = {
-  key: 'yta_history',
-  max: 10,
+  key: 'yta_hist', max: 10,
   get() { try { return JSON.parse(localStorage.getItem(this.key) || '[]'); } catch { return []; } },
   add(q) {
     let h = this.get().filter(x => x !== q);
     h.unshift(q);
-    if (h.length > this.max) h = h.slice(0, this.max);
-    localStorage.setItem(this.key, JSON.stringify(h));
+    localStorage.setItem(this.key, JSON.stringify(h.slice(0, this.max)));
   },
-  remove(q) {
-    localStorage.setItem(this.key, JSON.stringify(this.get().filter(x => x !== q)));
-  }
+  del(q) { localStorage.setItem(this.key, JSON.stringify(this.get().filter(x => x !== q))); }
 };
 
-/* ===================================================
+/* =====================================================
    UTILITIES
-=================================================== */
+===================================================== */
 function fmt(n) {
   n = parseInt(n) || 0;
-  if (n >= 100000000) return (n/100000000).toFixed(1) + '억';
-  if (n >= 10000) return (n/10000).toFixed(1) + '만';
-  if (n >= 1000) return (n/1000).toFixed(1) + 'k';
+  if (n >= 100000000) return (n / 100000000).toFixed(1) + '억';
+  if (n >= 10000)     return (n / 10000).toFixed(1) + '만';
+  if (n >= 1000)      return (n / 1000).toFixed(1) + 'k';
   return n.toLocaleString();
 }
 
 function fmtWon(n) {
-  if (n >= 10000000) return '₩' + (n/10000000).toFixed(1) + '천만';
-  if (n >= 1000000) return '₩' + (n/1000000).toFixed(1) + '백만';
-  if (n >= 10000) return '₩' + (n/10000).toFixed(0) + '만';
-  return '₩' + Math.round(n).toLocaleString();
+  n = Math.round(n);
+  if (n >= 10000000) return '₩' + (n / 10000000).toFixed(1) + '천만';
+  if (n >= 1000000)  return '₩' + (n / 1000000).toFixed(1) + '백만';
+  if (n >= 10000)    return '₩' + (n / 10000).toFixed(0) + '만';
+  return '₩' + n.toLocaleString();
 }
 
-function ago(isoStr) {
-  if (!isoStr) return '알 수 없음';
-  const diff = Date.now() - new Date(isoStr).getTime();
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor(diff / 60000);
-  if (d > 365) return Math.floor(d/365) + '년 전';
-  if (d > 30) return Math.floor(d/30) + '개월 전';
-  if (d > 0) return d + '일 전';
-  if (h > 0) return h + '시간 전';
-  if (m > 0) return m + '분 전';
-  return '방금 전';
+function ago(iso) {
+  if (!iso) return '-';
+  const d = Math.floor((Date.now() - new Date(iso)) / 86400000);
+  if (d > 365) return Math.floor(d / 365) + '년 전';
+  if (d > 30)  return Math.floor(d / 30)  + '개월 전';
+  if (d > 0)   return d + '일 전';
+  const h = Math.floor((Date.now() - new Date(iso)) / 3600000);
+  if (h > 0)   return h + '시간 전';
+  const m = Math.floor((Date.now() - new Date(iso)) / 60000);
+  return m > 0 ? m + '분 전' : '방금 전';
 }
 
-function parseDuration(iso) {
+function parseDur(iso) {
   if (!iso) return '';
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if (!m) return '';
-  const h = parseInt(m[1] || 0), min = parseInt(m[2] || 0), s = parseInt(m[3] || 0);
-  if (h > 0) return `${h}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const h = +m[1] || 0, min = +m[2] || 0, s = +m[3] || 0;
+  if (h) return `${h}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   return `${min}:${String(s).padStart(2,'0')}`;
 }
 
 function extractVid(url) {
   if (!url) return null;
-  const patterns = [
-    /[?&]v=([^&]+)/,
-    /youtu\.be\/([^?]+)/,
-    /youtube\.com\/embed\/([^?]+)/,
-    /youtube\.com\/shorts\/([^?]+)/
-  ];
-  for (const p of patterns) {
-    const m = url.match(p);
-    if (m) return m[1];
-  }
+  const pats = [/[?&]v=([^&]+)/, /youtu\.be\/([^?]+)/, /youtube\.com\/embed\/([^?]+)/, /youtube\.com\/shorts\/([^?]+)/];
+  for (const p of pats) { const m = url.match(p); if (m) return m[1]; }
   return null;
 }
 
-function extractChannelId(url) {
-  if (!url) return null;
-  const m = url.match(/youtube\.com\/(channel\/|@)([^/?&]+)/);
-  return m ? m[2] : null;
-}
-
-/* ===================================================
+/* =====================================================
    TOAST
-=================================================== */
-function showToast(msg, type = 'info', dur = 3000) {
-  const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+===================================================== */
+function showToast(msg, type = 'info', dur = 3500) {
+  const icons = { success:'fa-check-circle', error:'fa-circle-exclamation', info:'fa-circle-info', warning:'fa-triangle-exclamation' };
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  el.innerHTML = `<i class="fa ${icons[type] || icons.info}"></i> ${msg}`;
+  el.innerHTML = `<i class="fa ${icons[type] || icons.info}"></i>${msg}`;
   document.getElementById('toastContainer').appendChild(el);
-  setTimeout(() => {
-    el.classList.add('fade-out');
-    setTimeout(() => el.remove(), 300);
-  }, dur);
+  setTimeout(() => { el.classList.add('fade-out'); setTimeout(() => el.remove(), 300); }, dur);
 }
 
-/* ===================================================
+/* =====================================================
    AD OVERLAY
-=================================================== */
-let adCountdownTimer = null;
+===================================================== */
+let _adTimer = null;
 function showAdOverlay() {
-  const overlay = document.getElementById('adOverlay');
-  const closeBtn = document.getElementById('adCloseBtn');
-  const countEl = document.getElementById('adCountdown');
-  if (!overlay) return;
-  overlay.style.display = 'flex';
-  closeBtn.disabled = true;
-  let count = 5;
-  countEl.textContent = count;
-  clearInterval(adCountdownTimer);
-  adCountdownTimer = setInterval(() => {
-    count--;
-    countEl.textContent = count;
-    if (count <= 0) {
-      clearInterval(adCountdownTimer);
-      closeBtn.disabled = false;
-      countEl.textContent = '완료';
-    }
+  const ov = document.getElementById('adOverlay');
+  const btn = document.getElementById('adCloseBtn');
+  const cnt = document.getElementById('adCountdown');
+  if (!ov) return;
+  ov.style.display = 'flex';
+  btn.disabled = true;
+  let n = 5; cnt.textContent = n;
+  clearInterval(_adTimer);
+  _adTimer = setInterval(() => {
+    n--; cnt.textContent = n;
+    if (n <= 0) { clearInterval(_adTimer); btn.disabled = false; }
   }, 1000);
 }
-
 function closeAdOverlay() {
-  const overlay = document.getElementById('adOverlay');
-  if (overlay) overlay.style.display = 'none';
-  clearInterval(adCountdownTimer);
+  const ov = document.getElementById('adOverlay');
+  if (ov) ov.style.display = 'none';
+  clearInterval(_adTimer);
 }
 
-/* ===================================================
-   TAB SWITCHING
-=================================================== */
+/* =====================================================
+   ADBLOCK
+===================================================== */
+const AdBlockGuard = {
+  detected: false, limitedMode: false,
+  dailyLimit: 3,
+  limitedFuncs: ['chanwhy', 'level'],
+  getUsage() {
+    const k = 'ab_usage_' + new Date().toDateString();
+    return parseInt(localStorage.getItem(k) || '0');
+  },
+  addUsage() {
+    const k = 'ab_usage_' + new Date().toDateString();
+    localStorage.setItem(k, this.getUsage() + 1);
+  },
+  getRemaining() { return Math.max(0, this.dailyLimit - this.getUsage()); },
+  saveLimited() { localStorage.setItem('ab_limited', new Date().toDateString()); },
+  wasLimitedAllowed() { return localStorage.getItem('ab_limited') === new Date().toDateString(); }
+};
+
+async function detectAdBlock() {
+  const bait = document.getElementById('adBlockBait');
+  if (bait && (bait.offsetHeight === 0 || bait.style.display === 'none')) {
+    AdBlockGuard.detected = true; return true;
+  }
+  try {
+    await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', { method: 'HEAD', mode: 'no-cors' });
+  } catch {
+    AdBlockGuard.detected = true; return true;
+  }
+  if (typeof window.adsbygoogle === 'undefined') {
+    await new Promise(r => setTimeout(r, 1000));
+    if (typeof window.adsbygoogle === 'undefined') { AdBlockGuard.detected = true; return true; }
+  }
+  return false;
+}
+
+async function initAdBlockCheck() {
+  if (AdBlockGuard.wasLimitedAllowed()) { AdBlockGuard.limitedMode = true; updateLimitBanner(); return; }
+  await new Promise(r => setTimeout(r, 2500));
+  if (await detectAdBlock()) showAdBlockOverlay();
+}
+
+function showAdBlockOverlay() { document.getElementById('adblockOverlay')?.classList.add('show'); }
+
+function recheckAdBlock() {
+  location.reload();
+}
+
+function allowLimitedAccess() {
+  AdBlockGuard.limitedMode = true;
+  AdBlockGuard.saveLimited();
+  document.getElementById('adblockOverlay')?.classList.remove('show');
+  updateLimitBanner();
+}
+
+function updateLimitBanner() {
+  const banner = document.getElementById('adblockBanner');
+  const text   = document.getElementById('adblockBannerText');
+  if (!banner || !text) return;
+  const rem = AdBlockGuard.getRemaining();
+  text.textContent = rem > 0
+    ? `📢 광고 차단 감지 – 오늘 ${rem}회 더 이용 가능합니다`
+    : '⛔ 오늘 제한 이용 횟수를 모두 사용했습니다. 광고를 허용해 주세요.';
+  banner.classList.add('show');
+}
+
+/* ===== Tab 가드 ===== */
+const _origSwitch = window.switchTab;
+window.switchTab = null; // 아래에서 재정의
+
+/* =====================================================
+   TAB SWITCH
+===================================================== */
 function switchTab(id) {
   if (id === activeTab) return;
+
+  // AdBlock 제한 체크
+  if (AdBlockGuard.limitedMode && AdBlockGuard.limitedFuncs.includes(id)) {
+    if (AdBlockGuard.getRemaining() <= 0) { showAdBlockOverlay(); return; }
+    AdBlockGuard.addUsage();
+    updateLimitBanner();
+  }
+
   activeTab = id;
 
-  // hide all sections
   document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-  // show target
   const sec = document.getElementById('tab-' + id);
   if (sec) sec.classList.add('active');
 
-  // update sidebar nav
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navEl = document.getElementById('nav-' + id);
-  if (navEl) navEl.classList.add('active');
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
 
-  // update mobile tabs
   document.querySelectorAll('.mobile-tab-btn').forEach(b => b.classList.remove('active'));
-  const mTab = document.getElementById('mtab-' + id);
-  if (mTab) mTab.classList.add('active');
+  const mb = document.getElementById('mtab-' + id);
+  if (mb) mb.classList.add('active');
 
-  // ad check
   if (AdGuard.checkTab()) showAdOverlay();
 
-  // init specific tabs
   if (id === 'keyword' && !kwCatLoaded) { renderKwCat(); kwCatLoaded = true; }
   if (id === 'revenue') updateSlider();
 }
 
-/* ===================================================
-   LOADING SKELETONS
-=================================================== */
-function renderSkeletons(container, count = 8) {
-  container.innerHTML = Array.from({length: count}, () => `
+function refreshCurrentTab() {
+  if (activeTab === 'trend') loadTrend(currentCategory);
+  else showToast('현재 탭을 새로고침 했습니다', 'info');
+}
+
+/* =====================================================
+   SKELETON
+===================================================== */
+function renderSkeletons(el, n = 8) {
+  el.innerHTML = Array.from({length: n}, () => `
     <div class="skeleton-card">
       <div class="skeleton-thumb"><div class="skeleton-thumb-inner skeleton"></div></div>
       <div class="skeleton-info">
@@ -1475,131 +1142,166 @@ function renderSkeletons(container, count = 8) {
         <div class="skeleton-line skeleton w-60"></div>
         <div class="skeleton-line skeleton w-40"></div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-/* ===================================================
-   TREND LOADER
-=================================================== */
-async function loadTrend(catId = '0') {
+/* =====================================================
+   TREND LOADER  ← 핵심 수정
+===================================================== */
+async function loadTrend(catId) {
+  // catId가 undefined일 때 현재값 유지
+  if (catId === undefined) catId = currentCategory;
   currentCategory = catId;
+
   const grid = document.getElementById('trendGrid');
   if (!grid) return;
 
   renderSkeletons(grid, 8);
+  setApiStatus('로딩중', 'var(--warning)', '데이터 요청 중...');
 
-  const cacheKey = 'trend_' + catId;
-  const cached = Cache.get(cacheKey);
+  const ck = 'trend_' + catId;
+  const cached = Cache.get(ck);
   if (cached) { renderTrend(cached); return; }
 
-  const params = new URLSearchParams({
+  // 파라미터 구성 – videoCategoryId가 빈 문자열이면 제외
+  const params = {
     part: 'snippet,statistics,contentDetails',
     chart: 'mostPopular',
     regionCode: 'KR',
     maxResults: '50',
-    videoCategoryId: catId === '0' ? '' : catId,
     hl: 'ko',
     key: getApiKey()
-  });
+  };
+  if (catId && catId !== '') params.videoCategoryId = catId;
+
+  const qs = new URLSearchParams(params).toString();
+  const url = YT + '/videos?' + qs;
 
   try {
-    const res = await fetch(`${YT_BASE}/videos?${params}`);
+    const res = await fetch(url);
+
+    // 403 / 429 = 할당량 초과 → 키 교체 후 재시도
     if (res.status === 403 || res.status === 429) {
       rotateApiKey();
-      showToast('API 한도 초과, 키 교체 후 재시도', 'warning');
-      setTimeout(() => loadTrend(catId), 1000);
-      return;
+      showToast('API 할당량 초과, 키 교체 후 재시도합니다', 'warning');
+      await new Promise(r => setTimeout(r, 800));
+      return loadTrend(catId);
     }
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
     const data = await res.json();
-    if (!data.items || data.items.length === 0) throw new Error('결과 없음');
-    Cache.set(cacheKey, data.items);
+
+    // API 오류 응답 체크
+    if (data.error) throw new Error(data.error.message || 'API 오류');
+    if (!data.items || data.items.length === 0) throw new Error('영상 데이터 없음');
+
+    Cache.set(ck, data.items);
     renderTrend(data.items);
     updateTrendStats(data.items);
-    document.getElementById('statApiStatus').textContent = '정상';
-    document.getElementById('statApiStatus').style.color = 'var(--success)';
-    document.getElementById('statApiStatusChange').textContent = '✅ 연결됨';
-    document.getElementById('statApiStatusChange').className = 'stat-change up';
+    setApiStatus('정상', 'var(--success)', '✅ API 연결됨');
   } catch (err) {
     grid.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
-        <div style="font-size:48px;margin-bottom:16px">⚠️</div>
-        <div style="font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:8px">데이터 로딩 실패</div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:20px">${err.message}</div>
-        <button class="btn btn-primary" onclick="loadTrend('${catId}')"><i class="fa fa-refresh"></i> 재시도</button>
-      </div>
-    `;
-    document.getElementById('statApiStatus').textContent = '오류';
-    document.getElementById('statApiStatus').style.color = 'var(--danger)';
-    document.getElementById('statApiStatusChange').textContent = '❌ API 오류';
-    document.getElementById('statApiStatusChange').className = 'stat-change down';
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <h3>데이터를 불러오지 못했습니다</h3>
+        <p>${err.message}</p>
+        <button class="btn btn-primary" onclick="loadTrend('${catId}')">
+          <i class="fa fa-rotate-right"></i> 다시 시도
+        </button>
+      </div>`;
+    setApiStatus('오류', 'var(--danger)', '❌ ' + err.message.slice(0, 30));
     showToast('트렌드 로딩 실패: ' + err.message, 'error');
   }
 }
 
+function setApiStatus(text, color, change) {
+  const el  = document.getElementById('statApiStatus');
+  const ch  = document.getElementById('statApiStatusChange');
+  if (el) { el.textContent = text; el.style.color = color; }
+  if (ch) { ch.textContent = change; }
+}
+
 function updateTrendStats(items) {
-  document.getElementById('statTrendCount').textContent = items.length;
-  document.getElementById('statTrendChange').textContent = '실시간 업데이트';
-  const avgViews = items.reduce((a,b) => a + parseInt(b.statistics?.viewCount || 0), 0) / items.length;
-  document.getElementById('statAvgViews').textContent = fmt(avgViews);
-  const now = new Date();
-  document.getElementById('statLastUpdated').textContent = `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const cnt = document.getElementById('statTrendCount');
+  const avg = document.getElementById('statAvgViews');
+  const upd = document.getElementById('statLastUpdated');
+  const chg = document.getElementById('statTrendChange');
+  if (cnt) cnt.textContent = items.length;
+  if (chg) chg.textContent = '실시간 업데이트';
+  if (avg) {
+    const a = items.reduce((s, i) => s + parseInt(i.statistics?.viewCount || 0), 0) / items.length;
+    avg.textContent = fmt(Math.round(a));
+  }
+  if (upd) {
+    const now = new Date();
+    upd.textContent = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+  }
 }
 
 function renderTrend(items) {
   const grid = document.getElementById('trendGrid');
   if (!grid) return;
-  if (!items || items.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">표시할 영상이 없습니다.</div>';
+  if (!items || !items.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><h3>표시할 영상이 없습니다</h3></div>';
     return;
   }
+
+  // 썸네일 fallback SVG (URL 인코딩)
+  const fallbackSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect fill='%23e5e9f8' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%239aa0b8' font-size='13' font-family='sans-serif'%3E이미지 없음%3C/text%3E%3C/svg%3E`;
+
   grid.innerHTML = items.map((item, i) => {
-    const s = item.snippet || {};
-    const st = item.statistics || {};
+    const sn = item.snippet        || {};
+    const st = item.statistics     || {};
     const cd = item.contentDetails || {};
-    const thumb = s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url || '';
-    const views = parseInt(st.viewCount || 0);
-    const likes = parseInt(st.likeCount || 0);
-    const comments = parseInt(st.commentCount || 0);
-    const dur = parseDuration(cd.duration);
-    const score = Math.min(100, Math.round((likes / Math.max(views, 1)) * 100 * 20 + Math.log10(views + 1) * 8)).toFixed(0);
-    const vid = item.id;
+
+    const thumb   = sn.thumbnails?.high?.url || sn.thumbnails?.medium?.url || sn.thumbnails?.default?.url || fallbackSvg;
+    const views   = parseInt(st.viewCount   || 0);
+    const likes   = parseInt(st.likeCount   || 0);
+    const coms    = parseInt(st.commentCount || 0);
+    const dur     = parseDur(cd.duration);
+    const likeR   = views > 0 ? likes / views : 0;
+    const score   = Math.min(100, Math.round(likeR * 100 * 18 + Math.log10(views + 1) * 7));
+    const vid     = typeof item.id === 'string' ? item.id : (item.id?.videoId || '');
+    const title   = (sn.title || '제목 없음').replace(/"/g, '&quot;');
+    const channel = (sn.channelTitle || '').replace(/</g, '&lt;');
+
     return `
       <div class="video-card" onclick="window.open('https://youtube.com/watch?v=${vid}','_blank')">
         <div class="video-thumb">
-          <img src="${thumb}" alt="${s.title || ''}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'320\\' height=\\'180\\'%3E%3Crect fill=\\'%23e5e9f8\\' width=\\'100%25\\' height=\\'100%25\\'/%3E%3Ctext x=\\'50%25\\' y=\\'50%25\\' dominant-baseline=\\'middle\\' text-anchor=\\'middle\\' fill=\\'%239aa0b8\\' font-size=\\'14\\'%3E이미지 없음%3C/text%3E%3C/svg%3E'">
-          <div class="video-thumb-rank">#${i+1}</div>
+          <img src="${thumb}" alt="${title}" loading="lazy"
+            onerror="this.onerror=null;this.src='${fallbackSvg}'">
+          <div class="video-thumb-rank">#${i + 1}</div>
           ${dur ? `<div class="video-thumb-dur">${dur}</div>` : ''}
         </div>
         <div class="video-info">
-          <div class="video-title">${s.title || '제목 없음'}</div>
-          <div class="video-channel"><i class="fa fa-user-circle"></i>${s.channelTitle || ''}</div>
+          <div class="video-title">${sn.title || '제목 없음'}</div>
+          <div class="video-channel"><i class="fa fa-user-circle"></i>${channel}</div>
           <div class="video-meta">
             <div style="display:flex;gap:8px">
               <div class="video-stat"><i class="fa fa-eye"></i>${fmt(views)}</div>
               <div class="video-stat"><i class="fa fa-thumbs-up"></i>${fmt(likes)}</div>
-              <div class="video-stat"><i class="fa fa-comment"></i>${fmt(comments)}</div>
+              <div class="video-stat"><i class="fa fa-comment"></i>${fmt(coms)}</div>
             </div>
             <div class="score-pill">🔥 ${score}점</div>
           </div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:6px"><i class="fa fa-clock" style="margin-right:3px"></i>${ago(s.publishedAt)}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:6px">
+            <i class="fa fa-clock" style="margin-right:3px"></i>${ago(sn.publishedAt)}
+          </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
 function filterTrend(btn, catId) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  Cache._s = {}; // 카테고리 변경 시 캐시 초기화
   loadTrend(catId);
 }
 
-/* ===================================================
+/* =====================================================
    HEADER SEARCH
-=================================================== */
-function handleHeaderSearch(e) { if (e.key === 'Enter') doHeaderSearch(); }
+===================================================== */
 function doHeaderSearch() {
   const q = document.getElementById('headerSearchInput')?.value.trim();
   if (!q) return;
@@ -1608,7 +1310,7 @@ function doHeaderSearch() {
     if (extractVid(q)) {
       document.getElementById('vidUrlInput').value = q;
       switchTab('vidscore');
-    } else if (extractChannelId(q)) {
+    } else {
       document.getElementById('chanwhyInput').value = q;
       switchTab('chanwhy');
     }
@@ -1619,309 +1321,315 @@ function doHeaderSearch() {
   }
 }
 
-/* ===================================================
-   CHANNEL ANALYSIS (WHY)
-=================================================== */
+/* =====================================================
+   CHANNEL ANALYSIS
+===================================================== */
 function renderChanwhyHistory() {
+  const cont = document.getElementById('chanwhyHistory');
+  if (!cont) return;
   const hist = Hist.get();
-  const container = document.getElementById('chanwhyHistory');
-  if (!container) return;
-  if (hist.length === 0) { container.innerHTML = ''; return; }
-  container.innerHTML = hist.map(q => `
-    <div class="history-chip" onclick="document.getElementById('chanwhyInput').value='${q}'">
-      <i class="fa fa-history" style="font-size:10px"></i>${q}
-      <button onclick="event.stopPropagation();Hist.remove('${q}');renderChanwhyHistory()"><i class="fa fa-times"></i></button>
-    </div>
-  `).join('');
+  cont.innerHTML = hist.map(q => `
+    <div class="history-chip" onclick="document.getElementById('chanwhyInput').value='${q.replace(/'/g,"\\'")}';analyzeWhy()">
+      <i class="fa fa-clock-rotate-left" style="font-size:10px"></i>${q}
+      <button onclick="event.stopPropagation();Hist.del('${q.replace(/'/g,"\\'")}');renderChanwhyHistory()">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>`).join('');
 }
 
 async function analyzeWhy() {
-  const input = document.getElementById('chanwhyInput')?.value.trim();
-  if (!input) { showToast('채널 URL 또는 이름을 입력하세요', 'warning'); return; }
-  Hist.add(input);
+  const raw = document.getElementById('chanwhyInput')?.value.trim();
+  if (!raw) { showToast('채널 URL 또는 이름을 입력하세요', 'warning'); return; }
+  Hist.add(raw);
   renderChanwhyHistory();
 
-  const result = document.getElementById('chanwhyResult');
-  result.innerHTML = '<div class="card" style="text-align:center;padding:40px"><div class="skeleton" style="height:20px;width:60%;margin:0 auto 12px"></div><div class="skeleton" style="height:14px;width:40%;margin:0 auto"></div></div>';
+  const res = document.getElementById('chanwhyResult');
+  res.innerHTML = `<div class="card" style="text-align:center;padding:40px">
+    <div class="skeleton" style="height:20px;width:60%;margin:0 auto 12px"></div>
+    <div class="skeleton" style="height:14px;width:40%;margin:0 auto"></div>
+  </div>`;
 
+  // 채널 ID 검색
   let channelId = null;
-  if (input.includes('@') || input.includes('youtube.com')) {
-    const handle = extractChannelId(input) || input.replace('@','');
-    try {
-      const res = await fetch(`${YT_BASE}/search?part=snippet&q=${encodeURIComponent(handle)}&type=channel&maxResults=1&key=${getApiKey()}`);
-      const data = await res.json();
-      channelId = data.items?.[0]?.snippet?.channelId || data.items?.[0]?.id?.channelId;
-    } catch {}
-  } else {
-    try {
-      const res = await fetch(`${YT_BASE}/search?part=snippet&q=${encodeURIComponent(input)}&type=channel&maxResults=1&key=${getApiKey()}`);
-      const data = await res.json();
-      channelId = data.items?.[0]?.snippet?.channelId || data.items?.[0]?.id?.channelId;
-    } catch {}
-  }
+  try {
+    const q = encodeURIComponent(raw.replace('https://youtube.com/@','').replace('@',''));
+    const r = await fetch(`${YT}/search?part=snippet&q=${q}&type=channel&maxResults=1&key=${getApiKey()}`);
+    const d = await r.json();
+    channelId = d.items?.[0]?.snippet?.channelId || d.items?.[0]?.id?.channelId;
+  } catch (e) { /* 무시 */ }
 
   if (!channelId) {
-    result.innerHTML = `<div class="card" style="text-align:center;padding:40px"><div style="font-size:32px;margin-bottom:12px">🔍</div><div style="font-weight:700;color:var(--text-primary)">채널을 찾을 수 없습니다</div><div style="color:var(--text-secondary);font-size:13px;margin-top:8px">채널명이나 URL을 다시 확인해 주세요</div></div>`;
+    res.innerHTML = `<div class="card" style="text-align:center;padding:40px">
+      <div style="font-size:32px;margin-bottom:12px">🔍</div>
+      <div style="font-weight:700">채널을 찾을 수 없습니다</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:8px">채널명 또는 URL을 다시 확인해 주세요</div>
+    </div>`;
     return;
   }
 
   try {
-    const res = await fetch(`${YT_BASE}/channels?part=snippet,statistics,brandingSettings&id=${channelId}&key=${getApiKey()}`);
-    const data = await res.json();
-    const ch = data.items?.[0];
+    const r = await fetch(`${YT}/channels?part=snippet,statistics,brandingSettings&id=${channelId}&key=${getApiKey()}`);
+    const d = await r.json();
+    const ch = d.items?.[0];
     if (!ch) throw new Error('채널 데이터 없음');
     renderWhyResult(ch);
   } catch (err) {
-    result.innerHTML = `<div class="card" style="text-align:center;padding:40px"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div style="font-weight:700;color:var(--text-primary)">분석 실패</div><div style="color:var(--text-secondary);font-size:13px;margin-top:8px">${err.message}</div></div>`;
-    showToast('채널 분석 실패', 'error');
+    res.innerHTML = `<div class="card" style="text-align:center;padding:40px">
+      <div style="font-size:32px;margin-bottom:12px">⚠️</div>
+      <div style="font-weight:700">분석 실패</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:8px">${err.message}</div>
+    </div>`;
+    showToast('채널 분석 실패: ' + err.message, 'error');
   }
 }
 
 function renderWhyResult(ch) {
-  const s = ch.snippet || {};
+  const sn = ch.snippet    || {};
   const st = ch.statistics || {};
   const subs = parseInt(st.subscriberCount || 0);
-  const views = parseInt(st.viewCount || 0);
-  const vids = parseInt(st.videoCount || 0);
-  const avgPerVid = vids > 0 ? Math.round(views / vids) : 0;
-  const engRate = vids > 0 ? ((avgPerVid / Math.max(subs, 1)) * 100).toFixed(1) : 0;
+  const views = parseInt(st.viewCount      || 0);
+  const vids  = parseInt(st.videoCount     || 0);
+  const avgV  = vids > 0 ? Math.round(views / vids) : 0;
+  const engR  = vids > 0 ? ((avgV / Math.max(subs, 1)) * 100).toFixed(1) : '0.0';
+  const subScore = Math.min(100, Math.round(Math.log10(subs + 1) * 20));
+  const engScore = Math.min(100, Math.round(parseFloat(engR) * 10));
+  const conScore = Math.min(100, Math.round(Math.log10(vids + 1) * 40));
 
   const strengths = [];
-  if (subs > 100000) strengths.push({ icon: '🏆', text: `${fmt(subs)}명의 탄탄한 구독자 기반` });
-  if (engRate > 5) strengths.push({ icon: '💬', text: `평균 ${engRate}%의 높은 참여율` });
-  if (vids > 100) strengths.push({ icon: '📹', text: `${vids}개의 풍부한 콘텐츠 아카이브` });
-  if (avgPerVid > 50000) strengths.push({ icon: '👁️', text: `영상당 평균 ${fmt(avgPerVid)} 조회수` });
-  if (s.description && s.description.length > 200) strengths.push({ icon: '📝', text: '풍부한 채널 설명으로 SEO 강화' });
-  if (strengths.length === 0) strengths.push({ icon: '🌱', text: '성장 잠재력이 높은 신진 채널' });
+  if (subs > 100000) strengths.push({ icon: '🏆', t: `${fmt(subs)}명의 탄탄한 구독자 기반` });
+  if (parseFloat(engR) > 5) strengths.push({ icon: '💬', t: `평균 ${engR}%의 높은 참여율` });
+  if (vids > 100) strengths.push({ icon: '📹', t: `${vids}개의 풍부한 콘텐츠 아카이브` });
+  if (avgV > 50000) strengths.push({ icon: '👁️', t: `영상당 평균 ${fmt(avgV)} 조회수` });
+  if (!strengths.length) strengths.push({ icon: '🌱', t: '성장 잠재력이 높은 신진 채널' });
+
+  const thumbSrc = sn.thumbnails?.high?.url || sn.thumbnails?.default?.url || '';
 
   document.getElementById('chanwhyResult').innerHTML = `
     <div class="card" style="margin-top:16px">
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-        <img src="${s.thumbnails?.high?.url || s.thumbnails?.default?.url || ''}" alt="" style="width:72px;height:72px;border-radius:50%;border:3px solid var(--accent-primary);object-fit:cover" onerror="this.style.display='none'">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+        ${thumbSrc ? `<img src="${thumbSrc}" style="width:72px;height:72px;border-radius:50%;border:3px solid var(--accent-primary);object-fit:cover;flex-shrink:0">` : ''}
         <div>
-          <div style="font-size:20px;font-weight:800;color:var(--text-primary)">${s.title || ''}</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">${s.customUrl ? '@' + s.customUrl : ''}</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:4px"><i class="fa fa-calendar" style="margin-right:4px"></i>개설: ${s.publishedAt ? new Date(s.publishedAt).toLocaleDateString('ko-KR') : '-'}</div>
+          <div style="font-size:20px;font-weight:800">${sn.title || ''}</div>
+          ${sn.customUrl ? `<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">@${sn.customUrl}</div>` : ''}
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px">
+            <i class="fa fa-calendar" style="margin-right:4px"></i>
+            개설: ${sn.publishedAt ? new Date(sn.publishedAt).toLocaleDateString('ko-KR') : '-'}
+          </div>
         </div>
       </div>
       <div class="result-grid">
         <div class="result-stat"><div class="result-stat-value">${fmt(subs)}</div><div class="result-stat-label">구독자</div></div>
         <div class="result-stat"><div class="result-stat-value">${fmt(views)}</div><div class="result-stat-label">총 조회수</div></div>
         <div class="result-stat"><div class="result-stat-value">${vids.toLocaleString()}</div><div class="result-stat-label">총 영상 수</div></div>
-        <div class="result-stat"><div class="result-stat-value">${fmt(avgPerVid)}</div><div class="result-stat-label">영상당 평균 조회</div></div>
+        <div class="result-stat"><div class="result-stat-value">${fmt(avgV)}</div><div class="result-stat-label">영상당 평균 조회</div></div>
       </div>
       <div class="result-section">
-        <div class="result-title"><i class="fa fa-star"></i> 채널 성장 강점 분석</div>
-        ${strengths.map(str => `
+        <div class="result-title"><i class="fa fa-star"></i> 채널 성장 강점</div>
+        ${strengths.map(s => `
           <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--bg-card);border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid var(--border)">
-            <span style="font-size:18px">${str.icon}</span>
-            <span style="font-size:13px;color:var(--text-primary);font-weight:500">${str.text}</span>
-          </div>
-        `).join('')}
+            <span style="font-size:18px">${s.icon}</span>
+            <span style="font-size:13px;color:var(--text-primary);font-weight:500">${s.t}</span>
+          </div>`).join('')}
       </div>
-      <div class="score-bar-wrap" style="margin-top:16px">
-        <div class="score-bar-label"><span>구독자 성장 지수</span><span>${Math.min(100, Math.round(Math.log10(subs + 1) * 20))}점</span></div>
-        <div class="score-bar-track"><div class="score-bar-fill" style="width:${Math.min(100, Math.round(Math.log10(subs + 1) * 20))}%"></div></div>
+      <div style="margin-top:16px">
+        ${[
+          ['구독자 성장 지수', subScore],
+          ['참여율 지수',      engScore],
+          ['콘텐츠 양 지수',   conScore]
+        ].map(([label, val]) => `
+          <div class="score-bar-wrap">
+            <div class="score-bar-label"><span>${label}</span><span>${val}점</span></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${val}%"></div></div>
+          </div>`).join('')}
       </div>
-      <div class="score-bar-wrap">
-        <div class="score-bar-label"><span>참여율 지수</span><span>${Math.min(100, Math.round(parseFloat(engRate) * 10))}점</span></div>
-        <div class="score-bar-track"><div class="score-bar-fill" style="width:${Math.min(100, Math.round(parseFloat(engRate) * 10))}%"></div></div>
-      </div>
-      <div class="score-bar-wrap">
-        <div class="score-bar-label"><span>콘텐츠 양 지수</span><span>${Math.min(100, Math.round(Math.log10(vids + 1) * 40))}점</span></div>
-        <div class="score-bar-track"><div class="score-bar-fill" style="width:${Math.min(100, Math.round(Math.log10(vids + 1) * 40))}%"></div></div>
-      </div>
-    </div>
-  `;
+    </div>`;
 }
 
-/* ===================================================
+/* =====================================================
    CHANNEL LEVEL
-=================================================== */
+===================================================== */
 const LEVEL_MAP = [
-  { min: 0,         max: 100,        tier: 'Lv.1',  name: '새싹 유튜버', emoji: '🌱', color: '#10b981', pct: 5,   desc: '유튜브 여정의 첫 걸음을 뗐습니다. 꾸준한 업로드가 가장 중요한 시기입니다.' },
-  { min: 100,       max: 1000,       tier: 'Lv.2',  name: '성장 중인 크리에이터', emoji: '🌿', color: '#34d399', pct: 15,  desc: '초기 팬들이 모이기 시작했습니다. 콘텐츠 방향성을 잡아가는 시기입니다.' },
-  { min: 1000,      max: 5000,       tier: 'Lv.3',  name: '유망 크리에이터', emoji: '⭐', color: '#f59e0b', pct: 28,  desc: '유튜브 파트너 프로그램(YPP) 가입 조건에 도달할 수 있는 단계입니다.' },
-  { min: 5000,      max: 10000,      tier: 'Lv.4',  name: '중견 유튜버', emoji: '🌟', color: '#f59e0b', pct: 42,  desc: '점점 더 많은 시청자가 채널을 주목하고 있습니다. 광고 수익이 본격화됩니다.' },
-  { min: 10000,     max: 50000,      tier: 'Lv.5',  name: '실버 버튼 유튜버', emoji: '🥈', color: '#9ca3af', pct: 55,  desc: '유튜브 실버 버튼을 받을 수 있는 레벨입니다. 상위 5% 채널에 해당합니다.' },
-  { min: 50000,     max: 100000,     tier: 'Lv.6',  name: '인플루언서', emoji: '💎', color: '#6366f1', pct: 68,  desc: '강력한 영향력을 가진 크리에이터입니다. 브랜드 협찬 제안이 자주 들어올 수 있습니다.' },
-  { min: 100000,    max: 500000,     tier: 'Lv.7',  name: '골드 버튼 유튜버', emoji: '🥇', color: '#f59e0b', pct: 80,  desc: '유튜브 골드 버튼을 받은 유명 크리에이터입니다. 상위 1%에 해당합니다.' },
-  { min: 500000,    max: 1000000,    tier: 'Lv.8',  name: '메가 인플루언서', emoji: '🏆', color: '#ec4899', pct: 90,  desc: '대형 미디어급 채널입니다. 전문 매니지먼트와 팀 운영이 필요한 레벨입니다.' },
-  { min: 1000000,   max: 10000000,   tier: 'Lv.9',  name: '다이아 버튼 유튜버', emoji: '💠', color: '#3b82f6', pct: 97,  desc: '유튜브 다이아몬드 버튼을 받은 최상위 크리에이터입니다.' },
-  { min: 10000000,  max: Infinity,   tier: 'Lv.MAX',name: '전설의 유튜버', emoji: '👑', color: '#f59e0b', pct: 100, desc: '유튜브 역사에 이름을 남길 전설적인 채널입니다.' }
+  { min:0,         max:100,         tier:'Lv.1',   name:'새싹 유튜버',         emoji:'🌱', color:'#10b981', desc:'유튜브 여정의 첫 걸음! 꾸준한 업로드가 가장 중요한 시기입니다.' },
+  { min:100,       max:1000,        tier:'Lv.2',   name:'성장 중인 크리에이터', emoji:'🌿', color:'#34d399', desc:'초기 팬들이 모이기 시작했습니다. 콘텐츠 방향성을 잡아가는 시기입니다.' },
+  { min:1000,      max:5000,        tier:'Lv.3',   name:'유망 크리에이터',      emoji:'⭐', color:'#f59e0b', desc:'유튜브 파트너 프로그램(YPP) 가입 조건에 근접한 단계입니다.' },
+  { min:5000,      max:10000,       tier:'Lv.4',   name:'중견 유튜버',          emoji:'🌟', color:'#f59e0b', desc:'광고 수익이 본격화됩니다. 더 많은 시청자가 채널을 주목합니다.' },
+  { min:10000,     max:50000,       tier:'Lv.5',   name:'실버 버튼 유튜버',     emoji:'🥈', color:'#9ca3af', desc:'유튜브 실버 버튼을 받을 수 있는 레벨! 상위 5% 채널입니다.' },
+  { min:50000,     max:100000,      tier:'Lv.6',   name:'인플루언서',           emoji:'💎', color:'#6366f1', desc:'강력한 영향력을 가진 크리에이터! 브랜드 협찬이 자주 들어올 수 있어요.' },
+  { min:100000,    max:500000,      tier:'Lv.7',   name:'골드 버튼 유튜버',     emoji:'🥇', color:'#f59e0b', desc:'유튜브 골드 버튼 달성! 상위 1%에 해당하는 인기 채널입니다.' },
+  { min:500000,    max:1000000,     tier:'Lv.8',   name:'메가 인플루언서',      emoji:'🏆', color:'#ec4899', desc:'대형 미디어급 채널! 전문 매니지먼트가 필요한 레벨입니다.' },
+  { min:1000000,   max:10000000,    tier:'Lv.9',   name:'다이아 버튼 유튜버',   emoji:'💠', color:'#3b82f6', desc:'유튜브 다이아몬드 버튼을 받은 최상위 크리에이터!' },
+  { min:10000000,  max:Infinity,    tier:'Lv.MAX', name:'전설의 유튜버',        emoji:'👑', color:'#f59e0b', desc:'유튜브 역사에 이름을 남길 전설적인 채널입니다.' }
 ];
 
-let flameAnim = null;
+let _flameAnim = null;
 function analyzeLevel() {
-  const input = document.getElementById('levelInput')?.value;
-  const subs = parseInt(input);
+  const subs = parseInt(document.getElementById('levelInput')?.value);
   if (isNaN(subs) || subs < 0) { showToast('올바른 구독자 수를 입력하세요', 'warning'); return; }
 
-  const level = LEVEL_MAP.find(l => subs >= l.min && subs < l.max) || LEVEL_MAP[LEVEL_MAP.length - 1];
-  const nextLevel = LEVEL_MAP[LEVEL_MAP.indexOf(level) + 1];
-  const progress = nextLevel
-    ? Math.round(((subs - level.min) / (nextLevel.min - level.min)) * 100)
-    : 100;
+  const lv = LEVEL_MAP.find(l => subs >= l.min && subs < l.max) || LEVEL_MAP[LEVEL_MAP.length - 1];
+  const next = LEVEL_MAP[LEVEL_MAP.indexOf(lv) + 1];
+  const prog = next ? Math.round((subs - lv.min) / (next.min - lv.min) * 100) : 100;
 
   document.getElementById('levelResult').innerHTML = `
     <div class="level-card" style="margin-top:16px">
-      <div class="level-flame-wrap">
-        <canvas id="flameCanvas" width="120" height="140"></canvas>
-      </div>
-      <div class="level-tier">${level.tier}</div>
-      <div class="level-name">${level.emoji} ${level.name}</div>
-      <div style="display:inline-block;font-size:28px;font-weight:800;color:${level.color};margin:8px 0">${fmt(subs)}명</div>
-      <div class="level-desc">${level.desc}</div>
+      <div class="level-flame-wrap"><canvas id="flameCanvas" width="120" height="140"></canvas></div>
+      <div class="level-tier">${lv.tier}</div>
+      <div class="level-name">${lv.emoji} ${lv.name}</div>
+      <div style="font-size:28px;font-weight:800;color:${lv.color};margin:8px 0">${fmt(subs)}명</div>
+      <div class="level-desc">${lv.desc}</div>
       <div class="level-progress">
         <div class="level-next-label">
-          ${nextLevel ? `다음 레벨(${nextLevel.name})까지 ${fmt(nextLevel.min - subs)}명 남음 · ${progress}%` : '최고 레벨 달성! 🎉'}
+          ${next ? `다음 레벨(${next.name})까지 ${fmt(next.min - subs)}명 남음 · ${prog}%` : '🎉 최고 레벨 달성!'}
         </div>
         <div class="level-bar-track">
-          <div class="level-bar-fill" style="width:${progress}%;background:linear-gradient(90deg,${level.color},${level.color}cc)"></div>
+          <div class="level-bar-fill" style="width:${prog}%;background:linear-gradient(90deg,${lv.color},${lv.color}aa)"></div>
         </div>
       </div>
       <div class="result-grid" style="margin-top:20px">
-        ${LEVEL_MAP.slice(0,6).map(l => `
-          <div class="result-stat" style="border-left:3px solid ${l.color};opacity:${subs >= l.min ? '1' : '0.4'}">
+        ${LEVEL_MAP.slice(0, 6).map(l => `
+          <div class="result-stat" style="border-left:3px solid ${l.color};opacity:${subs >= l.min ? 1 : .35}">
             <div class="result-stat-value" style="font-size:14px">${l.emoji} ${l.tier}</div>
             <div class="result-stat-label">${fmt(l.min)}명~</div>
-          </div>
-        `).join('')}
+          </div>`).join('')}
       </div>
-    </div>
-  `;
+    </div>`;
 
-  startFlameAnimation(level.color, progress);
+  startFlame(lv.color, prog);
 }
 
-function startFlameAnimation(color, intensity) {
-  if (flameAnim) cancelAnimationFrame(flameAnim);
+function startFlame(color, intensity) {
+  if (_flameAnim) cancelAnimationFrame(_flameAnim);
   const canvas = document.getElementById('flameCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
-  const particles = [];
-  const COUNT = Math.max(20, Math.round(intensity * 0.6));
+  const COUNT = Math.max(15, Math.round(intensity * 0.5));
+  const r = parseInt(color.slice(1, 3), 16);
+  const g = parseInt(color.slice(3, 5), 16);
+  const b = parseInt(color.slice(5, 7), 16);
 
-  for (let i = 0; i < COUNT; i++) {
-    particles.push({
-      x: W / 2 + (Math.random() - 0.5) * 40,
-      y: H - 10,
-      vx: (Math.random() - 0.5) * 2,
-      vy: -(Math.random() * 3 + 1),
-      life: Math.random(),
-      maxLife: Math.random() * 0.8 + 0.4,
-      size: Math.random() * 12 + 4
-    });
-  }
+  const pts = Array.from({length: COUNT}, () => ({
+    x: W / 2 + (Math.random() - .5) * 36,
+    y: H - 10,
+    vx: (Math.random() - .5) * 1.8,
+    vy: -(Math.random() * 2.5 + 1),
+    life: Math.random(),
+    maxLife: Math.random() * .7 + .4,
+    sz: Math.random() * 10 + 4
+  }));
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 0.015;
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.life -= .014;
       if (p.life <= 0) {
-        p.x = W / 2 + (Math.random() - 0.5) * 40;
+        p.x = W / 2 + (Math.random() - .5) * 36;
         p.y = H - 10;
         p.life = p.maxLife;
-        p.vx = (Math.random() - 0.5) * 2;
-        p.vy = -(Math.random() * 3 + 1);
+        p.vx = (Math.random() - .5) * 1.8;
+        p.vy = -(Math.random() * 2.5 + 1);
       }
-      const alpha = p.life / p.maxLife;
-      const r = parseInt(color.slice(1,3), 16);
-      const g = parseInt(color.slice(3,5), 16);
-      const b = parseInt(color.slice(5,7), 16);
+      const a = p.life / p.maxLife;
+      const gr = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.sz);
+      gr.addColorStop(0, `rgba(${r},${g},${b},${a})`);
+      gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
       ctx.beginPath();
-      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
-      grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
-      grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
-      ctx.fillStyle = grad;
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = gr;
+      ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2);
       ctx.fill();
-    }
-    flameAnim = requestAnimationFrame(draw);
+    });
+    _flameAnim = requestAnimationFrame(draw);
   }
   draw();
 }
 
-/* ===================================================
+/* =====================================================
    VIDEO SCORE
-=================================================== */
+===================================================== */
 async function analyzeVidByUrl() {
   const url = document.getElementById('vidUrlInput')?.value.trim();
   if (!url) { showToast('영상 URL을 입력하세요', 'warning'); return; }
   const vid = extractVid(url);
   if (!vid) { showToast('올바른 YouTube URL이 아닙니다', 'error'); return; }
 
-  const result = document.getElementById('vidscoreResult');
-  result.innerHTML = '<div class="card" style="text-align:center;padding:40px"><div class="skeleton" style="height:20px;width:60%;margin:0 auto 12px"></div><div class="skeleton" style="height:14px;width:40%;margin:0 auto"></div></div>';
+  const res = document.getElementById('vidscoreResult');
+  res.innerHTML = `<div class="card" style="text-align:center;padding:40px">
+    <div class="skeleton" style="height:20px;width:60%;margin:0 auto 12px"></div>
+    <div class="skeleton" style="height:14px;width:40%;margin:0 auto"></div>
+  </div>`;
 
-  const cacheKey = 'vid_' + vid;
-  const cached = Cache.get(cacheKey);
+  const ck = 'vid_' + vid;
+  const cached = Cache.get(ck);
   if (cached) { renderVidScore(cached); return; }
 
   try {
-    const res = await fetch(`${YT_BASE}/videos?part=snippet,statistics,contentDetails&id=${vid}&key=${getApiKey()}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const item = data.items?.[0];
+    const r = await fetch(`${YT}/videos?part=snippet,statistics,contentDetails&id=${vid}&key=${getApiKey()}`);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    const item = d.items?.[0];
     if (!item) throw new Error('영상을 찾을 수 없습니다');
-    Cache.set(cacheKey, item);
+    Cache.set(ck, item);
     renderVidScore(item);
   } catch (err) {
-    result.innerHTML = `<div class="card" style="text-align:center;padding:40px"><div style="font-size:32px;margin-bottom:12px">⚠️</div><div style="font-weight:700">분석 실패</div><div style="font-size:13px;color:var(--text-secondary);margin-top:8px">${err.message}</div></div>`;
+    res.innerHTML = `<div class="card" style="text-align:center;padding:40px">
+      <div style="font-size:32px;margin-bottom:12px">⚠️</div>
+      <div style="font-weight:700">분석 실패</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:8px">${err.message}</div>
+    </div>`;
     showToast('영상 분석 실패: ' + err.message, 'error');
   }
 }
 
 function analyzeVidManual() {
-  const views = parseInt(document.getElementById('vidViews')?.value) || 0;
-  const likes = parseInt(document.getElementById('vidLikes')?.value) || 0;
+  const views    = parseInt(document.getElementById('vidViews')?.value)    || 0;
+  const likes    = parseInt(document.getElementById('vidLikes')?.value)    || 0;
   const comments = parseInt(document.getElementById('vidComments')?.value) || 0;
-  const days = parseInt(document.getElementById('vidDays')?.value) || 1;
-  const title = document.getElementById('vidTitle')?.value.trim() || '수동 입력 영상';
-  if (views === 0) { showToast('조회수를 입력하세요', 'warning'); return; }
-
-  const fakeItem = {
-    snippet: { title, publishedAt: new Date(Date.now() - days * 86400000).toISOString(), channelTitle: '직접 입력', thumbnails: {} },
-    statistics: { viewCount: String(views), likeCount: String(likes), commentCount: String(comments) },
+  const days     = parseInt(document.getElementById('vidDays')?.value)     || 1;
+  const title    = document.getElementById('vidTitle')?.value.trim() || '수동 입력 영상';
+  if (!views) { showToast('조회수를 입력하세요', 'warning'); return; }
+  renderVidScore({
+    snippet:        { title, publishedAt: new Date(Date.now() - days * 86400000).toISOString(), channelTitle: '직접 입력', thumbnails: {} },
+    statistics:     { viewCount: String(views), likeCount: String(likes), commentCount: String(comments) },
     contentDetails: { duration: '' }
-  };
-  renderVidScore(fakeItem);
+  });
 }
 
 function renderVidScore(item) {
-  const s = item.snippet || {};
+  const sn = item.snippet    || {};
   const st = item.statistics || {};
-  const views = parseInt(st.viewCount || 0);
-  const likes = parseInt(st.likeCount || 0);
+  const views    = parseInt(st.viewCount    || 0);
+  const likes    = parseInt(st.likeCount    || 0);
   const comments = parseInt(st.commentCount || 0);
 
-  const likeRate = views > 0 ? (likes / views * 100) : 0;
-  const commentRate = views > 0 ? (comments / views * 100) : 0;
-  const virality = Math.min(100, Math.round(Math.log10(views + 1) * 14));
-  const engagement = Math.min(100, Math.round((likeRate + commentRate * 5) * 10));
-  const retention = Math.min(100, Math.round(50 + likeRate * 5));
-  const overall = Math.round((virality * 0.3 + engagement * 0.4 + retention * 0.3));
+  const likeRate    = views > 0 ? likes    / views * 100 : 0;
+  const commentRate = views > 0 ? comments / views * 100 : 0;
+  const virality    = Math.min(100, Math.round(Math.log10(views + 1) * 14));
+  const engagement  = Math.min(100, Math.round((likeRate + commentRate * 5) * 10));
+  const retention   = Math.min(100, Math.round(50 + likeRate * 5));
+  const overall     = Math.round(virality * .3 + engagement * .4 + retention * .3);
 
-  const grade = overall >= 90 ? '🏆 S등급' : overall >= 75 ? '🥇 A등급' : overall >= 60 ? '🥈 B등급' : overall >= 45 ? '🥉 C등급' : '📉 D등급';
-  const gradeColor = overall >= 90 ? '#f59e0b' : overall >= 75 ? '#10b981' : overall >= 60 ? '#3b82f6' : overall >= 45 ? '#f59e0b' : '#ef4444';
+  const [grade, gc] =
+    overall >= 90 ? ['🏆 S등급', '#f59e0b'] :
+    overall >= 75 ? ['🥇 A등급', '#10b981'] :
+    overall >= 60 ? ['🥈 B등급', '#3b82f6'] :
+    overall >= 45 ? ['🥉 C등급', '#f59e0b'] :
+                    ['📉 D등급', '#ef4444'];
+
+  const thumbSrc = sn.thumbnails?.high?.url || sn.thumbnails?.medium?.url || '';
 
   document.getElementById('vidscoreResult').innerHTML = `
     <div class="card" style="margin-top:16px">
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-        ${s.thumbnails?.high?.url || s.thumbnails?.medium?.url ? `<img src="${s.thumbnails?.high?.url || s.thumbnails?.medium?.url}" alt="" style="width:120px;height:68px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0">` : ''}
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+        ${thumbSrc ? `<img src="${thumbSrc}" style="width:120px;height:68px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0">` : ''}
         <div>
-          <div style="font-size:15px;font-weight:700;color:var(--text-primary);line-height:1.4">${s.title || '영상 제목'}</div>
-          <div style="font-size:12px;color:var(--accent-primary);margin-top:4px"><i class="fa fa-user-circle"></i> ${s.channelTitle || ''}</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:2px"><i class="fa fa-clock"></i> ${ago(s.publishedAt)}</div>
+          <div style="font-size:15px;font-weight:700;line-height:1.4">${sn.title || '영상 제목'}</div>
+          <div style="font-size:12px;color:var(--accent-primary);margin-top:4px"><i class="fa fa-user-circle"></i> ${sn.channelTitle || ''}</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px"><i class="fa fa-clock"></i> ${ago(sn.publishedAt)}</div>
         </div>
       </div>
-      <div style="text-align:center;padding:20px 0;margin-bottom:20px;background:linear-gradient(135deg,rgba(91,94,244,0.05),rgba(124,58,237,0.03));border-radius:var(--radius-md);border:1px solid var(--border)">
-        <div style="font-size:56px;font-weight:900;color:${gradeColor}">${overall}</div>
-        <div style="font-size:18px;font-weight:700;color:${gradeColor}">${grade}</div>
+      <div style="text-align:center;padding:20px;background:linear-gradient(135deg,rgba(91,94,244,.05),rgba(124,58,237,.03));border-radius:var(--radius-md);border:1px solid var(--border);margin-bottom:20px">
+        <div style="font-size:56px;font-weight:900;color:${gc}">${overall}</div>
+        <div style="font-size:18px;font-weight:700;color:${gc}">${grade}</div>
         <div style="font-size:12px;color:var(--text-muted);margin-top:4px">종합 점수 (100점 만점)</div>
       </div>
       <div class="result-grid">
@@ -1932,48 +1640,90 @@ function renderVidScore(item) {
       </div>
       <div style="margin-top:16px">
         ${[
-          { label: '🔥 바이럴 지수', val: virality },
-          { label: '💬 참여율 지수', val: engagement },
-          { label: '📊 시청 유지율 추정', val: retention },
-          { label: '⭐ 종합 점수', val: overall }
-        ].map(item => `
+          ['🔥 바이럴 지수', virality],
+          ['💬 참여율 지수', engagement],
+          ['📊 시청 유지율(추정)', retention],
+          ['⭐ 종합 점수', overall]
+        ].map(([lb, v]) => `
           <div class="score-bar-wrap">
-            <div class="score-bar-label"><span>${item.label}</span><span>${item.val}점</span></div>
-            <div class="score-bar-track"><div class="score-bar-fill" style="width:${item.val}%"></div></div>
-          </div>
-        `).join('')}
+            <div class="score-bar-label"><span>${lb}</span><span>${v}점</span></div>
+            <div class="score-bar-track"><div class="score-bar-fill" style="width:${v}%"></div></div>
+          </div>`).join('')}
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-/* ===================================================
-   KEYWORD ANALYSIS
-=================================================== */
-const KW_CATEGORIES = [
-  {
-    name: '🎮 게임', tag: 'hot', score: 94,
-    kws: ['마인크래프트 공략', '발로란트 랭크', '롤 티어', '배그 꿀팁', '스팀 신작', '닌텐도 스위치', '모바일 게임 추천', '원신 공략']
-  },
-  {
-    name: '💰 재테크', tag: 'rising', score: 91,
-    kws: ['주식 초보', '부동산 투자', '가상화폐', '적금 추천', '연금저축', 'ETF 투자', '월급 저축', '부업 추천']
-  },
-  {
-    name: '🍳 요리', tag: 'stable', score: 82,
-    kws: ['간단 요리', '다이어트 식단', '에어프라이어 레시피', '혼밥 요리', '집밥 레시피', '베이킹', '한식 만들기', '도시락']
-  },
-  {
-    name: '💪 운동', tag: 'rising', score: 88,
-    kws: ['홈트레이닝', '다이어트 운동', '헬스 루틴', '요가 초보', '러닝 코스', '스트레칭', '살빼기', '근육 키우기']
-  },
-  {
-    name: '🎵 음악', tag: 'hot', score: 96,
-    kws: ['커버곡', '뮤직비디오', '노래 연습', '기타 독학', '피아노 초보', '드럼 배우기', '코드 진행', '음악 이론']
-  },
-  {
-    name: '📚 교육', tag: 'niche', score: 79,
-    kws: ['영어 회화', '코딩 독학', '수학 공부법', '자격증 취득', '독서 추천', '온라인 강의', '공부법', 'TOEIC']
-  },
-  {
-    name: '✈️ 여행', tag: '
+/* =====================================================
+   KEYWORD
+===================================================== */
+const KW_CATS = [
+  { name:'🎮 게임',   tag:'hot',    score:94, kws:['마인크래프트 공략','발로란트 랭크','롤 티어','배그 꿀팁','스팀 신작','닌텐도 스위치','모바일 게임 추천','원신 공략'] },
+  { name:'💰 재테크', tag:'rising', score:91, kws:['주식 초보','부동산 투자','가상화폐','적금 추천','연금저축','ETF 투자','월급 저축','부업 추천'] },
+  { name:'🍳 요리',   tag:'stable', score:82, kws:['간단 요리','다이어트 식단','에어프라이어 레시피','혼밥 요리','집밥 레시피','베이킹','한식 만들기','도시락'] },
+  { name:'💪 운동',   tag:'rising', score:88, kws:['홈트레이닝','다이어트 운동','헬스 루틴','요가 초보','러닝 코스','스트레칭','살빼기','근육 키우기'] },
+  { name:'🎵 음악',   tag:'hot',    score:96, kws:['커버곡','뮤직비디오','노래 연습','기타 독학','피아노 초보','드럼 배우기','코드 진행','음악 이론'] },
+  { name:'📚 교육',   tag:'niche',  score:79, kws:['영어 회화','코딩 독학','수학 공부법','자격증 취득','독서 추천','온라인 강의','공부법','TOEIC'] },
+  { name:'✈️ 여행',   tag:'stable', score:85, kws:['국내 여행','해외 여행 팁','항공권 저렴하게','숙소 추천','혼자 여행','유럽 여행','일본 여행','동남아 여행'] },
+  { name:'🎨 창작',   tag:'niche',  score:77, kws:['디지털 드로잉','유튜브 편집','영상 제작','사진 보정','웹툰 그리기','포토샵 강좌','색연필 드로잉','일러스트'] }
+];
+
+const tagLabel = { hot:'🔥 인기', rising:'📈 상승', stable:'✅ 안정', niche:'🎯 틈새' };
+
+function renderKwCat() {
+  const grid = document.getElementById('kwCatGrid');
+  if (!grid) return;
+  grid.innerHTML = KW_CATS.map(cat => `
+    <div class="kw-card" onclick="document.getElementById('kwInput').value='${cat.kws[0]}';analyzeKw()">
+      <div class="kw-card-header">
+        <span class="kw-tag ${cat.tag}">${tagLabel[cat.tag]}</span>
+        <span class="kw-score">${cat.score}점</span>
+      </div>
+      <div class="kw-name">${cat.name}</div>
+      <div class="kw-desc">${cat.kws.slice(0, 4).join(' · ')}</div>
+      <div class="kw-meta">
+        <div class="kw-meta-item"><i class="fa fa-fire"></i>경쟁도: ${cat.score > 90 ? '높음' : cat.score > 80 ? '보통' : '낮음'}</div>
+        <div class="kw-meta-item"><i class="fa fa-chart-line"></i>${cat.kws.length}개 키워드</div>
+      </div>
+    </div>`).join('');
+}
+
+async function analyzeKw() {
+  const kw = document.getElementById('kwInput')?.value.trim();
+  if (!kw) { showToast('키워드를 입력하세요', 'warning'); return; }
+
+  const res = document.getElementById('kwResult');
+  res.innerHTML = `<div class="card" style="text-align:center;padding:40px;margin-top:16px">
+    <div class="skeleton" style="height:20px;width:60%;margin:0 auto 12px"></div>
+    <div class="skeleton" style="height:14px;width:40%;margin:0 auto"></div>
+  </div>`;
+
+  try {
+    const r = await fetch(`${YT}/search?part=snippet&q=${encodeURIComponent(kw)}&type=video&maxResults=10&regionCode=KR&hl=ko&key=${getApiKey()}`);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+
+    const items = d.items || [];
+    const competition = Math.min(100, Math.round(Math.log10(d.pageInfo?.totalResults || 1) * 15));
+    const opportunity = Math.max(0, 100 - competition);
+    const difficulty  = competition > 70 ? '높음' : competition > 40 ? '보통' : '낮음';
+
+    res.innerHTML = `
+      <div class="card" style="margin-top:16px">
+        <div class="result-title"><i class="fa fa-magnifying-glass"></i> "${kw}" 분석 결과</div>
+        <div class="result-grid">
+          <div class="result-stat"><div class="result-stat-value">${competition}점</div><div class="result-stat-label">경쟁도</div></div>
+          <div class="result-stat"><div class="result-stat-value">${opportunity}점</div><div class="result-stat-label">기회 점수</div></div>
+          <div class="result-stat"><div class="result-stat-value">${difficulty}</div><div class="result-stat-label">난이도</div></div>
+          <div class="result-stat"><div class="result-stat-value">${items.length}</div><div class="result-stat-label">관련 영상</div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-label"><span>경쟁도</span><span>${competition}점</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:${competition}%;background:linear-gradient(90deg,#ef4444,#f59e0b)"></div></div>
+        </div>
+        <div class="score-bar-wrap">
+          <div class="score-bar-label"><span>기회 점수</span><span>${opportunity}점</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:${opportunity}%"></div></div>
+        </div>
+        <div style="margin-top:16px">
+          <div class="result-title"><i class="fa fa-play-circle"></i> 관
