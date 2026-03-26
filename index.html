@@ -7,1859 +7,1551 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
-/* ===== RESET ===== */
+/* ── 기초 리셋 ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { font-family: 'Noto Sans KR', sans-serif; background: #0f0f13; color: #e8e8f0; overflow-x: hidden; }
-button { cursor: pointer; border: none; background: none; font-family: inherit; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: #0f0f13;
+  color: #e8e8f0;
+  overflow-x: hidden;
+}
 a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+input, select { font-family: inherit; color: inherit; }
 img { display: block; max-width: 100%; }
-input, select { font-family: inherit; }
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #1a1a2e; }
-::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 
-/* ===== CSS VARIABLES ===== */
+/* ── 컬러 변수 ── */
 :root {
-  --red: #ff4444;
-  --blue: #4488ff;
-  --green: #44cc88;
-  --gold: #ffcc00;
+  --red:    #ff4444;
+  --blue:   #4488ff;
+  --green:  #44cc88;
+  --gold:   #ffcc00;
   --purple: #aa44ff;
-  --bg: #0f0f13;
-  --bg2: #1a1a2e;
-  --bg3: #22223a;
+  --bg:     #0f0f13;
+  --bg2:    #1a1a2e;
+  --bg3:    #22223a;
   --border: #2a2a4a;
-  --radius: 10px;
-  --shadow: 0 4px 20px rgba(0,0,0,.5);
+  --r:      10px;
 }
 
-/* ===== LAYOUT CONSTANTS ===== */
-/* 상단 광고: 60px, 헤더: 56px → 합계 116px */
-/* 이 값은 JS에서 동적으로 재계산됨 */
+/* ═══════════════════════════════════════
+   레이아웃 구조:
+   [상단광고 fixed] 높이 가변
+   [헤더 fixed]    높이 56px
+   [본문]          margin-top = 상단광고 + 헤더
+     [사이드바 fixed] top = 상단광고 + 헤더
+     [메인]           margin-left = 220px
+   [푸터]          margin-left = 220px
+   JS syncLayout() 이 이 값들을 실시간 계산
+═══════════════════════════════════════ */
 
-/* ===== TOP AD BAR ===== */
-#topAdBar {
+/* ── 상단 광고 ── */
+#topAd {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 1200;
+  z-index: 900;
   background: #111118;
   border-bottom: 1px solid var(--border);
-  text-align: center;
-  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 40px 4px 4px;
+  padding: 6px 36px 6px 6px;
+  min-height: 50px;
 }
-#topAdBar ins { display: inline-block !important; }
-#topAdHideBtn {
+#topAd ins { display: block !important; }
+#topAdClose {
   position: absolute;
-  right: 8px; top: 50%;
-  transform: translateY(-50%);
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.1);
-  color: #aaa;
-  font-size: 13px;
-  line-height: 26px;
-  text-align: center;
-  transition: .2s;
+  right: 8px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  color: #aaa; font-size: 13px; line-height: 24px; text-align: center;
 }
-#topAdHideBtn:hover { background: rgba(255,255,255,.2); color: #fff; }
+#topAd.hidden { display: none; }
 
-/* ===== HEADER ===== */
-#header {
+/* ── 헤더 ── */
+#hdr {
   position: fixed;
   left: 0; right: 0;
-  z-index: 1100;
   height: 56px;
-  background: rgba(15,15,19,.98);
+  z-index: 800;
+  background: rgba(15,15,19,.97);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 0 12px;
-  /* top은 JS로 설정 */
+  /* top: JS 계산 */
 }
 .logo {
-  font-size: 1.05rem;
-  font-weight: 900;
-  white-space: nowrap;
-  flex-shrink: 0;
+  font-size: 1rem; font-weight: 900; white-space: nowrap; flex-shrink: 0;
   background: linear-gradient(135deg, var(--red), var(--blue));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-#mainNav {
-  display: flex;
-  gap: 3px;
-  flex: 1;
-  overflow-x: auto;
-  scrollbar-width: none;
+#hnav {
+  display: flex; gap: 3px; overflow-x: auto; flex: 1; scrollbar-width: none;
 }
-#mainNav::-webkit-scrollbar { display: none; }
-.navBtn {
+#hnav::-webkit-scrollbar { display: none; }
+.hnav-btn {
   flex-shrink: 0;
-  padding: 6px 13px;
-  border-radius: 20px;
-  font-size: .82rem;
-  font-weight: 500;
-  color: #999;
-  transition: .2s;
+  padding: 6px 12px; border-radius: 18px;
+  font-size: .82rem; font-weight: 500; color: #999;
+  transition: background .15s, color .15s;
   white-space: nowrap;
 }
-.navBtn:hover { background: var(--bg3); color: #fff; }
-.navBtn.active {
-  background: linear-gradient(135deg, var(--red), var(--blue));
-  color: #fff;
-  font-weight: 700;
-}
-.headerAdSlot { flex-shrink: 0; margin-left: auto; }
-.headerAdSlot ins { display: block !important; }
+.hnav-btn:hover { background: var(--bg3); color: #fff; }
+.hnav-btn.on { background: linear-gradient(135deg, var(--red), var(--blue)); color: #fff; font-weight: 700; }
+.hdr-ad { flex-shrink: 0; margin-left: auto; }
+.hdr-ad ins { display: block !important; }
 
-/* ===== SIDEBAR ===== */
+/* ── 사이드바 ── */
 #sidebar {
   position: fixed;
-  left: 0;
-  width: 220px;
+  left: 0; width: 220px;
+  z-index: 700;
   background: var(--bg2);
   border-right: 1px solid var(--border);
   overflow-y: auto;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: flex; flex-direction: column; gap: 4px;
   padding: 12px 8px;
-  /* top, height는 JS로 설정 */
+  /* top, height: JS 계산 */
 }
-.sideBtn {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  font-size: .88rem;
-  font-weight: 500;
-  color: #bbb;
-  transition: .2s;
-  width: 100%;
-  text-align: left;
+.snav-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: 8px;
+  font-size: .88rem; font-weight: 500; color: #bbb;
+  transition: background .15s, color .15s;
+  text-align: left; width: 100%;
 }
-.sideBtn:hover { background: var(--bg3); color: #fff; }
-.sideBtn.active {
+.snav-btn:hover { background: var(--bg3); color: #fff; }
+.snav-btn.on {
   background: linear-gradient(135deg, rgba(255,68,68,.2), rgba(68,136,255,.2));
-  color: #fff;
-  border: 1px solid rgba(255,68,68,.3);
+  color: #fff; border: 1px solid rgba(255,68,68,.3);
 }
-.sideAdBox { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
-.sideAdBox ins { display: block !important; }
+.side-ad-box {
+  margin-top: auto; padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.side-ad-box ins { display: block !important; }
 
-/* ===== MAIN CONTENT ===== */
-#appWrap {
+/* ── 메인 래퍼 ── */
+#wrap {
   display: flex;
-  /* padding-top, padding-left은 JS로 설정 */
+  /* padding-top, padding-left: JS 계산 */
 }
-#mainContent {
-  flex: 1;
-  min-width: 0;
+#main {
+  flex: 1; min-width: 0;
   padding: 20px;
 }
 
-/* ===== SECTIONS ===== */
-.section { display: none; }
-.section.active { display: block; animation: fadeUp .25s ease; }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
+/* ── 섹션 토글 ── */
+.sec { display: none; }
+.sec.on {
+  display: block;
+  animation: up .22s ease;
+}
+@keyframes up {
+  from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.secTitle {
-  font-size: 1.3rem;
-  font-weight: 900;
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.sec-title {
+  font-size: 1.3rem; font-weight: 900; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
 }
-.secDot {
-  width: 9px; height: 9px;
+.sec-dot {
+  width: 9px; height: 9px; border-radius: 50; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--red), var(--blue));
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--red), var(--blue));
-  flex-shrink: 0;
 }
 
-/* ===== NOTICE BANNERS ===== */
-.noticeBanner {
+/* ── 알림 배너 ── */
+.banner {
+  border-radius: 8px; padding: 12px 15px;
+  margin-bottom: 14px; font-size: .83rem; line-height: 1.7;
   display: none;
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  font-size: .84rem;
-  line-height: 1.7;
 }
-.noticeBanner.key { background: rgba(255,170,0,.1); border: 1px solid rgba(255,170,0,.35); color: #ffbb44; }
-.noticeBanner.err { background: rgba(255,68,68,.08); border: 1px solid rgba(255,68,68,.3); color: #ff9999; }
-.noticeBanner a { color: var(--blue); text-decoration: underline; }
+.banner.key { background: rgba(255,170,0,.1); border: 1px solid rgba(255,170,0,.35); color: #ffbb55; }
+.banner.err { background: rgba(255,68,68,.08); border: 1px solid rgba(255,68,68,.3);  color: #ff9999; }
+.banner a   { color: var(--blue); text-decoration: underline; }
 
-/* ===== SEARCH BAR ===== */
-.searchRow {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+/* ── 검색바 ── */
+.srow { display: flex; gap: 8px; margin-bottom: 12px; }
+.srow input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 11px 14px; font-size: .9rem;
+  outline: none; transition: border-color .15s;
 }
-.searchRow input {
-  flex: 1;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 11px 14px;
-  color: #fff;
-  font-size: .9rem;
-  outline: none;
-  transition: .2s;
-}
-.searchRow input:focus { border-color: var(--blue); }
-.searchRow input::placeholder { color: #555; }
-.searchBtn {
-  padding: 11px 18px;
+.srow input::placeholder { color: #555; }
+.srow input:focus { border-color: var(--blue); }
+.sbtn {
+  padding: 11px 18px; border-radius: 10px;
   background: linear-gradient(135deg, var(--red), var(--blue));
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 700;
-  font-size: .88rem;
-  flex-shrink: 0;
-  transition: .2s;
+  color: #fff; font-weight: 700; font-size: .88rem; flex-shrink: 0;
+  transition: opacity .15s;
 }
-.searchBtn:hover { opacity: .85; }
+.sbtn:hover { opacity: .85; }
 
-/* ===== TYPE TABS ===== */
-.typeTabs {
-  display: flex;
-  gap: 7px;
-  margin-bottom: 12px;
+/* ── 타입탭 ── */
+.ttabs { display: flex; gap: 7px; margin-bottom: 12px; }
+.ttab {
+  padding: 6px 16px; border-radius: 18px; font-size: .82rem; font-weight: 500;
+  background: var(--bg3); color: #888; border: 1px solid var(--border);
+  transition: .15s;
 }
-.typeTab {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: .82rem;
-  font-weight: 500;
-  background: var(--bg3);
-  color: #888;
-  border: 1px solid var(--border);
-  transition: .2s;
-}
-.typeTab.active { background: var(--red); color: #fff; border-color: var(--red); }
-.typeTab:hover:not(.active) { color: #fff; border-color: #555; }
+.ttab.on { background: var(--red); color: #fff; border-color: var(--red); }
+.ttab:hover:not(.on) { color: #fff; border-color: #555; }
 
-/* ===== CATEGORY CHIPS ===== */
-.catChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 18px;
+/* ── 카테고리 칩 ── */
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+.chip {
+  padding: 5px 13px; border-radius: 18px; font-size: .79rem; font-weight: 500;
+  background: var(--bg3); color: #888; border: 1px solid var(--border);
+  cursor: pointer; transition: .15s;
 }
-.catChip {
-  padding: 5px 13px;
-  border-radius: 20px;
-  font-size: .78rem;
-  font-weight: 500;
-  background: var(--bg3);
-  color: #888;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: .2s;
-}
-.catChip:hover { color: #fff; border-color: #555; }
-.catChip.active { background: linear-gradient(135deg, var(--red), var(--blue)); color: #fff; border-color: transparent; }
+.chip:hover { color: #fff; border-color: #555; }
+.chip.on { background: linear-gradient(135deg, var(--red), var(--blue)); color: #fff; border-color: transparent; }
 
-/* ===== SPINNER ===== */
-.spinWrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  gap: 14px;
-  color: #666;
-  font-size: .9rem;
+/* ── 스피너 ── */
+.spin-box {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 60px 20px; gap: 14px; color: #666;
 }
 .spinner {
   width: 40px; height: 40px;
-  border: 4px solid var(--border);
-  border-top-color: var(--red);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  border: 4px solid var(--border); border-top-color: var(--red);
+  border-radius: 50%; animation: sp 1s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes sp { to { transform: rotate(360deg); } }
 
-/* ===== VIDEO GRID ===== */
-.videoGrid {
+/* ── 영상 그리드 ── */
+.vgrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
   gap: 14px;
 }
-.videoCard {
-  background: var(--bg2);
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: .2s;
+.vcard {
+  background: var(--bg2); border-radius: var(--r);
+  border: 1px solid var(--border); cursor: pointer;
+  overflow: hidden; transition: transform .18s, border-color .18s;
 }
-.videoCard:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: #555; }
-.thumbWrap {
-  position: relative;
-  aspect-ratio: 16/9;
-  overflow: hidden;
-  background: #111;
+.vcard:hover { transform: translateY(-3px); border-color: #555; }
+.vthumb {
+  position: relative; aspect-ratio: 16/9;
+  overflow: hidden; background: #111;
 }
-.thumbWrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
-.videoCard:hover .thumbWrap img { transform: scale(1.05); }
-.tagShorts {
-  position: absolute; top: 6px; left: 6px;
-  background: var(--red); color: #fff;
-  font-size: .68rem; font-weight: 700;
-  padding: 2px 7px; border-radius: 8px;
-}
-.tagDur {
-  position: absolute; bottom: 6px; right: 6px;
-  background: rgba(0,0,0,.8); color: #fff;
-  font-size: .72rem; font-weight: 600;
-  padding: 2px 6px; border-radius: 4px;
-}
-.tagScore {
-  position: absolute; top: 6px; right: 6px;
-  background: rgba(0,0,0,.8); color: var(--gold);
-  font-size: .72rem; font-weight: 700;
-  padding: 2px 7px; border-radius: 8px;
-}
-.cardBody { padding: 11px; }
-.cardTitle {
-  font-size: .88rem; font-weight: 600; line-height: 1.4;
-  margin-bottom: 6px; color: #e8e8f0;
+.vthumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.vcard:hover .vthumb img { transform: scale(1.05); }
+.tag { position: absolute; font-size: .7rem; font-weight: 700; padding: 2px 6px; border-radius: 5px; }
+.tag.shorts { top: 6px; left: 6px; background: var(--red); color: #fff; }
+.tag.dur    { bottom: 6px; right: 6px; background: rgba(0,0,0,.8); color: #fff; }
+.tag.score  { top: 6px; right: 6px; background: rgba(0,0,0,.8); color: var(--gold); }
+.vinfo { padding: 11px; }
+.vtitle {
+  font-size: .88rem; font-weight: 600; line-height: 1.4; margin-bottom: 6px;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
-.cardCh { font-size: .78rem; color: var(--blue); margin-bottom: 5px; font-weight: 500; }
-.cardStats { display: flex; gap: 10px; font-size: .75rem; color: #777; }
+.vch   { font-size: .78rem; color: var(--blue); margin-bottom: 5px; font-weight: 500; }
+.vstats { display: flex; gap: 10px; font-size: .76rem; color: #777; }
 
-/* inFeed Ad */
-.inFeedAd {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  display: flex; align-items: center; justify-content: center;
-  min-height: 200px;
+/* 인피드 광고 */
+.ifad {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); display: flex; align-items: center;
+  justify-content: center; min-height: 180px; overflow: hidden;
 }
-.inFeedAd ins { display: block !important; width: 100%; }
+.ifad ins { display: block !important; width: 100%; }
 
-/* Load more */
-.loadMoreBtn {
-  display: block;
-  margin: 20px auto 0;
-  padding: 11px 36px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  color: #ccc;
-  font-size: .88rem;
-  transition: .2s;
+.more-btn {
+  display: block; margin: 20px auto 0;
+  padding: 10px 34px; background: var(--bg3);
+  border: 1px solid var(--border); border-radius: 24px;
+  color: #ccc; font-size: .88rem; transition: .15s;
 }
-.loadMoreBtn:hover { background: var(--bg2); color: #fff; border-color: #555; }
+.more-btn:hover { background: var(--bg2); color: #fff; border-color: #555; }
 
-/* ===== VIDEO MODAL ===== */
-#videoModal {
-  display: none;
-  position: fixed; inset: 0; z-index: 2000;
+/* ── 영상 모달 ── */
+#vmod {
+  display: none; position: fixed; inset: 0; z-index: 2000;
   background: rgba(0,0,0,.88);
-  align-items: center; justify-content: center;
-  padding: 16px;
+  justify-content: center; align-items: center; padding: 16px;
 }
-#videoModal.open { display: flex; }
-.vmInner {
-  background: var(--bg2);
-  border-radius: 14px;
-  width: 100%; max-width: 860px;
-  max-height: 90vh; overflow-y: auto;
-  border: 1px solid var(--border);
-  position: relative;
+#vmod.on { display: flex; }
+.vmod-inner {
+  background: var(--bg2); border-radius: 14px;
+  width: 100%; max-width: 860px; max-height: 90vh;
+  overflow-y: auto; border: 1px solid var(--border); position: relative;
 }
-.vmClose {
+.vmod-x {
   position: absolute; top: 10px; right: 10px; z-index: 5;
   width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(255,255,255,.1); color: #fff;
-  font-size: 1.1rem; display: flex; align-items: center; justify-content: center;
-  transition: .2s;
+  background: rgba(255,255,255,.1); font-size: 1rem;
+  display: flex; align-items: center; justify-content: center; transition: .15s;
 }
-.vmClose:hover { background: rgba(255,68,68,.8); }
-.vmPlayer { aspect-ratio: 16/9; background: #000; border-radius: 12px 12px 0 0; overflow: hidden; }
-.vmPlayer iframe { width: 100%; height: 100%; border: none; }
-.vmBody { padding: 18px; }
-.vmTitle { font-size: 1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.5; }
-.vmMeta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-.vmMeta span { font-size: .82rem; color: #888; }
-.vmDesc { font-size: .82rem; color: #aaa; line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-.vmAdRow { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: center; }
-.vmAdRow ins { display: block !important; }
+.vmod-x:hover { background: rgba(255,68,68,.85); }
+.vmod-player { aspect-ratio: 16/9; background: #000; border-radius: 12px 12px 0 0; overflow: hidden; }
+.vmod-player iframe { width: 100%; height: 100%; border: none; }
+.vmod-body { padding: 18px; }
+.vmod-title { font-size: 1rem; font-weight: 700; margin-bottom: 10px; line-height: 1.5; }
+.vmod-meta  { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+.vmod-meta span { font-size: .82rem; color: #888; }
+.vmod-desc  { font-size: .82rem; color: #aaa; line-height: 1.7; max-height: 80px; overflow: hidden; }
+.vmod-adrow { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); text-align: center; }
+.vmod-adrow ins { display: inline-block !important; }
 
-/* ===== AD GATE ===== */
-#adGate {
-  display: none;
-  position: fixed; inset: 0; z-index: 3000;
+/* ── 광고 게이트 ── */
+#gate {
+  display: none; position: fixed; inset: 0; z-index: 3000;
   background: rgba(0,0,0,.93);
-  align-items: center; justify-content: center;
+  justify-content: center; align-items: center;
 }
-#adGate.open { display: flex; }
-.gateBox {
-  background: var(--bg2); border-radius: 14px;
-  padding: 28px; max-width: 460px; width: 90%;
-  border: 1px solid var(--border); text-align: center;
+#gate.on { display: flex; }
+.gate-box {
+  background: var(--bg2); border-radius: 14px; padding: 28px;
+  max-width: 460px; width: 90%; border: 1px solid var(--border); text-align: center;
 }
-.gateTitle { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-.gateSub { font-size: .82rem; color: #888; margin-bottom: 16px; }
-.gateAdWrap { margin: 16px 0; }
-.gateAdWrap ins { display: block !important; }
-.gateCount { font-size: 2.4rem; font-weight: 900; color: var(--red); margin: 12px 0; }
-.gateSkip {
-  padding: 9px 26px;
+.gate-box h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+.gate-box p  { font-size: .82rem; color: #888; margin-bottom: 16px; }
+.gate-ad ins { display: block !important; }
+.gate-cnt { font-size: 2.4rem; font-weight: 900; color: var(--red); margin: 12px 0; }
+.gate-skip {
+  padding: 9px 24px; border-radius: 24px;
   background: linear-gradient(135deg, var(--red), var(--blue));
-  border-radius: 28px; color: #fff; font-weight: 700; font-size: .88rem;
-  transition: .2s; margin-top: 8px;
+  color: #fff; font-weight: 700; font-size: .88rem; transition: .15s;
 }
-.gateSkip:disabled { opacity: .35; cursor: not-allowed; }
+.gate-skip:disabled { opacity: .3; cursor: not-allowed; }
 
-/* ===== INTERSTITIAL ===== */
-#interstitial {
-  display: none;
-  position: fixed; inset: 0; z-index: 3000;
+/* ── 인터스티셜 ── */
+#inter {
+  display: none; position: fixed; inset: 0; z-index: 3000;
   background: rgba(0,0,0,.95);
-  align-items: center; justify-content: center;
+  justify-content: center; align-items: center;
 }
-#interstitial.open { display: flex; }
-.interBox {
-  background: var(--bg2); border-radius: 14px;
-  padding: 28px; max-width: 520px; width: 90%;
-  border: 1px solid var(--border); text-align: center;
-  position: relative;
+#inter.on { display: flex; }
+.inter-box {
+  background: var(--bg2); border-radius: 14px; padding: 28px;
+  max-width: 520px; width: 90%; border: 1px solid var(--border);
+  text-align: center; position: relative;
 }
-.interClose {
+.inter-x {
   position: absolute; top: 10px; right: 10px;
   width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(255,255,255,.08); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; transition: .2s;
+  background: rgba(255,255,255,.08); font-size: 1rem;
+  display: flex; align-items: center; justify-content: center; transition: .15s;
 }
-.interClose:hover { background: rgba(255,68,68,.8); }
-.interClose:disabled { opacity: .3; cursor: not-allowed; }
-.interAdWrap ins { display: block !important; margin: 0 auto; }
-.interInfo { font-size: .82rem; color: #888; margin-top: 10px; }
+.inter-x:hover { background: rgba(255,68,68,.85); }
+.inter-x:disabled { opacity: .3; pointer-events: none; }
+.inter-ad ins { display: block !important; margin: 0 auto; }
+.inter-info { font-size: .82rem; color: #888; margin-top: 10px; }
 
-/* ===== CHANNEL ANALYSIS ===== */
-.chSearchRow { display: flex; gap: 8px; margin-bottom: 20px; }
-.chSearchRow input {
+/* ── 채널분석 ── */
+.ch-row { display: flex; gap: 8px; margin-bottom: 18px; }
+.ch-row input {
   flex: 1; background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 10px; padding: 11px 14px; color: #fff; font-size: .9rem;
-  outline: none; transition: .2s;
+  border-radius: 10px; padding: 11px 14px; font-size: .9rem;
+  outline: none; transition: border-color .15s;
 }
-.chSearchRow input:focus { border-color: var(--purple); }
-.chSearchRow input::placeholder { color: #555; }
-.chAnalyzeBtn {
-  padding: 11px 22px;
+.ch-row input::placeholder { color: #555; }
+.ch-row input:focus { border-color: var(--purple); }
+.ch-btn {
+  padding: 11px 20px; border-radius: 10px;
   background: linear-gradient(135deg, var(--purple), var(--blue));
-  border-radius: 10px; color: #fff; font-weight: 700; font-size: .88rem;
-  flex-shrink: 0; transition: .2s;
+  color: #fff; font-weight: 700; font-size: .88rem;
+  flex-shrink: 0; transition: opacity .15s;
 }
-.chAnalyzeBtn:hover { opacity: .85; }
+.ch-btn:hover { opacity: .85; }
 
-.chProfile {
+.ch-profile {
   display: flex; gap: 16px; align-items: flex-start;
-  background: var(--bg3); border-radius: var(--radius);
+  background: var(--bg3); border-radius: var(--r);
   padding: 18px; margin-bottom: 14px; border: 1px solid var(--border);
 }
-.chAvatar {
-  width: 70px; height: 70px; border-radius: 50%;
-  object-fit: cover; border: 2px solid var(--border);
-  flex-shrink: 0; background: var(--bg2);
+.ch-ava {
+  width: 68px; height: 68px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+  border: 2px solid var(--border); background: var(--bg2);
 }
-.chName { font-size: 1.15rem; font-weight: 700; margin-bottom: 3px; }
-.chHandle { font-size: .8rem; color: var(--blue); margin-bottom: 9px; }
-.chBadges { display: flex; gap: 6px; flex-wrap: wrap; }
-.chBadge { padding: 3px 10px; border-radius: 16px; font-size: .74rem; font-weight: 700; background: var(--bg2); border: 1px solid var(--border); }
+.ch-name  { font-size: 1.1rem; font-weight: 700; margin-bottom: 3px; }
+.ch-handle{ font-size: .8rem; color: var(--blue); margin-bottom: 8px; }
+.ch-bads  { display: flex; flex-wrap: wrap; gap: 6px; }
+.ch-bad   { padding: 3px 10px; border-radius: 14px; font-size: .74rem; font-weight: 700; background: var(--bg2); border: 1px solid var(--border); }
 
-.scoreCard {
+.score-card {
   background: linear-gradient(135deg, rgba(68,136,255,.1), rgba(170,68,255,.1));
-  border-radius: var(--radius); padding: 20px;
-  margin-bottom: 14px; border: 1px solid rgba(68,136,255,.2); text-align: center;
+  border-radius: var(--r); padding: 20px; margin-bottom: 14px;
+  border: 1px solid rgba(68,136,255,.2); text-align: center;
 }
-.scoreNum { font-size: 3rem; font-weight: 900; color: var(--gold); line-height: 1; }
-.scoreLbl { font-size: .86rem; color: #888; margin-top: 6px; }
-.scoreLvBadge { display: inline-block; padding: 6px 20px; border-radius: 28px; font-size: .9rem; font-weight: 700; margin-top: 10px; }
-.gaugeBar { height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; margin-top: 12px; }
-.gaugeFill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width 1s ease; }
+.score-num { font-size: 3rem; font-weight: 900; color: var(--gold); line-height: 1; }
+.score-lbl { font-size: .85rem; color: #888; margin-top: 6px; }
+.score-lv  { display: inline-block; padding: 6px 18px; border-radius: 24px; font-size: .88rem; font-weight: 700; margin-top: 10px; }
+.gauge     { height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; margin-top: 12px; }
+.gauge-fill{ height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--red), var(--gold)); transition: width 1s ease; }
 
-.bdGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
-.bdItem { background: var(--bg3); border-radius: 8px; padding: 12px; border: 1px solid var(--border); text-align: center; }
-.bdLabel { font-size: .74rem; color: #888; margin-bottom: 5px; }
-.bdVal { font-size: 1rem; font-weight: 700; }
-.bdBarBg { height: 4px; background: var(--border); border-radius: 2px; margin-top: 7px; overflow: hidden; }
-.bdBarFill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+.bd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 14px; }
+.bd-item { background: var(--bg3); border-radius: 8px; padding: 12px; border: 1px solid var(--border); text-align: center; }
+.bd-lbl  { font-size: .74rem; color: #888; margin-bottom: 5px; }
+.bd-val  { font-size: 1rem; font-weight: 700; }
+.bd-bar  { height: 4px; background: var(--border); border-radius: 2px; margin-top: 7px; overflow: hidden; }
+.bd-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
 
-.feedbackBox { background: var(--bg3); border-radius: var(--radius); padding: 16px; border: 1px solid var(--border); margin-bottom: 14px; }
-.feedbackBox h3 { font-size: .9rem; font-weight: 700; margin-bottom: 10px; color: var(--gold); }
-.fbItem { display: flex; gap: 9px; padding: 9px; background: var(--bg2); border-radius: 7px; border: 1px solid var(--border); margin-bottom: 7px; }
-.fbItem:last-child { margin-bottom: 0; }
-.fbIcon { font-size: 1rem; flex-shrink: 0; padding-top: 1px; }
-.fbText { font-size: .82rem; color: #bbb; line-height: 1.6; }
+.fb-box  { background: var(--bg3); border-radius: var(--r); padding: 16px; margin-bottom: 14px; border: 1px solid var(--border); }
+.fb-box h3 { font-size: .9rem; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+.fb-item { display: flex; gap: 9px; padding: 9px; background: var(--bg2); border-radius: 7px; border: 1px solid var(--border); margin-bottom: 7px; }
+.fb-item:last-child { margin-bottom: 0; }
+.fb-ico { flex-shrink: 0; }
+.fb-txt { font-size: .82rem; color: #bbb; line-height: 1.6; }
 
-.chInlineAd { margin: 14px 0; }
-.chInlineAd ins { display: block !important; }
+.inline-ad { margin: 14px 0; }
+.inline-ad ins { display: block !important; }
 
-/* ===== AI IDEAS ===== */
-.ideaTopAd { margin-bottom: 18px; }
-.ideaTopAd ins { display: block !important; }
-.ideaGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 13px; }
-.ideaCard { background: var(--bg2); border-radius: var(--radius); padding: 17px; border: 1px solid var(--border); transition: .2s; }
-.ideaCard:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: #555; }
-.ideaNo { font-size: .7rem; color: #666; font-weight: 600; margin-bottom: 7px; }
-.ideaTitle { font-size: .9rem; font-weight: 700; margin-bottom: 9px; line-height: 1.4; }
-.ideaTags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
-.ideaTag { padding: 2px 8px; border-radius: 14px; font-size: .7rem; font-weight: 600; background: rgba(68,136,255,.15); color: var(--blue); border: 1px solid rgba(68,136,255,.25); }
-.ideaWhy { font-size: .79rem; color: #888; line-height: 1.6; }
-.ideaBottomAd { margin-top: 20px; }
-.ideaBottomAd ins { display: block !important; }
+/* ── AI 아이디어 ── */
+.top-ad    { margin-bottom: 18px; }
+.bottom-ad { margin-top: 18px; }
+.top-ad ins, .bottom-ad ins { display: block !important; }
+.idea-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(275px, 1fr)); gap: 13px; }
+.idea-card { background: var(--bg2); border-radius: var(--r); padding: 17px; border: 1px solid var(--border); transition: transform .18s, border-color .18s; }
+.idea-card:hover { transform: translateY(-3px); border-color: #555; }
+.idea-no   { font-size: .7rem; color: #666; font-weight: 600; margin-bottom: 7px; }
+.idea-ttl  { font-size: .9rem; font-weight: 700; margin-bottom: 9px; line-height: 1.4; }
+.idea-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 9px; }
+.idea-tag  { padding: 2px 8px; border-radius: 12px; font-size: .7rem; font-weight: 600; background: rgba(68,136,255,.15); color: var(--blue); border: 1px solid rgba(68,136,255,.25); }
+.idea-why  { font-size: .79rem; color: #888; line-height: 1.6; }
 
-/* ===== TOOLS ===== */
-.toolsSection { margin-bottom: 26px; }
-.toolsSecTitle { font-size: .95rem; font-weight: 700; margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
-.toolsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
-.toolCard { background: var(--bg2); border-radius: var(--radius); padding: 14px; border: 1px solid var(--border); transition: .2s; display: block; }
-.toolCard:hover { transform: translateY(-3px); box-shadow: var(--shadow); background: var(--bg3); border-color: #555; }
-.toolIcon { font-size: 1.6rem; margin-bottom: 7px; }
-.toolName { font-size: .86rem; font-weight: 700; color: #fff; margin-bottom: 3px; }
-.toolDesc { font-size: .76rem; color: #888; line-height: 1.5; }
-.toolBadge { display: inline-block; margin-top: 7px; padding: 2px 7px; border-radius: 8px; font-size: .7rem; font-weight: 700; background: rgba(68,204,136,.15); color: var(--green); border: 1px solid rgba(68,204,136,.25); }
-.toolsMidAd { margin: 22px 0; }
-.toolsMidAd ins { display: block !important; }
+/* ── 제작도구 ── */
+.tools-sec  { margin-bottom: 24px; }
+.tools-stitle { font-size: .94rem; font-weight: 700; margin-bottom: 12px; padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.tool-card  { background: var(--bg2); border-radius: var(--r); padding: 14px; border: 1px solid var(--border); display: block; transition: transform .18s, border-color .18s; }
+.tool-card:hover { transform: translateY(-3px); border-color: #555; background: var(--bg3); }
+.tool-ico   { font-size: 1.6rem; margin-bottom: 7px; }
+.tool-name  { font-size: .86rem; font-weight: 700; margin-bottom: 3px; }
+.tool-desc  { font-size: .76rem; color: #888; line-height: 1.5; }
+.tool-badge { display: inline-block; margin-top: 7px; padding: 2px 7px; border-radius: 7px; font-size: .7rem; font-weight: 700; background: rgba(68,204,136,.15); color: var(--green); border: 1px solid rgba(68,204,136,.25); }
+.mid-ad { margin: 20px 0; }
+.mid-ad ins { display: block !important; }
 
-/* ===== REVENUE CALC ===== */
-.calcCard { background: var(--bg2); border-radius: var(--radius); padding: 24px; border: 1px solid var(--border); max-width: 560px; }
-.cRow { margin-bottom: 16px; }
-.cRow label { display: block; font-size: .82rem; color: #aaa; margin-bottom: 7px; font-weight: 500; }
-.cRow input, .cRow select {
+/* ── 수익계산기 ── */
+.calc-card { background: var(--bg2); border-radius: var(--r); padding: 22px; border: 1px solid var(--border); max-width: 560px; }
+.c-row { margin-bottom: 15px; }
+.c-row label { display: block; font-size: .82rem; color: #aaa; margin-bottom: 6px; font-weight: 500; }
+.c-row input, .c-row select {
   width: 100%; background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 9px 12px; color: #fff; font-size: .9rem;
-  outline: none; transition: .2s;
+  border-radius: 8px; padding: 9px 12px; font-size: .9rem;
+  outline: none; transition: border-color .15s;
 }
-.cRow input:focus, .cRow select:focus { border-color: var(--blue); }
-.cRow select option { background: var(--bg3); }
-.calcGoBtn {
-  width: 100%; padding: 13px;
+.c-row input:focus, .c-row select:focus { border-color: var(--blue); }
+.c-row select option { background: var(--bg3); }
+.calc-btn {
+  width: 100%; padding: 12px;
   background: linear-gradient(135deg, var(--green), var(--blue));
-  border-radius: 9px; color: #fff; font-weight: 700; font-size: .95rem;
-  transition: .2s; margin-top: 6px;
+  border-radius: 9px; color: #fff; font-weight: 700; font-size: .94rem;
+  transition: opacity .15s; margin-top: 6px;
 }
-.calcGoBtn:hover { opacity: .85; }
-.calcResult { background: var(--bg3); border-radius: 9px; padding: 18px; margin-top: 18px; border: 1px solid var(--border); display: none; }
-.calcResult.show { display: block; }
-.calcResult h3 { font-size: .92rem; font-weight: 700; margin-bottom: 12px; color: var(--gold); }
-.resultGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
-.resultItem { background: var(--bg2); border-radius: 8px; padding: 11px; border: 1px solid var(--border); text-align: center; }
-.resultLabel { font-size: .72rem; color: #888; margin-bottom: 3px; }
-.resultVal { font-size: 1.05rem; font-weight: 700; }
-.resultNote { font-size: .76rem; color: #666; line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.calcBottomAd { margin-top: 20px; }
-.calcBottomAd ins { display: block !important; }
+.calc-btn:hover { opacity: .85; }
+.calc-result { background: var(--bg3); border-radius: 9px; padding: 18px; margin-top: 18px; border: 1px solid var(--border); display: none; }
+.calc-result.on { display: block; }
+.calc-result h3 { font-size: .9rem; font-weight: 700; color: var(--gold); margin-bottom: 12px; }
+.rg { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 10px; }
+.ri { background: var(--bg2); border-radius: 8px; padding: 11px; border: 1px solid var(--border); text-align: center; }
+.rl { font-size: .72rem; color: #888; margin-bottom: 3px; }
+.rv { font-size: 1.05rem; font-weight: 700; }
+.rn { font-size: .76rem; color: #666; line-height: 1.6; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.calc-bot-ad { margin-top: 20px; }
+.calc-bot-ad ins { display: block !important; }
 
-/* ===== TOAST ===== */
+/* ── 토스트 ── */
 #toast {
-  position: fixed; bottom: 26px; left: 50%;
-  transform: translateX(-50%) translateY(12px);
-  background: rgba(26,26,46,.97); border: 1px solid var(--border);
-  border-radius: 28px; padding: 10px 22px;
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(24,24,44,.96); border: 1px solid var(--border);
+  border-radius: 24px; padding: 10px 22px;
   font-size: .83rem; color: #fff; z-index: 9999;
-  opacity: 0; transition: opacity .3s, transform .3s;
-  white-space: nowrap; pointer-events: none; box-shadow: var(--shadow);
+  opacity: 0; transition: opacity .25s, transform .25s;
+  white-space: nowrap; pointer-events: none;
 }
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ===== FOOTER ===== */
+/* ── 푸터 ── */
 #footer {
-  background: var(--bg2);
-  border-top: 1px solid var(--border);
-  padding: 18px 20px;
-  /* margin-left은 JS로 설정 */
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  /* margin-left: JS 계산 */
 }
-.footLinks { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; font-size: .79rem; margin-bottom: 8px; }
-.footLinks a { color: #666; padding: 2px 5px; border-radius: 4px; transition: .2s; }
-.footLinks a:hover { color: var(--blue); }
-.footSep { color: #444; }
-.footCopy { text-align: center; font-size: .76rem; color: #555; }
+.foot-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; font-size: .79rem; margin-bottom: 7px; }
+.foot-row a { color: #666; padding: 2px 5px; border-radius: 4px; transition: color .15s; }
+.foot-row a:hover { color: var(--blue); }
+.foot-sep { color: #3a3a5a; }
+.foot-copy { text-align: center; font-size: .75rem; color: #555; }
 
-/* ===== TEXT MODALS ===== */
-.textModal {
-  display: none;
-  position: fixed; inset: 0; z-index: 4000;
+/* ── 텍스트 모달 ── */
+.tmod {
+  display: none; position: fixed; inset: 0; z-index: 4000;
   background: rgba(0,0,0,.88);
-  align-items: center; justify-content: center;
-  padding: 18px;
+  justify-content: center; align-items: center; padding: 18px;
 }
-.textModal.open { display: flex; }
-.tmInner {
-  background: var(--bg2); border-radius: 14px;
-  padding: 28px; max-width: 620px; width: 100%;
-  max-height: 80vh; overflow-y: auto;
+.tmod.on { display: flex; }
+.tmod-inner {
+  background: var(--bg2); border-radius: 14px; padding: 26px;
+  max-width: 620px; width: 100%; max-height: 80vh; overflow-y: auto;
   border: 1px solid var(--border); position: relative;
 }
-.tmInner h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
-.tmInner p { font-size: .83rem; color: #bbb; line-height: 1.8; margin-bottom: 10px; }
-.tmClose {
+.tmod-inner h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 14px; }
+.tmod-inner p  { font-size: .83rem; color: #bbb; line-height: 1.8; margin-bottom: 9px; }
+.tmod-x {
   position: absolute; top: 10px; right: 10px;
-  width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(255,255,255,.08); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; transition: .2s;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,.08); font-size: .95rem;
+  display: flex; align-items: center; justify-content: center; transition: .15s;
 }
-.tmClose:hover { background: rgba(255,68,68,.8); }
+.tmod-x:hover { background: rgba(255,68,68,.85); }
 
-/* ===== RESPONSIVE ===== */
+/* ── 반응형 ── */
 @media (max-width: 768px) {
-  #sidebar { display: none; }
-  #footer { margin-left: 0 !important; }
-  .videoGrid { grid-template-columns: repeat(2, 1fr); }
-  .resultGrid { grid-template-columns: 1fr; }
+  #sidebar { display: none !important; }
+  #wrap    { padding-left: 0 !important; }
+  #footer  { margin-left: 0 !important; }
+  .vgrid   { grid-template-columns: repeat(2, 1fr); }
+  .rg      { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
-  .videoGrid { grid-template-columns: 1fr; }
-  #mainContent { padding: 14px; }
+  .vgrid   { grid-template-columns: 1fr; }
+  #main    { padding: 12px; }
+  .hnav-btn { padding: 5px 9px; font-size: .78rem; }
 }
 </style>
 </head>
 <body>
 
-<!-- ===== TOP AD BAR ===== -->
-<div id="topAdBar">
+<!-- ══ 상단 광고 ══ -->
+<div id="topAd">
   <ins class="adsbygoogle"
     style="display:inline-block;width:728px;max-width:90vw;height:90px"
     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
     data-ad-slot="1111111111"></ins>
-  <button id="topAdHideBtn" onclick="toggleTopAd()">✕</button>
+  <button id="topAdClose">✕</button>
 </div>
 
-<!-- ===== HEADER ===== -->
-<header id="header">
+<!-- ══ 헤더 ══ -->
+<header id="hdr">
   <div class="logo">YT Analytics Pro</div>
-  <nav id="mainNav">
-    <button class="navBtn active" data-sec="hot">🔥 인기영상</button>
-    <button class="navBtn" data-sec="ch">📊 채널분석</button>
-    <button class="navBtn" data-sec="ai">🤖 AI아이디어</button>
-    <button class="navBtn" data-sec="tools">🛠️ 제작도구</button>
-    <button class="navBtn" data-sec="calc">💰 수익계산기</button>
+  <nav id="hnav">
+    <button class="hnav-btn on" data-tab="hot">🔥 인기영상</button>
+    <button class="hnav-btn"    data-tab="ch" >📊 채널분석</button>
+    <button class="hnav-btn"    data-tab="ai" >🤖 AI아이디어</button>
+    <button class="hnav-btn"    data-tab="tools">🛠️ 제작도구</button>
+    <button class="hnav-btn"    data-tab="calc">💰 수익계산기</button>
   </nav>
-  <div class="headerAdSlot">
+  <div class="hdr-ad">
     <ins class="adsbygoogle"
-      style="display:inline-block;width:280px;height:50px"
+      style="display:inline-block;width:260px;height:50px"
       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
       data-ad-slot="2222222222"></ins>
   </div>
 </header>
 
-<!-- ===== LAYOUT ===== -->
-<div id="appWrap">
-  <!-- SIDEBAR -->
+<!-- ══ 레이아웃 ══ -->
+<div id="wrap">
+
+  <!-- 사이드바 -->
   <aside id="sidebar">
-    <button class="sideBtn active" data-sec="hot"><span>🔥</span>인기영상</button>
-    <button class="sideBtn" data-sec="ch"><span>📊</span>채널분석</button>
-    <button class="sideBtn" data-sec="ai"><span>🤖</span>AI아이디어</button>
-    <button class="sideBtn" data-sec="tools"><span>🛠️</span>제작도구</button>
-    <button class="sideBtn" data-sec="calc"><span>💰</span>수익계산기</button>
-    <div class="sideAdBox">
+    <button class="snav-btn on" data-tab="hot">  <span>🔥</span>인기영상</button>
+    <button class="snav-btn"    data-tab="ch">   <span>📊</span>채널분석</button>
+    <button class="snav-btn"    data-tab="ai">   <span>🤖</span>AI아이디어</button>
+    <button class="snav-btn"    data-tab="tools"><span>🛠️</span>제작도구</button>
+    <button class="snav-btn"    data-tab="calc"> <span>💰</span>수익계산기</button>
+    <div class="side-ad-box">
       <ins class="adsbygoogle"
-        style="display:block;width:200px;height:200px"
+        style="display:block;width:196px;height:196px"
         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
         data-ad-slot="3333333333"></ins>
     </div>
   </aside>
 
-  <!-- MAIN -->
-  <div id="mainContent">
-    <!-- 알림 배너 -->
-    <div class="noticeBanner key" id="keyBanner"></div>
-    <div class="noticeBanner err" id="errBanner"></div>
+  <!-- 메인 -->
+  <div id="main">
+
+    <!-- 공통 배너 -->
+    <div class="banner key" id="keyBanner"></div>
+    <div class="banner err" id="errBanner"></div>
 
     <!-- ── 인기영상 ── -->
-    <div class="section active" id="sec-hot">
-      <div class="secTitle"><div class="secDot"></div>인기 급상승 동영상</div>
-      <div class="searchRow">
-        <input id="searchInput" placeholder="키워드 검색 (예: 먹방, 게임, 브이로그...)" />
-        <button class="searchBtn" id="searchBtn">🔍 검색</button>
+    <div class="sec on" id="sec-hot">
+      <div class="sec-title"><span class="sec-dot"></span>인기 급상승 동영상</div>
+      <div class="srow">
+        <input id="q" type="text" placeholder="키워드 검색 (먹방, 게임, 브이로그 ...)">
+        <button class="sbtn" id="searchBtn">🔍 검색</button>
       </div>
-      <div class="typeTabs" id="typeTabs">
-        <button class="typeTab active" data-type="all">전체</button>
-        <button class="typeTab" data-type="short">쇼츠</button>
-        <button class="typeTab" data-type="long">롱폼</button>
+      <div class="ttabs" id="ttabs">
+        <button class="ttab on" data-type="all">전체</button>
+        <button class="ttab"    data-type="short">쇼츠</button>
+        <button class="ttab"    data-type="long">롱폼</button>
       </div>
-      <div class="catChips" id="catChips"></div>
-      <div class="spinWrap" id="hotSpinner">
-        <div class="spinner"></div>
-        <div>인기 영상을 불러오는 중...</div>
-      </div>
-      <div class="videoGrid" id="videoGrid"></div>
-      <button class="loadMoreBtn" id="loadMoreBtn" style="display:none">더 보기 ▼</button>
+      <div class="chips" id="chips"></div>
+      <div class="spin-box" id="hotSpin"><div class="spinner"></div><span>인기 영상 불러오는 중...</span></div>
+      <div class="vgrid"   id="vgrid"></div>
+      <button class="more-btn" id="moreBtn" style="display:none">더 보기 ▼</button>
     </div>
 
     <!-- ── 채널분석 ── -->
-    <div class="section" id="sec-ch">
-      <div class="secTitle"><div class="secDot"></div>채널 분석</div>
-      <div class="chSearchRow">
-        <input id="chInput" placeholder="채널명 또는 @핸들 입력" />
-        <button class="chAnalyzeBtn" id="chAnalyzeBtn">📊 분석하기</button>
+    <div class="sec" id="sec-ch">
+      <div class="sec-title"><span class="sec-dot"></span>채널 분석</div>
+      <div class="ch-row">
+        <input id="chQ" type="text" placeholder="채널명 또는 @핸들 입력">
+        <button class="ch-btn" id="chBtn">📊 분석하기</button>
       </div>
-      <div class="spinWrap" id="chSpinner" style="display:none">
-        <div class="spinner"></div>
-        <div>채널 분석 중...</div>
-      </div>
+      <div class="spin-box" id="chSpin" style="display:none"><div class="spinner"></div><span>채널 분석 중...</span></div>
       <div id="chResult"></div>
     </div>
 
     <!-- ── AI아이디어 ── -->
-    <div class="section" id="sec-ai">
-      <div class="secTitle"><div class="secDot"></div>AI 콘텐츠 아이디어</div>
-      <div class="ideaTopAd">
-        <ins class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-          data-ad-slot="6660000001"
-          data-ad-format="horizontal"
-          data-full-width-responsive="true"></ins>
+    <div class="sec" id="sec-ai">
+      <div class="sec-title"><span class="sec-dot"></span>AI 콘텐츠 아이디어</div>
+      <div class="top-ad">
+        <ins class="adsbygoogle" style="display:block"
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6660000001"
+          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
       </div>
-      <div class="ideaGrid" id="ideaGrid"></div>
-      <div class="ideaBottomAd">
-        <ins class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-          data-ad-slot="6660000002"
-          data-ad-format="horizontal"
-          data-full-width-responsive="true"></ins>
+      <div class="idea-grid" id="ideaGrid"></div>
+      <div class="bottom-ad">
+        <ins class="adsbygoogle" style="display:block"
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6660000002"
+          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
       </div>
     </div>
 
     <!-- ── 제작도구 ── -->
-    <div class="section" id="sec-tools">
-      <div class="secTitle"><div class="secDot"></div>유튜브 제작 도구</div>
+    <div class="sec" id="sec-tools">
+      <div class="sec-title"><span class="sec-dot"></span>유튜브 제작 도구</div>
       <div id="toolsWrap"></div>
     </div>
 
     <!-- ── 수익계산기 ── -->
-    <div class="section" id="sec-calc">
-      <div class="secTitle"><div class="secDot"></div>유튜브 수익 계산기</div>
-      <div class="calcCard">
-        <div class="cRow">
-          <label>월간 조회수</label>
-          <input id="cViews" type="number" placeholder="예: 100000" min="0">
-        </div>
-        <div class="cRow">
-          <label>예상 CPM (원)</label>
-          <input id="cCpm" type="number" value="3000" min="0">
-        </div>
-        <div class="cRow">
-          <label>채널 유형</label>
-          <select id="cType">
+    <div class="sec" id="sec-calc">
+      <div class="sec-title"><span class="sec-dot"></span>유튜브 수익 계산기</div>
+      <div class="calc-card">
+        <div class="c-row"><label>월간 조회수</label>
+          <input id="cV" type="number" placeholder="예: 100000" min="0"></div>
+        <div class="c-row"><label>예상 CPM (원)</label>
+          <input id="cC" type="number" value="3000" min="0"></div>
+        <div class="c-row"><label>채널 유형</label>
+          <select id="cT">
             <option value="0.4">일반 (광고 수익 40%)</option>
-            <option value="0.5">고CPM 분야 – 금융/IT (50%)</option>
+            <option value="0.5">고CPM – 금융/IT (50%)</option>
             <option value="0.2">쇼츠 위주 (20%)</option>
-          </select>
-        </div>
-        <div class="cRow">
-          <label>구독자 수</label>
-          <input id="cSubs" type="number" placeholder="예: 10000" min="0">
-        </div>
-        <button class="calcGoBtn" id="calcGoBtn">💰 수익 계산하기</button>
-        <div class="calcResult" id="calcResult"></div>
+          </select></div>
+        <div class="c-row"><label>구독자 수</label>
+          <input id="cS" type="number" placeholder="예: 10000" min="0"></div>
+        <button class="calc-btn" id="calcBtn">💰 수익 계산하기</button>
+        <div class="calc-result" id="calcRes"></div>
       </div>
-      <div class="calcBottomAd">
-        <ins class="adsbygoogle"
-          style="display:block"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-          data-ad-slot="9999999999"
-          data-ad-format="horizontal"
-          data-full-width-responsive="true"></ins>
+      <div class="calc-bot-ad">
+        <ins class="adsbygoogle" style="display:block"
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="9999999999"
+          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
       </div>
     </div>
-  </div><!-- /mainContent -->
-</div><!-- /appWrap -->
 
-<!-- ===== FOOTER ===== -->
+  </div><!-- /main -->
+</div><!-- /wrap -->
+
+<!-- ══ 푸터 ══ -->
 <footer id="footer">
-  <div class="footLinks">
-    <a href="#" id="lnkDisclaimer">면책조항</a>
-    <span class="footSep">|</span>
-    <a href="#" id="lnkTerms">이용약관</a>
-    <span class="footSep">|</span>
-    <a href="#" id="lnkPrivacy">개인정보처리방침</a>
-    <span class="footSep">|</span>
-    <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube 서비스 약관</a>
-    <span class="footSep">|</span>
-    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 개인정보처리방침</a>
-    <span class="footSep">|</span>
+  <div class="foot-row">
+    <a href="#" id="fl-disc">면책조항</a><span class="foot-sep">|</span>
+    <a href="#" id="fl-terms">이용약관</a><span class="foot-sep">|</span>
+    <a href="#" id="fl-priv">개인정보처리방침</a><span class="foot-sep">|</span>
+    <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube 약관</a><span class="foot-sep">|</span>
+    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 개인정보</a><span class="foot-sep">|</span>
     <a href="mailto:contact@ytanalyticspro.com">문의하기</a>
   </div>
-  <div class="footCopy">© 2026 YTAnalytics Pro · YouTube Data API v3 기반 · 비공식 서비스</div>
+  <div class="foot-copy">© 2026 YTAnalytics Pro · YouTube Data API v3 기반 · 비공식 서비스</div>
 </footer>
 
-<!-- ===== VIDEO MODAL ===== -->
-<div id="videoModal">
-  <div class="vmInner">
-    <button class="vmClose" id="vmCloseBtn">✕</button>
-    <div class="vmPlayer" id="vmPlayer"></div>
-    <div class="vmBody">
-      <div class="vmTitle" id="vmTitle"></div>
-      <div class="vmMeta" id="vmMeta"></div>
-      <div class="vmDesc" id="vmDesc"></div>
-      <div class="vmAdRow">
+<!-- ══ 영상 모달 ══ -->
+<div id="vmod">
+  <div class="vmod-inner">
+    <button class="vmod-x" id="vmodX">✕</button>
+    <div class="vmod-player" id="vmodPlayer"></div>
+    <div class="vmod-body">
+      <div class="vmod-title" id="vmodTitle"></div>
+      <div class="vmod-meta"  id="vmodMeta"></div>
+      <div class="vmod-desc"  id="vmodDesc"></div>
+      <div class="vmod-adrow">
         <ins class="adsbygoogle"
           style="display:inline-block;width:300px;height:250px"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-          data-ad-slot="4444444444"></ins>
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="4444444444"></ins>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== AD GATE ===== -->
-<div id="adGate">
-  <div class="gateBox">
-    <div class="gateTitle">🎬 검색 결과를 불러옵니다</div>
-    <div class="gateSub">잠시 후 자동으로 이동됩니다</div>
-    <div class="gateAdWrap">
+<!-- ══ 광고 게이트 ══ -->
+<div id="gate">
+  <div class="gate-box">
+    <h3>🎬 검색 결과를 불러옵니다</h3>
+    <p>잠시 후 자동으로 이동됩니다</p>
+    <div class="gate-ad">
       <ins class="adsbygoogle"
         style="display:block;width:300px;height:250px;margin:0 auto"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-        data-ad-slot="6666666666"></ins>
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666"></ins>
     </div>
-    <div class="gateCount" id="gateCount">5</div>
-    <button class="gateSkip" id="gateSkipBtn" disabled>⏩ 건너뛰기</button>
+    <div class="gate-cnt" id="gateCnt">5</div>
+    <button class="gate-skip" id="gateSkip" disabled>⏩ 건너뛰기</button>
   </div>
 </div>
 
-<!-- ===== INTERSTITIAL ===== -->
-<div id="interstitial">
-  <div class="interBox">
-    <button class="interClose" id="interCloseBtn" disabled>✕</button>
-    <div class="interAdWrap">
+<!-- ══ 인터스티셜 ══ -->
+<div id="inter">
+  <div class="inter-box">
+    <button class="inter-x" id="interX" disabled>✕</button>
+    <div class="inter-ad">
       <ins class="adsbygoogle"
         style="display:block;width:336px;height:280px;margin:0 auto"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-        data-ad-slot="7777777777"></ins>
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777"></ins>
     </div>
-    <div class="interInfo" id="interInfo">5초 후 닫기 가능</div>
+    <div class="inter-info" id="interInfo">5초 후 닫기 가능</div>
   </div>
 </div>
 
-<!-- ===== TEXT MODALS ===== -->
-<div class="textModal" id="modalDisclaimer">
-  <div class="tmInner">
-    <button class="tmClose" data-close="modalDisclaimer">✕</button>
+<!-- ══ 텍스트 모달 3개 ══ -->
+<div class="tmod" id="tmod-disc">
+  <div class="tmod-inner">
+    <button class="tmod-x" data-id="tmod-disc">✕</button>
     <h2>⚠️ 면책조항</h2>
     <p>본 서비스(YTAnalytics Pro)는 YouTube Data API v3를 활용한 <strong>비공식</strong> 서비스이며, Google LLC 및 YouTube와 공식 제휴 관계가 없습니다.</p>
-    <p>제공되는 데이터(조회수, 구독자 수, 채널 점수 등)는 참고용이며, 실제 값과 차이가 있을 수 있습니다.</p>
-    <p>분석 결과를 기반으로 한 투자·비즈니스·마케팅 결정의 책임은 사용자 본인에게 있습니다.</p>
+    <p>제공되는 데이터는 참고용이며 실제 값과 차이가 있을 수 있습니다. 분석 결과를 기반으로 한 투자·비즈니스 결정의 책임은 사용자 본인에게 있습니다.</p>
     <p>광고는 Google AdSense를 통해 게재되며, 광고 내용에 대한 책임은 광고주에게 있습니다.</p>
   </div>
 </div>
-<div class="textModal" id="modalTerms">
-  <div class="tmInner">
-    <button class="tmClose" data-close="modalTerms">✕</button>
+<div class="tmod" id="tmod-terms">
+  <div class="tmod-inner">
+    <button class="tmod-x" data-id="tmod-terms">✕</button>
     <h2>📋 이용약관</h2>
-    <p>본 서비스를 이용함으로써 아래 약관에 동의한 것으로 간주됩니다.</p>
     <p><strong>1. 서비스 목적</strong><br>YTAnalytics Pro는 YouTube 콘텐츠 제작자 및 마케터를 위한 분석 도구를 제공합니다.</p>
-    <p><strong>2. 금지 행위</strong><br>자동화된 방식으로 서비스를 스크래핑하거나 악의적으로 활용하는 행위를 금지합니다.</p>
-    <p><strong>3. 지적 재산권</strong><br>서비스 내 UI·디자인·코드의 저작권은 운영자에게 있으며, YouTube 상표권은 Google LLC에 있습니다.</p>
-    <p><strong>4. 서비스 변경</strong><br>운영자는 사전 고지 없이 서비스를 변경하거나 중단할 수 있습니다.</p>
-    <p><strong>5. 준거법</strong><br>본 약관은 대한민국 법률에 따라 해석됩니다.</p>
+    <p><strong>2. 금지 행위</strong><br>자동화된 방식의 스크래핑이나 악의적인 서비스 활용을 금지합니다.</p>
+    <p><strong>3. 지적 재산권</strong><br>서비스 UI·디자인·코드의 저작권은 운영자에게 있으며, YouTube 상표권은 Google LLC에 있습니다.</p>
+    <p><strong>4. 준거법</strong><br>본 약관은 대한민국 법률에 따라 해석됩니다.</p>
   </div>
 </div>
-<div class="textModal" id="modalPrivacy">
-  <div class="tmInner">
-    <button class="tmClose" data-close="modalPrivacy">✕</button>
+<div class="tmod" id="tmod-priv">
+  <div class="tmod-inner">
+    <button class="tmod-x" data-id="tmod-priv">✕</button>
     <h2>🔒 개인정보처리방침</h2>
-    <p>본 서비스는 별도 회원가입 없이 이용 가능하며, 개인 식별 정보를 수집·저장하지 않습니다.</p>
-    <p><strong>쿠키 및 광고</strong><br>Google AdSense는 쿠키를 사용해 맞춤형 광고를 제공할 수 있습니다.</p>
-    <p><strong>제3자 서비스</strong><br>YouTube Data API v3, Google AdSense, Google Fonts를 사용하며 각 서비스의 개인정보처리방침이 적용됩니다.</p>
-    <p>자세한 사항은 <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--blue)">Google 개인정보처리방침</a>을 참조하세요.</p>
+    <p>본 서비스는 별도 회원가입 없이 이용 가능하며 개인 식별 정보를 수집·저장하지 않습니다.</p>
+    <p>Google AdSense는 쿠키를 사용해 맞춤형 광고를 제공할 수 있으며, YouTube Data API v3·Google Fonts 이용 시 각 서비스의 개인정보처리방침이 적용됩니다.</p>
+    <p><a href="https://policies.google.com/privacy" target="_blank" style="color:var(--blue)">Google 개인정보처리방침 →</a></p>
   </div>
 </div>
 
-<!-- ===== TOAST ===== -->
+<!-- ══ 토스트 ══ -->
 <div id="toast"></div>
 
 <script>
-'use strict';
-
-/* ============================================================
-   CONFIG  ← 실제 키 3개 입력
-   ============================================================ */
-const CFG = {
-  KEYS:['AIzaSyAM4hoxMB5XH84T59Ytv5l7DiC5RsJ0UcU','AIzaSyDSHbncsvtnf0HFEdTbxEDAWv5RYSdU5U8','AIzaSyBvJcawIWLvU3DPFX8ut6T-RJIpx73yMc8'],
-    
+/* ======================================================
+   ▶▶▶  CFG  ─  여기에 실제 API 키 3개 입력  ◀◀◀
+   ====================================================== */
+var CFG = {
+ KEYS: [
+    'AIzaSyAYi9B4vIFjl75uYBS56GbTSMJfV_TLuzE',
+    'AIzaSyAOxeRU2ZbMEzskqVvcErs_BAXNQlz2_zs',
+    'AIzaSyCEAvGfUpGLZOr3TYLr4WrRd40Pc7e01bE'
+  ],
   ki:      0,
   region:  'KR',
   lang:    'ko',
-  type:    'all',
+  vtype:   'all',   // all | short | long
   cat:     '',
   query:   '',
   npt:     '',
-  done:    false,
-  busy:    false,
+  allDone: false,
+  loading: false,
   topHide: false,
   sCnt:    0,
   aCnt:    0,
   GATE_N:  5,
-  INTER_N: 8,
+  INTER_N: 8
 };
 
-/* ============================================================
-   CATEGORIES
-   ============================================================ */
-const CATS = [
-  { l: '전체',        q: '' },
-  { l: '🍜 먹방',    q: '먹방' },
-  { l: '🎮 게임',    q: '게임' },
-  { l: '💄 뷰티',    q: '뷰티 메이크업' },
-  { l: '💪 운동',    q: '운동 헬스' },
-  { l: '🏕️ 여행',   q: '여행 브이로그' },
-  { l: '📱 IT',      q: 'IT 테크 리뷰' },
-  { l: '🎵 음악',    q: '음악 커버' },
-  { l: '💰 재테크',  q: '재테크 주식' },
-  { l: '😂 유머',    q: '유머 코미디' },
-  { l: '👶 육아',    q: '육아 아기' },
-  { l: '🐾 반려동물',q: '강아지 고양이' },
-  { l: '📚 교육',    q: '교육 강의' },
-  { l: '🍳 요리',    q: '요리 레시피' },
+/* ======================================================
+   데이터
+   ====================================================== */
+var CATS = [
+  {l:'전체',q:''},{l:'🍜 먹방',q:'먹방'},{l:'🎮 게임',q:'게임'},
+  {l:'💄 뷰티',q:'뷰티 메이크업'},{l:'💪 운동',q:'운동 헬스'},
+  {l:'🏕️ 여행',q:'여행 브이로그'},{l:'📱 IT',q:'IT 테크 리뷰'},
+  {l:'🎵 음악',q:'음악 커버'},{l:'💰 재테크',q:'재테크 주식'},
+  {l:'😂 유머',q:'유머 코미디'},{l:'👶 육아',q:'육아 아기'},
+  {l:'🐾 반려동물',q:'강아지 고양이'},{l:'📚 교육',q:'교육 강의'},
+  {l:'🍳 요리',q:'요리 레시피'}
 ];
 
-/* ============================================================
-   AI IDEAS DATA
-   ============================================================ */
-const IDEAS = [
-  { title: '요즘 MZ가 열광하는 "갓생 루틴" 챌린지', tags: ['라이프스타일','챌린지','MZ'], why: '갓생 트렌드 지속. 아침 루틴+생산성 = 높은 검색량' },
-  { title: 'AI 도구로 월 100만 원 버는 현실적인 방법', tags: ['AI','수익화','튜토리얼'], why: 'AI 수익화 관심 폭발. 실용 정보는 롱테일 조회수 확보' },
-  { title: '편의점 음식만으로 한 달 살기 도전', tags: ['먹방','챌린지','리뷰'], why: '편의점 식품 다양화로 새 먹방 포맷. 저예산 도전물 인기 지속' },
-  { title: '집에서 만드는 카페 음료 레시피 TOP 10', tags: ['요리','라이프','카페'], why: '홈카페+절약 트렌드 결합. 저장율 높은 포맷' },
-  { title: '게임계 정보 총정리 – 이번 달 무조건 해야 할 게임', tags: ['게임','리뷰','정보'], why: '월간 정리 포맷은 반복 구독 유도에 최적' },
-  { title: '주식 초보자도 이해하는 경제 뉴스 해설', tags: ['재테크','교육','뉴스'], why: '경제 불확실성으로 정보 수요 증가. 높은 CPM 분야' },
-  { title: '혼자 여행의 모든 것 – 예산별 국내 숨은 명소', tags: ['여행','브이로그','정보'], why: '솔로 트래블 증가. 실용 정보는 공유율 높음' },
-  { title: '운동 초보자 30일 변신 챌린지', tags: ['헬스','챌린지','동기부여'], why: '변신 과정 콘텐츠는 구독 유지율 최고' },
-  { title: '2026 뷰티 트렌드 완벽 정리 & 추천 제품', tags: ['뷰티','트렌드','리뷰'], why: '연간 트렌드 영상은 초반 폭발적 조회수' },
-  { title: '초등학생도 이해하는 AI 쉽게 배우기', tags: ['교육','AI','키즈'], why: 'AI 교육 수요 폭발. 쉬운 언어로 독보적 포지셔닝 가능' },
-  { title: '반려동물 건강 체크리스트 – 수의사가 알려주는 진짜 정보', tags: ['반려동물','정보','건강'], why: '반려인 증가+전문성 결합. 신뢰도 높고 공유율 우수' },
-  { title: 'SNS 알고리즘 완전 정복 – 팔로워 1만 만드는 법', tags: ['마케팅','SNS','성장'], why: '크리에이터 지망생 급증. 성장 노하우는 빠른 구독 확보 가능' },
+var IDEAS = [
+  {t:'요즘 MZ가 열광하는 "갓생 루틴" 챌린지',       tags:['라이프스타일','챌린지','MZ'],  w:'갓생 트렌드 지속. 아침 루틴+생산성 = 높은 검색량'},
+  {t:'AI 도구로 월 100만 원 버는 현실적인 방법',      tags:['AI','수익화','튜토리얼'],     w:'AI 수익화 관심 폭발. 실용 정보는 롱테일 조회수'},
+  {t:'편의점 음식만으로 한 달 살기 도전',             tags:['먹방','챌린지','리뷰'],       w:'편의점 식품 다양화. 저예산 도전물 인기 지속'},
+  {t:'집에서 만드는 카페 음료 레시피 TOP 10',         tags:['요리','라이프','카페'],       w:'홈카페+절약 트렌드 결합. 저장율 높은 포맷'},
+  {t:'게임계 총정리 – 이번 달 무조건 해야 할 게임',   tags:['게임','리뷰','정보'],        w:'월간 정리 포맷은 반복 구독 유도에 최적'},
+  {t:'주식 초보자도 이해하는 경제 뉴스 해설',         tags:['재테크','교육','뉴스'],      w:'경제 불확실성으로 정보 수요 증가. 높은 CPM'},
+  {t:'혼자 여행의 모든 것 – 예산별 국내 숨은 명소',  tags:['여행','브이로그','정보'],    w:'솔로 트래블 증가. 실용 정보는 공유율 높음'},
+  {t:'운동 초보자 30일 변신 챌린지',                  tags:['헬스','챌린지','동기부여'],  w:'변신 과정 콘텐츠는 구독 유지율 최고'},
+  {t:'2026 뷰티 트렌드 완벽 정리 & 추천 제품',        tags:['뷰티','트렌드','리뷰'],      w:'연간 트렌드 영상은 초반 폭발적 조회수'},
+  {t:'초등학생도 이해하는 AI 쉽게 배우기',            tags:['교육','AI','키즈'],         w:'AI 교육 수요 폭발. 쉬운 언어로 독보적 포지셔닝'},
+  {t:'반려동물 건강 체크리스트 – 수의사가 알려주는 진짜 정보', tags:['반려동물','건강','정보'], w:'반려인 증가+전문성 결합. 공유율 우수'},
+  {t:'SNS 알고리즘 완전 정복 – 팔로워 1만 만드는 법', tags:['마케팅','SNS','성장'],      w:'크리에이터 지망생 급증. 성장 노하우 채널 수요 폭발'}
 ];
 
-/* ============================================================
-   TOOLS DATA
-   ============================================================ */
-const TOOLS_DATA = [
-  { sec: '✂️ 영상 편집', items: [
-    { i:'🎬', n:'DaVinci Resolve', d:'전문가용 무료 영상 편집', u:'https://www.blackmagicdesign.com/kr/products/davinciresolve', b:'무료' },
-    { i:'⚡', n:'CapCut', d:'모바일/PC 겸용 쇼츠 최적화 편집', u:'https://www.capcut.com', b:'무료' },
-    { i:'🎨', n:'Adobe Premiere Pro', d:'업계 표준 영상 편집', u:'https://www.adobe.com/kr/products/premiere.html', b:'유료' },
-    { i:'🌟', n:'Canva Video', d:'템플릿 기반 간편 영상 제작', u:'https://www.canva.com', b:'무료/유료' },
+var TOOL_SECS = [
+  {name:'✂️ 영상 편집', items:[
+    {i:'🎬',n:'DaVinci Resolve',d:'전문가용 무료 영상 편집',u:'https://www.blackmagicdesign.com/kr/products/davinciresolve',b:'무료'},
+    {i:'⚡',n:'CapCut',d:'모바일/PC 겸용 쇼츠 최적화',u:'https://www.capcut.com',b:'무료'},
+    {i:'🎨',n:'Adobe Premiere Pro',d:'업계 표준 영상 편집',u:'https://www.adobe.com/kr/products/premiere.html',b:'유료'},
+    {i:'🌟',n:'Canva Video',d:'템플릿 기반 간편 영상 제작',u:'https://www.canva.com',b:'무료/유료'}
   ]},
-  { sec: '🤖 AI 영상 생성', items: [
-    { i:'🧠', n:'Sora (OpenAI)', d:'텍스트로 고품질 영상 생성 AI', u:'https://sora.com', b:'유료' },
-    { i:'💫', n:'Runway Gen-3', d:'AI 영상 생성 및 편집 플랫폼', u:'https://runwayml.com', b:'유료' },
-    { i:'🎯', n:'Pika Labs', d:'간편한 AI 영상 생성 도구', u:'https://pika.art', b:'무료/유료' },
-    { i:'🔮', n:'HeyGen', d:'AI 아바타 영상 제작', u:'https://www.heygen.com', b:'유료' },
+  {name:'🤖 AI 영상 생성', items:[
+    {i:'🧠',n:'Sora (OpenAI)',d:'텍스트로 고품질 영상 생성',u:'https://sora.com',b:'유료'},
+    {i:'💫',n:'Runway Gen-3',d:'AI 영상 생성 및 편집',u:'https://runwayml.com',b:'유료'},
+    {i:'🎯',n:'Pika Labs',d:'간편한 AI 영상 생성',u:'https://pika.art',b:'무료/유료'},
+    {i:'🔮',n:'HeyGen',d:'AI 아바타 영상 제작',u:'https://www.heygen.com',b:'유료'}
   ]},
-  { sec: '🎵 음악 & 효과음', items: [
-    { i:'🎼', n:'YouTube Audio Library', d:'유튜브 무료 배경음악·효과음', u:'https://studio.youtube.com', b:'무료' },
-    { i:'🎵', n:'Epidemic Sound', d:'저작권 걱정 없는 음악 서비스', u:'https://www.epidemicsound.com', b:'유료' },
-    { i:'🎹', n:'Pixabay Music', d:'무료 저작권 프리 음악', u:'https://pixabay.com/ko/music/', b:'무료' },
-    { i:'🎧', n:'Artlist', d:'영상 크리에이터 음악 라이선스', u:'https://artlist.io', b:'유료' },
+  {name:'🎵 음악 & 효과음', items:[
+    {i:'🎼',n:'YouTube Audio Library',d:'유튜브 무료 배경음악·효과음',u:'https://studio.youtube.com',b:'무료'},
+    {i:'🎵',n:'Epidemic Sound',d:'저작권 걱정 없는 음악 서비스',u:'https://www.epidemicsound.com',b:'유료'},
+    {i:'🎹',n:'Pixabay Music',d:'무료 저작권 프리 음악',u:'https://pixabay.com/ko/music/',b:'무료'},
+    {i:'🎧',n:'Artlist',d:'영상 크리에이터 음악 라이선스',u:'https://artlist.io',b:'유료'}
   ]},
-  { sec: '🖼️ 썸네일 & 그래픽', items: [
-    { i:'🎨', n:'Canva', d:'드래그앤드롭 썸네일 디자인', u:'https://www.canva.com', b:'무료/유료' },
-    { i:'✂️', n:'Remove.bg', d:'배경 자동 제거 AI', u:'https://www.remove.bg', b:'무료/유료' },
-    { i:'🖼️', n:'Adobe Firefly', d:'AI 이미지 생성 및 편집', u:'https://www.adobe.com/kr/products/firefly.html', b:'유료' },
-    { i:'⚡', n:'Midjourney', d:'고품질 AI 이미지 생성', u:'https://www.midjourney.com', b:'유료' },
+  {name:'🖼️ 썸네일 & 그래픽', items:[
+    {i:'🎨',n:'Canva',d:'드래그앤드롭 썸네일 디자인',u:'https://www.canva.com',b:'무료/유료'},
+    {i:'✂️',n:'Remove.bg',d:'배경 자동 제거 AI',u:'https://www.remove.bg',b:'무료/유료'},
+    {i:'🖼️',n:'Adobe Firefly',d:'AI 이미지 생성 및 편집',u:'https://www.adobe.com/kr/products/firefly.html',b:'유료'},
+    {i:'⚡',n:'Midjourney',d:'고품질 AI 이미지 생성',u:'https://www.midjourney.com',b:'유료'}
   ]},
-  { sec: '📊 분석 & SEO', items: [
-    { i:'📈', n:'TubeBuddy', d:'유튜브 SEO 최적화 확장 프로그램', u:'https://www.tubebuddy.com', b:'무료/유료' },
-    { i:'🔍', n:'VidIQ', d:'키워드 분석 및 경쟁 채널 모니터링', u:'https://vidiq.com', b:'무료/유료' },
-    { i:'📊', n:'Social Blade', d:'채널 통계 성장 추이 분석', u:'https://socialblade.com', b:'무료' },
-    { i:'🎯', n:'Google Trends', d:'실시간 검색 트렌드 파악', u:'https://trends.google.com/trends/?geo=KR', b:'무료' },
-  ]},
+  {name:'📊 분석 & SEO', items:[
+    {i:'📈',n:'TubeBuddy',d:'유튜브 SEO 최적화 확장',u:'https://www.tubebuddy.com',b:'무료/유료'},
+    {i:'🔍',n:'VidIQ',d:'키워드 분석 및 경쟁 채널 모니터링',u:'https://vidiq.com',b:'무료/유료'},
+    {i:'📊',n:'Social Blade',d:'채널 통계 성장 추이 분석',u:'https://socialblade.com',b:'무료'},
+    {i:'🎯',n:'Google Trends',d:'실시간 검색 트렌드 파악',u:'https://trends.google.com/trends/?geo=KR',b:'무료'}
+  ]}
 ];
 
-/* ============================================================
-   LAYOUT SYNC  ← 핵심 수정: 광고 침범 문제 해결
-   ============================================================ */
-function syncLayout() {
-  const adBar    = document.getElementById('topAdBar');
-  const header   = document.getElementById('header');
-  const sidebar  = document.getElementById('sidebar');
-  const appWrap  = document.getElementById('appWrap');
-  const footer   = document.getElementById('footer');
-
-  const adH  = CFG.topHide ? 0 : (adBar ? adBar.offsetHeight : 0);
-  const hdrH = 56; // header 고정 높이
-
-  const totalTop = adH + hdrH;
-
-  // 헤더 위치
-  header.style.top = adH + 'px';
-
-  // 사이드바 위치 & 높이
-  sidebar.style.top    = totalTop + 'px';
-  sidebar.style.height = `calc(100vh - ${totalTop}px)`;
-
-  // 앱 전체 상단 여백 (콘텐츠가 헤더 아래에서 시작)
-  appWrap.style.paddingTop  = totalTop + 'px';
-  appWrap.style.paddingLeft = '220px'; // 사이드바 너비
-
-  // 푸터 왼쪽 여백
-  footer.style.marginLeft = '220px';
-
-  // 모바일
-  if (window.innerWidth <= 768) {
-    appWrap.style.paddingLeft = '0px';
-    footer.style.marginLeft   = '0px';
-  }
-}
-
-/* ============================================================
-   HELPER FUNCTIONS
-   ============================================================ */
-function fmtN(n) {
-  n = parseInt(n || 0);
-  if (n >= 1e8) return (n / 1e8).toFixed(1) + '억';
-  if (n >= 1e4) return (n / 1e4).toFixed(1) + '만';
-  if (n >= 1e3) return (n / 1e3).toFixed(1) + '천';
+/* ======================================================
+   유틸
+   ====================================================== */
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtN(n){
+  n=parseInt(n||0);
+  if(n>=1e8) return (n/1e8).toFixed(1)+'억';
+  if(n>=1e4) return (n/1e4).toFixed(1)+'만';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'천';
   return n.toLocaleString();
 }
+function parseDur(iso){
+  if(!iso) return '';
+  var m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m) return '';
+  var h=+( m[1]||0), mi=+(m[2]||0), s=+(m[3]||0);
+  return h ? h+':'+pad(mi)+':'+pad(s) : mi+':'+pad(s);
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+function isShort(v){
+  var d=v.contentDetails&&v.contentDetails.duration||'';
+  var m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m) return false;
+  return (+(m[1]||0)*3600)+(+(m[2]||0)*60)+(+(m[3]||0)) <= 60;
+}
+function viral(v){
+  var st=v.statistics||{};
+  var vw=+(st.viewCount||0), lk=+(st.likeCount||0), cm=+(st.commentCount||0);
+  var age=Math.max((Date.now()-new Date(v.snippet&&v.snippet.publishedAt||0))/864e5,1);
+  var sc=Math.log10(Math.max(vw/age,1))*18;
+  if(vw>0){sc+=(lk/vw)*60;sc+=(cm/vw)*40;}
+  return Math.min(Math.round(sc),100);
+}
+function pushAd(){ try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){} }
 
-function parseDur(iso) {
-  if (!iso) return '';
-  const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if (!m) return '';
-  const h = parseInt(m[1] || 0), mi = parseInt(m[2] || 0), s = parseInt(m[3] || 0);
-  if (h) return `${h}:${String(mi).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  return `${mi}:${String(s).padStart(2,'0')}`;
+var _toastT=null;
+function toast(msg,ms){
+  var el=$('toast');
+  el.textContent=msg; el.classList.add('on');
+  clearTimeout(_toastT);
+  _toastT=setTimeout(function(){el.classList.remove('on');},ms||3000);
 }
 
-function isShorts(v) {
-  const dur = v.contentDetails?.duration || '';
-  const m   = dur.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if (!m) return false;
-  const tot = (parseInt(m[1]||0)*3600) + (parseInt(m[2]||0)*60) + parseInt(m[3]||0);
-  return tot <= 60;
+/* ======================================================
+   레이아웃 동기화  ← 광고 침범 완전 해결
+   ====================================================== */
+function syncLayout(){
+  var topAdEl = $('topAd');
+  var adH  = (topAdEl && !CFG.topHide) ? topAdEl.offsetHeight : 0;
+  var hdrH = 56;
+  var total= adH + hdrH;
+  var sideW= 220;
+
+  // 헤더 top
+  $('hdr').style.top = adH + 'px';
+
+  // 사이드바 top / height
+  var sb = $('sidebar');
+  sb.style.top    = total + 'px';
+  sb.style.height = 'calc(100vh - ' + total + 'px)';
+
+  // wrap padding (콘텐츠 시작 위치)
+  var wrap = $('wrap');
+  wrap.style.paddingTop  = total + 'px';
+  wrap.style.paddingLeft = (window.innerWidth > 768 ? sideW : 0) + 'px';
+
+  // 푸터
+  $('footer').style.marginLeft = (window.innerWidth > 768 ? sideW : 0) + 'px';
 }
 
-function viralScore(v) {
-  const st   = v.statistics || {};
-  const views = parseInt(st.viewCount   || 0);
-  const likes = parseInt(st.likeCount   || 0);
-  const coms  = parseInt(st.commentCount|| 0);
-  const age   = Math.max((Date.now() - new Date(v.snippet?.publishedAt || 0)) / 86400000, 1);
-  let sc = Math.log10(Math.max(views / age, 1)) * 18;
-  if (views > 0) { sc += (likes / views) * 60; sc += (coms / views) * 40; }
-  return Math.min(Math.round(sc), 100);
+/* ======================================================
+   키 검증
+   ====================================================== */
+function keysOK(){
+  return CFG.KEYS.some(function(k){
+    return k.length>30 && k.indexOf('여기에')<0 && k.indexOf('REPLACE')<0 && k.indexOf('_입력')<0 && k.indexOf('실제키')<0;
+  });
 }
-
-function esc(s) { return String(s || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-function pushAd(ins) {
-  try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) {}
+function showKeyBanner(){
+  var b=$('keyBanner');
+  b.innerHTML='🔑 <strong>API 키 미설정</strong> &ndash; 코드 상단 <code>CFG.KEYS</code>에 실제 YouTube Data API v3 키를 입력하세요. &nbsp;<a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console →</a>';
+  b.style.display='block';
 }
+function hideKeyBanner(){ $('keyBanner').style.display='none'; }
 
-/* ============================================================
-   BANNER / ERROR
-   ============================================================ */
-const ERR_MSGS = {
-  quota:     '⛔ API 일일 할당량 초과 – 매일 오후 4시(KST)에 초기화됩니다.',
-  badkey:    '🔑 API 키가 유효하지 않습니다 (keyInvalid). CFG.KEYS 배열을 확인하세요.',
-  notconfig: '⚙️ YouTube Data API v3가 활성화되지 않았습니다.',
-  referer:   '🌐 API 키의 HTTP 리퍼러 제한에 걸렸습니다.',
-  forbidden: '🚫 API 키 권한 오류입니다.',
-  network:   '📡 네트워크 오류가 발생했습니다. 인터넷 연결을 확인하세요.',
-  api:       '❓ API 오류가 발생했습니다.',
+/* ======================================================
+   에러 배너
+   ====================================================== */
+var ERR={
+  quota:    '⛔ API 할당량 초과 (KST 오후 4시 초기화)',
+  badkey:   '🔑 API 키 오류 (keyInvalid)',
+  notconfig:'⚙️ YouTube Data API v3 미활성화',
+  referer:  '🌐 HTTP 리퍼러 제한 오류',
+  forbidden:'🚫 API 키 권한 오류',
+  network:  '📡 네트워크 오류',
+  api:      '❓ API 오류'
 };
-const ERR_LINKS = {
-  quota:     'https://console.cloud.google.com/projectcreate',
-  badkey:    'https://console.cloud.google.com/apis/credentials',
-  notconfig: 'https://console.cloud.google.com/apis/library/youtube.googleapis.com',
-  referer:   'https://console.cloud.google.com/apis/credentials',
-  forbidden: 'https://console.cloud.google.com/apis/credentials',
-  network:   '',
-  api:       '',
+var ERR_LINK={
+  quota:    'https://console.cloud.google.com/projectcreate',
+  badkey:   'https://console.cloud.google.com/apis/credentials',
+  notconfig:'https://console.cloud.google.com/apis/library/youtube.googleapis.com',
+  referer:  'https://console.cloud.google.com/apis/credentials',
+  forbidden:'https://console.cloud.google.com/apis/credentials'
 };
-
-function showErr(type, extra) {
-  const b = document.getElementById('errBanner');
-  const msg  = ERR_MSGS[type]  || ERR_MSGS.api;
-  const link = ERR_LINKS[type] || '';
-  b.innerHTML = msg + (extra ? ` (${extra})` : '') + (link ? ` &nbsp;<a href="${link}" target="_blank">해결하기 →</a>` : '');
-  b.style.display = 'block';
+function showErr(type,extra){
+  var b=$('errBanner');
+  var msg=ERR[type]||ERR.api;
+  var lnk=ERR_LINK[type]?(' &nbsp;<a href="'+ERR_LINK[type]+'" target="_blank">해결하기 →</a>'):'';
+  b.innerHTML=msg+(extra?' ('+extra+')':'')+lnk;
+  b.style.display='block';
 }
-function hideErr() { document.getElementById('errBanner').style.display = 'none'; }
+function hideErr(){ $('errBanner').style.display='none'; }
 
-function keysOK() {
-  return CFG.KEYS.some(k => k.length > 30 && !k.includes('여기에') && !k.includes('REPLACE') && !k.includes('_입력'));
-}
-function showKeyBanner() {
-  const b = document.getElementById('keyBanner');
-  b.innerHTML = `🔑 <strong>API 키 미설정</strong> – 코드 상단 <code>CFG.KEYS</code>에 실제 YouTube Data API v3 키를 입력하세요.
-    &nbsp;<a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console →</a>`;
-  b.style.display = 'block';
-}
-function hideKeyBanner() { document.getElementById('keyBanner').style.display = 'none'; }
+/* ======================================================
+   API 호출 (자동 키 순환 + 타임아웃)
+   ====================================================== */
+function apiCall(url, depth){
+  depth=depth||0;
+  var key=CFG.KEYS[CFG.ki % CFG.KEYS.length];
+  var sep=url.indexOf('?')>=0?'&':'?';
+  var full=url+sep+'key='+encodeURIComponent(key);
 
-/* ============================================================
-   API CALL
-   ============================================================ */
-async function apiCall(url, depth) {
-  depth = depth || 0;
-  const key = CFG.KEYS[CFG.ki % CFG.KEYS.length];
-  const sep = url.includes('?') ? '&' : '?';
-  const fullUrl = `${url}${sep}key=${encodeURIComponent(key)}`;
+  return new Promise(function(resolve){
+    var ctrl=new AbortController();
+    var tid=setTimeout(function(){ctrl.abort();},12000);
 
-  let data;
-  try {
-    const ctrl = new AbortController();
-    const tid  = setTimeout(() => ctrl.abort(), 12000);
-    const res  = await fetch(fullUrl, { signal: ctrl.signal });
-    clearTimeout(tid);
-    data = await res.json();
-  } catch (e) {
-    if (e.name === 'AbortError') showErr('network', '요청 시간 초과');
-    else                         showErr('network', e.message);
-    return null;
-  }
-
-  if (data && data.error) {
-    const reason = data.error.errors?.[0]?.reason || '';
-    const typeMap = {
-      quotaExceeded: 'quota', dailyLimitExceeded: 'quota',
-      keyInvalid: 'badkey',
-      accessNotConfigured: 'notconfig',
-      ipRefererBlocked: 'referer', refererBlocked: 'referer',
-      forbidden: 'forbidden', insufficientPermissions: 'forbidden',
-    };
-    const errType = typeMap[reason] || 'api';
-
-    if (errType === 'quota' && depth < CFG.KEYS.length - 1) {
-      CFG.ki++;
-      return apiCall(url, depth + 1);
-    }
-    showErr(errType, reason);
-    return null;
-  }
-
-  hideErr();
-  return data;
-}
-
-/* ============================================================
-   FETCH VIDEOS
-   두 모드:
-   - 키워드 없음 → videos.list?chart=mostPopular  (1 유닛)
-   - 키워드 있음 → search.list + videos.list       (101 유닛)
-   ============================================================ */
-async function fetchVideos(pageToken) {
-  pageToken = pageToken || '';
-  const kw = CFG.query || CFG.cat;
-
-  if (!kw) {
-    /* ── 인기 차트 모드 ── */
-    const url =
-      `https://www.googleapis.com/youtube/v3/videos` +
-      `?part=snippet,statistics,contentDetails` +
-      `&chart=mostPopular&regionCode=${CFG.region}&hl=${CFG.lang}&maxResults=24` +
-      (pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : '');
-
-    const data = await apiCall(url);
-    if (!data) return null;
-    CFG.npt  = data.nextPageToken || '';
-    CFG.done = !CFG.npt;
-    return data.items || [];
-
-  } else {
-    /* ── 검색 모드 ── */
-    let q = kw.replace(/#/g, '').trim();
-    if (CFG.type === 'short') q += ' shorts 쇼츠';
-    else if (CFG.type === 'long') q += ' vlog';
-
-    const sUrl =
-      `https://www.googleapis.com/youtube/v3/search` +
-      `?part=snippet&type=video&regionCode=${CFG.region}&relevanceLanguage=${CFG.lang}` +
-      `&maxResults=24&q=${encodeURIComponent(q)}&order=viewCount` +
-      (pageToken ? `&pageToken=${encodeURIComponent(pageToken)}` : '');
-
-    const sData = await apiCall(sUrl);
-    if (!sData) return null;
-
-    const ids = (sData.items || []).map(i => i.id && i.id.videoId).filter(Boolean).join(',');
-    if (!ids) { CFG.npt = ''; CFG.done = true; return []; }
-
-    const vData = await apiCall(
-      `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${encodeURIComponent(ids)}`
-    );
-    if (!vData) return null;
-
-    CFG.npt  = sData.nextPageToken || '';
-    CFG.done = !CFG.npt;
-    return vData.items || [];
-  }
-}
-
-/* ============================================================
-   RENDER VIDEO GRID
-   ============================================================ */
-let _videos = [];
-
-async function loadHot(reset) {
-  reset = (reset !== false);
-  if (CFG.busy) return false;
-
-  if (!keysOK()) { showKeyBanner(); hideSpinner('hot'); return false; }
-  hideKeyBanner();
-
-  CFG.busy = true;
-
-  if (reset) {
-    _videos    = [];
-    CFG.npt    = '';
-    CFG.done   = false;
-    document.getElementById('videoGrid').innerHTML   = '';
-    document.getElementById('loadMoreBtn').style.display = 'none';
-  }
-
-  showSpinner('hot');
-  const items = await fetchVideos(reset ? '' : CFG.npt);
-  hideSpinner('hot');
-  CFG.busy = false;
-
-  if (items === null) return false;
-  if (items.length === 0) {
-    if (reset) document.getElementById('videoGrid').innerHTML =
-      '<p style="color:#666;padding:40px;text-align:center;grid-column:1/-1">검색 결과가 없습니다.</p>';
-    return false;
-  }
-
-  // type 필터 (차트 모드에서 적용)
-  let filtered = items;
-  if (CFG.type === 'short') filtered = items.filter(isShorts);
-  else if (CFG.type === 'long') filtered = items.filter(v => !isShorts(v));
-
-  _videos = reset ? filtered : _videos.concat(filtered);
-  appendVideoCards(filtered);
-
-  document.getElementById('loadMoreBtn').style.display = CFG.done ? 'none' : 'block';
-  return true;
-}
-
-function appendVideoCards(items) {
-  const grid = document.getElementById('videoGrid');
-
-  items.forEach(function(v, i) {
-    // 6번째마다 인피드 광고
-    if (i > 0 && i % 6 === 0) {
-      const adDiv = document.createElement('div');
-      adDiv.className = 'inFeedAd';
-      adDiv.innerHTML = '<ins class="adsbygoogle" style="display:block;width:100%;min-height:180px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="8888888888" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86"></ins>';
-      grid.appendChild(adDiv);
-      pushAd();
-    }
-
-    const sc    = viralScore(v);
-    const sh    = isShorts(v);
-    const dur   = parseDur(v.contentDetails && v.contentDetails.duration);
-    const thumb = (v.snippet && v.snippet.thumbnails && (v.snippet.thumbnails.medium || v.snippet.thumbnails.default || {}).url) || '';
-    const title = esc(v.snippet && v.snippet.title);
-    const ch    = esc(v.snippet && v.snippet.channelTitle);
-
-    const card = document.createElement('div');
-    card.className = 'videoCard';
-    card.innerHTML =
-      '<div class="thumbWrap">' +
-        '<img src="' + thumb + '" alt="" loading="lazy" onerror="this.style.background=\'#1a1a2e\'">' +
-        (sh ? '<span class="tagShorts">SHORTS</span>' : '') +
-        (dur ? '<span class="tagDur">' + dur + '</span>' : '') +
-        '<span class="tagScore">🔥' + sc + '</span>' +
-      '</div>' +
-      '<div class="cardBody">' +
-        '<div class="cardTitle">' + title + '</div>' +
-        '<div class="cardCh">📺 ' + ch + '</div>' +
-        '<div class="cardStats">' +
-          '<span>👁️ ' + fmtN(v.statistics && v.statistics.viewCount) + '</span>' +
-          '<span>👍 ' + fmtN(v.statistics && v.statistics.likeCount) + '</span>' +
-        '</div>' +
-      '</div>';
-
-    card.addEventListener('click', function() { openVideoModal(v); });
-    grid.appendChild(card);
+    fetch(full,{signal:ctrl.signal})
+      .then(function(r){return r.json();})
+      .then(function(data){
+        clearTimeout(tid);
+        if(data&&data.error){
+          var reason=(data.error.errors&&data.error.errors[0]&&data.error.errors[0].reason)||'';
+          var typeMap={
+            quotaExceeded:'quota',dailyLimitExceeded:'quota',
+            keyInvalid:'badkey',accessNotConfigured:'notconfig',
+            ipRefererBlocked:'referer',refererBlocked:'referer',
+            forbidden:'forbidden',insufficientPermissions:'forbidden'
+          };
+          var et=typeMap[reason]||'api';
+          if(et==='quota' && depth < CFG.KEYS.length-1){
+            CFG.ki++;
+            resolve(apiCall(url,depth+1));
+            return;
+          }
+          showErr(et,reason);
+          resolve(null);
+          return;
+        }
+        hideErr();
+        resolve(data);
+      })
+      .catch(function(e){
+        clearTimeout(tid);
+        showErr('network', e.name==='AbortError'?'시간초과':e.message);
+        resolve(null);
+      });
   });
 }
 
-async function loadMore() {
-  if (CFG.done || CFG.busy) return;
-  await loadHot(false);
+/* ======================================================
+   영상 가져오기
+   mostPopular : 1 유닛  (키워드 없을 때)
+   search+videos: 101 유닛 (키워드 있을 때)
+   ====================================================== */
+function fetchVideos(pageToken){
+  pageToken=pageToken||'';
+  var kw=CFG.query||CFG.cat;
+
+  if(!kw){
+    /* 인기 차트 */
+    var url='https://www.googleapis.com/youtube/v3/videos'
+      +'?part=snippet,statistics,contentDetails'
+      +'&chart=mostPopular&regionCode='+CFG.region+'&hl='+CFG.lang+'&maxResults=24'
+      +(pageToken?'&pageToken='+encodeURIComponent(pageToken):'');
+
+    return apiCall(url).then(function(data){
+      if(!data) return null;
+      CFG.npt  = data.nextPageToken||'';
+      CFG.allDone = !CFG.npt;
+      return data.items||[];
+    });
+  }
+
+  /* 검색 모드 */
+  var q=kw.replace(/#/g,'').trim();
+  if(CFG.vtype==='short') q+=' shorts 쇼츠';
+  else if(CFG.vtype==='long') q+=' vlog';
+
+  var surl='https://www.googleapis.com/youtube/v3/search'
+    +'?part=snippet&type=video&regionCode='+CFG.region+'&relevanceLanguage='+CFG.lang
+    +'&maxResults=24&q='+encodeURIComponent(q)+'&order=viewCount'
+    +(pageToken?'&pageToken='+encodeURIComponent(pageToken):'');
+
+  return apiCall(surl).then(function(sd){
+    if(!sd) return null;
+    var ids=(sd.items||[]).map(function(i){return i.id&&i.id.videoId;}).filter(Boolean).join(',');
+    if(!ids){ CFG.npt=''; CFG.allDone=true; return []; }
+
+    return apiCall(
+      'https://www.googleapis.com/youtube/v3/videos'
+      +'?part=snippet,statistics,contentDetails&id='+encodeURIComponent(ids)
+    ).then(function(vd){
+      if(!vd) return null;
+      CFG.npt  = sd.nextPageToken||'';
+      CFG.allDone = !CFG.npt;
+      return vd.items||[];
+    });
+  });
 }
 
-/* ============================================================
-   SEARCH
-   ============================================================ */
-async function doSearch() {
-  const q = document.getElementById('searchInput').value.trim();
-  if (!q) { toast('검색어를 입력하세요'); return; }
+/* ======================================================
+   영상 그리드 렌더
+   ====================================================== */
+var _vids=[];
 
+function loadHot(reset){
+  if(reset===undefined) reset=true;
+  if(CFG.loading) return Promise.resolve(false);
+
+  if(!keysOK()){ showKeyBanner(); hideSpin('hot'); return Promise.resolve(false); }
+  hideKeyBanner();
+
+  CFG.loading=true;
+  if(reset){ _vids=[]; CFG.npt=''; CFG.allDone=false; $('vgrid').innerHTML=''; $('moreBtn').style.display='none'; }
+
+  showSpin('hot');
+
+  return fetchVideos(reset?'':CFG.npt).then(function(items){
+    hideSpin('hot');
+    CFG.loading=false;
+
+    if(!items){ return false; }
+    if(!items.length){
+      if(reset) $('vgrid').innerHTML='<p style="color:#666;padding:40px;text-align:center;grid-column:1/-1">결과가 없습니다.</p>';
+      return false;
+    }
+
+    var filtered=items;
+    if(CFG.vtype==='short') filtered=items.filter(isShort);
+    else if(CFG.vtype==='long') filtered=items.filter(function(v){return !isShort(v);});
+
+    _vids=reset?filtered:_vids.concat(filtered);
+    appendCards(filtered);
+    $('moreBtn').style.display=CFG.allDone?'none':'block';
+    return true;
+  });
+}
+
+function appendCards(items){
+  var grid=$('vgrid');
+  items.forEach(function(v,i){
+    /* 6개마다 인피드 광고 */
+    if(i>0 && i%6===0){
+      var ad=document.createElement('div');
+      ad.className='ifad';
+      ad.innerHTML='<ins class="adsbygoogle" style="display:block;width:100%;min-height:180px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="8888888888" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86"></ins>';
+      grid.appendChild(ad);
+      pushAd();
+    }
+
+    var sc  =viral(v);
+    var sh  =isShort(v);
+    var dur =parseDur(v.contentDetails&&v.contentDetails.duration);
+    var sn  =v.snippet||{};
+    var th  =(sn.thumbnails&&(sn.thumbnails.medium||sn.thumbnails.default)||{}).url||'';
+    var ttl =esc(sn.title);
+    var ch  =esc(sn.channelTitle);
+    var st  =v.statistics||{};
+
+    var c=document.createElement('div');
+    c.className='vcard';
+    c.innerHTML=
+      '<div class="vthumb">'+
+        '<img src="'+th+'" alt="" loading="lazy" onerror="this.style.background=\'#1a1a2e\'">'+
+        (sh?'<span class="tag shorts">SHORTS</span>':'')+
+        (dur?'<span class="tag dur">'+dur+'</span>':'')+
+        '<span class="tag score">🔥'+sc+'</span>'+
+      '</div>'+
+      '<div class="vinfo">'+
+        '<div class="vtitle">'+ttl+'</div>'+
+        '<div class="vch">📺 '+ch+'</div>'+
+        '<div class="vstats"><span>👁 '+fmtN(st.viewCount)+'</span><span>👍 '+fmtN(st.likeCount)+'</span></div>'+
+      '</div>';
+
+    c.addEventListener('click',function(){ openVmod(v); });
+    grid.appendChild(c);
+  });
+}
+
+/* ======================================================
+   탭 전환  ← 완전 재작성 (data-tab 속성 기반)
+   ====================================================== */
+function switchTab(tabId){
+  /* 섹션 전환 */
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
+  var target=document.getElementById('sec-'+tabId);
+  if(target) target.classList.add('on');
+
+  /* 헤더 nav */
+  document.querySelectorAll('#hnav .hnav-btn').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-tab')===tabId);
+  });
+
+  /* 사이드바 */
+  document.querySelectorAll('#sidebar .snav-btn').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-tab')===tabId);
+  });
+}
+
+/* ======================================================
+   검색
+   ====================================================== */
+function doSearch(){
+  var q=$('q').value.trim();
+  if(!q){ toast('검색어를 입력하세요'); return; }
   CFG.sCnt++;
-
-  if (CFG.sCnt % CFG.GATE_N === 0) {
-    openGate(function() {
-      CFG.query = q; CFG.cat = ''; resetCatChips();
-      loadHot(true);
-    });
+  if(CFG.sCnt%CFG.GATE_N===0){
+    openGate(function(){ CFG.query=q; CFG.cat=''; resetChips(); loadHot(true); });
     return;
   }
-  if (CFG.sCnt % CFG.INTER_N === 0) openInter();
-
-  CFG.query = q; CFG.cat = ''; resetCatChips();
-  await loadHot(true);
+  if(CFG.sCnt%CFG.INTER_N===0) openInter();
+  CFG.query=q; CFG.cat=''; resetChips();
+  loadHot(true);
 }
 
-/* ============================================================
-   TYPE TABS
-   ============================================================ */
-function initTypeTabs() {
-  document.getElementById('typeTabs').addEventListener('click', function(e) {
-    const btn = e.target.closest('.typeTab');
-    if (!btn) return;
-    document.querySelectorAll('.typeTab').forEach(function(b) { b.classList.remove('active'); });
-    btn.classList.add('active');
-    CFG.type = btn.dataset.type;
+/* ======================================================
+   타입탭 / 카테고리칩
+   ====================================================== */
+function initTtabs(){
+  document.getElementById('ttabs').addEventListener('click',function(e){
+    var btn=e.target.closest('.ttab');
+    if(!btn) return;
+    document.querySelectorAll('.ttab').forEach(function(b){b.classList.remove('on');});
+    btn.classList.add('on');
+    CFG.vtype=btn.getAttribute('data-type');
     loadHot(true);
   });
 }
 
-/* ============================================================
-   CATEGORY CHIPS
-   ============================================================ */
-function buildCatChips() {
-  const wrap = document.getElementById('catChips');
-  wrap.innerHTML = '';
-  CATS.forEach(function(c, i) {
-    const btn = document.createElement('button');
-    btn.className = 'catChip' + (i === 0 ? ' active' : '');
-    btn.textContent = c.l;
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.catChip').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      CFG.cat   = c.q;
-      CFG.query = '';
-      document.getElementById('searchInput').value = '';
+function buildChips(){
+  var w=$('chips'); w.innerHTML='';
+  CATS.forEach(function(c,i){
+    var btn=document.createElement('button');
+    btn.className='chip'+(i===0?' on':'');
+    btn.textContent=c.l;
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.chip').forEach(function(b){b.classList.remove('on');});
+      btn.classList.add('on');
+      CFG.cat=c.q; CFG.query=''; $('q').value='';
       loadHot(true);
     });
-    wrap.appendChild(btn);
+    w.appendChild(btn);
   });
 }
 
-function resetCatChips() {
-  document.querySelectorAll('.catChip').forEach(function(b, i) {
-    b.classList.toggle('active', i === 0);
-  });
-  CFG.cat = '';
+function resetChips(){
+  document.querySelectorAll('.chip').forEach(function(b,i){b.classList.toggle('on',i===0);});
+  CFG.cat='';
 }
 
-/* ============================================================
-   VIDEO MODAL
-   ============================================================ */
-function openVideoModal(v) {
-  const vid   = v.id || '';
-  const title = v.snippet && v.snippet.title || '';
-  const ch    = v.snippet && v.snippet.channelTitle || '';
-  const desc  = v.snippet && v.snippet.description || '설명 없음';
-  const st    = v.statistics || {};
-
-  document.getElementById('vmPlayer').innerHTML =
-    '<iframe src="https://www.youtube.com/embed/' + vid + '?autoplay=1" allowfullscreen allow="autoplay;encrypted-media"></iframe>';
-  document.getElementById('vmTitle').textContent = title;
-  document.getElementById('vmMeta').innerHTML =
-    '<span>📺 ' + esc(ch) + '</span>' +
-    '<span>👁️ ' + fmtN(st.viewCount) + ' 조회</span>' +
-    '<span>👍 ' + fmtN(st.likeCount) + '</span>' +
-    '<span>💬 ' + fmtN(st.commentCount) + '</span>';
-  document.getElementById('vmDesc').textContent = desc;
-
-  document.getElementById('videoModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+/* ======================================================
+   영상 모달
+   ====================================================== */
+function openVmod(v){
+  var vid=v.id||'';
+  var sn=v.snippet||{};
+  var st=v.statistics||{};
+  $('vmodPlayer').innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1" allowfullscreen allow="autoplay;encrypted-media"></iframe>';
+  $('vmodTitle').textContent=sn.title||'';
+  $('vmodMeta').innerHTML='<span>📺 '+esc(sn.channelTitle)+'</span><span>👁 '+fmtN(st.viewCount)+' 조회</span><span>👍 '+fmtN(st.likeCount)+'</span><span>💬 '+fmtN(st.commentCount)+'</span>';
+  $('vmodDesc').textContent=sn.description||'';
+  $('vmod').classList.add('on');
+  document.body.style.overflow='hidden';
   pushAd();
 }
-
-function closeVideoModal() {
-  document.getElementById('videoModal').classList.remove('open');
-  document.getElementById('vmPlayer').innerHTML = '';
-  document.body.style.overflow = '';
+function closeVmod(){
+  $('vmod').classList.remove('on');
+  $('vmodPlayer').innerHTML='';
+  document.body.style.overflow='';
 }
 
-/* ============================================================
-   AD GATE
-   ============================================================ */
-var _gateCb  = null;
-var _gateT   = null;
-
-function openGate(cb) {
-  _gateCb = cb;
-  var gate = document.getElementById('adGate');
-  var cnt  = document.getElementById('gateCount');
-  var skip = document.getElementById('gateSkipBtn');
-  gate.classList.add('open');
-  document.body.style.overflow = 'hidden';
-  var s = 5;
-  cnt.textContent = s;
-  skip.disabled   = true;
-  skip.textContent = '⏩ 건너뛰기 (' + s + '초)';
+/* ======================================================
+   광고 게이트
+   ====================================================== */
+var _gateCb=null, _gateT=null;
+function openGate(cb){
+  _gateCb=cb;
+  var skip=$('gateSkip'); var cnt=$('gateCnt');
+  $('gate').classList.add('on');
+  document.body.style.overflow='hidden';
+  var s=5; cnt.textContent=s; skip.disabled=true; skip.textContent='⏩ 건너뛰기 ('+s+'초)';
   pushAd();
-  _gateT = setInterval(function() {
-    s--;
-    cnt.textContent = s;
-    skip.textContent = s > 0 ? '⏩ 건너뛰기 (' + s + '초)' : '⏩ 건너뛰기';
-    if (s <= 0) { clearInterval(_gateT); skip.disabled = false; }
-  }, 1000);
+  _gateT=setInterval(function(){
+    s--; cnt.textContent=s; skip.textContent=s>0?'⏩ 건너뛰기 ('+s+'초)':'⏩ 건너뛰기';
+    if(s<=0){clearInterval(_gateT); skip.disabled=false;}
+  },1000);
 }
-
-function closeGate() {
+function closeGate(){
   clearInterval(_gateT);
-  document.getElementById('adGate').classList.remove('open');
-  document.body.style.overflow = '';
-  if (_gateCb) { _gateCb(); _gateCb = null; }
+  $('gate').classList.remove('on');
+  document.body.style.overflow='';
+  if(_gateCb){_gateCb(); _gateCb=null;}
 }
 
-/* ============================================================
-   INTERSTITIAL
-   ============================================================ */
-var _interT = null;
-
-function openInter() {
-  var el    = document.getElementById('interstitial');
-  var xBtn  = document.getElementById('interCloseBtn');
-  var info  = document.getElementById('interInfo');
-  el.classList.add('open');
-  xBtn.disabled = true;
-  var s = 5;
-  info.textContent = s + '초 후 닫기 가능';
+/* ======================================================
+   인터스티셜
+   ====================================================== */
+var _interT=null;
+function openInter(){
+  var x=$('interX'); var info=$('interInfo');
+  $('inter').classList.add('on');
+  x.disabled=true; var s=5; info.textContent=s+'초 후 닫기 가능';
   pushAd();
-  _interT = setInterval(function() {
-    s--;
-    info.textContent = s > 0 ? s + '초 후 닫기 가능' : '닫을 수 있습니다';
-    if (s <= 0) { clearInterval(_interT); xBtn.disabled = false; }
-  }, 1000);
+  _interT=setInterval(function(){
+    s--; info.textContent=s>0?s+'초 후 닫기 가능':'닫을 수 있습니다';
+    if(s<=0){clearInterval(_interT); x.disabled=false;}
+  },1000);
 }
-
-function closeInter() {
+function closeInter(){
   clearInterval(_interT);
-  document.getElementById('interstitial').classList.remove('open');
+  $('inter').classList.remove('on');
 }
 
-/* ============================================================
-   CHANNEL ANALYSIS
-   ============================================================ */
-async function doAnalyze() {
-  var q = document.getElementById('chInput').value.trim();
-  if (!q) { toast('채널명 또는 @핸들을 입력하세요'); return; }
-  if (!keysOK()) { showKeyBanner(); return; }
+/* ======================================================
+   채널 분석
+   ====================================================== */
+function doAnalyze(){
+  var q=$('chQ').value.trim();
+  if(!q){toast('채널명 또는 @핸들을 입력하세요');return;}
+  if(!keysOK()){showKeyBanner();return;}
 
-  showSpinner('ch');
-  document.getElementById('chResult').innerHTML = '';
+  showSpin('ch'); $('chResult').innerHTML='';
 
-  var sData = await apiCall(
-    'https://www.googleapis.com/youtube/v3/search' +
-    '?part=snippet&type=channel&q=' + encodeURIComponent(q) + '&maxResults=1'
-  );
-  if (!sData) { hideSpinner('ch'); return; }
-  if (!sData.items || !sData.items.length) {
-    hideSpinner('ch');
-    toast('채널을 찾을 수 없습니다 (횟수 차감 안됨)');
-    return;
-  }
+  apiCall(
+    'https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q='+encodeURIComponent(q)+'&maxResults=1'
+  ).then(function(sd){
+    if(!sd){hideSpin('ch');return;}
+    if(!sd.items||!sd.items.length){hideSpin('ch');toast('채널을 찾을 수 없습니다');return;}
 
-  var chId = (sData.items[0].id && sData.items[0].id.channelId) || sData.items[0].snippet.channelId;
-  if (!chId) { hideSpinner('ch'); toast('채널 ID를 가져올 수 없습니다'); return; }
+    var chId=(sd.items[0].id&&sd.items[0].id.channelId)||sd.items[0].snippet.channelId;
+    if(!chId){hideSpin('ch');toast('채널 ID 오류');return;}
 
-  var cData = await apiCall(
-    'https://www.googleapis.com/youtube/v3/channels' +
-    '?part=snippet,statistics,brandingSettings&id=' + encodeURIComponent(chId)
-  );
-  hideSpinner('ch');
-  if (!cData || !cData.items || !cData.items.length) {
-    toast('채널 정보를 불러올 수 없습니다 (횟수 차감 안됨)');
-    return;
-  }
-
-  // ✅ 성공 시만 카운터
-  CFG.aCnt++;
-  if (CFG.aCnt % CFG.INTER_N === 0) openInter();
-
-  renderChannel(cData.items[0]);
+    return apiCall(
+      'https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id='+encodeURIComponent(chId)
+    ).then(function(cd){
+      hideSpin('ch');
+      if(!cd||!cd.items||!cd.items.length){toast('채널 정보를 불러올 수 없습니다');return;}
+      CFG.aCnt++;
+      if(CFG.aCnt%CFG.INTER_N===0) openInter();
+      renderCh(cd.items[0]);
+    });
+  });
 }
 
-function calcBD(stat) {
-  var subs   = parseInt(stat.subscriberCount || 0);
-  var views  = parseInt(stat.viewCount       || 0);
-  var vids   = parseInt(stat.videoCount      || 0);
-  var avgV   = vids > 0 ? views / vids : 0;
-  var subSc  = Math.min(Math.log10(Math.max(subs,  1)) * 14, 100);
-  var viewSc = Math.min(Math.log10(Math.max(avgV,  1)) * 22, 100);
-  var cntSc  = Math.min(Math.log10(Math.max(vids,  1)) * 28, 100);
-  var engSc  = subs > 0 ? Math.min((avgV / subs) * 200, 100) : 0;
-  var total  = Math.round(subSc * .3 + viewSc * .3 + cntSc * .2 + engSc * .2);
-  return { total: total, subSc: Math.round(subSc), viewSc: Math.round(viewSc), cntSc: Math.round(cntSc), engSc: Math.round(engSc) };
+function calcBD(st){
+  var subs=+(st.subscriberCount||0), views=+(st.viewCount||0), vids=+(st.videoCount||0);
+  var avg=vids>0?views/vids:0;
+  var ss=Math.min(Math.log10(Math.max(subs,1))*14,100);
+  var vs=Math.min(Math.log10(Math.max(avg,1))*22,100);
+  var cs=Math.min(Math.log10(Math.max(vids,1))*28,100);
+  var es=subs>0?Math.min((avg/subs)*200,100):0;
+  var tot=Math.round(ss*.3+vs*.3+cs*.2+es*.2);
+  return{tot:tot,ss:Math.round(ss),vs:Math.round(vs),cs:Math.round(cs),es:Math.round(es)};
 }
-
-function lvInfo(sc) {
-  if (sc >= 90) return { lbl: '🏆 슈퍼스타',         col: 'var(--gold)',   bg: 'rgba(255,204,0,.15)' };
-  if (sc >= 75) return { lbl: '💎 프로 크리에이터',   col: 'var(--blue)',   bg: 'rgba(68,136,255,.15)' };
-  if (sc >= 60) return { lbl: '🚀 성장 채널',         col: 'var(--green)',  bg: 'rgba(68,204,136,.15)' };
-  if (sc >= 40) return { lbl: '📈 유망 채널',         col: 'var(--purple)', bg: 'rgba(170,68,255,.15)' };
-  return               { lbl: '🌱 신생 채널',         col: '#888',          bg: 'rgba(150,150,150,.1)' };
+function lvInfo(sc){
+  if(sc>=90)return{l:'🏆 슈퍼스타',c:'var(--gold)',bg:'rgba(255,204,0,.15)'};
+  if(sc>=75)return{l:'💎 프로 크리에이터',c:'var(--blue)',bg:'rgba(68,136,255,.15)'};
+  if(sc>=60)return{l:'🚀 성장 채널',c:'var(--green)',bg:'rgba(68,204,136,.15)'};
+  if(sc>=40)return{l:'📈 유망 채널',c:'var(--purple)',bg:'rgba(170,68,255,.15)'};
+  return{l:'🌱 신생 채널',c:'#888',bg:'rgba(150,150,150,.1)'};
 }
-
-function getFB(bd, stat) {
-  var subs = parseInt(stat.subscriberCount || 0);
-  var vids = parseInt(stat.videoCount      || 0);
-  var fb   = [];
-  if (bd.subSc  < 50) fb.push({ i:'📢', t:'커뮤니티 활동과 SNS 연동으로 구독자를 늘려보세요.' });
-  if (bd.viewSc < 50) fb.push({ i:'🎯', t:'제목·썸네일 최적화로 CTR(클릭률)을 높이세요.' });
-  if (bd.cntSc  < 40) fb.push({ i:'📅', t:'주 1~2회 꾸준한 업로드로 알고리즘 노출을 늘리세요.' });
-  if (bd.engSc  < 40) fb.push({ i:'💬', t:'댓글 질문과 커뮤니티 게시물로 참여도를 높이세요.' });
-  if (bd.total  >= 75) fb.push({ i:'✅', t:'훌륭한 채널! 브랜드 협업과 멤버십으로 수익을 다각화하세요.' });
-  if (subs > 10000 && vids < 50) fb.push({ i:'⚡', t:'구독자 대비 영상이 적습니다. 시리즈물로 체계화하세요.' });
-  if (!fb.length) fb.push({ i:'🌱', t:'꾸준한 업로드와 시청자 소통이 성장의 핵심입니다. 화이팅!' });
+function getFB(bd,st){
+  var subs=+(st.subscriberCount||0), vids=+(st.videoCount||0), fb=[];
+  if(bd.ss<50) fb.push({i:'📢',t:'커뮤니티 활동과 SNS 연동으로 구독자를 늘려보세요.'});
+  if(bd.vs<50) fb.push({i:'🎯',t:'제목·썸네일 최적화로 CTR을 높이세요.'});
+  if(bd.cs<40) fb.push({i:'📅',t:'주 1~2회 꾸준한 업로드로 알고리즘 노출을 늘리세요.'});
+  if(bd.es<40) fb.push({i:'💬',t:'댓글 유도와 커뮤니티 게시물로 참여도를 높이세요.'});
+  if(bd.tot>=75) fb.push({i:'✅',t:'훌륭한 채널! 브랜드 협업과 멤버십으로 수익을 다각화하세요.'});
+  if(subs>10000&&vids<50) fb.push({i:'⚡',t:'구독자 대비 영상이 적습니다. 시리즈물로 체계화하세요.'});
+  if(!fb.length) fb.push({i:'🌱',t:'꾸준한 업로드와 소통이 성장의 핵심입니다!'});
   return fb;
 }
 
-function renderChannel(ch) {
-  var sn  = ch.snippet    || {};
-  var st  = ch.statistics || {};
-  var bd  = calcBD(st);
-  var lv  = lvInfo(bd.total);
-  var ava = (sn.thumbnails && (sn.thumbnails.medium || sn.thumbnails.default) && (sn.thumbnails.medium || sn.thumbnails.default).url) || '';
-  var nm  = esc(sn.title || '');
-  var hd  = esc(sn.customUrl || '');
+function renderCh(ch){
+  var sn=ch.snippet||{}, st=ch.statistics||{};
+  var bd=calcBD(st), lv=lvInfo(bd.tot);
+  var ava=(sn.thumbnails&&(sn.thumbnails.medium||sn.thumbnails.default)||{}).url||'';
 
-  var fbHtml = getFB(bd, st).map(function(f) {
-    return '<div class="fbItem"><div class="fbIcon">' + f.i + '</div><div class="fbText">' + f.t + '</div></div>';
+  var bdRows=[
+    {l:'구독자',v:bd.ss,c:'var(--gold)'},{l:'평균조회',v:bd.vs,c:'var(--blue)'},
+    {l:'영상 수',v:bd.cs,c:'var(--green)'},{l:'참여도',v:bd.es,c:'var(--purple)'}
+  ].map(function(x){
+    return '<div class="bd-item"><div class="bd-lbl">'+x.l+'</div>'
+      +'<div class="bd-val" style="color:'+x.c+'">'+x.v+'<span style="font-size:.68rem;color:#666">/100</span></div>'
+      +'<div class="bd-bar"><div class="bd-fill" style="width:'+x.v+'%;background:'+x.c+'"></div></div></div>';
   }).join('');
 
-  var bdRows = [
-    { lbl:'구독자',   val: bd.subSc,  col:'var(--gold)' },
-    { lbl:'평균조회', val: bd.viewSc, col:'var(--blue)' },
-    { lbl:'영상 수',  val: bd.cntSc,  col:'var(--green)' },
-    { lbl:'참여도',   val: bd.engSc,  col:'var(--purple)' },
-  ].map(function(x) {
-    return '<div class="bdItem">' +
-      '<div class="bdLabel">' + x.lbl + '</div>' +
-      '<div class="bdVal" style="color:' + x.col + '">' + x.val + '<span style="font-size:.68rem;color:#666">/100</span></div>' +
-      '<div class="bdBarBg"><div class="bdBarFill" style="width:' + x.val + '%;background:' + x.col + '"></div></div>' +
-    '</div>';
+  var fbRows=getFB(bd,st).map(function(f){
+    return '<div class="fb-item"><span class="fb-ico">'+f.i+'</span><span class="fb-txt">'+f.t+'</span></div>';
   }).join('');
 
-  var html =
-    '<div class="chProfile">' +
-      '<img class="chAvatar" src="' + ava + '" alt="" onerror="this.style.background=\'#222\'">' +
-      '<div>' +
-        '<div class="chName">' + nm + '</div>' +
-        (hd ? '<div class="chHandle">@' + hd + '</div>' : '') +
-        '<div class="chBadges">' +
-          '<span class="chBadge" style="color:var(--gold)">👥 ' + fmtN(st.subscriberCount) + ' 구독자</span>' +
-          '<span class="chBadge" style="color:var(--blue)">👁️ ' + fmtN(st.viewCount) + ' 총 조회</span>' +
-          '<span class="chBadge" style="color:var(--green)">🎬 ' + fmtN(st.videoCount) + ' 영상</span>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
+  var html=
+    '<div class="ch-profile">'
+      +'<img class="ch-ava" src="'+esc(ava)+'" alt="" onerror="this.style.background=\'#222\'">'
+      +'<div>'
+        +'<div class="ch-name">'+esc(sn.title)+'</div>'
+        +(sn.customUrl?'<div class="ch-handle">@'+esc(sn.customUrl)+'</div>':'')
+        +'<div class="ch-bads">'
+          +'<span class="ch-bad" style="color:var(--gold)">👥 '+fmtN(st.subscriberCount)+' 구독자</span>'
+          +'<span class="ch-bad" style="color:var(--blue)">👁 '+fmtN(st.viewCount)+' 총 조회</span>'
+          +'<span class="ch-bad" style="color:var(--green)">🎬 '+fmtN(st.videoCount)+' 영상</span>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
 
-    '<div class="chInlineAd"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="5555555555" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>' +
+    +'<div class="inline-ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="5555555555" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>'
 
-    '<div class="scoreCard">' +
-      '<div class="scoreNum">' + bd.total + '</div>' +
-      '<div class="scoreLbl">채널 종합 점수</div>' +
-      '<div class="scoreLvBadge" style="color:' + lv.col + ';background:' + lv.bg + ';border:1px solid ' + lv.col + '44">' + lv.lbl + '</div>' +
-      '<div class="gaugeBar"><div class="gaugeFill" id="gaugeFill" style="width:0%"></div></div>' +
-    '</div>' +
+    +'<div class="score-card">'
+      +'<div class="score-num">'+bd.tot+'</div>'
+      +'<div class="score-lbl">채널 종합 점수</div>'
+      +'<div class="score-lv" id="scoreLv" style="color:'+lv.c+';background:'+lv.bg+';border:1px solid '+lv.c+'55">'+lv.l+'</div>'
+      +'<div class="gauge"><div class="gauge-fill" id="gaugeFill" style="width:0%"></div></div>'
+    +'</div>'
 
-    '<div class="chInlineAd"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="4444444444" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>' +
+    +'<div class="inline-ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="4444444444" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>'
 
-    '<div class="bdGrid">' + bdRows + '</div>' +
+    +'<div class="bd-grid">'+bdRows+'</div>'
 
-    '<div class="feedbackBox"><h3>📋 채널 개선 제안</h3><div>' + fbHtml + '</div></div>' +
+    +'<div class="fb-box"><h3>📋 채널 개선 제안</h3>'+fbRows+'</div>'
 
-    '<div class="chInlineAd"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>';
+    +'<div class="inline-ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>';
 
-  var el = document.getElementById('chResult');
-  el.innerHTML = html;
-
-  setTimeout(function() {
-    var g = document.getElementById('gaugeFill');
-    if (g) g.style.width = bd.total + '%';
-  }, 200);
-
-  el.querySelectorAll('ins.adsbygoogle').forEach(function() { pushAd(); });
+  var el=$('chResult');
+  el.innerHTML=html;
+  setTimeout(function(){ var g=$('gaugeFill'); if(g) g.style.width=bd.tot+'%'; },200);
+  el.querySelectorAll('ins.adsbygoogle').forEach(function(){ pushAd(); });
 }
 
-/* ============================================================
-   AI IDEAS
-   ============================================================ */
-function renderIdeas() {
-  document.getElementById('ideaGrid').innerHTML = IDEAS.map(function(x, i) {
-    return '<div class="ideaCard">' +
-      '<div class="ideaNo">아이디어 #' + String(i+1).padStart(2,'0') + '</div>' +
-      '<div class="ideaTitle">' + esc(x.title) + '</div>' +
-      '<div class="ideaTags">' + x.tags.map(function(t) { return '<span class="ideaTag">#' + t + '</span>'; }).join('') + '</div>' +
-      '<div class="ideaWhy">💡 ' + esc(x.why) + '</div>' +
-    '</div>';
+/* ======================================================
+   AI 아이디어
+   ====================================================== */
+function renderIdeas(){
+  $('ideaGrid').innerHTML=IDEAS.map(function(x,i){
+    return '<div class="idea-card">'
+      +'<div class="idea-no">아이디어 #'+pad(i+1)+'</div>'
+      +'<div class="idea-ttl">'+esc(x.t)+'</div>'
+      +'<div class="idea-tags">'+x.tags.map(function(t){return '<span class="idea-tag">#'+t+'</span>';}).join('')+'</div>'
+      +'<div class="idea-why">💡 '+esc(x.w)+'</div>'
+      +'</div>';
   }).join('');
-  document.querySelectorAll('#sec-ai ins.adsbygoogle').forEach(function() { pushAd(); });
+  document.querySelectorAll('#sec-ai .adsbygoogle').forEach(function(){ pushAd(); });
 }
 
-/* ============================================================
-   TOOLS
-   ============================================================ */
-function renderTools() {
-  var html = '';
-  TOOLS_DATA.forEach(function(sec, si) {
-    html += '<div class="toolsSection">' +
-      '<div class="toolsSecTitle">' + sec.sec + '</div>' +
-      '<div class="toolsGrid">' +
-        sec.items.map(function(t) {
-          return '<a class="toolCard" href="' + t.u + '" target="_blank" rel="noopener">' +
-            '<div class="toolIcon">' + t.i + '</div>' +
-            '<div class="toolName">' + t.n + '</div>' +
-            '<div class="toolDesc">' + t.d + '</div>' +
-            '<span class="toolBadge">' + t.b + '</span>' +
-          '</a>';
-        }).join('') +
-      '</div>' +
-    '</div>';
-    if (si === 1) {
-      html += '<div class="toolsMidAd"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1234567890" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>';
+/* ======================================================
+   제작도구
+   ====================================================== */
+function renderTools(){
+  var html='';
+  TOOL_SECS.forEach(function(sec,si){
+    html+='<div class="tools-sec"><div class="tools-stitle">'+sec.name+'</div>'
+      +'<div class="tools-grid">'
+      +sec.items.map(function(t){
+        return '<a class="tool-card" href="'+t.u+'" target="_blank" rel="noopener">'
+          +'<div class="tool-ico">'+t.i+'</div>'
+          +'<div class="tool-name">'+t.n+'</div>'
+          +'<div class="tool-desc">'+t.d+'</div>'
+          +'<span class="tool-badge">'+t.b+'</span>'
+          +'</a>';
+      }).join('')
+      +'</div></div>';
+    if(si===1){
+      html+='<div class="mid-ad"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1234567890" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>';
     }
   });
-  document.getElementById('toolsWrap').innerHTML = html;
-  document.querySelectorAll('#sec-tools ins.adsbygoogle').forEach(function() { pushAd(); });
+  $('toolsWrap').innerHTML=html;
+  document.querySelectorAll('#sec-tools .adsbygoogle').forEach(function(){ pushAd(); });
 }
 
-/* ============================================================
-   REVENUE CALCULATOR
-   ============================================================ */
-function calcRev() {
-  var views = parseInt(document.getElementById('cViews').value) || 0;
-  var cpm   = parseInt(document.getElementById('cCpm').value)   || 3000;
-  var rate  = parseFloat(document.getElementById('cType').value)|| 0.4;
-  var subs  = parseInt(document.getElementById('cSubs').value)  || 0;
-  if (views <= 0) { toast('조회수를 입력하세요'); return; }
+/* ======================================================
+   수익계산기
+   ====================================================== */
+function doCalc(){
+  var views=+($('cV').value)||0;
+  var cpm  =+($('cC').value)||3000;
+  var rate =+($('cT').value)||0.4;
+  var subs =+($('cS').value)||0;
+  if(views<=0){toast('조회수를 입력하세요');return;}
 
-  var adViews = Math.floor(views * rate);
-  var revenue = Math.round((adViews / 1000) * cpm);
-  var revUSD  = (revenue / 1350).toFixed(0);
-  var member  = subs  > 500   ? Math.round(subs * 0.01 * 4900) : 0;
-  var superC  = views > 10000 ? Math.round(views * 0.0001 * 10000) : 0;
-  var total   = revenue + member + superC;
+  var ad   =Math.floor(views*rate);
+  var rev  =Math.round((ad/1000)*cpm);
+  var usd  =(rev/1350).toFixed(0);
+  var mem  =subs>500?Math.round(subs*.01*4900):0;
+  var sc   =views>10000?Math.round(views*.0001*10000):0;
+  var tot  =rev+mem+sc;
 
-  var el = document.getElementById('calcResult');
-  el.innerHTML =
-    '<h3>📊 수익 예측 결과</h3>' +
-    '<div class="resultGrid">' +
-      '<div class="resultItem"><div class="resultLabel">광고 수익 (추정)</div><div class="resultVal" style="color:var(--gold)">₩' + revenue.toLocaleString() + '</div></div>' +
-      '<div class="resultItem"><div class="resultLabel">달러 환산 (약)</div><div class="resultVal" style="color:var(--blue)">$' + revUSD + '</div></div>' +
-      '<div class="resultItem"><div class="resultLabel">멤버십 추정</div><div class="resultVal" style="color:var(--green)">₩' + member.toLocaleString() + '</div></div>' +
-      '<div class="resultItem"><div class="resultLabel">슈퍼챗 추정</div><div class="resultVal" style="color:var(--purple)">₩' + superC.toLocaleString() + '</div></div>' +
-    '</div>' +
-    '<div class="resultItem" style="text-align:center;padding:14px;margin-bottom:10px">' +
-      '<div class="resultLabel">월 총 수익 추정</div>' +
-      '<div class="resultVal" style="font-size:1.3rem;color:var(--gold)">₩' + total.toLocaleString() + '</div>' +
-    '</div>' +
-    '<div class="resultNote">※ CPM ' + cpm.toLocaleString() + '원, 광고 노출률 ' + Math.round(rate*100) + '% 기준 추정값입니다.<br>' +
-    '실제 수익은 시즌·국가·카테고리에 따라 달라질 수 있습니다.<br>' +
-    '수익 창출 조건: 구독자 1,000명 이상, 연간 공개 영상 시청 시간 4,000시간 이상.</div>';
-  el.classList.add('show');
-
-  document.querySelectorAll('#sec-calc ins.adsbygoogle').forEach(function() { pushAd(); });
+  var el=$('calcRes');
+  el.innerHTML=
+    '<h3>📊 수익 예측 결과</h3>'
+    +'<div class="rg">'
+      +'<div class="ri"><div class="rl">광고 수익</div><div class="rv" style="color:var(--gold)">₩'+rev.toLocaleString()+'</div></div>'
+      +'<div class="ri"><div class="rl">달러 환산</div><div class="rv" style="color:var(--blue)">$'+usd+'</div></div>'
+      +'<div class="ri"><div class="rl">멤버십 추정</div><div class="rv" style="color:var(--green)">₩'+mem.toLocaleString()+'</div></div>'
+      +'<div class="ri"><div class="rl">슈퍼챗 추정</div><div class="rv" style="color:var(--purple)">₩'+sc.toLocaleString()+'</div></div>'
+    +'</div>'
+    +'<div class="ri" style="text-align:center;padding:13px;margin-bottom:10px">'
+      +'<div class="rl">월 총 수익 추정</div>'
+      +'<div class="rv" style="font-size:1.3rem;color:var(--gold)">₩'+tot.toLocaleString()+'</div>'
+    +'</div>'
+    +'<div class="rn">※ CPM '+cpm.toLocaleString()+'원, 광고 노출률 '+Math.round(rate*100)+'% 기준 추정값<br>'
+    +'실제 수익은 시즌·국가·카테고리에 따라 달라질 수 있습니다.</div>';
+  el.classList.add('on');
+  document.querySelectorAll('#sec-calc .adsbygoogle').forEach(function(){ pushAd(); });
 }
 
-/* ============================================================
-   NAVIGATION  ← 핵심 수정: 탭 전환 완전 재작성
-   ============================================================ */
-function initNav() {
-  // 헤더 nav 버튼
-  document.querySelectorAll('#mainNav .navBtn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      switchSection(btn.dataset.sec);
-    });
-  });
+/* ======================================================
+   스피너
+   ====================================================== */
+function showSpin(id){ var e=$(id+'Spin'); if(e) e.style.display='flex'; }
+function hideSpin(id){ var e=$(id+'Spin'); if(e) e.style.display='none'; }
 
-  // 사이드바 버튼
-  document.querySelectorAll('#sidebar .sideBtn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      switchSection(btn.dataset.sec);
-    });
-  });
-}
-
-function switchSection(secId) {
-  // 모든 섹션 숨기기
-  document.querySelectorAll('.section').forEach(function(s) {
-    s.classList.remove('active');
-  });
-  // 대상 섹션 보이기
-  var target = document.getElementById('sec-' + secId);
-  if (target) target.classList.add('active');
-
-  // 헤더 nav 버튼 active 동기화
-  document.querySelectorAll('#mainNav .navBtn').forEach(function(btn) {
-    btn.classList.toggle('active', btn.dataset.sec === secId);
-  });
-
-  // 사이드바 버튼 active 동기화
-  document.querySelectorAll('#sidebar .sideBtn').forEach(function(btn) {
-    btn.classList.toggle('active', btn.dataset.sec === secId);
-  });
-}
-
-/* ============================================================
-   TOP AD TOGGLE
-   ============================================================ */
-function toggleTopAd() {
-  var bar = document.getElementById('topAdBar');
-  var btn = document.getElementById('topAdHideBtn');
-  CFG.topHide = !CFG.topHide;
-  bar.style.display  = CFG.topHide ? 'none' : 'flex';
-  btn.textContent    = CFG.topHide ? '▼' : '✕';
+/* ======================================================
+   상단 광고 토글
+   ====================================================== */
+function toggleTopAd(){
+  CFG.topHide=!CFG.topHide;
+  $('topAd').style.display=CFG.topHide?'none':'flex';
+  $('topAdClose').textContent=CFG.topHide?'▼':'✕';
   syncLayout();
 }
 
-/* ============================================================
-   SPINNER
-   ============================================================ */
-function showSpinner(id) {
-  var el = document.getElementById(id + 'Spinner');
-  if (el) el.style.display = 'flex';
-}
-function hideSpinner(id) {
-  var el = document.getElementById(id + 'Spinner');
-  if (el) el.style.display = 'none';
-}
+/* ======================================================
+   텍스트 모달
+   ====================================================== */
+function openTmod(id){ var m=$(id); if(m){m.classList.add('on');document.body.style.overflow='hidden';} }
+function closeTmod(id){ var m=$(id); if(m){m.classList.remove('on');document.body.style.overflow='';} }
 
-/* ============================================================
-   TOAST
-   ============================================================ */
-var _toastT = null;
-function toast(msg, dur) {
-  dur = dur || 3000;
-  var el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(_toastT);
-  _toastT = setTimeout(function() { el.classList.remove('show'); }, dur);
-}
+/* ======================================================
+   INIT  ← 이벤트 바인딩을 모두 여기서
+   ====================================================== */
+document.addEventListener('DOMContentLoaded', function(){
 
-/* ============================================================
-   FOOTER MODALS
-   ============================================================ */
-function initFooterModals() {
-  document.getElementById('lnkDisclaimer').addEventListener('click', function(e) { e.preventDefault(); openTM('modalDisclaimer'); });
-  document.getElementById('lnkTerms').addEventListener('click',      function(e) { e.preventDefault(); openTM('modalTerms'); });
-  document.getElementById('lnkPrivacy').addEventListener('click',    function(e) { e.preventDefault(); openTM('modalPrivacy'); });
-
-  document.querySelectorAll('.tmClose').forEach(function(btn) {
-    btn.addEventListener('click', function() { closeTM(btn.dataset.close); });
-  });
-
-  document.querySelectorAll('.textModal').forEach(function(m) {
-    m.addEventListener('click', function(e) {
-      if (e.target === m) closeTM(m.id);
-    });
-  });
-}
-
-function openTM(id) {
-  var m = document.getElementById(id);
-  if (m) { m.classList.add('open'); document.body.style.overflow = 'hidden'; }
-}
-function closeTM(id) {
-  var m = document.getElementById(id);
-  if (m) { m.classList.remove('open'); document.body.style.overflow = ''; }
-}
-
-/* ============================================================
-   KEYBOARD SHORTCUTS
-   ============================================================ */
-function initKeyboard() {
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeVideoModal();
-      closeGate();
-      closeInter();
-      ['modalDisclaimer','modalTerms','modalPrivacy'].forEach(closeTM);
-    }
-  });
-}
-
-/* ============================================================
-   INIT
-   ============================================================ */
-function init() {
-  // 1) 레이아웃 동기화 (광고 침범 문제 해결)
+  /* 1. 레이아웃 동기화 */
   syncLayout();
   window.addEventListener('resize', syncLayout);
-  if (window.ResizeObserver) {
-    new ResizeObserver(syncLayout).observe(document.getElementById('topAdBar'));
+  if(window.ResizeObserver){
+    new ResizeObserver(syncLayout).observe($('topAd'));
   }
 
-  // 2) 네비게이션 초기화 (탭 전환 문제 해결)
-  initNav();
-
-  // 3) 기타 이벤트
-  document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doSearch();
-  });
-  document.getElementById('searchBtn').addEventListener('click', doSearch);
-  document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
-  document.getElementById('vmCloseBtn').addEventListener('click', closeVideoModal);
-  document.getElementById('gateSkipBtn').addEventListener('click', closeGate);
-  document.getElementById('interCloseBtn').addEventListener('click', closeInter);
-  document.getElementById('chAnalyzeBtn').addEventListener('click', doAnalyze);
-  document.getElementById('chInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doAnalyze();
-  });
-  document.getElementById('calcGoBtn').addEventListener('click', calcRev);
-
-  initTypeTabs();
-  initFooterModals();
-  initKeyboard();
-
-  // 4) 비디오모달 배경 클릭 닫기
-  document.getElementById('videoModal').addEventListener('click', function(e) {
-    if (e.target === this) closeVideoModal();
+  /* 2. 탭 네비게이션 ← data-tab 기반으로 단순화 */
+  document.querySelectorAll('[data-tab]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      switchTab(btn.getAttribute('data-tab'));
+    });
   });
 
-  // 5) 정적 광고 초기화
-  document.querySelectorAll('ins.adsbygoogle').forEach(function() { pushAd(); });
+  /* 3. 검색 */
+  $('q').addEventListener('keydown',function(e){ if(e.key==='Enter') doSearch(); });
+  $('searchBtn').addEventListener('click', doSearch);
 
-  // 6) UI 렌더링
-  buildCatChips();
+  /* 4. 타입탭 */
+  initTtabs();
+
+  /* 5. 더 보기 */
+  $('moreBtn').addEventListener('click',function(){ loadHot(false); });
+
+  /* 6. 영상 모달 */
+  $('vmodX').addEventListener('click', closeVmod);
+  $('vmod').addEventListener('click',function(e){ if(e.target===$('vmod')) closeVmod(); });
+
+  /* 7. 게이트/인터 */
+  $('gateSkip').addEventListener('click', closeGate);
+  $('interX').addEventListener('click', closeInter);
+
+  /* 8. 채널분석 */
+  $('chQ').addEventListener('keydown',function(e){ if(e.key==='Enter') doAnalyze(); });
+  $('chBtn').addEventListener('click', doAnalyze);
+
+  /* 9. 계산기 */
+  $('calcBtn').addEventListener('click', doCalc);
+
+  /* 10. 상단광고 닫기 */
+  $('topAdClose').addEventListener('click', toggleTopAd);
+
+  /* 11. 푸터 모달 링크 */
+  $('fl-disc') .addEventListener('click',function(e){e.preventDefault(); openTmod('tmod-disc');});
+  $('fl-terms').addEventListener('click',function(e){e.preventDefault(); openTmod('tmod-terms');});
+  $('fl-priv') .addEventListener('click',function(e){e.preventDefault(); openTmod('tmod-priv');});
+
+  /* 12. 텍스트 모달 닫기 */
+  document.querySelectorAll('.tmod-x').forEach(function(btn){
+    btn.addEventListener('click',function(){ closeTmod(btn.getAttribute('data-id')); });
+  });
+  document.querySelectorAll('.tmod').forEach(function(m){
+    m.addEventListener('click',function(e){ if(e.target===m) closeTmod(m.id); });
+  });
+
+  /* 13. ESC 키 */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      closeVmod(); closeGate(); closeInter();
+      closeTmod('tmod-disc'); closeTmod('tmod-terms'); closeTmod('tmod-priv');
+    }
+  });
+
+  /* 14. 정적 광고 초기화 */
+  document.querySelectorAll('ins.adsbygoogle').forEach(function(){ pushAd(); });
+
+  /* 15. 콘텐츠 렌더링 */
+  buildChips();
   renderIdeas();
   renderTools();
 
-  // 7) 영상 로드 (키 체크 후)
-  if (!keysOK()) {
+  /* 16. 영상 로드 */
+  if(!keysOK()){
     showKeyBanner();
-    hideSpinner('hot');
-    return;
+    hideSpin('hot');
+  } else {
+    loadHot(true);
   }
-  loadHot(true);
-}
-
-document.addEventListener('DOMContentLoaded', init);
+});
 </script>
 </body>
 </html>
