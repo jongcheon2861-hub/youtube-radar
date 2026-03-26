@@ -3,1168 +3,1408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>YTAnalytics Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<title>YTAnalytics Pro – 유튜브 분석 & 제작도구</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',sans-serif;background:#0f0f13;color:#e8e8f0;overflow-x:hidden}
-a{text-decoration:none;color:inherit}
-button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
-input,select{font-family:inherit;color:inherit}
-img{display:block;max-width:100%}
-:root{
-  --red:#ff4444;--blue:#4488ff;--green:#44cc88;
-  --gold:#ffcc00;--purple:#aa44ff;
-  --bg:#0f0f13;--bg2:#1a1a2e;--bg3:#22223a;
-  --border:#2a2a4a;--r:10px;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans KR',sans-serif;background:#0f0f0f;color:#e8e8e8;overflow-x:hidden}
 
-/* ── 상단 광고 ── */
-#topAd{
-  position:fixed;top:0;left:0;right:0;z-index:900;
-  background:#111118;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  padding:6px 36px 6px 6px;min-height:50px;
-}
-#topAd ins{display:block!important}
-#topAdX{
-  position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  width:24px;height:24px;border-radius:50%;
-  background:rgba(255,255,255,.12);color:#aaa;
-  font-size:13px;line-height:24px;text-align:center;
-}
+/* ── TOP AD ── */
+#topAd{position:fixed;top:0;left:0;width:100%;background:#1a1a2e;text-align:center;padding:4px 0;z-index:9999;border-bottom:1px solid #333}
+#topAd ins{display:inline-block;width:728px;max-width:100%;height:90px}
+#adHideBtn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#aaa;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:14px;line-height:22px;text-align:center}
 
-/* ── 헤더 ── */
-#hdr{
-  position:fixed;left:0;right:0;height:56px;z-index:800;
-  background:rgba(15,15,19,.97);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:8px;padding:0 12px;
-}
-.logo{
-  font-size:1rem;font-weight:900;white-space:nowrap;flex-shrink:0;
-  background:linear-gradient(135deg,var(--red),var(--blue));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-#hnav{display:flex;gap:3px;overflow-x:auto;flex:1;scrollbar-width:none}
-#hnav::-webkit-scrollbar{display:none}
-.nb{
-  flex-shrink:0;padding:6px 12px;border-radius:18px;
-  font-size:.82rem;font-weight:500;color:#999;
-  white-space:nowrap;transition:.15s;
-}
-.nb:hover{background:var(--bg3);color:#fff}
-.nb.on{background:linear-gradient(135deg,var(--red),var(--blue));color:#fff;font-weight:700}
-.hdr-ad{flex-shrink:0;margin-left:auto}
-.hdr-ad ins{display:block!important}
+/* ── HEADER ── */
+#hdr{position:fixed;left:0;width:100%;height:56px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-bottom:1px solid #333;display:flex;align-items:center;padding:0 16px;z-index:9998;gap:12px}
+#hdr .logo{font-size:18px;font-weight:900;background:linear-gradient(135deg,#ff0000,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;flex-shrink:0}
+#hdr .hdr-ad{flex:1;text-align:center;overflow:hidden}
+#hdr .hdr-ad ins{display:inline-block;width:468px;max-width:100%;height:60px}
+#hnav{display:flex;gap:4px;flex-shrink:0}
+#hnav .hnav-btn{background:rgba(255,255,255,0.05);border:1px solid #333;color:#ccc;padding:6px 10px;border-radius:6px;cursor:pointer;font-size:11px;white-space:nowrap;transition:all .2s}
+#hnav .hnav-btn.on,#hnav .hnav-btn:hover{background:linear-gradient(135deg,#ff0000,#c00);color:#fff;border-color:#ff0000}
 
-/* ── 사이드바 ── */
-#sidebar{
-  position:fixed;left:0;width:220px;z-index:700;
-  background:var(--bg2);border-right:1px solid var(--border);
-  overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding:12px 8px;
-}
-.sb{
-  display:flex;align-items:center;gap:8px;
-  padding:9px 12px;border-radius:8px;font-size:.88rem;font-weight:500;color:#bbb;
-  transition:.15s;text-align:left;width:100%;
-}
-.sb:hover{background:var(--bg3);color:#fff}
-.sb.on{
-  background:linear-gradient(135deg,rgba(255,68,68,.2),rgba(68,136,255,.2));
-  color:#fff;border:1px solid rgba(255,68,68,.3);
-}
-.side-ad{margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
-.side-ad ins{display:block!important}
+/* ── SIDEBAR ── */
+#sidebar{position:fixed;left:0;width:220px;background:#12121f;border-right:1px solid #222;overflow-y:auto;z-index:9997;padding:12px 8px}
+.snav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;background:transparent;border:none;color:#bbb;border-radius:8px;cursor:pointer;font-size:13px;text-align:left;transition:all .2s;margin-bottom:2px}
+.snav-btn:hover,.snav-btn.on{background:linear-gradient(135deg,rgba(255,0,0,0.2),rgba(200,0,0,0.1));color:#ff6b6b;border-left:3px solid #ff0000}
+.snav-btn .ico{font-size:16px;width:20px;text-align:center}
 
-/* ── 메인 래퍼 ── */
-#wrap{display:flex}
-#main{flex:1;min-width:0;padding:20px}
+/* 사이드바 쿠팡 배너 */
+.side-coupang{margin:12px 4px;padding:10px;background:linear-gradient(135deg,#e8001c,#c4001a);border-radius:10px;text-decoration:none;display:block;text-align:center;transition:transform .2s}
+.side-coupang:hover{transform:scale(1.02)}
+.side-coupang .cp-logo{font-size:15px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.side-coupang .cp-sub{font-size:10px;color:rgba(255,255,255,0.85);margin-top:2px}
+.side-coupang .cp-badge{background:rgba(255,255,255,0.2);color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;margin-top:4px;display:inline-block}
 
-/* ── 섹션 ── */
-.sec{display:none}
-.sec.on{display:block;animation:up .22s ease}
-@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.sec-title{
-  font-size:1.3rem;font-weight:900;margin-bottom:18px;
-  display:flex;align-items:center;gap:8px;
-}
-.sec-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--red),var(--blue))}
+/* ── MAIN WRAP ── */
+#wrap{min-height:100vh;transition:padding .3s}
+.sec{display:none;padding:24px}
+.sec.on{display:block}
 
-/* ── 배너 ── */
-.banner{border-radius:8px;padding:12px 15px;margin-bottom:14px;font-size:.83rem;line-height:1.7;display:none}
-.banner.key{background:rgba(255,170,0,.1);border:1px solid rgba(255,170,0,.35);color:#ffbb55}
-.banner.err{background:rgba(255,68,68,.08);border:1px solid rgba(255,68,68,.3);color:#ff9999}
-.banner a{color:var(--blue);text-decoration:underline}
+/* ── 섹션 공통 ── */
+.sec-title{font-size:22px;font-weight:900;margin-bottom:6px}
+.sec-sub{font-size:13px;color:#888;margin-bottom:20px}
 
-/* ── 검색바 ── */
-.srow{display:flex;gap:8px;margin-bottom:12px}
-.srow input{
-  flex:1;background:var(--bg3);border:1px solid var(--border);
-  border-radius:10px;padding:11px 14px;font-size:.9rem;outline:none;transition:.15s;
-}
-.srow input::placeholder{color:#555}
-.srow input:focus{border-color:var(--blue)}
-.sbtn{
-  padding:11px 18px;border-radius:10px;
-  background:linear-gradient(135deg,var(--red),var(--blue));
-  color:#fff;font-weight:700;font-size:.88rem;flex-shrink:0;
-}
-.sbtn:hover{opacity:.85}
+/* ── 쿠팡 배너 공통 ── */
+.cp-banner{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#e8001c 0%,#c4001a 50%,#a00018 100%);border-radius:14px;padding:16px 20px;margin:20px 0;text-decoration:none;box-shadow:0 4px 20px rgba(232,0,28,0.3);transition:all .3s;cursor:pointer;border:none;width:100%}
+.cp-banner:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,0,28,0.5)}
+.cp-banner .cp-icon{font-size:32px;flex-shrink:0}
+.cp-banner .cp-text{flex:1}
+.cp-banner .cp-text strong{display:block;font-size:15px;font-weight:700;color:#fff}
+.cp-banner .cp-text span{display:block;font-size:12px;color:rgba(255,255,255,0.8);margin-top:2px}
+.cp-banner .cp-arrow{font-size:20px;color:rgba(255,255,255,0.7);flex-shrink:0}
+.cp-banner .cp-tag{background:rgba(255,255,255,0.2);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:4px;display:inline-block}
 
-/* ── 타입탭 ── */
-.ttabs{display:flex;gap:7px;margin-bottom:12px}
-.ttab{
-  padding:6px 16px;border-radius:18px;font-size:.82rem;font-weight:500;
-  background:var(--bg3);color:#888;border:1px solid var(--border);transition:.15s;
-}
-.ttab.on{background:var(--red);color:#fff;border-color:var(--red)}
-.ttab:hover:not(.on){color:#fff;border-color:#555}
+/* 쿠팡 카드 그리드 */
+.cp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:16px 0}
+.cp-card{background:#1a1a2e;border:1px solid #333;border-radius:12px;padding:14px;text-align:center;text-decoration:none;transition:all .2s;display:block}
+.cp-card:hover{border-color:#e8001c;transform:translateY(-3px);box-shadow:0 6px 20px rgba(232,0,28,0.2)}
+.cp-card .cc-icon{font-size:28px;margin-bottom:8px}
+.cp-card .cc-name{font-size:12px;font-weight:700;color:#e8e8e8;margin-bottom:4px}
+.cp-card .cc-desc{font-size:10px;color:#888}
+.cp-card .cc-btn{background:linear-gradient(135deg,#e8001c,#c4001a);color:#fff;font-size:10px;padding:4px 10px;border-radius:20px;margin-top:8px;display:inline-block;font-weight:700}
 
-/* ── 카테고리칩 ── */
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
-.chip{
-  padding:5px 13px;border-radius:18px;font-size:.79rem;font-weight:500;
-  background:var(--bg3);color:#888;border:1px solid var(--border);cursor:pointer;transition:.15s;
-}
-.chip:hover{color:#fff;border-color:#555}
-.chip.on{background:linear-gradient(135deg,var(--red),var(--blue));color:#fff;border-color:transparent}
+/* 쿠팡 인라인 띠배너 */
+.cp-strip{display:flex;align-items:center;justify-content:space-between;background:#1a1a2e;border:1px solid #e8001c;border-radius:10px;padding:12px 16px;margin:16px 0;text-decoration:none;transition:all .2s}
+.cp-strip:hover{background:rgba(232,0,28,0.1)}
+.cp-strip .cs-left{display:flex;align-items:center;gap:10px}
+.cp-strip .cs-icon{font-size:22px}
+.cp-strip .cs-text strong{font-size:13px;color:#fff}
+.cp-strip .cs-text span{font-size:11px;color:#888}
+.cp-strip .cs-btn{background:#e8001c;color:#fff;font-size:11px;font-weight:700;padding:6px 14px;border-radius:20px;white-space:nowrap}
 
-/* ── 스피너 ── */
-.spin-box{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:14px;color:#666}
-.spinner{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:sp 1s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
+/* 쿠팡 고지 */
+.cp-notice{font-size:10px;color:#555;text-align:center;margin:4px 0 12px;line-height:1.6}
 
-/* ── 영상 그리드 ── */
-.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(256px,1fr));gap:14px}
-.vcard{
-  background:var(--bg2);border-radius:var(--r);border:1px solid var(--border);
-  cursor:pointer;overflow:hidden;transition:.18s;
-}
-.vcard:hover{transform:translateY(-3px);border-color:#555}
-.vthumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#111}
-.vthumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
-.vcard:hover .vthumb img{transform:scale(1.05)}
-.vtag{position:absolute;font-size:.7rem;font-weight:700;padding:2px 6px;border-radius:5px}
-.vtag.sh{top:6px;left:6px;background:var(--red);color:#fff}
-.vtag.dur{bottom:6px;right:6px;background:rgba(0,0,0,.8);color:#fff}
-.vtag.sc{top:6px;right:6px;background:rgba(0,0,0,.8);color:var(--gold)}
-.vinfo{padding:11px}
-.vtitle{font-size:.88rem;font-weight:600;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.vch{font-size:.78rem;color:var(--blue);margin-bottom:5px;font-weight:500}
-.vstats{display:flex;gap:10px;font-size:.76rem;color:#777}
-.ifad{
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
-  display:flex;align-items:center;justify-content:center;min-height:180px;overflow:hidden;
-}
-.ifad ins{display:block!important;width:100%}
-.more-btn{
-  display:block;margin:20px auto 0;padding:10px 34px;
-  background:var(--bg3);border:1px solid var(--border);border-radius:24px;
-  color:#ccc;font-size:.88rem;transition:.15s;
-}
-.more-btn:hover{background:var(--bg2);color:#fff;border-color:#555}
+/* ── 인기영상 탭 ── */
+.search-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:200px;background:#1a1a2e;border:1px solid #333;color:#e8e8e8;padding:10px 14px;border-radius:8px;font-size:14px}
+.search-bar input:focus{outline:none;border-color:#ff0000}
+.search-bar button{background:linear-gradient(135deg,#ff0000,#c00);border:none;color:#fff;padding:10px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.filter-row select{background:#1a1a2e;border:1px solid #333;color:#e8e8e8;padding:7px 10px;border-radius:6px;font-size:12px}
+#vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.vcard{background:#1a1a2e;border:1px solid #222;border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s}
+.vcard:hover{border-color:#ff0000;transform:translateY(-2px)}
+.vcard img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.vcard .vc-info{padding:12px}
+.vcard .vc-title{font-size:13px;font-weight:700;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vcard .vc-meta{display:flex;gap:8px;font-size:11px;color:#888;flex-wrap:wrap}
+.vcard .vc-badge{background:rgba(255,0,0,0.15);color:#ff6b6b;font-size:10px;padding:2px 6px;border-radius:4px}
+.in-feed-ad{grid-column:1/-1;text-align:center;margin:8px 0}
+.in-feed-ad ins{display:inline-block;width:100%;max-width:728px;height:90px}
+#moreBtn{display:none;width:100%;padding:14px;background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333;color:#e8e8e8;border-radius:10px;cursor:pointer;font-size:14px;margin-top:16px;transition:all .2s}
+#moreBtn:hover{border-color:#ff0000;color:#ff6b6b}
+#spin-hot{text-align:center;padding:40px;display:none}
+.spinner{width:40px;height:40px;border:3px solid #333;border-top-color:#ff0000;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ══════════════════════════════════════
-   ★ 광고 박스 공통 스타일
-   최고 시인성 위치에 사용
-══════════════════════════════════════ */
-/* 섹션 상단 히어로 광고 (가장 눈에 띄는 위치) */
-.ad-hero{
-  width:100%;
-  background:linear-gradient(135deg,rgba(68,136,255,.08),rgba(170,68,255,.08));
-  border:1px solid rgba(68,136,255,.2);
-  border-radius:var(--r);
-  padding:4px;
-  margin-bottom:20px;
-  text-align:center;
-}
-.ad-hero ins{display:block!important}
-.ad-hero-label{
-  font-size:.68rem;color:#555;margin-bottom:3px;letter-spacing:.5px;
-}
+/* ── AI 아이디어 탭 ── */
+.ai-form{background:#1a1a2e;border:1px solid #333;border-radius:14px;padding:24px;margin-bottom:20px}
+.ai-form textarea{width:100%;background:#0f0f1a;border:1px solid #333;color:#e8e8e8;padding:12px;border-radius:8px;font-size:13px;resize:vertical;min-height:80px;font-family:inherit}
+.ai-form textarea:focus{outline:none;border-color:#ff0000}
+.ai-form .ai-opts{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.ai-form .ai-opts select{background:#0f0f1a;border:1px solid #333;color:#e8e8e8;padding:7px 10px;border-radius:6px;font-size:12px}
+.ai-form .ai-run{background:linear-gradient(135deg,#ff0000,#c00);border:none;color:#fff;padding:12px 24px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700;width:100%;margin-top:8px}
+.idea-card{background:#1a1a2e;border:1px solid #333;border-radius:12px;padding:18px;margin-bottom:12px;transition:border-color .2s}
+.idea-card:hover{border-color:#ff6b6b}
+.idea-card .ic-num{font-size:11px;color:#888;margin-bottom:6px}
+.idea-card .ic-title{font-size:15px;font-weight:700;margin-bottom:8px;color:#ff6b6b}
+.idea-card .ic-body{font-size:13px;color:#ccc;line-height:1.6}
+#spin-ai{text-align:center;padding:40px;display:none}
 
-/* 결과 중간 광고 (채널분석 점수카드 바로 위 → 시선이 머무는 위치) */
-.ad-mid{
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:4px;
-  margin:16px 0;
-  text-align:center;
-  position:relative;
-}
-.ad-mid ins{display:block!important}
-.ad-mid-label{
-  font-size:.65rem;color:#555;letter-spacing:.5px;
-  position:absolute;top:4px;left:8px;
-}
+/* ── 제작도구 탭 ── */
+.tools-hero{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center}
+.tools-hero h2{font-size:24px;font-weight:900;margin-bottom:8px}
+.tools-hero p{font-size:14px;color:#888}
+.tool-category{margin-bottom:28px}
+.tool-category h3{font-size:16px;font-weight:700;color:#ff6b6b;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #333}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tool-card{background:#1a1a2e;border:1px solid #222;border-radius:12px;padding:16px;text-decoration:none;display:flex;gap:12px;align-items:flex-start;transition:all .2s}
+.tool-card:hover{border-color:#ff6b6b;transform:translateY(-2px)}
+.tool-card .tc-icon{font-size:28px;flex-shrink:0}
+.tool-card .tc-body strong{display:block;font-size:13px;font-weight:700;color:#e8e8e8;margin-bottom:4px}
+.tool-card .tc-body span{font-size:11px;color:#888}
+.tool-card .tc-free{background:rgba(0,200,100,0.15);color:#00c864;font-size:10px;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.tool-card .tc-paid{background:rgba(255,200,0,0.15);color:#ffc800;font-size:10px;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
 
-/* 계산 결과 바로 위 광고 (결과 확인 직전 시선 집중) */
-.ad-result-above{
-  background:linear-gradient(135deg,rgba(68,204,136,.08),rgba(68,136,255,.08));
-  border:1px solid rgba(68,204,136,.2);
-  border-radius:var(--r);
-  padding:4px;
-  margin:16px 0;
-  text-align:center;
-}
-.ad-result-above ins{display:block!important}
+/* ── 수익계산기 탭 ── */
+.calc-hero{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #333;border-radius:14px;padding:24px;margin-bottom:20px;text-align:center}
+.calc-hero h2{font-size:24px;font-weight:900;margin-bottom:8px}
+.calc-hero p{font-size:14px;color:#888}
+.calc-card{background:#1a1a2e;border:1px solid #333;border-radius:14px;padding:24px;margin-bottom:16px}
+.calc-card h3{font-size:16px;font-weight:700;margin-bottom:16px;color:#ff6b6b}
+.calc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.calc-row label{font-size:13px;color:#aaa;min-width:140px}
+.calc-row input,.calc-row select{background:#0f0f1a;border:1px solid #333;color:#e8e8e8;padding:8px 12px;border-radius:6px;font-size:13px;flex:1;min-width:120px}
+.calc-row input:focus,.calc-row select:focus{outline:none;border-color:#ff0000}
+#calcBtn{width:100%;padding:14px;background:linear-gradient(135deg,#ff0000,#c00);border:none;color:#fff;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:all .2s}
+#calcBtn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,0,0,0.4)}
+.result-box{background:#0f0f1a;border:1px solid #333;border-radius:12px;padding:20px;margin-top:16px;display:none}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222}
+.result-row:last-child{border-bottom:none}
+.result-row .rr-label{font-size:13px;color:#888}
+.result-row .rr-val{font-size:16px;font-weight:700;color:#ff6b6b}
+.result-row.total .rr-val{font-size:22px;color:#ffc800}
 
-/* 하단 광고 */
-.ad-bottom{margin-top:20px;text-align:center}
-.ad-bottom ins{display:block!important}
+/* ── 채널분석 탭 ── */
+.ch-search{display:flex;gap:8px;margin-bottom:20px}
+.ch-search input{flex:1;background:#1a1a2e;border:1px solid #333;color:#e8e8e8;padding:12px 16px;border-radius:8px;font-size:14px}
+.ch-search input:focus{outline:none;border-color:#ff0000}
+.ch-search button{background:linear-gradient(135deg,#ff0000,#c00);border:none;color:#fff;padding:12px 20px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700}
+.ch-profile{background:#1a1a2e;border:1px solid #333;border-radius:14px;padding:24px;margin-bottom:16px;display:none}
+.ch-avatar{width:80px;height:80px;border-radius:50%;border:3px solid #ff0000;margin-right:16px;float:left}
+.ch-name{font-size:20px;font-weight:900;margin-bottom:4px}
+.ch-handle{font-size:13px;color:#888;margin-bottom:8px}
+.ch-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;clear:both}
+.ch-stat{background:#0f0f1a;border-radius:10px;padding:14px;text-align:center}
+.ch-stat .cs-val{font-size:20px;font-weight:900;color:#ff6b6b}
+.ch-stat .cs-lbl{font-size:11px;color:#888;margin-top:4px}
+.score-wrap{background:#1a1a2e;border:1px solid #333;border-radius:14px;padding:24px;margin-bottom:16px;display:none}
+.score-circle{width:120px;height:120px;border-radius:50%;background:conic-gradient(#ff0000 var(--p,0%),#1a1a2e 0);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative}
+.score-circle::before{content:'';position:absolute;width:90px;height:90px;background:#1a1a2e;border-radius:50%}
+.score-circle .sc-num{position:relative;font-size:28px;font-weight:900;color:#ff6b6b}
+.fb-list{list-style:none}
+.fb-list li{padding:10px 0;border-bottom:1px solid #222;font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.fb-list li:last-child{border-bottom:none}
+.fb-icon{font-size:16px;flex-shrink:0}
+#spin-ch{text-align:center;padding:40px;display:none}
 
-/* ── 영상 모달 ── */
-#vmod{
-  display:none;position:fixed;inset:0;z-index:2000;
-  background:rgba(0,0,0,.88);justify-content:center;align-items:center;padding:16px;
-}
-#vmod.on{display:flex}
-.vmod-in{
-  background:var(--bg2);border-radius:14px;width:100%;max-width:860px;
-  max-height:90vh;overflow-y:auto;border:1px solid var(--border);position:relative;
-}
-.vmod-x{
-  position:absolute;top:10px;right:10px;z-index:5;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.1);font-size:1rem;
-  display:flex;align-items:center;justify-content:center;transition:.15s;
-}
-.vmod-x:hover{background:rgba(255,68,68,.85)}
-.vmod-player{aspect-ratio:16/9;background:#000;border-radius:12px 12px 0 0;overflow:hidden}
-.vmod-player iframe{width:100%;height:100%;border:none}
-.vmod-body{padding:18px}
-.vmod-title{font-size:1rem;font-weight:700;margin-bottom:10px;line-height:1.5}
-.vmod-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
-.vmod-meta span{font-size:.82rem;color:#888}
-.vmod-desc{font-size:.82rem;color:#aaa;line-height:1.7;max-height:80px;overflow:hidden}
-.vmod-ad{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);text-align:center}
-.vmod-ad ins{display:inline-block!important}
+/* ── FOOTER ── */
+footer{background:#0a0a15;border-top:1px solid #222;padding:20px;font-size:11px;color:#555;text-align:center}
+footer a{color:#666;text-decoration:none;margin:0 8px}
+footer a:hover{color:#ff6b6b}
 
-/* ── 게이트 (검색 광고) ── */
-#gate{
-  display:none;position:fixed;inset:0;z-index:3000;
-  background:rgba(0,0,0,.93);justify-content:center;align-items:center;
-}
-#gate.on{display:flex}
-.gate-box{
-  background:var(--bg2);border-radius:14px;padding:28px;
-  max-width:460px;width:90%;border:1px solid var(--border);text-align:center;
-}
-.gate-box h3{font-size:1.1rem;font-weight:700;margin-bottom:6px}
-.gate-box p{font-size:.82rem;color:#888;margin-bottom:16px}
-.gate-ad{margin:16px 0}
-.gate-ad ins{display:block!important}
-.gate-cnt{font-size:2.4rem;font-weight:900;color:var(--red);margin:12px 0}
-.gate-skip{
-  padding:9px 24px;border-radius:24px;
-  background:linear-gradient(135deg,var(--red),var(--blue));
-  color:#fff;font-weight:700;font-size:.88rem;transition:.15s;
-}
-.gate-skip:disabled{opacity:.3;cursor:not-allowed}
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal-box{background:#1a1a2e;border:1px solid #333;border-radius:16px;max-width:560px;width:90%;max-height:80vh;overflow-y:auto;padding:28px;position:relative}
+.modal-box h2{font-size:20px;font-weight:900;margin-bottom:16px}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#aaa;font-size:22px;cursor:pointer}
+.modal-close:hover{color:#fff}
 
-/* ── 인터스티셜 (페이지 이동형) ── */
-/* ★ 정책 준수: 닫기 버튼 항상 보임, 5초 후 활성화, 두 번째 팝업 없음 */
-#inter{
-  display:none;position:fixed;inset:0;z-index:3000;
-  background:rgba(0,0,0,.95);justify-content:center;align-items:center;
-}
-#inter.on{display:flex}
-.inter-box{
-  background:var(--bg2);border-radius:14px;padding:28px;
-  max-width:520px;width:90%;border:1px solid var(--border);
-  text-align:center;position:relative;
-}
-/* ★ 닫기 버튼: 항상 visible, disabled 상태에서도 위치 보임 */
-.inter-x{
-  position:absolute;top:10px;right:10px;
-  width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.08);font-size:1rem;
-  display:flex;align-items:center;justify-content:center;transition:.15s;
-  /* 비활성 상태에서도 보이되 클릭 안 됨 */
-  opacity:.4;pointer-events:none;
-}
-.inter-x.active{opacity:1;pointer-events:auto}
-.inter-x.active:hover{background:rgba(255,68,68,.85)}
-.inter-ad ins{display:block!important;margin:0 auto}
-.inter-info{font-size:.82rem;color:#888;margin-top:10px}
-.inter-progress{
-  height:4px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden;
-}
-.inter-bar{
-  height:100%;border-radius:2px;
-  background:linear-gradient(90deg,var(--red),var(--blue));
-  transition:width linear;width:0%;
-}
+/* 인터스티셜 */
+#inter{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#inter.open{display:flex}
+#inter .int-box{background:#1a1a2e;border:1px solid #333;border-radius:16px;padding:24px;text-align:center;max-width:520px;width:90%}
+#interClose{background:rgba(255,255,255,0.1);border:1px solid #555;color:#ccc;padding:8px 24px;border-radius:20px;cursor:pointer;margin-top:16px;font-size:13px;transition:all .3s}
+#interClose:hover{background:#ff0000;color:#fff;border-color:#ff0000}
+#interTimer{font-size:12px;color:#888;margin-top:8px}
 
-/* ── 채널분석 ── */
-.ch-row{display:flex;gap:8px;margin-bottom:18px}
-.ch-row input{
-  flex:1;background:var(--bg3);border:1px solid var(--border);
-  border-radius:10px;padding:11px 14px;font-size:.9rem;outline:none;transition:.15s;
-}
-.ch-row input::placeholder{color:#555}
-.ch-row input:focus{border-color:var(--purple)}
-.ch-btn{
-  padding:11px 20px;border-radius:10px;
-  background:linear-gradient(135deg,var(--purple),var(--blue));
-  color:#fff;font-weight:700;font-size:.88rem;flex-shrink:0;
-}
-.ch-btn:hover{opacity:.85}
-.ch-profile{
-  display:flex;gap:16px;align-items:flex-start;
-  background:var(--bg3);border-radius:var(--r);padding:18px;
-  margin-bottom:14px;border:1px solid var(--border);
-}
-.ch-ava{width:68px;height:68px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border);background:var(--bg2)}
-.ch-name{font-size:1.1rem;font-weight:700;margin-bottom:3px}
-.ch-handle{font-size:.8rem;color:var(--blue);margin-bottom:8px}
-.ch-bads{display:flex;flex-wrap:wrap;gap:6px}
-.ch-bad{padding:3px 10px;border-radius:14px;font-size:.74rem;font-weight:700;background:var(--bg2);border:1px solid var(--border)}
-.score-card{
-  background:linear-gradient(135deg,rgba(68,136,255,.1),rgba(170,68,255,.1));
-  border-radius:var(--r);padding:20px;margin-bottom:14px;
-  border:1px solid rgba(68,136,255,.2);text-align:center;
-}
-.score-num{font-size:3rem;font-weight:900;color:var(--gold);line-height:1}
-.score-lbl{font-size:.85rem;color:#888;margin-top:6px}
-.score-lv{display:inline-block;padding:6px 18px;border-radius:24px;font-size:.88rem;font-weight:700;margin-top:10px}
-.gauge{height:10px;background:var(--bg3);border-radius:5px;overflow:hidden;margin-top:12px}
-.gauge-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--red),var(--gold));transition:width 1s ease}
-.bd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px}
-.bd-item{background:var(--bg3);border-radius:8px;padding:12px;border:1px solid var(--border);text-align:center}
-.bd-lbl{font-size:.74rem;color:#888;margin-bottom:5px}
-.bd-val{font-size:1rem;font-weight:700}
-.bd-bar{height:4px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden}
-.bd-fill{height:100%;border-radius:2px;transition:width 1s ease}
-.fb-box{background:var(--bg3);border-radius:var(--r);padding:16px;margin-bottom:14px;border:1px solid var(--border)}
-.fb-box h3{font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:10px}
-.fb-item{display:flex;gap:9px;padding:9px;background:var(--bg2);border-radius:7px;border:1px solid var(--border);margin-bottom:7px}
-.fb-item:last-child{margin-bottom:0}
-.fb-txt{font-size:.82rem;color:#bbb;line-height:1.6}
-
-/* ── AI아이디어 ── */
-.idea-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:13px}
-.idea-card{background:var(--bg2);border-radius:var(--r);padding:17px;border:1px solid var(--border);transition:.18s}
-.idea-card:hover{transform:translateY(-3px);border-color:#555}
-.idea-no{font-size:.7rem;color:#666;font-weight:600;margin-bottom:7px}
-.idea-ttl{font-size:.9rem;font-weight:700;margin-bottom:9px;line-height:1.4}
-.idea-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
-.idea-tag{padding:2px 8px;border-radius:12px;font-size:.7rem;font-weight:600;background:rgba(68,136,255,.15);color:var(--blue);border:1px solid rgba(68,136,255,.25)}
-.idea-why{font-size:.79rem;color:#888;line-height:1.6}
-
-/* ── 제작도구 ── */
-.tools-sec{margin-bottom:24px}
-.tools-stitle{font-size:.94rem;font-weight:700;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border)}
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.tool-card{background:var(--bg2);border-radius:var(--r);padding:14px;border:1px solid var(--border);display:block;transition:.18s}
-.tool-card:hover{transform:translateY(-3px);border-color:#555;background:var(--bg3)}
-.tool-ico{font-size:1.6rem;margin-bottom:7px}
-.tool-name{font-size:.86rem;font-weight:700;margin-bottom:3px}
-.tool-desc{font-size:.76rem;color:#888;line-height:1.5}
-.tool-badge{display:inline-block;margin-top:7px;padding:2px 7px;border-radius:7px;font-size:.7rem;font-weight:700;background:rgba(68,204,136,.15);color:var(--green);border:1px solid rgba(68,204,136,.25)}
-
-/* ── 수익계산기 ── */
-.calc-card{background:var(--bg2);border-radius:var(--r);padding:22px;border:1px solid var(--border);max-width:560px}
-.c-row{margin-bottom:15px}
-.c-row label{display:block;font-size:.82rem;color:#aaa;margin-bottom:6px;font-weight:500}
-.c-row input,.c-row select{
-  width:100%;background:var(--bg3);border:1px solid var(--border);
-  border-radius:8px;padding:9px 12px;font-size:.9rem;outline:none;transition:.15s;
-}
-.c-row input:focus,.c-row select:focus{border-color:var(--blue)}
-.c-row select option{background:var(--bg3)}
-.calc-btn{
-  width:100%;padding:12px;
-  background:linear-gradient(135deg,var(--green),var(--blue));
-  border-radius:9px;color:#fff;font-weight:700;font-size:.94rem;transition:.15s;margin-top:6px;
-}
-.calc-btn:hover{opacity:.85}
-.calc-result{background:var(--bg3);border-radius:9px;padding:18px;margin-top:18px;border:1px solid var(--border);display:none}
-.calc-result.on{display:block}
-.calc-result h3{font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:12px}
-.rg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
-.ri{background:var(--bg2);border-radius:8px;padding:11px;border:1px solid var(--border);text-align:center}
-.rl{font-size:.72rem;color:#888;margin-bottom:3px}
-.rv{font-size:1.05rem;font-weight:700}
-.rn{font-size:.76rem;color:#666;line-height:1.6;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-
-/* ── 토스트 ── */
-#toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);
-  background:rgba(24,24,44,.96);border:1px solid var(--border);border-radius:24px;
-  padding:10px 22px;font-size:.83rem;color:#fff;z-index:9999;
-  opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;pointer-events:none;
-}
-#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── 푸터 ── */
-#footer{background:var(--bg2);border-top:1px solid var(--border);padding:16px 20px}
-.foot-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:.79rem;margin-bottom:7px}
-.foot-row a{color:#666;padding:2px 5px;border-radius:4px;transition:.15s}
-.foot-row a:hover{color:var(--blue)}
-.foot-sep{color:#3a3a5a}
-.foot-copy{text-align:center;font-size:.75rem;color:#555}
-
-/* ── 텍스트 모달 ── */
-.tmod{display:none;position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.88);justify-content:center;align-items:center;padding:18px}
-.tmod.on{display:flex}
-.tmod-in{background:var(--bg2);border-radius:14px;padding:26px;max-width:620px;width:100%;max-height:80vh;overflow-y:auto;border:1px solid var(--border);position:relative}
-.tmod-in h2{font-size:1.05rem;font-weight:700;margin-bottom:14px}
-.tmod-in p{font-size:.83rem;color:#bbb;line-height:1.8;margin-bottom:9px}
-.tmod-x{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:.15s}
-.tmod-x:hover{background:rgba(255,68,68,.85)}
+/* API KEY BANNER */
+#keyBanner{display:none;background:linear-gradient(135deg,#2a1a0a,#1a0a0a);border:1px solid #ff6b00;border-radius:12px;padding:20px;margin:20px;text-align:center}
+#keyBanner h3{color:#ff6b00;margin-bottom:8px}
+#keyBanner p{font-size:13px;color:#ccc;margin-bottom:12px;line-height:1.6}
+#keyBanner input{width:100%;max-width:400px;background:#0f0f0f;border:1px solid #555;color:#e8e8e8;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:8px}
+#keyBanner button{background:#ff6b00;border:none;color:#fff;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
 
 @media(max-width:768px){
-  #sidebar{display:none!important}
+  #sidebar{display:none}
+  #hnav{display:none}
   #wrap{padding-left:0!important}
-  #footer{margin-left:0!important}
-  .vgrid{grid-template-columns:repeat(2,1fr)}
-  .rg{grid-template-columns:1fr}
-}
-@media(max-width:480px){
-  .vgrid{grid-template-columns:1fr}
-  #main{padding:12px}
-  .nb{padding:5px 9px;font-size:.78rem}
+  footer{margin-left:0!important}
+  .ch-stats{grid-template-columns:repeat(2,1fr)}
+  .cp-grid{grid-template-columns:repeat(2,1fr)}
+  .tool-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- 상단 고정 광고 -->
+<!-- ══ TOP AD ══ -->
 <div id="topAd">
-  <ins class="adsbygoogle"
-    style="display:inline-block;width:728px;max-width:90vw;height:90px"
-    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111"></ins>
-  <button id="topAdX">✕</button>
+  <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+    data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111"
+    data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+  <button id="adHideBtn" onclick="toggleTopAd()">×</button>
 </div>
 
-<!-- 헤더 -->
+<!-- ══ HEADER ══ -->
 <header id="hdr">
-  <div class="logo">YT Analytics Pro</div>
-  <nav id="hnav">
-    <button class="nb on" data-tab="hot">🔥 인기영상</button>
-    <button class="nb" data-tab="ch">📊 채널분석</button>
-    <button class="nb" data-tab="ai">🤖 AI아이디어</button>
-    <button class="nb" data-tab="tools">🛠️ 제작도구</button>
-    <button class="nb" data-tab="calc">💰 수익계산기</button>
-  </nav>
+  <div class="logo">▶ YTAnalytics Pro</div>
   <div class="hdr-ad">
-    <ins class="adsbygoogle"
-      style="display:inline-block;width:260px;height:50px"
+    <ins class="adsbygoogle" style="display:inline-block;width:468px;max-width:100%;height:60px"
       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="2222222222"></ins>
   </div>
+  <nav id="hnav">
+    <button class="hnav-btn on" data-tab="hot">🔥 인기</button>
+    <button class="hnav-btn" data-tab="ai">💡 아이디어</button>
+    <button class="hnav-btn" data-tab="tools">🛠 제작도구</button>
+    <button class="hnav-btn" data-tab="calc">💰 수익계산</button>
+    <button class="hnav-btn" data-tab="ch">📊 채널분석</button>
+  </nav>
 </header>
 
+<!-- ══ SIDEBAR ══ -->
+<aside id="sidebar">
+  <button class="snav-btn on" data-tab="hot"><span class="ico">🔥</span>인기 영상</button>
+  <button class="snav-btn" data-tab="ai"><span class="ico">💡</span>AI 아이디어</button>
+  <button class="snav-btn" data-tab="tools"><span class="ico">🛠</span>제작도구</button>
+  <button class="snav-btn" data-tab="calc"><span class="ico">💰</span>수익 계산기</button>
+  <button class="snav-btn" data-tab="ch"><span class="ico">📊</span>채널 분석</button>
+
+  <!-- 사이드바 쿠팡 배너 -->
+  <div style="margin-top:20px;padding:0 4px">
+    <p style="font-size:10px;color:#555;margin-bottom:6px;text-align:center">📦 유튜버 장비 추천</p>
+    <a class="side-coupang" href="https://www.coupang.com/np/search?q=유튜브+장비&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <div class="cp-logo">쿠팡</div>
+      <div class="cp-sub">유튜브 촬영 장비 특가</div>
+      <div class="cp-badge">🚀 로켓배송</div>
+    </a>
+    <a class="side-coupang" href="https://www.coupang.com/np/search?q=마이크+방송용&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener" style="margin-top:6px">
+      <div class="cp-logo">쿠팡</div>
+      <div class="cp-sub">방송용 마이크 추천</div>
+      <div class="cp-badge">🎙 인기상품</div>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의<br>일환으로 수수료를 받습니다.</p>
+  </div>
+
+  <!-- 사이드바 애드센스 -->
+  <div style="margin-top:12px;text-align:center">
+    <ins class="adsbygoogle" style="display:block;width:200px;max-width:100%;height:200px"
+      data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333"
+      data-ad-format="rectangle"></ins>
+  </div>
+</aside>
+
+<!-- ══ MAIN WRAP ══ -->
 <div id="wrap">
-  <!-- 사이드바 -->
-  <aside id="sidebar">
-    <button class="sb on" data-tab="hot"><span>🔥</span>인기영상</button>
-    <button class="sb" data-tab="ch"><span>📊</span>채널분석</button>
-    <button class="sb" data-tab="ai"><span>🤖</span>AI아이디어</button>
-    <button class="sb" data-tab="tools"><span>🛠️</span>제작도구</button>
-    <button class="sb" data-tab="calc"><span>💰</span>수익계산기</button>
-    <div class="side-ad">
-      <ins class="adsbygoogle"
-        style="display:block;width:196px;height:196px"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333"></ins>
+
+  <!-- ── API KEY BANNER ── -->
+  <div id="keyBanner">
+    <h3>⚠️ YouTube API 키를 입력해주세요</h3>
+    <p>YouTube Data API v3 키가 없으면 영상을 불러올 수 없습니다.<br>
+    <a href="https://console.cloud.google.com/" target="_blank" style="color:#ff6b00">Google Cloud Console</a>에서 무료로 발급받으세요.</p>
+    <input type="text" id="keyInput" placeholder="AIzaSy... (API 키 입력)">
+    <button onclick="saveKey()">저장 & 시작</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       탭 1 : 인기 영상
+  ══════════════════════════════════ -->
+  <section id="sec-hot" class="sec on">
+    <div class="sec-title">🔥 지금 인기있는 유튜브 영상</div>
+    <div class="sec-sub">실시간 인기 영상을 분석하고 트렌드를 파악하세요</div>
+
+    <!-- 🛒 쿠팡 배너 – 상단 (유튜버 장비) -->
+    <a class="cp-banner" href="https://www.coupang.com/np/search?q=유튜브+촬영+장비+세트&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <span class="cp-icon">📦</span>
+      <div class="cp-text">
+        <strong>유튜버 촬영 장비 세트 특가</strong>
+        <span>카메라 · 마이크 · 조명 · 삼각대 모두 쿠팡에서</span>
+        <span class="cp-tag">🚀 로켓배송 · 무료반품</span>
+      </div>
+      <span class="cp-arrow">›</span>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+
+    <!-- 검색 & 필터 -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="키워드 검색 (예: 먹방, 게임, 여행)">
+      <button onclick="doSearch()">🔍 검색</button>
     </div>
-  </aside>
-
-  <div id="main">
-    <div class="banner key" id="keyBanner"></div>
-    <div class="banner err" id="errBanner"></div>
-
-    <!-- ══ 인기영상 ══ -->
-    <div class="sec on" id="sec-hot">
-      <div class="sec-title"><span class="sec-dot"></span>인기 급상승 동영상</div>
-      <div class="srow">
-        <input id="q" type="text" placeholder="키워드 검색 (먹방, 게임, 브이로그 ...)">
-        <button class="sbtn" id="searchBtn">🔍 검색</button>
-      </div>
-      <div class="ttabs" id="ttabs">
-        <button class="ttab on" data-type="all">전체</button>
-        <button class="ttab" data-type="short">쇼츠</button>
-        <button class="ttab" data-type="long">롱폼</button>
-      </div>
-      <div class="chips" id="chips"></div>
-      <div class="spin-box" id="hotSpin"><div class="spinner"></div><span>인기 영상 불러오는 중...</span></div>
-      <div class="vgrid" id="vgrid"></div>
-      <button class="more-btn" id="moreBtn" style="display:none">더 보기 ▼</button>
-    </div>
-
-    <!-- ══ 채널분석 ══ -->
-    <div class="sec" id="sec-ch">
-      <div class="sec-title"><span class="sec-dot"></span>채널 분석</div>
-
-      <!-- ★ 채널분석 히어로 광고 (검색창 바로 위 → 가장 눈에 띄는 위치) -->
-      <div class="ad-hero">
-        <div class="ad-hero-label">AD</div>
-        <ins class="adsbygoogle"
-          style="display:block;min-height:90px"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH11111111"
-          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      </div>
-
-      <div class="ch-row">
-        <input id="chQ" type="text" placeholder="채널명 또는 @핸들 입력">
-        <button class="ch-btn" id="chBtn">📊 분석하기</button>
-      </div>
-      <div class="spin-box" id="chSpin" style="display:none"><div class="spinner"></div><span>채널 분석 중...</span></div>
-      <div id="chResult"></div>
-    </div>
-
-    <!-- ══ AI아이디어 ══ -->
-    <div class="sec" id="sec-ai">
-      <div class="sec-title"><span class="sec-dot"></span>AI 콘텐츠 아이디어</div>
-      <div class="ad-hero">
-        <div class="ad-hero-label">AD</div>
-        <ins class="adsbygoogle" style="display:block;min-height:90px"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="AI11111111"
-          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      </div>
-      <div class="idea-grid" id="ideaGrid"></div>
-      <div class="ad-bottom">
-        <ins class="adsbygoogle" style="display:block"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="AI22222222"
-          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      </div>
+    <div class="filter-row">
+      <select id="catSel" onchange="changeCat()">
+        <option value="">전체 카테고리</option>
+        <option value="10">🎵 음악</option>
+        <option value="20">🎮 게임</option>
+        <option value="22">📰 뉴스</option>
+        <option value="23">🎭 코미디</option>
+        <option value="24">🎬 엔터테인먼트</option>
+        <option value="25">📊 뉴스/정치</option>
+        <option value="26">🔬 과학/기술</option>
+        <option value="28">🔧 과학/기술</option>
+      </select>
+      <select id="regionSel" onchange="changeRegion()">
+        <option value="KR">🇰🇷 대한민국</option>
+        <option value="US">🇺🇸 미국</option>
+        <option value="JP">🇯🇵 일본</option>
+        <option value="GB">🇬🇧 영국</option>
+      </select>
+      <select id="vtypeSel" onchange="changeVtype()">
+        <option value="all">전체</option>
+        <option value="short">🩳 쇼츠</option>
+        <option value="long">▶ 일반영상</option>
+      </select>
     </div>
 
-    <!-- ══ 제작도구 ══ -->
-    <div class="sec" id="sec-tools">
-      <div class="sec-title"><span class="sec-dot"></span>유튜브 제작 도구</div>
-      <!-- ★ 제작도구 히어로 광고 (섹션 진입 즉시 가장 먼저 보이는 위치) -->
-      <div class="ad-hero">
-        <div class="ad-hero-label">AD</div>
-        <ins class="adsbygoogle" style="display:block;min-height:90px"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="TL11111111"
-          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      </div>
-      <div id="toolsWrap"></div>
-    </div>
+    <!-- 스피너 -->
+    <div id="spin-hot"><div class="spinner"></div><p style="color:#888;margin-top:12px;font-size:13px">영상 불러오는 중...</p></div>
 
-    <!-- ══ 수익계산기 ══ -->
-    <div class="sec" id="sec-calc">
-      <div class="sec-title"><span class="sec-dot"></span>유튜브 수익 계산기</div>
-      <!-- ★ 수익계산기 히어로 광고 (섹션 진입 직후 → 가장 눈에 띄는 위치) -->
-      <div class="ad-hero">
-        <div class="ad-hero-label">AD</div>
-        <ins class="adsbygoogle" style="display:block;min-height:90px"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CA11111111"
-          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      </div>
-      <div class="calc-card">
-        <div class="c-row"><label>월간 조회수</label>
-          <input id="cV" type="number" placeholder="예: 100000" min="0"></div>
-        <div class="c-row"><label>예상 CPM (원)</label>
-          <input id="cC" type="number" value="3000" min="0"></div>
-        <div class="c-row"><label>채널 유형</label>
-          <select id="cT">
-            <option value="0.4">일반 (광고 수익 40%)</option>
-            <option value="0.5">고CPM – 금융/IT (50%)</option>
-            <option value="0.2">쇼츠 위주 (20%)</option>
-          </select></div>
-        <div class="c-row"><label>구독자 수</label>
-          <input id="cS" type="number" placeholder="예: 10000" min="0"></div>
+    <!-- 영상 그리드 -->
+    <div id="vgrid"></div>
+    <button id="moreBtn" onclick="loadMore()">더 보기 ↓</button>
 
-        <!-- ★ 계산 버튼 바로 위 광고 (버튼 클릭 직전 시선이 멈추는 곳) -->
-        <div class="ad-result-above">
-          <ins class="adsbygoogle" style="display:block;min-height:90px"
-            data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CA22222222"
-            data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <!-- 🛒 쿠팡 띠배너 – 하단 (조명/마이크) -->
+    <div style="margin-top:24px">
+      <a class="cp-strip" href="https://www.coupang.com/np/search?q=방송용+마이크&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+        <div class="cs-left">
+          <span class="cs-icon">🎙</span>
+          <div class="cs-text">
+            <strong>방송용 마이크 베스트셀러</strong>
+            <span>쿠팡 인기 1위 유튜버 마이크 모음</span>
+          </div>
         </div>
+        <span class="cs-btn">쿠팡 보기 ›</span>
+      </a>
+      <a class="cp-strip" href="https://www.coupang.com/np/search?q=방송용+조명+링라이트&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener" style="margin-top:8px">
+        <div class="cs-left">
+          <span class="cs-icon">💡</span>
+          <div class="cs-text">
+            <strong>링라이트 · 방송용 조명 특가</strong>
+            <span>촬영 퀄리티를 올려주는 조명 추천</span>
+          </div>
+        </div>
+        <span class="cs-btn">쿠팡 보기 ›</span>
+      </a>
+      <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    </div>
+  </section>
 
-        <button class="calc-btn" id="calcBtn">💰 수익 계산하기</button>
-        <div class="calc-result" id="calcRes"></div>
+  <!-- ══════════════════════════════════
+       탭 2 : AI 아이디어
+  ══════════════════════════════════ -->
+  <section id="sec-ai" class="sec">
+    <div class="sec-title">💡 AI 영상 아이디어 생성기</div>
+    <div class="sec-sub">채널 컨셉을 입력하면 AI가 영상 아이디어를 제안합니다</div>
+
+    <!-- 애드센스 상단 -->
+    <div style="text-align:center;margin-bottom:16px">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="AI11111111"></ins>
+    </div>
+
+    <div class="ai-form">
+      <textarea id="aiPrompt" placeholder="예: 20대 직장인을 위한 재테크 유튜브 채널, 게임 리뷰 채널, 먹방 채널..."></textarea>
+      <div class="ai-opts">
+        <select id="aiStyle">
+          <option value="trending">🔥 트렌딩</option>
+          <option value="evergreen">🌿 에버그린</option>
+          <option value="controversial">💬 논쟁적</option>
+          <option value="educational">📚 교육적</option>
+        </select>
+        <select id="aiCount">
+          <option value="5">5개</option>
+          <option value="10">10개</option>
+          <option value="15">15개</option>
+        </select>
       </div>
-      <!-- 계산 결과 아래 광고 -->
-      <div class="ad-bottom">
-        <ins class="adsbygoogle" style="display:block"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CA33333333"
-          data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+      <button class="ai-run" onclick="generateIdeas()">✨ AI 아이디어 생성</button>
+    </div>
+
+    <!-- 🛒 쿠팡 배너 – AI/콘텐츠 기획 관련 -->
+    <a class="cp-banner" href="https://www.coupang.com/np/search?q=유튜브+수익화+책&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <span class="cp-icon">📚</span>
+      <div class="cp-text">
+        <strong>유튜브 콘텐츠 기획 · 수익화 도서</strong>
+        <span>유튜버들의 필독서 · 채널 성장 노하우</span>
+        <span class="cp-tag">📦 쿠팡 도서 최저가</span>
+      </div>
+      <span class="cp-arrow">›</span>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+
+    <div id="spin-ai"><div class="spinner"></div><p style="color:#888;margin-top:12px;font-size:13px">아이디어 생성 중...</p></div>
+    <div id="ideaList"></div>
+
+    <!-- 🛒 쿠팡 카드 그리드 – 노트북/태블릿 -->
+    <div style="margin-top:24px">
+      <p style="font-size:14px;font-weight:700;color:#ff6b6b;margin-bottom:12px">💻 콘텐츠 제작 필수 장비</p>
+      <div class="cp-grid">
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=영상편집+노트북&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">💻</div>
+          <div class="cc-name">영상편집 노트북</div>
+          <div class="cc-desc">고성능 편집용 노트북 추천</div>
+          <div class="cc-btn">쿠팡 최저가 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=아이패드+태블릿+드로잉&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">📱</div>
+          <div class="cc-name">태블릿 드로잉</div>
+          <div class="cc-desc">썸네일 제작용 태블릿</div>
+          <div class="cc-btn">쿠팡 최저가 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=외장SSD+포터블+저장장치&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">💾</div>
+          <div class="cc-name">외장 SSD</div>
+          <div class="cc-desc">영상 저장용 고속 외장SSD</div>
+          <div class="cc-btn">쿠팡 최저가 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=노트+다이어리+기획용&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">📓</div>
+          <div class="cc-name">기획 노트</div>
+          <div class="cc-desc">콘텐츠 기획·스크립트 노트</div>
+          <div class="cc-btn">쿠팡 최저가 ›</div>
+        </a>
+      </div>
+      <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    </div>
+
+    <!-- 애드센스 하단 -->
+    <div style="text-align:center;margin-top:20px">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="AI22222222"></ins>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       탭 3 : 제작도구
+  ══════════════════════════════════ -->
+  <section id="sec-tools" class="sec">
+    <div class="tools-hero">
+      <h2>🛠 유튜버 제작도구 모음</h2>
+      <p>영상 편집부터 썸네일까지, 유튜버에게 필요한 모든 도구</p>
+    </div>
+
+    <!-- 애드센스 히어로 배너 -->
+    <div style="text-align:center;margin-bottom:20px">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="TL11111111"></ins>
+    </div>
+
+    <!-- 🛒 쿠팡 메인 배너 – 촬영장비 세트 -->
+    <a class="cp-banner" href="https://www.coupang.com/np/search?q=유튜버+촬영세트+풀세트&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <span class="cp-icon">🎬</span>
+      <div class="cp-text">
+        <strong>유튜버 촬영 풀세트 특가</strong>
+        <span>카메라+조명+마이크+삼각대 패키지 · 쿠팡 단독가</span>
+        <span class="cp-tag">🚀 로켓배송 · 무료반품 보장</span>
+      </div>
+      <span class="cp-arrow">›</span>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+
+    <!-- 영상 편집 소프트웨어 -->
+    <div class="tool-category">
+      <h3>🎬 영상 편집 소프트웨어</h3>
+      <div class="tool-grid">
+        <a class="tool-card" href="https://www.blackmagicdesign.com/kr/products/davinciresolve" target="_blank" rel="noopener">
+          <span class="tc-icon">🎨</span>
+          <div class="tc-body"><strong>DaVinci Resolve</strong><span>전문가급 색보정 & 편집</span><span class="tc-free">무료/유료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.capcut.com" target="_blank" rel="noopener">
+          <span class="tc-icon">✂️</span>
+          <div class="tc-body"><strong>CapCut</strong><span>AI 편집 · 쇼츠 최적화</span><span class="tc-free">무료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.adobe.com/kr/products/premiere.html" target="_blank" rel="noopener">
+          <span class="tc-icon">🅰️</span>
+          <div class="tc-body"><strong>Adobe Premiere Pro</strong><span>업계 표준 편집툴</span><span class="tc-paid">유료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.canva.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🎭</span>
+          <div class="tc-body"><strong>Canva Video</strong><span>간편 영상·썸네일 제작</span><span class="tc-free">무료/유료</span></div>
+        </a>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- 푸터 -->
-<footer id="footer">
-  <div class="foot-row">
-    <a href="#" id="fl-disc">면책조항</a><span class="foot-sep">|</span>
-    <a href="#" id="fl-terms">이용약관</a><span class="foot-sep">|</span>
-    <a href="#" id="fl-priv">개인정보처리방침</a><span class="foot-sep">|</span>
-    <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube 약관</a><span class="foot-sep">|</span>
-    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 개인정보</a><span class="foot-sep">|</span>
-    <a href="mailto:contact@ytanalyticspro.com">문의하기</a>
-  </div>
-  <div class="foot-copy">© 2026 YTAnalytics Pro · YouTube Data API v3 기반 · 비공식 서비스</div>
-</footer>
+    <!-- 🛒 쿠팡 카드 – 촬영 장비 -->
+    <div class="tool-category">
+      <h3>📦 쿠팡 장비 추천</h3>
+      <div class="cp-grid">
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+카메라+입문용&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">📷</div>
+          <div class="cc-name">입문용 카메라</div>
+          <div class="cc-desc">유튜브 시작 추천 카메라</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=짐벌+스마트폰+손떨림방지&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">🎥</div>
+          <div class="cc-name">스마트폰 짐벌</div>
+          <div class="cc-desc">손떨림 없는 부드러운 촬영</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=링라이트+방송조명&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">💡</div>
+          <div class="cc-name">링라이트 조명</div>
+          <div class="cc-desc">셀프 촬영 필수 링라이트</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=USB+콘덴서마이크+방송용&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">🎙</div>
+          <div class="cc-name">USB 콘덴서 마이크</div>
+          <div class="cc-desc">입문자용 방송 마이크</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=삼각대+카메라+스마트폰&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">📐</div>
+          <div class="cc-name">카메라 삼각대</div>
+          <div class="cc-desc">안정적인 촬영용 삼각대</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=크로마키+초록색+배경천&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">🟩</div>
+          <div class="cc-name">크로마키 배경</div>
+          <div class="cc-desc">가상 배경 · 그린스크린</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+      </div>
+      <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    </div>
 
-<!-- 영상 모달 -->
-<div id="vmod">
-  <div class="vmod-in">
-    <button class="vmod-x" id="vmodX">✕</button>
-    <div class="vmod-player" id="vmodPlayer"></div>
-    <div class="vmod-body">
-      <div class="vmod-title" id="vmodTitle"></div>
-      <div class="vmod-meta" id="vmodMeta"></div>
-      <div class="vmod-desc" id="vmodDesc"></div>
-      <div class="vmod-ad">
-        <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="4444444444"></ins>
+    <!-- AI 영상 생성 도구 -->
+    <div class="tool-category">
+      <h3>🤖 AI 영상 생성</h3>
+      <div class="tool-grid">
+        <a class="tool-card" href="https://sora.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🌀</span>
+          <div class="tc-body"><strong>Sora (OpenAI)</strong><span>텍스트→영상 AI 생성</span><span class="tc-paid">유료</span></div>
+        </a>
+        <a class="tool-card" href="https://runwayml.com" target="_blank" rel="noopener">
+          <span class="tc-icon">✈️</span>
+          <div class="tc-body"><strong>Runway Gen-3</strong><span>AI 영상 편집 & 생성</span><span class="tc-paid">유료</span></div>
+        </a>
+        <a class="tool-card" href="https://pika.art" target="_blank" rel="noopener">
+          <span class="tc-icon">⚡</span>
+          <div class="tc-body"><strong>Pika Labs</strong><span>빠른 AI 클립 생성</span><span class="tc-free">무료/유료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.heygen.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🧑‍💻</span>
+          <div class="tc-body"><strong>HeyGen</strong><span>AI 아바타 영상 제작</span><span class="tc-paid">유료</span></div>
+        </a>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- 광고 게이트 (검색 N회마다) -->
-<div id="gate">
-  <div class="gate-box">
-    <h3>🎬 검색 결과를 불러옵니다</h3>
-    <p>잠시 후 자동으로 이동됩니다</p>
-    <div class="gate-ad">
-      <ins class="adsbygoogle" style="display:block;width:300px;height:250px;margin:0 auto"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666"></ins>
+    <!-- 애드센스 미드 -->
+    <div style="text-align:center;margin:20px 0">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="TL22222222"></ins>
     </div>
-    <div class="gate-cnt" id="gateCnt">5</div>
-    <button class="gate-skip" id="gateSkip" disabled>⏩ 건너뛰기</button>
-  </div>
-</div>
 
-<!-- 인터스티셜 (N회마다 / 정책 준수 버전) -->
+    <!-- 음악·효과음 -->
+    <div class="tool-category">
+      <h3>🎵 무료 음악 & 효과음</h3>
+      <div class="tool-grid">
+        <a class="tool-card" href="https://studio.youtube.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🎵</span>
+          <div class="tc-body"><strong>YouTube 오디오 라이브러리</strong><span>저작권 무료 음악</span><span class="tc-free">무료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.epidemicsound.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🔊</span>
+          <div class="tc-body"><strong>Epidemic Sound</strong><span>전문 유료 음악 라이브러리</span><span class="tc-paid">유료</span></div>
+        </a>
+        <a class="tool-card" href="https://pixabay.com/ko/music/" target="_blank" rel="noopener">
+          <span class="tc-icon">🎶</span>
+          <div class="tc-body"><strong>Pixabay Music</strong><span>상업용 무료 음악</span><span class="tc-free">무료</span></div>
+        </a>
+        <a class="tool-card" href="https://artlist.io" target="_blank" rel="noopener">
+          <span class="tc-icon">🎸</span>
+          <div class="tc-body"><strong>Artlist</strong><span>고품질 라이선스 음악</span><span class="tc-paid">유료</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 썸네일 제작 -->
+    <div class="tool-category">
+      <h3>🖼 썸네일 제작</h3>
+      <div class="tool-grid">
+        <a class="tool-card" href="https://www.canva.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🎨</span>
+          <div class="tc-body"><strong>Canva</strong><span>드래그&드롭 썸네일 제작</span><span class="tc-free">무료/유료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.remove.bg" target="_blank" rel="noopener">
+          <span class="tc-icon">✂️</span>
+          <div class="tc-body"><strong>Remove.bg</strong><span>배경 제거 AI 툴</span><span class="tc-free">무료/유료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.adobe.com/kr/products/firefly.html" target="_blank" rel="noopener">
+          <span class="tc-icon">🔥</span>
+          <div class="tc-body"><strong>Adobe Firefly</strong><span>AI 이미지 생성</span><span class="tc-paid">유료</span></div>
+        </a>
+        <a class="tool-card" href="https://www.midjourney.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🌌</span>
+          <div class="tc-body"><strong>Midjourney</strong><span>고품질 AI 아트 생성</span><span class="tc-paid">유료</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 채널 분석 도구 -->
+    <div class="tool-category">
+      <h3>📊 채널 분석 도구</h3>
+      <div class="tool-grid">
+        <a class="tool-card" href="https://www.tubebuddy.com" target="_blank" rel="noopener">
+          <span class="tc-icon">🔧</span>
+          <div class="tc-body"><strong>TubeBuddy</strong><span>키워드 & SEO 최적화</span><span class="tc-free">무료/유료</span></div>
+        </a>
+        <a class="tool-card" href="https://vidiq.com" target="_blank" rel="noopener">
+          <span class="tc-icon">📈</span>
+          <div class="tc-body"><strong>VidIQ</strong><span>경쟁 채널 분석</span><span class="tc-free">무료/유료</span></div>
+        </a>
+        <a class="tool-card" href="https://socialblade.com" target="_blank" rel="noopener">
+          <span class="tc-icon">📉</span>
+          <div class="tc-body"><strong>Social Blade</strong><span>구독자 추이 분석</span><span class="tc-free">무료</span></div>
+        </a>
+        <a class="tool-card" href="https://trends.google.com/trends/?geo=KR" target="_blank" rel="noopener">
+          <span class="tc-icon">🔍</span>
+          <div class="tc-body"><strong>Google Trends</strong><span>트렌드 키워드 분석</span><span class="tc-free">무료</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 🛒 쿠팡 하단 띠배너 – PC/편집 장비 -->
+    <a class="cp-strip" href="https://www.coupang.com/np/search?q=영상편집+컴퓨터+데스크탑&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <div class="cs-left">
+        <span class="cs-icon">🖥</span>
+        <div class="cs-text">
+          <strong>영상편집 전용 데스크탑 · 노트북</strong>
+          <span>4K 영상 편집 버벅임 없는 고성능 PC 추천</span>
+        </div>
+      </div>
+      <span class="cs-btn">쿠팡 보기 ›</span>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  </section>
+
+  <!-- ══════════════════════════════════
+       탭 4 : 수익 계산기
+  ══════════════════════════════════ -->
+  <section id="sec-calc" class="sec">
+    <div class="calc-hero">
+      <h2>💰 유튜브 수익 계산기</h2>
+      <p>조회수와 CPM으로 예상 수익을 계산해보세요</p>
+    </div>
+
+    <!-- 애드센스 히어로 -->
+    <div style="text-align:center;margin-bottom:20px">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CA11111111"></ins>
+    </div>
+
+    <!-- 🛒 쿠팡 배너 – 수익화 관련 도서 -->
+    <a class="cp-banner" href="https://www.coupang.com/np/search?q=유튜브+수익화+부업+책&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <span class="cp-icon">💸</span>
+      <div class="cp-text">
+        <strong>유튜브 수익화 완전정복 도서</strong>
+        <span>광고수익 · 협찬 · 멤버십 수익화 노하우 책</span>
+        <span class="cp-tag">📦 쿠팡 도서 최저가 · 당일배송</span>
+      </div>
+      <span class="cp-arrow">›</span>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+
+    <div class="calc-card">
+      <h3>📊 기본 수익 계산</h3>
+      <div class="calc-row">
+        <label>월 평균 조회수</label>
+        <input type="number" id="cViews" placeholder="예: 100000" value="100000">
+      </div>
+      <div class="calc-row">
+        <label>CPM (₩, 1000회당)</label>
+        <input type="number" id="cCPM" placeholder="예: 1500" value="1500">
+      </div>
+      <div class="calc-row">
+        <label>광고 시청률 (%)</label>
+        <input type="number" id="cRate" placeholder="예: 40" value="40">
+      </div>
+      <div class="calc-row">
+        <label>국가</label>
+        <select id="cRegion">
+          <option value="0.45">🇰🇷 한국 (수익률 45%)</option>
+          <option value="0.55">🇺🇸 미국 (수익률 55%)</option>
+          <option value="0.40">🇯🇵 일본 (수익률 40%)</option>
+          <option value="0.38">기타</option>
+        </select>
+      </div>
+
+      <!-- 애드센스 – 계산 버튼 바로 위 -->
+      <div style="text-align:center;margin:12px 0">
+        <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CA22222222"></ins>
+      </div>
+
+      <button id="calcBtn" onclick="doCalc()">💰 수익 계산하기</button>
+
+      <div class="result-box" id="resultBox">
+        <div class="result-row"><span class="rr-label">광고 노출 수</span><span class="rr-val" id="rImpr">-</span></div>
+        <div class="result-row"><span class="rr-label">예상 월 광고 수익</span><span class="rr-val" id="rMonth">-</span></div>
+        <div class="result-row"><span class="rr-label">예상 연 광고 수익</span><span class="rr-val" id="rYear">-</span></div>
+        <div class="result-row total"><span class="rr-label">🎯 월 순수익 (세전)</span><span class="rr-val" id="rNet">-</span></div>
+      </div>
+    </div>
+
+    <!-- 🛒 쿠팡 카드 – 수익화 장비 업그레이드 -->
+    <div style="margin-top:20px">
+      <p style="font-size:14px;font-weight:700;color:#ff6b6b;margin-bottom:12px">📈 수익 올리는 장비 업그레이드</p>
+      <div class="cp-grid">
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=4K+카메라+유튜브&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">📷</div>
+          <div class="cc-name">4K 카메라</div>
+          <div class="cc-desc">화질 업그레이드로 시청자 증가</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=무선+마이크+라발리에&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">🎤</div>
+          <div class="cc-name">무선 핀마이크</div>
+          <div class="cc-desc">음질 개선으로 이탈률 감소</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=방음재+흡음재+녹음실&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">🔇</div>
+          <div class="cc-name">흡음재 방음재</div>
+          <div class="cc-desc">홈 녹음 환경 개선</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+        <a class="cp-card" href="https://www.coupang.com/np/search?q=모니터+27인치+편집용&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+          <div class="cc-icon">🖥</div>
+          <div class="cc-name">편집용 모니터</div>
+          <div class="cc-desc">색보정 정확도 높이는 모니터</div>
+          <div class="cc-btn">쿠팡 보기 ›</div>
+        </a>
+      </div>
+      <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    </div>
+
+    <!-- 애드센스 하단 -->
+    <div style="text-align:center;margin-top:20px">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CA33333333"></ins>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       탭 5 : 채널 분석
+  ══════════════════════════════════ -->
+  <section id="sec-ch" class="sec">
+    <div class="sec-title">📊 채널 분석</div>
+    <div class="sec-sub">유튜브 채널 URL 또는 핸들을 입력하면 상세 분석을 제공합니다</div>
+
+    <!-- 애드센스 히어로 – 채널분석 최상단 (가장 눈에 띄는 자리) -->
+    <div style="text-align:center;margin-bottom:16px">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH11111111"></ins>
+    </div>
+
+    <!-- 🛒 쿠팡 배너 – 채널분석 최상단 (가장 눈에 띄는 자리) -->
+    <a class="cp-banner" href="https://www.coupang.com/np/search?q=유튜브+분석+마케팅+책&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+      <span class="cp-icon">📊</span>
+      <div class="cp-text">
+        <strong>유튜브 채널 성장 전략 도서</strong>
+        <span>구독자 1만 · 10만 달성 실전 노하우</span>
+        <span class="cp-tag">📦 당일배송 · 쿠팡 최저가</span>
+      </div>
+      <span class="cp-arrow">›</span>
+    </a>
+    <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+
+    <!-- 채널 검색 -->
+    <div class="ch-search">
+      <input type="text" id="chInput" placeholder="채널 URL 또는 @핸들 입력 (예: @채널명)">
+      <button onclick="analyzeChannel()">🔍 분석하기</button>
+    </div>
+
+    <div id="spin-ch"><div class="spinner"></div><p style="color:#888;margin-top:12px;font-size:13px">채널 분석 중...</p></div>
+
+    <!-- 채널 프로필 -->
+    <div class="ch-profile" id="chProfile">
+      <img id="chAvatar" class="ch-avatar" src="" alt="">
+      <div id="chName" class="ch-name"></div>
+      <div id="chHandle" class="ch-handle"></div>
+      <div id="chDesc" style="font-size:13px;color:#aaa;margin-top:8px;clear:left;line-height:1.6"></div>
+      <div class="ch-stats">
+        <div class="ch-stat"><div class="cs-val" id="chSubs">-</div><div class="cs-lbl">구독자</div></div>
+        <div class="ch-stat"><div class="cs-val" id="chViews">-</div><div class="cs-lbl">총 조회수</div></div>
+        <div class="ch-stat"><div class="cs-val" id="chVids">-</div><div class="cs-lbl">영상 수</div></div>
+      </div>
+    </div>
+
+    <!-- 애드센스 – 프로필 카드 바로 아래 (가장 눈에 띄는 자리) -->
+    <div id="chAdMid" style="text-align:center;margin:16px 0;display:none">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH22222222"></ins>
+    </div>
+
+    <!-- 🛒 쿠팡 띠배너 – 점수 카드 위 (분석 결과 직전, 최고 노출) -->
+    <div id="chCoupangMid" style="display:none">
+      <a class="cp-strip" href="https://www.coupang.com/np/search?q=스트리밍+방송장비+세트&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+        <div class="cs-left">
+          <span class="cs-icon">📡</span>
+          <div class="cs-text">
+            <strong>스트리밍 방송 장비 세트</strong>
+            <span>라이브 방송 · 구독자 성장에 최적화된 장비</span>
+          </div>
+        </div>
+        <span class="cs-btn">쿠팡 보기 ›</span>
+      </a>
+      <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    </div>
+
+    <!-- 점수 카드 -->
+    <div class="score-wrap" id="scoreWrap">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:16px;color:#ff6b6b">📈 채널 건강도 점수</h3>
+      <div class="score-circle" id="scoreCircle">
+        <span class="sc-num" id="scoreNum">0</span>
+      </div>
+      <div id="levelBadge" style="text-align:center;margin-bottom:16px;font-size:18px"></div>
+
+      <!-- 애드센스 – 레벨 배지 바로 아래 -->
+      <div style="text-align:center;margin:12px 0">
+        <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH33333333"></ins>
+      </div>
+
+      <ul class="fb-list" id="fbList"></ul>
+    </div>
+
+    <!-- 🛒 쿠팡 배너 – 분석 결과 하단 -->
+    <div id="chCoupangBottom" style="display:none;margin-top:20px">
+      <a class="cp-banner" href="https://www.coupang.com/np/search?q=유튜버+책상+셋업+모니터암&partnerCode=AF8853448&sourceType=affiliate" target="_blank" rel="noopener">
+        <span class="cp-icon">🖥</span>
+        <div class="cp-text">
+          <strong>유튜버 홈 스튜디오 셋업 아이템</strong>
+          <span>책상 · 모니터암 · 조명 · 배경 완성 셋업</span>
+          <span class="cp-tag">🚀 쿠팡 로켓배송 · 무료반품</span>
+        </div>
+        <span class="cp-arrow">›</span>
+      </a>
+      <p class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+    </div>
+
+    <!-- 애드센스 최하단 -->
+    <div id="chAdBottom" style="text-align:center;margin-top:16px;display:none">
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;max-width:100%;height:90px"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH44444444"></ins>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer id="footer">
+    <p>© 2025 YTAnalytics Pro | 
+      <a href="#" onclick="openModal('modalDisclaimer')">면책조항</a>
+      <a href="#" onclick="openModal('modalTerms')">이용약관</a>
+      <a href="#" onclick="openModal('modalPrivacy')">개인정보처리방침</a>
+    </p>
+    <p style="margin-top:6px;font-size:10px;color:#444">이 사이트는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+  </footer>
+</div><!-- /wrap -->
+
+<!-- ══ INTERSTITIAL ══ -->
 <div id="inter">
-  <div class="inter-box">
-    <!-- ★ 닫기 버튼: 항상 보임, 5초 후 클릭 가능 -->
-    <button class="inter-x" id="interX">✕</button>
-    <div class="inter-ad">
-      <ins class="adsbygoogle" style="display:block;width:336px;height:280px;margin:0 auto"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777"></ins>
-    </div>
-    <div class="inter-info" id="interInfo">5초 후 닫기 가능</div>
-    <!-- 진행 바 (사용자에게 타이머 시각화) -->
-    <div class="inter-progress">
-      <div class="inter-bar" id="interBar"></div>
-    </div>
+  <div class="int-box">
+    <p style="font-size:13px;color:#888;margin-bottom:12px">잠시 광고를 확인해주세요</p>
+    <ins class="adsbygoogle" style="display:block;width:300px;height:250px;margin:0 auto"
+      data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777"></ins>
+    <button id="interClose" disabled onclick="closeInter()">닫기</button>
+    <div id="interTimer"></div>
   </div>
 </div>
 
-<!-- 텍스트 모달 3개 -->
-<div class="tmod" id="tmod-disc"><div class="tmod-in">
-  <button class="tmod-x" data-id="tmod-disc">✕</button>
-  <h2>⚠️ 면책조항</h2>
-  <p>본 서비스는 YouTube Data API v3를 활용한 <strong>비공식</strong> 서비스이며, Google LLC 및 YouTube와 공식 제휴 관계가 없습니다.</p>
-  <p>제공되는 데이터는 참고용이며 실제 값과 차이가 있을 수 있습니다. 분석 결과를 기반으로 한 투자·비즈니스 결정의 책임은 사용자 본인에게 있습니다.</p>
-  <p>광고는 Google AdSense를 통해 게재되며 광고 내용에 대한 책임은 광고주에게 있습니다.</p>
-</div></div>
-<div class="tmod" id="tmod-terms"><div class="tmod-in">
-  <button class="tmod-x" data-id="tmod-terms">✕</button>
-  <h2>📋 이용약관</h2>
-  <p><strong>1. 서비스 목적</strong><br>YTAnalytics Pro는 YouTube 콘텐츠 제작자 및 마케터를 위한 분석 도구를 제공합니다.</p>
-  <p><strong>2. 금지 행위</strong><br>자동화된 방식의 스크래핑이나 악의적인 서비스 활용을 금지합니다.</p>
-  <p><strong>3. 준거법</strong><br>본 약관은 대한민국 법률에 따라 해석됩니다.</p>
-</div></div>
-<div class="tmod" id="tmod-priv"><div class="tmod-in">
-  <button class="tmod-x" data-id="tmod-priv">✕</button>
-  <h2>🔒 개인정보처리방침</h2>
-  <p>본 서비스는 별도 회원가입 없이 이용 가능하며 개인 식별 정보를 수집·저장하지 않습니다.</p>
-  <p>Google AdSense는 쿠키를 사용해 맞춤형 광고를 제공할 수 있습니다. <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--blue)">Google 개인정보처리방침 →</a></p>
-</div></div>
-
-<div id="toast"></div>
+<!-- ══ MODALS ══ -->
+<div class="modal-bg" id="modalDisclaimer">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modalDisclaimer')">×</button>
+    <h2>📋 면책조항</h2>
+    <p style="font-size:13px;color:#ccc;line-height:1.8">본 서비스에서 제공하는 수익 계산 및 채널 분석 결과는 참고용이며, 실제 수익과 다를 수 있습니다. YouTube Data API를 통해 제공되는 데이터는 YouTube의 정책에 따라 변경될 수 있습니다.</p>
+    <p style="font-size:13px;color:#ccc;line-height:1.8;margin-top:12px">이 사이트는 쿠팡 파트너스 활동의 일환으로 쿠팡 링크를 통한 구매 시 수수료를 받을 수 있습니다.</p>
+  </div>
+</div>
+<div class="modal-bg" id="modalTerms">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modalTerms')">×</button>
+    <h2>📜 이용약관</h2>
+    <p style="font-size:13px;color:#ccc;line-height:1.8">본 서비스를 이용함으로써 본 약관에 동의하는 것으로 간주됩니다. 서비스 내 데이터는 YouTube Data API v3를 사용하며 YouTube 이용약관이 적용됩니다.</p>
+  </div>
+</div>
+<div class="modal-bg" id="modalPrivacy">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modalPrivacy')">×</button>
+    <h2>🔒 개인정보처리방침</h2>
+    <p style="font-size:13px;color:#ccc;line-height:1.8">본 서비스는 개인 식별 정보를 수집하지 않습니다. 입력하신 검색어 및 채널 정보는 YouTube API 호출에만 사용되며 서버에 저장되지 않습니다.</p>
+  </div>
+</div>
 
 <script>
-/* ====================================================
-   CFG  ← 실제 API 키 3개 입력
-   ==================================================== */
-var CFG={
+/* ══════════════════════════════════════════
+   CONFIG
+══════════════════════════════════════════ */
+var CFG = {
   KEYS:['AIzaSyAM4hoxMB5XH84T59Ytv5l7DiC5RsJ0UcU','AIzaSyDSHbncsvtnf0HFEdTbxEDAWv5RYSdU5U8','AIzaSyBvJcawIWLvU3DPFX8ut6T-RJIpx73yMc8'],
-  ki:0,region:'KR',lang:'ko',
-  vtype:'all',cat:'',query:'',npt:'',allDone:false,loading:false,topHide:false,
-  sCnt:0,aCnt:0,GATE_N:5,INTER_N:8
+  ki: 0,
+  busy: false,
+  query: '',
+  cat: '',
+  region: 'KR',
+  lang: 'ko',
+  vtype: 'all',
+  npt: '',
+  allDone: false,
+  topHide: false,
+  interShown: false,
+  analyzeCount: 0,
+  hotCount: 0
 };
+var _vids = [];
+var _adPushed = {};
 
-/* ====================================================
-   데이터
-   ==================================================== */
-var CATS=[
-  {l:'전체',q:''},{l:'🍜 먹방',q:'먹방'},{l:'🎮 게임',q:'게임'},
-  {l:'💄 뷰티',q:'뷰티 메이크업'},{l:'💪 운동',q:'운동 헬스'},
-  {l:'🏕️ 여행',q:'여행 브이로그'},{l:'📱 IT',q:'IT 테크 리뷰'},
-  {l:'🎵 음악',q:'음악 커버'},{l:'💰 재테크',q:'재테크 주식'},
-  {l:'😂 유머',q:'유머 코미디'},{l:'👶 육아',q:'육아 아기'},
-  {l:'🐾 반려동물',q:'강아지 고양이'},{l:'📚 교육',q:'교육 강의'},{l:'🍳 요리',q:'요리 레시피'}
-];
-var IDEAS=[
-  {t:'요즘 MZ가 열광하는 "갓생 루틴" 챌린지',tags:['라이프스타일','챌린지','MZ'],w:'갓생 트렌드 지속. 아침 루틴+생산성 = 높은 검색량'},
-  {t:'AI 도구로 월 100만 원 버는 현실적인 방법',tags:['AI','수익화','튜토리얼'],w:'AI 수익화 관심 폭발. 실용 정보는 롱테일 조회수'},
-  {t:'편의점 음식만으로 한 달 살기 도전',tags:['먹방','챌린지','리뷰'],w:'편의점 식품 다양화. 저예산 도전물 인기 지속'},
-  {t:'집에서 만드는 카페 음료 레시피 TOP 10',tags:['요리','라이프','카페'],w:'홈카페+절약 트렌드 결합. 저장율 높은 포맷'},
-  {t:'게임계 총정리 – 이번 달 무조건 해야 할 게임',tags:['게임','리뷰','정보'],w:'월간 정리 포맷은 반복 구독 유도에 최적'},
-  {t:'주식 초보자도 이해하는 경제 뉴스 해설',tags:['재테크','교육','뉴스'],w:'경제 불확실성으로 정보 수요 증가. 높은 CPM'},
-  {t:'혼자 여행의 모든 것 – 예산별 국내 숨은 명소',tags:['여행','브이로그','정보'],w:'솔로 트래블 증가. 실용 정보는 공유율 높음'},
-  {t:'운동 초보자 30일 변신 챌린지',tags:['헬스','챌린지','동기부여'],w:'변신 과정 콘텐츠는 구독 유지율 최고'},
-  {t:'2026 뷰티 트렌드 완벽 정리 & 추천 제품',tags:['뷰티','트렌드','리뷰'],w:'연간 트렌드 영상은 초반 폭발적 조회수'},
-  {t:'초등학생도 이해하는 AI 쉽게 배우기',tags:['교육','AI','키즈'],w:'AI 교육 수요 폭발. 쉬운 언어로 독보적 포지셔닝'},
-  {t:'반려동물 건강 체크리스트 – 수의사가 알려주는 진짜 정보',tags:['반려동물','건강','정보'],w:'반려인 증가+전문성 결합. 공유율 우수'},
-  {t:'SNS 알고리즘 완전 정복 – 팔로워 1만 만드는 법',tags:['마케팅','SNS','성장'],w:'크리에이터 지망생 급증. 성장 노하우 채널 수요 폭발'}
-];
-var TOOL_SECS=[
-  {name:'✂️ 영상 편집',items:[
-    {i:'🎬',n:'DaVinci Resolve',d:'전문가용 무료 영상 편집',u:'https://www.blackmagicdesign.com/kr/products/davinciresolve',b:'무료'},
-    {i:'⚡',n:'CapCut',d:'모바일/PC 겸용 쇼츠 최적화',u:'https://www.capcut.com',b:'무료'},
-    {i:'🎨',n:'Adobe Premiere Pro',d:'업계 표준 영상 편집',u:'https://www.adobe.com/kr/products/premiere.html',b:'유료'},
-    {i:'🌟',n:'Canva Video',d:'템플릿 기반 간편 영상 제작',u:'https://www.canva.com',b:'무료/유료'}
-  ]},
-  {name:'🤖 AI 영상 생성',items:[
-    {i:'🧠',n:'Sora (OpenAI)',d:'텍스트로 고품질 영상 생성',u:'https://sora.com',b:'유료'},
-    {i:'💫',n:'Runway Gen-3',d:'AI 영상 생성 및 편집',u:'https://runwayml.com',b:'유료'},
-    {i:'🎯',n:'Pika Labs',d:'간편한 AI 영상 생성',u:'https://pika.art',b:'무료/유료'},
-    {i:'🔮',n:'HeyGen',d:'AI 아바타 영상 제작',u:'https://www.heygen.com',b:'유료'}
-  ]},
-  {name:'🎵 음악 & 효과음',items:[
-    {i:'🎼',n:'YouTube Audio Library',d:'유튜브 무료 배경음악·효과음',u:'https://studio.youtube.com',b:'무료'},
-    {i:'🎵',n:'Epidemic Sound',d:'저작권 걱정 없는 음악 서비스',u:'https://www.epidemicsound.com',b:'유료'},
-    {i:'🎹',n:'Pixabay Music',d:'무료 저작권 프리 음악',u:'https://pixabay.com/ko/music/',b:'무료'},
-    {i:'🎧',n:'Artlist',d:'영상 크리에이터 음악 라이선스',u:'https://artlist.io',b:'유료'}
-  ]},
-  {name:'🖼️ 썸네일 & 그래픽',items:[
-    {i:'🎨',n:'Canva',d:'드래그앤드롭 썸네일 디자인',u:'https://www.canva.com',b:'무료/유료'},
-    {i:'✂️',n:'Remove.bg',d:'배경 자동 제거 AI',u:'https://www.remove.bg',b:'무료/유료'},
-    {i:'🖼️',n:'Adobe Firefly',d:'AI 이미지 생성 및 편집',u:'https://www.adobe.com/kr/products/firefly.html',b:'유료'},
-    {i:'⚡',n:'Midjourney',d:'고품질 AI 이미지 생성',u:'https://www.midjourney.com',b:'유료'}
-  ]},
-  {name:'📊 분석 & SEO',items:[
-    {i:'📈',n:'TubeBuddy',d:'유튜브 SEO 최적화 확장',u:'https://www.tubebuddy.com',b:'무료/유료'},
-    {i:'🔍',n:'VidIQ',d:'키워드 분석 및 경쟁 채널 모니터링',u:'https://vidiq.com',b:'무료/유료'},
-    {i:'📊',n:'Social Blade',d:'채널 통계 성장 추이 분석',u:'https://socialblade.com',b:'무료'},
-    {i:'🎯',n:'Google Trends',d:'실시간 검색 트렌드 파악',u:'https://trends.google.com/trends/?geo=KR',b:'무료'}
-  ]}
-];
+/* ══ HELPERS ══ */
+function $(id){ return document.getElementById(id); }
+function fmt(n){
+  n = parseInt(n)||0;
+  if(n>=100000000) return (n/100000000).toFixed(1)+'억';
+  if(n>=10000) return (n/10000).toFixed(1)+'만';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+function fmtDur(iso){
+  var m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m) return '';
+  var h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);
+  if(h>0) return h+':'+(mn<10?'0':'')+mn+':'+(s<10?'0':'')+s;
+  return mn+':'+(s<10?'0':'')+s;
+}
+function isShort(v){
+  var dur=(v.contentDetails&&v.contentDetails.duration)||'';
+  var m=dur.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m) return false;
+  var tot=(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+(parseInt(m[3]||0));
+  return tot<=60;
+}
+function showSpin(id){ var e=$('spin-'+id); if(e) e.style.display='block'; }
+function hideSpin(id){ var e=$('spin-'+id); if(e) e.style.display='none'; }
+function keysOK(){ return CFG.KEYS.some(function(k){ return k&&k.length>10&&k!=='YOUR_API_KEY_1'; }); }
 
-/* ====================================================
-   유틸
-   ==================================================== */
-function $(id){return document.getElementById(id)}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function fmtN(n){n=parseInt(n||0);if(n>=1e8)return(n/1e8).toFixed(1)+'억';if(n>=1e4)return(n/1e4).toFixed(1)+'만';if(n>=1e3)return(n/1e3).toFixed(1)+'천';return n.toLocaleString()}
-function parseDur(iso){if(!iso)return'';var m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'';var h=+(m[1]||0),mi=+(m[2]||0),s=+(m[3]||0);return h?h+':'+p2(mi)+':'+p2(s):mi+':'+p2(s)}
-function p2(n){return String(n).padStart(2,'0')}
-function isShort(v){var d=v.contentDetails&&v.contentDetails.duration||'';var m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return false;return(+(m[1]||0)*3600)+(+(m[2]||0)*60)+(+(m[3]||0))<=60}
-function viral(v){var st=v.statistics||{};var vw=+(st.viewCount||0),lk=+(st.likeCount||0),cm=+(st.commentCount||0);var age=Math.max((Date.now()-new Date(v.snippet&&v.snippet.publishedAt||0))/864e5,1);var sc=Math.log10(Math.max(vw/age,1))*18;if(vw>0){sc+=(lk/vw)*60;sc+=(cm/vw)*40;}return Math.min(Math.round(sc),100)}
-function pushAd(){try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}
-var _tt=null;
-function toast(msg,ms){var el=$('toast');el.textContent=msg;el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(function(){el.classList.remove('on');},ms||3000)}
-
-/* ====================================================
-   레이아웃 동기화
-   ==================================================== */
+/* ══ LAYOUT SYNC ══ */
 function syncLayout(){
-  var adH=(!CFG.topHide&&$('topAd'))?$('topAd').offsetHeight:0;
-  var hH=56,sW=220;
-  $('hdr').style.top=adH+'px';
-  var sb=$('sidebar');
-  sb.style.top=(adH+hH)+'px';
-  sb.style.height='calc(100vh - '+(adH+hH)+'px)';
-  var w=$('wrap');
-  w.style.paddingTop=(adH+hH)+'px';
-  w.style.paddingLeft=(window.innerWidth>768?sW:0)+'px';
-  $('footer').style.marginLeft=(window.innerWidth>768?sW:0)+'px';
+  var topAdEl = $('topAd');
+  var adH = (!CFG.topHide && topAdEl) ? (topAdEl.offsetHeight||0) : 0;
+  var hdrH = 56;
+  var total = adH + hdrH;
+  var sideW = 220;
+  var hdr = $('hdr');
+  if(hdr) hdr.style.top = adH+'px';
+  var sb = $('sidebar');
+  if(sb){ sb.style.top=total+'px'; sb.style.height='calc(100vh - '+total+'px)'; }
+  var wrap = $('wrap');
+  var isMobile = window.innerWidth <= 768;
+  if(wrap){ wrap.style.paddingTop=total+'px'; wrap.style.paddingLeft=(isMobile?0:sideW)+'px'; }
+  var footer = $('footer');
+  if(footer) footer.style.marginLeft = (isMobile?0:sideW)+'px';
 }
+if(window.ResizeObserver){ new ResizeObserver(syncLayout).observe($('topAd')); }
+window.addEventListener('resize', syncLayout);
 
-/* ====================================================
-   키 검증
-   ==================================================== */
-function keysOK(){return CFG.KEYS.some(function(k){return k.length>30&&k.indexOf('여기에')<0&&k.indexOf('REPLACE')<0&&k.indexOf('_입력')<0&&k.indexOf('실제키')<0})}
-function showKeyBanner(){var b=$('keyBanner');b.innerHTML='🔑 <strong>API 키 미설정</strong> – <code>CFG.KEYS</code>에 실제 YouTube Data API v3 키를 입력하세요. <a href="https://console.cloud.google.com/" target="_blank">Cloud Console →</a>';b.style.display='block'}
-function hideKeyBanner(){$('keyBanner').style.display='none'}
-
-/* ====================================================
-   에러
-   ==================================================== */
-var ERRS={quota:'⛔ API 할당량 초과 (KST 오후 4시 초기화)',badkey:'🔑 API 키 오류',notconfig:'⚙️ YouTube Data API v3 미활성화',referer:'🌐 HTTP 리퍼러 제한',forbidden:'🚫 API 권한 오류',network:'📡 네트워크 오류',api:'❓ API 오류'};
-var ERRL={quota:'https://console.cloud.google.com/projectcreate',badkey:'https://console.cloud.google.com/apis/credentials',notconfig:'https://console.cloud.google.com/apis/library/youtube.googleapis.com',referer:'https://console.cloud.google.com/apis/credentials',forbidden:'https://console.cloud.google.com/apis/credentials'};
-function showErr(t,ex){var b=$('errBanner');var l=ERRL[t]?(' <a href="'+ERRL[t]+'" target="_blank">해결하기→</a>'):'';b.innerHTML=(ERRS[t]||ERRS.api)+(ex?' ('+ex+')':'')+l;b.style.display='block'}
-function hideErr(){$('errBanner').style.display='none'}
-
-/* ====================================================
-   API 호출
-   ==================================================== */
-function apiCall(url,depth){
-  depth=depth||0;
-  var key=CFG.KEYS[CFG.ki%CFG.KEYS.length];
-  var sep=url.indexOf('?')>=0?'&':'?';
-  return new Promise(function(resolve){
-    var ctrl=new AbortController();
-    var tid=setTimeout(function(){ctrl.abort();},12000);
-    fetch(url+sep+'key='+encodeURIComponent(key),{signal:ctrl.signal})
-      .then(function(r){return r.json();})
-      .then(function(d){
-        clearTimeout(tid);
-        if(d&&d.error){
-          var reason=(d.error.errors&&d.error.errors[0]&&d.error.errors[0].reason)||'';
-          var tm={quotaExceeded:'quota',dailyLimitExceeded:'quota',keyInvalid:'badkey',accessNotConfigured:'notconfig',ipRefererBlocked:'referer',refererBlocked:'referer',forbidden:'forbidden',insufficientPermissions:'forbidden'};
-          var et=tm[reason]||'api';
-          if(et==='quota'&&depth<CFG.KEYS.length-1){CFG.ki++;resolve(apiCall(url,depth+1));return;}
-          showErr(et,reason);resolve(null);return;
-        }
-        hideErr();resolve(d);
-      })
-      .catch(function(e){clearTimeout(tid);showErr('network',e.name==='AbortError'?'시간초과':e.message);resolve(null);});
-  });
-}
-
-/* ====================================================
-   영상 로드
-   ==================================================== */
-function fetchVideos(pt){
-  pt=pt||'';
-  var kw=CFG.query||CFG.cat;
-  if(!kw){
-    return apiCall('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&chart=mostPopular&regionCode='+CFG.region+'&hl='+CFG.lang+'&maxResults=24'+(pt?'&pageToken='+encodeURIComponent(pt):'')).then(function(d){
-      if(!d)return null;CFG.npt=d.nextPageToken||'';CFG.allDone=!CFG.npt;return d.items||[];
-    });
-  }
-  var q=kw.replace(/#/g,'').trim();
-  if(CFG.vtype==='short')q+=' shorts 쇼츠';else if(CFG.vtype==='long')q+=' vlog';
-  return apiCall('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&regionCode='+CFG.region+'&relevanceLanguage='+CFG.lang+'&maxResults=24&q='+encodeURIComponent(q)+'&order=viewCount'+(pt?'&pageToken='+encodeURIComponent(pt):'')).then(function(sd){
-    if(!sd)return null;
-    var ids=(sd.items||[]).map(function(i){return i.id&&i.id.videoId}).filter(Boolean).join(',');
-    if(!ids){CFG.npt='';CFG.allDone=true;return[];}
-    return apiCall('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id='+encodeURIComponent(ids)).then(function(vd){
-      if(!vd)return null;CFG.npt=sd.nextPageToken||'';CFG.allDone=!CFG.npt;return vd.items||[];
-    });
-  });
-}
-
-var _vids=[];
-function loadHot(reset){
-  if(reset===undefined)reset=true;
-  if(CFG.loading)return Promise.resolve(false);
-  if(!keysOK()){showKeyBanner();hideSpin('hot');return Promise.resolve(false);}
-  hideKeyBanner();CFG.loading=true;
-  if(reset){_vids=[];CFG.npt='';CFG.allDone=false;$('vgrid').innerHTML='';$('moreBtn').style.display='none';}
-  showSpin('hot');
-  return fetchVideos(reset?'':CFG.npt).then(function(items){
-    hideSpin('hot');CFG.loading=false;
-    if(!items)return false;
-    if(!items.length){if(reset)$('vgrid').innerHTML='<p style="color:#666;padding:40px;text-align:center;grid-column:1/-1">결과가 없습니다.</p>';return false;}
-    var f=items;
-    if(CFG.vtype==='short')f=items.filter(isShort);
-    else if(CFG.vtype==='long')f=items.filter(function(v){return!isShort(v)});
-    _vids=reset?f:_vids.concat(f);
-    appendCards(f);
-    $('moreBtn').style.display=CFG.allDone?'none':'block';
-    return true;
-  });
-}
-
-function appendCards(items){
-  var g=$('vgrid');
-  items.forEach(function(v,i){
-    if(i>0&&i%6===0){var ad=document.createElement('div');ad.className='ifad';ad.innerHTML='<ins class="adsbygoogle" style="display:block;width:100%;min-height:180px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="8888888888" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86"></ins>';g.appendChild(ad);pushAd();}
-    var sc=viral(v),sh=isShort(v),dur=parseDur(v.contentDetails&&v.contentDetails.duration);
-    var sn=v.snippet||{},th=(sn.thumbnails&&(sn.thumbnails.medium||sn.thumbnails.default)||{}).url||'';
-    var st=v.statistics||{};
-    var c=document.createElement('div');c.className='vcard';
-    c.innerHTML='<div class="vthumb"><img src="'+th+'" alt="" loading="lazy" onerror="this.style.background=\'#1a1a2e\'">'+(sh?'<span class="vtag sh">SHORTS</span>':'')+(dur?'<span class="vtag dur">'+dur+'</span>':'')+'<span class="vtag sc">🔥'+sc+'</span></div><div class="vinfo"><div class="vtitle">'+esc(sn.title)+'</div><div class="vch">📺 '+esc(sn.channelTitle)+'</div><div class="vstats"><span>👁 '+fmtN(st.viewCount)+'</span><span>👍 '+fmtN(st.likeCount)+'</span></div></div>';
-    c.addEventListener('click',function(){openVmod(v);});g.appendChild(c);
-  });
-}
-
-/* ====================================================
-   탭 전환
-   ==================================================== */
-function switchTab(id){
-  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on')});
-  var t=document.getElementById('sec-'+id);if(t)t.classList.add('on');
-  document.querySelectorAll('[data-tab]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-tab')===id)});
-}
-
-/* ====================================================
-   검색
-   ==================================================== */
-function doSearch(){
-  var q=$('q').value.trim();if(!q){toast('검색어를 입력하세요');return;}
-  CFG.sCnt++;
-  if(CFG.sCnt%CFG.GATE_N===0){openGate(function(){CFG.query=q;CFG.cat='';resetChips();loadHot(true)});return;}
-  if(CFG.sCnt%CFG.INTER_N===0)openInter();
-  CFG.query=q;CFG.cat='';resetChips();loadHot(true);
-}
-
-/* ====================================================
-   타입탭 / 칩
-   ==================================================== */
-function initTtabs(){
-  $('ttabs').addEventListener('click',function(e){
-    var b=e.target.closest('.ttab');if(!b)return;
-    document.querySelectorAll('.ttab').forEach(function(x){x.classList.remove('on')});
-    b.classList.add('on');CFG.vtype=b.getAttribute('data-type');loadHot(true);
-  });
-}
-function buildChips(){
-  var w=$('chips');w.innerHTML='';
-  CATS.forEach(function(c,i){
-    var b=document.createElement('button');b.className='chip'+(i===0?' on':'');b.textContent=c.l;
-    b.addEventListener('click',function(){document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});b.classList.add('on');CFG.cat=c.q;CFG.query='';$('q').value='';loadHot(true);});
-    w.appendChild(b);
-  });
-}
-function resetChips(){document.querySelectorAll('.chip').forEach(function(b,i){b.classList.toggle('on',i===0)});CFG.cat='';}
-
-/* ====================================================
-   영상 모달
-   ==================================================== */
-function openVmod(v){
-  var sn=v.snippet||{},st=v.statistics||{};
-  $('vmodPlayer').innerHTML='<iframe src="https://www.youtube.com/embed/'+v.id+'?autoplay=1" allowfullscreen allow="autoplay;encrypted-media"></iframe>';
-  $('vmodTitle').textContent=sn.title||'';
-  $('vmodMeta').innerHTML='<span>📺 '+esc(sn.channelTitle)+'</span><span>👁 '+fmtN(st.viewCount)+' 조회</span><span>👍 '+fmtN(st.likeCount)+'</span><span>💬 '+fmtN(st.commentCount)+'</span>';
-  $('vmodDesc').textContent=sn.description||'';
-  $('vmod').classList.add('on');document.body.style.overflow='hidden';pushAd();
-}
-function closeVmod(){$('vmod').classList.remove('on');$('vmodPlayer').innerHTML='';document.body.style.overflow='';}
-
-/* ====================================================
-   광고 게이트
-   ==================================================== */
-var _gCb=null,_gT=null;
-function openGate(cb){
-  _gCb=cb;var skip=$('gateSkip'),cnt=$('gateCnt');
-  $('gate').classList.add('on');document.body.style.overflow='hidden';
-  var s=5;cnt.textContent=s;skip.disabled=true;skip.textContent='⏩ 건너뛰기 ('+s+'초)';
-  pushAd();
-  _gT=setInterval(function(){s--;cnt.textContent=s;skip.textContent=s>0?'⏩ 건너뛰기 ('+s+'초)':'⏩ 건너뛰기';if(s<=0){clearInterval(_gT);skip.disabled=false;}},1000);
-}
-function closeGate(){clearInterval(_gT);$('gate').classList.remove('on');document.body.style.overflow='';if(_gCb){_gCb();_gCb=null;}}
-
-/* ====================================================
-   ★ 인터스티셜 (정책 준수 버전)
-   - 닫기 버튼 항상 보임 (5초 후 활성화)
-   - 진행 바로 타이머 시각화
-   - 연속 두 번째 팝업 없음 ← 정책 위반 방지
-   ==================================================== */
-var _iT=null;
-function openInter(){
-  var x=$('interX'),info=$('interInfo'),bar=$('interBar');
-  $('inter').classList.add('on');
-  x.classList.remove('active');
-  bar.style.transition='none';bar.style.width='0%';
-  var s=5;info.textContent=s+'초 후 닫기 가능';
-  pushAd();
-  setTimeout(function(){bar.style.transition='width 5s linear';bar.style.width='100%';},50);
-  _iT=setInterval(function(){
-    s--;
-    if(s<=0){
-      clearInterval(_iT);
-      x.classList.add('active');
-      info.textContent='✅ 닫을 수 있습니다';
-    } else {
-      info.textContent=s+'초 후 닫기 가능';
-    }
-  },1000);
-}
-function closeInter(){clearInterval(_iT);$('inter').classList.remove('on');}
-
-/* ====================================================
-   채널 분석
-   ==================================================== */
-function doAnalyze(){
-  var q=$('chQ').value.trim();if(!q){toast('채널명 또는 @핸들을 입력하세요');return;}
-  if(!keysOK()){showKeyBanner();return;}
-  showSpin('ch');$('chResult').innerHTML='';
-  apiCall('https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q='+encodeURIComponent(q)+'&maxResults=1').then(function(sd){
-    if(!sd){hideSpin('ch');return;}
-    if(!sd.items||!sd.items.length){hideSpin('ch');toast('채널을 찾을 수 없습니다');return;}
-    var chId=(sd.items[0].id&&sd.items[0].id.channelId)||sd.items[0].snippet.channelId;
-    if(!chId){hideSpin('ch');toast('채널 ID 오류');return;}
-    return apiCall('https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id='+encodeURIComponent(chId)).then(function(cd){
-      hideSpin('ch');
-      if(!cd||!cd.items||!cd.items.length){toast('채널 정보를 불러올 수 없습니다');return;}
-      CFG.aCnt++;if(CFG.aCnt%CFG.INTER_N===0)openInter();
-      renderCh(cd.items[0]);
-    });
-  });
-}
-
-function calcBD(st){
-  var subs=+(st.subscriberCount||0),views=+(st.viewCount||0),vids=+(st.videoCount||0);
-  var avg=vids>0?views/vids:0;
-  var ss=Math.min(Math.log10(Math.max(subs,1))*14,100);
-  var vs=Math.min(Math.log10(Math.max(avg,1))*22,100);
-  var cs=Math.min(Math.log10(Math.max(vids,1))*28,100);
-  var es=subs>0?Math.min((avg/subs)*200,100):0;
-  var tot=Math.round(ss*.3+vs*.3+cs*.2+es*.2);
-  return{tot:tot,ss:Math.round(ss),vs:Math.round(vs),cs:Math.round(cs),es:Math.round(es)};
-}
-function lvInfo(sc){if(sc>=90)return{l:'🏆 슈퍼스타',c:'var(--gold)',bg:'rgba(255,204,0,.15)'};if(sc>=75)return{l:'💎 프로 크리에이터',c:'var(--blue)',bg:'rgba(68,136,255,.15)'};if(sc>=60)return{l:'🚀 성장 채널',c:'var(--green)',bg:'rgba(68,204,136,.15)'};if(sc>=40)return{l:'📈 유망 채널',c:'var(--purple)',bg:'rgba(170,68,255,.15)'};return{l:'🌱 신생 채널',c:'#888',bg:'rgba(150,150,150,.1)'}}
-function getFB(bd,st){
-  var subs=+(st.subscriberCount||0),vids=+(st.videoCount||0),fb=[];
-  if(bd.ss<50)fb.push({i:'📢',t:'커뮤니티 활동과 SNS 연동으로 구독자를 늘려보세요.'});
-  if(bd.vs<50)fb.push({i:'🎯',t:'제목·썸네일 최적화로 CTR을 높이세요.'});
-  if(bd.cs<40)fb.push({i:'📅',t:'주 1~2회 꾸준한 업로드로 알고리즘 노출을 늘리세요.'});
-  if(bd.es<40)fb.push({i:'💬',t:'댓글 유도와 커뮤니티 게시물로 참여도를 높이세요.'});
-  if(bd.tot>=75)fb.push({i:'✅',t:'훌륭한 채널! 브랜드 협업과 멤버십으로 수익을 다각화하세요.'});
-  if(subs>10000&&vids<50)fb.push({i:'⚡',t:'구독자 대비 영상이 적습니다. 시리즈물로 체계화하세요.'});
-  if(!fb.length)fb.push({i:'🌱',t:'꾸준한 업로드와 소통이 성장의 핵심입니다!'});
-  return fb;
-}
-function renderCh(ch){
-  var sn=ch.snippet||{},st=ch.statistics||{};
-  var bd=calcBD(st),lv=lvInfo(bd.tot);
-  var ava=(sn.thumbnails&&(sn.thumbnails.medium||sn.thumbnails.default)||{}).url||'';
-  var bdH=[{l:'구독자',v:bd.ss,c:'var(--gold)'},{l:'평균조회',v:bd.vs,c:'var(--blue)'},{l:'영상 수',v:bd.cs,c:'var(--green)'},{l:'참여도',v:bd.es,c:'var(--purple)'}].map(function(x){return'<div class="bd-item"><div class="bd-lbl">'+x.l+'</div><div class="bd-val" style="color:'+x.c+'">'+x.v+'<span style="font-size:.68rem;color:#666">/100</span></div><div class="bd-bar"><div class="bd-fill" style="width:'+x.v+'%;background:'+x.c+'"></div></div></div>'}).join('');
-  var fbH=getFB(bd,st).map(function(f){return'<div class="fb-item"><span style="flex-shrink:0">'+f.i+'</span><span class="fb-txt">'+f.t+'</span></div>'}).join('');
-
-  /* ★ 채널분석 광고 배치 전략:
-     1) 프로필 바로 아래 (분석 결과 확인 직전 → 가장 눈에 띄는 자리)
-     2) 점수카드와 세부항목 사이 (점수 확인 후 다음 콘텐츠 전환 시점)
-     3) 개선 제안 아래 (최종 결과 확인 후 → 이탈 전 마지막 노출)
-  */
-  var html=
-    '<div class="ch-profile">'
-      +'<img class="ch-ava" src="'+esc(ava)+'" alt="" onerror="this.style.background=\'#222\'">'
-      +'<div><div class="ch-name">'+esc(sn.title)+'</div>'
-      +(sn.customUrl?'<div class="ch-handle">@'+esc(sn.customUrl)+'</div>':'')
-      +'<div class="ch-bads">'
-        +'<span class="ch-bad" style="color:var(--gold)">👥 '+fmtN(st.subscriberCount)+' 구독자</span>'
-        +'<span class="ch-bad" style="color:var(--blue)">👁 '+fmtN(st.viewCount)+' 총 조회</span>'
-        +'<span class="ch-bad" style="color:var(--green)">🎬 '+fmtN(st.videoCount)+' 영상</span>'
-      +'</div></div></div>'
-
-    /* ★ 광고 1: 프로필 바로 아래 = 가장 눈에 띄는 위치 */
-    +'<div class="ad-mid">'
-      +'<span class="ad-mid-label">AD</span>'
-      +'<ins class="adsbygoogle" style="display:block;min-height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH22222222" data-ad-format="horizontal" data-full-width-responsive="true"></ins>'
-    +'</div>'
-
-    +'<div class="score-card">'
-      +'<div class="score-num">'+bd.tot+'</div>'
-      +'<div class="score-lbl">채널 종합 점수</div>'
-      +'<div class="score-lv" style="color:'+lv.c+';background:'+lv.bg+';border:1px solid '+lv.c+'55">'+lv.l+'</div>'
-      +'<div class="gauge"><div class="gauge-fill" id="gaugeFill" style="width:0%"></div></div>'
-    +'</div>'
-
-    /* ★ 광고 2: 점수카드 바로 아래 = 점수 확인 후 시선이 아래로 이동하는 지점 */
-    +'<div class="ad-mid">'
-      +'<span class="ad-mid-label">AD</span>'
-      +'<ins class="adsbygoogle" style="display:block;min-height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH33333333" data-ad-format="horizontal" data-full-width-responsive="true"></ins>'
-    +'</div>'
-
-    +'<div class="bd-grid">'+bdH+'</div>'
-    +'<div class="fb-box"><h3>📋 채널 개선 제안</h3>'+fbH+'</div>'
-
-    /* ★ 광고 3: 개선 제안 아래 = 최종 결과 확인 후 이탈 직전 */
-    +'<div class="ad-mid">'
-      +'<span class="ad-mid-label">AD</span>'
-      +'<ins class="adsbygoogle" style="display:block;min-height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="CH44444444" data-ad-format="horizontal" data-full-width-responsive="true"></ins>'
-    +'</div>';
-
-  var el=$('chResult');el.innerHTML=html;
-  setTimeout(function(){var g=$('gaugeFill');if(g)g.style.width=bd.tot+'%';},200);
-  el.querySelectorAll('ins.adsbygoogle').forEach(function(){pushAd();});
-}
-
-/* ====================================================
-   AI 아이디어
-   ==================================================== */
-function renderIdeas(){
-  $('ideaGrid').innerHTML=IDEAS.map(function(x,i){
-    return'<div class="idea-card"><div class="idea-no">아이디어 #'+p2(i+1)+'</div><div class="idea-ttl">'+esc(x.t)+'</div><div class="idea-tags">'+x.tags.map(function(t){return'<span class="idea-tag">#'+t+'</span>'}).join('')+'</div><div class="idea-why">💡 '+esc(x.w)+'</div></div>';
-  }).join('');
-  document.querySelectorAll('#sec-ai .adsbygoogle').forEach(function(){pushAd();});
-}
-
-/* ====================================================
-   제작도구 (★ 가장 눈에 띄는 위치: 섹션 상단 히어로 광고는 HTML에 이미 배치)
-   ==================================================== */
-function renderTools(){
-  var html='';
-  TOOL_SECS.forEach(function(sec,si){
-    html+='<div class="tools-sec"><div class="tools-stitle">'+sec.name+'</div><div class="tools-grid">'+
-      sec.items.map(function(t){return'<a class="tool-card" href="'+t.u+'" target="_blank" rel="noopener"><div class="tool-ico">'+t.i+'</div><div class="tool-name">'+t.n+'</div><div class="tool-desc">'+t.d+'</div><span class="tool-badge">'+t.b+'</span></a>'}).join('')+
-    '</div></div>';
-    /* ★ 제작도구 중간 광고: AI 영상 생성(1번) 섹션 직후 = 스크롤 중간 가장 눈에 띄는 위치 */
-    if(si===1){
-      html+='<div class="ad-mid"><span class="ad-mid-label">AD</span><ins class="adsbygoogle" style="display:block;min-height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="TL22222222" data-ad-format="horizontal" data-full-width-responsive="true"></ins></div>';
-    }
-  });
-  $('toolsWrap').innerHTML=html;
-  document.querySelectorAll('#sec-tools .adsbygoogle').forEach(function(){pushAd();});
-}
-
-/* ====================================================
-   수익 계산기
-   ==================================================== */
-function doCalc(){
-  var views=+($('cV').value)||0,cpm=+($('cC').value)||3000;
-  var rate=+($('cT').value)||0.4,subs=+($('cS').value)||0;
-  if(views<=0){toast('조회수를 입력하세요');return;}
-  var ad=Math.floor(views*rate),rev=Math.round((ad/1000)*cpm);
-  var usd=(rev/1350).toFixed(0),mem=subs>500?Math.round(subs*.01*4900):0;
-  var sc=views>10000?Math.round(views*.0001*10000):0,tot=rev+mem+sc;
-  var el=$('calcRes');
-  el.innerHTML='<h3>📊 수익 예측 결과</h3><div class="rg"><div class="ri"><div class="rl">광고 수익</div><div class="rv" style="color:var(--gold)">₩'+rev.toLocaleString()+'</div></div><div class="ri"><div class="rl">달러 환산</div><div class="rv" style="color:var(--blue)">$'+usd+'</div></div><div class="ri"><div class="rl">멤버십 추정</div><div class="rv" style="color:var(--green)">₩'+mem.toLocaleString()+'</div></div><div class="ri"><div class="rl">슈퍼챗 추정</div><div class="rv" style="color:var(--purple)">₩'+sc.toLocaleString()+'</div></div></div>'
-    +'<div class="ri" style="text-align:center;padding:13px;margin-bottom:10px"><div class="rl">월 총 수익 추정</div><div class="rv" style="font-size:1.3rem;color:var(--gold)">₩'+tot.toLocaleString()+'</div></div>'
-    +'<div class="rn">※ CPM '+cpm.toLocaleString()+'원, 광고 노출률 '+Math.round(rate*100)+'% 기준 추정값<br>실제 수익은 시즌·국가·카테고리에 따라 달라질 수 있습니다.</div>';
-  el.classList.add('on');
-  document.querySelectorAll('#sec-calc .adsbygoogle').forEach(function(){pushAd();});
-}
-
-/* ====================================================
-   스피너
-   ==================================================== */
-function showSpin(id){var e=$(id+'Spin');if(e)e.style.display='flex'}
-function hideSpin(id){var e=$(id+'Spin');if(e)e.style.display='none'}
-
-/* ====================================================
-   텍스트 모달
-   ==================================================== */
-function openTmod(id){var m=$(id);if(m){m.classList.add('on');document.body.style.overflow='hidden';}}
-function closeTmod(id){var m=$(id);if(m){m.classList.remove('on');document.body.style.overflow='';}}
-
-/* ====================================================
-   INIT
-   ==================================================== */
-document.addEventListener('DOMContentLoaded',function(){
+/* ══ TOP AD TOGGLE ══ */
+function toggleTopAd(){
+  CFG.topHide = !CFG.topHide;
+  $('topAd').style.display = CFG.topHide ? 'none' : '';
   syncLayout();
-  window.addEventListener('resize',syncLayout);
-  if(window.ResizeObserver)new ResizeObserver(syncLayout).observe($('topAd'));
+}
 
-  /* 탭 (data-tab 기반) */
-  document.querySelectorAll('[data-tab]').forEach(function(b){
-    b.addEventListener('click',function(){switchTab(b.getAttribute('data-tab'));});
+/* ══ TAB SWITCH ══ */
+function switchTab(tabId){
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
+  var target = $('sec-'+tabId);
+  if(target) target.classList.add('on');
+  document.querySelectorAll('.hnav-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.tab===tabId); });
+  document.querySelectorAll('.snav-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.tab===tabId); });
+}
+
+/* ══ MODAL ══ */
+function openModal(id){ var m=$(id); if(m) m.classList.add('open'); }
+function closeModal(id){ var m=$(id); if(m) m.classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(function(m){
+  m.addEventListener('click', function(e){ if(e.target===m) m.classList.remove('open'); });
+});
+
+/* ══ INTERSTITIAL ══ */
+function showInter(){
+  var inter = $('inter');
+  if(!inter) return;
+  inter.classList.add('open');
+  var closeBtn = $('interClose');
+  var timerEl = $('interTimer');
+  var sec = 5;
+  closeBtn.disabled = true;
+  closeBtn.textContent = '닫기 ('+sec+'초)';
+  var t = setInterval(function(){
+    sec--;
+    if(sec<=0){
+      clearInterval(t);
+      closeBtn.disabled = false;
+      closeBtn.textContent = '닫기';
+      if(timerEl) timerEl.textContent = '';
+    } else {
+      closeBtn.textContent = '닫기 ('+sec+'초)';
+    }
+  }, 1000);
+  /* AdSense push */
+  pushAd('inter-ad');
+}
+function closeInter(){ var inter=$('inter'); if(inter) inter.classList.remove('open'); }
+
+/* ══ ADSENSE PUSH ══ */
+function pushAd(slotId){
+  if(_adPushed[slotId]) return;
+  try{
+    var el = document.querySelector('[data-ad-slot="'+slotId+'"]');
+    if(el && el.closest('.adsbygoogle')){
+      (adsbygoogle=window.adsbygoogle||[]).push({});
+      _adPushed[slotId] = true;
+    } else {
+      (adsbygoogle=window.adsbygoogle||[]).push({});
+      _adPushed[slotId] = true;
+    }
+  } catch(e){}
+}
+function pushAllAds(){
+  document.querySelectorAll('.adsbygoogle').forEach(function(ins){
+    if(!ins.getAttribute('data-adsbygoogle-status')){
+      try{ (adsbygoogle=window.adsbygoogle||[]).push({}); } catch(e){}
+    }
   });
+}
 
-  $('q').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
-  $('searchBtn').addEventListener('click',doSearch);
-  initTtabs();
-  $('moreBtn').addEventListener('click',function(){loadHot(false);});
-  $('vmodX').addEventListener('click',closeVmod);
-  $('vmod').addEventListener('click',function(e){if(e.target===$('vmod'))closeVmod();});
-  $('gateSkip').addEventListener('click',closeGate);
-  $('interX').addEventListener('click',closeInter);
-  $('chQ').addEventListener('keydown',function(e){if(e.key==='Enter')doAnalyze();});
-  $('chBtn').addEventListener('click',doAnalyze);
-  $('calcBtn').addEventListener('click',doCalc);
-  $('topAdX').addEventListener('click',function(){CFG.topHide=!CFG.topHide;$('topAd').style.display=CFG.topHide?'none':'flex';this.textContent=CFG.topHide?'▼':'✕';syncLayout();});
+/* ══ KEY BANNER ══ */
+function showKeyBanner(){ var kb=$('keyBanner'); if(kb) kb.style.display='block'; }
+function saveKey(){
+  var val = ($('keyInput').value||'').trim();
+  if(val.length>10){ CFG.KEYS=[val]; $('keyBanner').style.display='none'; loadHot(true); }
+  else alert('올바른 API 키를 입력해주세요.');
+}
 
-  $('fl-disc').addEventListener('click',function(e){e.preventDefault();openTmod('tmod-disc');});
-  $('fl-terms').addEventListener('click',function(e){e.preventDefault();openTmod('tmod-terms');});
-  $('fl-priv').addEventListener('click',function(e){e.preventDefault();openTmod('tmod-priv');});
-  document.querySelectorAll('.tmod-x').forEach(function(b){b.addEventListener('click',function(){closeTmod(b.getAttribute('data-id'));});});
-  document.querySelectorAll('.tmod').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)closeTmod(m.id);});});
-
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){closeVmod();closeGate();closeInter();closeTmod('tmod-disc');closeTmod('tmod-terms');closeTmod('tmod-priv');}
+/* ══ API CALL ══ */
+function apiCall(url){
+  return new Promise(function(resolve){
+    var key = CFG.KEYS[CFG.ki % CFG.KEYS.length];
+    var sep = url.includes('?')?'&':'?';
+    var full = url + sep + 'key=' + encodeURIComponent(key);
+    var ctrl = new AbortController();
+    var timeout = setTimeout(function(){ ctrl.abort(); }, 12000);
+    fetch(full, {signal:ctrl.signal})
+      .then(function(r){ clearTimeout(timeout); return r.json(); })
+      .then(function(json){
+        if(json.error){
+          var code = (json.error.errors&&json.error.errors[0]&&json.error.errors[0].reason)||'';
+          if(code==='quotaExceeded'){ CFG.ki++; }
+          resolve(null);
+        } else { resolve(json); }
+      })
+      .catch(function(){ clearTimeout(timeout); resolve(null); });
   });
+}
 
-  document.querySelectorAll('ins.adsbygoogle').forEach(function(){pushAd();});
-  buildChips();renderIdeas();renderTools();
+/* ══ FETCH VIDEOS ══ */
+function fetchVideos(pageToken){
+  var kw = CFG.query || CFG.cat;
+  var base, params;
+  if(!kw){
+    base = 'https://www.googleapis.com/youtube/v3/videos';
+    params = 'part=snippet,statistics,contentDetails&chart=mostPopular&regionCode='+CFG.region+'&hl='+CFG.lang+'&maxResults=24';
+    if(pageToken) params += '&pageToken='+pageToken;
+  } else {
+    if(CFG.query){
+      base = 'https://www.googleapis.com/youtube/v3/search';
+      params = 'part=snippet&type=video&regionCode='+CFG.region+'&relevanceLanguage='+CFG.lang+'&maxResults=24&q='+encodeURIComponent(CFG.query);
+      if(pageToken) params += '&pageToken='+pageToken;
+    } else {
+      base = 'https://www.googleapis.com/youtube/v3/videos';
+      params = 'part=snippet,statistics,contentDetails&chart=mostPopular&regionCode='+CFG.region+'&hl='+CFG.lang+'&videoCategoryId='+CFG.cat+'&maxResults=24';
+      if(pageToken) params += '&pageToken='+pageToken;
+    }
+  }
+  return apiCall(base+'?'+params).then(function(data){
+    if(!data) return null;
+    CFG.npt = data.nextPageToken||'';
+    if(!CFG.npt) CFG.allDone=true;
+    if(CFG.query && data.items && data.items[0] && data.items[0].id && data.items[0].id.videoId){
+      /* search result → need to fetch video details */
+      var ids = data.items.map(function(i){ return i.id.videoId; }).join(',');
+      return apiCall('https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id='+ids).then(function(d2){
+        return d2 ? d2.items : null;
+      });
+    }
+    return data.items||[];
+  });
+}
 
-  if(!keysOK()){showKeyBanner();hideSpin('hot');}
-  else loadHot(true);
+/* ══ LOAD HOT ══ */
+function loadHot(reset){
+  if(CFG.busy) return;
+  if(!keysOK()){ showKeyBanner(); return; }
+  CFG.busy = true;
+  if(reset){ _vids=[]; CFG.npt=''; CFG.allDone=false; $('vgrid').innerHTML=''; $('moreBtn').style.display='none'; }
+  showSpin('hot');
+  fetchVideos(reset?'':CFG.npt).then(function(items){
+    hideSpin('hot');
+    CFG.busy = false;
+    if(!items){ $('vgrid').innerHTML='<p style="color:#888;padding:40px;text-align:center;grid-column:1/-1">영상을 불러올 수 없습니다. API 키를 확인해주세요.</p>'; return; }
+    if(!items.length){ if(reset) $('vgrid').innerHTML='<p style="color:#888;padding:40px;text-align:center;grid-column:1/-1">결과가 없습니다.</p>'; return; }
+    var filtered = items;
+    if(CFG.vtype==='short') filtered=items.filter(isShort);
+    else if(CFG.vtype==='long') filtered=items.filter(function(v){ return !isShort(v); });
+    _vids = reset ? filtered : _vids.concat(filtered);
+    appendCards(filtered);
+    $('moreBtn').style.display = CFG.allDone?'none':'block';
+
+    /* interstitial every 3 loads */
+    CFG.hotCount++;
+    if(CFG.hotCount%3===0) showInter();
+  }).catch(function(){ hideSpin('hot'); CFG.busy=false; });
+}
+
+/* ══ APPEND VIDEO CARDS ══ */
+function appendCards(items){
+  var grid = $('vgrid');
+  items.forEach(function(v, idx){
+    /* in-feed ad every 6 videos */
+    if(idx>0 && idx%6===0){
+      var adDiv=document.createElement('div');
+      adDiv.className='in-feed-ad';
+      adDiv.innerHTML='<ins class="adsbygoogle" style="display:inline-block;width:100%;max-width:728px;height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="5555555555"></ins>';
+      grid.appendChild(adDiv);
+      try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    }
+    var sn=v.snippet||{};
+    var st=v.statistics||{};
+    var cd=v.contentDetails||{};
+    var thumb=(sn.thumbnails&&(sn.thumbnails.medium||sn.thumbnails.default))||{};
+    var dur=fmtDur(cd.duration||'');
+    var card=document.createElement('div');
+    card.className='vcard';
+    card.innerHTML=
+      '<img src="'+(thumb.url||'')+'" alt="" loading="lazy">'+
+      '<div class="vc-info">'+
+        '<div class="vc-title">'+(sn.title||'')+'</div>'+
+        '<div class="vc-meta">'+
+          '<span>👁 '+fmt(st.viewCount)+'</span>'+
+          '<span>👍 '+fmt(st.likeCount)+'</span>'+
+          (dur?'<span class="vc-badge">'+dur+'</span>':'')+
+          (isShort(v)?'<span class="vc-badge">🩳Shorts</span>':'')+
+        '</div>'+
+        '<div class="vc-meta" style="margin-top:4px"><span style="color:#888;font-size:11px">'+
+          (sn.channelTitle||'')+'</span></div>'+
+      '</div>';
+    card.onclick=function(){ openVideoModal(v); };
+    grid.appendChild(card);
+  });
+}
+
+/* ══ VIDEO MODAL ══ */
+function openVideoModal(v){
+  var sn=v.snippet||{};
+  var st=v.statistics||{};
+  var m=document.createElement('div');
+  m.className='modal-bg open';
+  m.innerHTML=
+    '<div class="modal-box" style="max-width:640px">'+
+      '<button class="modal-close" onclick="this.closest(\'.modal-bg\').remove()">×</button>'+
+      '<h2 style="font-size:15px;margin-bottom:12px">'+(sn.title||'')+'</h2>'+
+      '<iframe width="100%" height="315" src="https://www.youtube.com/embed/'+(v.id||v.id)+'" frameborder="0" allowfullscreen style="border-radius:8px;margin-bottom:16px"></iframe>'+
+      '<div style="display:flex;gap:16px;font-size:13px;color:#aaa;margin-bottom:12px">'+
+        '<span>👁 '+fmt(st.viewCount)+'</span><span>👍 '+fmt(st.likeCount)+'</span><span>💬 '+fmt(st.commentCount)+'</span>'+
+      '</div>'+
+      '<ins class="adsbygoogle" style="display:block;width:100%;height:90px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666"></ins>'+
+    '</div>';
+  document.body.appendChild(m);
+  m.addEventListener('click',function(e){ if(e.target===m) m.remove(); });
+  try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+}
+
+/* ══ SEARCH & FILTER ══ */
+function doSearch(){
+  CFG.query=($('searchInput').value||'').trim();
+  CFG.cat='';
+  loadHot(true);
+}
+function changeCat(){
+  CFG.cat=$('catSel').value;
+  CFG.query='';
+  loadHot(true);
+}
+function changeRegion(){
+  CFG.region=$('regionSel').value;
+  loadHot(true);
+}
+function changeVtype(){
+  CFG.vtype=$('vtypeSel').value;
+  if(_vids.length){ /* re-filter existing */
+    var grid=$('vgrid'); grid.innerHTML='';
+    var filtered=_vids;
+    if(CFG.vtype==='short') filtered=_vids.filter(isShort);
+    else if(CFG.vtype==='long') filtered=_vids.filter(function(v){ return !isShort(v); });
+    appendCards(filtered);
+  }
+}
+function loadMore(){ loadHot(false); }
+$('searchInput').addEventListener('keydown',function(e){ if(e.key==='Enter') doSearch(); });
+
+/* ══ AI IDEA GENERATOR ══ */
+function generateIdeas(){
+  var prompt=($('aiPrompt').value||'').trim();
+  if(!prompt){ alert('채널 컨셉을 입력해주세요.'); return; }
+  var style=$('aiStyle').value;
+  var count=parseInt($('aiCount').value)||5;
+  showSpin('ai');
+  $('ideaList').innerHTML='';
+  /* Simulate AI (replace with real API if available) */
+  setTimeout(function(){
+    hideSpin('ai');
+    var styleMap={trending:'트렌딩',evergreen:'에버그린',controversial:'화제성',educational:'교육형'};
+    var ideas=[];
+    var templates=[
+      '"{prompt}" 채널에서 {style} 콘텐츠: 지금 당장 시작할 수 있는 영상 아이디어',
+      '"{prompt}" 주제로 조회수 터지는 영상 만들기 – {style} 전략',
+      '{style} 트렌드를 활용한 "{prompt}" 채널 성장 공식',
+      '"{prompt}" 첫 영상 아이디어 – 구독자 0에서 1000까지',
+      '"{prompt}" 유튜브 알고리즘이 좋아하는 콘텐츠 구조 분석',
+      '"{prompt}" 채널에서 {style} 콘텐츠로 월 100만뷰 달성하는 법',
+      '경쟁자 없는 "{prompt}" 블루오션 키워드 발굴하기',
+      '"{prompt}" 시청자가 끝까지 보게 만드는 영상 구성 공식',
+      '"{prompt}" 썸네일 & 제목 A/B 테스트로 CTR 2배 올리기',
+      '"{prompt}" 쇼츠 vs 롱폼 – 내 채널에 맞는 전략은?',
+      '"{prompt}" 협찬 유치를 위한 미디어킷 만들기',
+      '"{prompt}" 멤버십·슈퍼챗으로 부수입 만드는 방법',
+      '"{prompt}" 채널 커뮤니티 탭 200% 활용하기',
+      '"{prompt}" 업로드 스케줄 최적화 – 언제 올려야 조회수가 터질까?',
+      '"{prompt}" 댓글 & 커뮤니티로 팬덤 만드는 전략'
+    ];
+    for(var i=0;i<count;i++){
+      var t=templates[i%templates.length]
+        .replace(/\{prompt\}/g,prompt)
+        .replace(/\{style\}/g,styleMap[style]||style);
+      ideas.push(t);
+    }
+    var html='';
+    ideas.forEach(function(idea,i){
+      html+='<div class="idea-card">'+
+        '<div class="ic-num">아이디어 #'+(i+1)+'</div>'+
+        '<div class="ic-title">'+idea+'</div>'+
+        '<div class="ic-body">이 주제로 영상을 제작하면 <strong style="color:#ff6b6b">'+styleMap[style]+'</strong> 트렌드와 결합하여 높은 조회수를 기대할 수 있습니다. 영상 길이는 8~12분이 최적이며, 썸네일에 감정 표현과 숫자를 포함하면 CTR이 상승합니다.</div>'+
+      '</div>';
+    });
+    $('ideaList').innerHTML=html;
+    CFG.analyzeCount++;
+    if(CFG.analyzeCount%2===0) showInter();
+  }, 1500);
+}
+
+/* ══ REVENUE CALCULATOR ══ */
+function doCalc(){
+  var views=parseFloat($('cViews').value)||0;
+  var cpm=parseFloat($('cCPM').value)||0;
+  var rate=parseFloat($('cRate').value)||0;
+  var ratio=parseFloat($('cRegion').value)||0.45;
+  var impr=views*(rate/100);
+  var gross=(impr/1000)*cpm;
+  var net=gross*ratio;
+  var year=net*12;
+  $('rImpr').textContent=fmt(impr)+'회';
+  $('rMonth').textContent='₩'+Math.round(gross).toLocaleString();
+  $('rYear').textContent='₩'+Math.round(year).toLocaleString();
+  $('rNet').textContent='₩'+Math.round(net).toLocaleString();
+  $('resultBox').style.display='block';
+  try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+}
+
+/* ══ CHANNEL ANALYSIS ══ */
+function analyzeChannel(){
+  var input=($('chInput').value||'').trim();
+  if(!input){ alert('채널 URL 또는 @핸들을 입력해주세요.'); return; }
+  if(!keysOK()){ showKeyBanner(); return; }
+  showSpin('ch');
+  $('chProfile').style.display='none';
+  $('scoreWrap').style.display='none';
+  $('chAdMid').style.display='none';
+  $('chCoupangMid').style.display='none';
+  $('chCoupangBottom').style.display='none';
+  $('chAdBottom').style.display='none';
+
+  /* handle 또는 URL 파싱 */
+  var handle='';
+  var channelId='';
+  if(input.includes('youtube.com/channel/')){ channelId=input.split('channel/')[1].split(/[/?]/)[0]; }
+  else if(input.includes('youtube.com/@')){ handle=input.split('@')[1].split(/[/?]/)[0]; }
+  else if(input.startsWith('@')){ handle=input.slice(1); }
+  else { handle=input; }
+
+  var searchUrl='';
+  if(channelId){
+    searchUrl='https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id='+channelId;
+  } else {
+    searchUrl='https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&forHandle='+encodeURIComponent(handle);
+  }
+
+  apiCall(searchUrl).then(function(data){
+    hideSpin('ch');
+    if(!data||!data.items||!data.items.length){
+      alert('채널을 찾을 수 없습니다. 핸들 또는 URL을 확인해주세요.');
+      return;
+    }
+    var ch=data.items[0];
+    var sn=ch.snippet||{};
+    var st=ch.statistics||{};
+    var thumb=(sn.thumbnails&&(sn.thumbnails.medium||sn.thumbnails.default))||{};
+    $('chAvatar').src=thumb.url||'';
+    $('chName').textContent=sn.title||'';
+    $('chHandle').textContent=sn.customUrl?('@'+sn.customUrl):'';
+    $('chDesc').textContent=(sn.description||'').slice(0,200)+(sn.description&&sn.description.length>200?'...':'');
+    $('chSubs').textContent=st.hiddenSubscriberCount?'비공개':fmt(st.subscriberCount);
+    $('chViews').textContent=fmt(st.viewCount);
+    $('chVids').textContent=fmt(st.videoCount);
+    $('chProfile').style.display='block';
+
+    /* 점수 계산 */
+    var subs=parseInt(st.subscriberCount)||0;
+    var views=parseInt(st.viewCount)||0;
+    var vids=parseInt(st.videoCount)||0;
+    var score=0;
+    if(subs>=1000000) score+=40;
+    else if(subs>=100000) score+=30;
+    else if(subs>=10000) score+=20;
+    else if(subs>=1000) score+=10;
+    else score+=3;
+    if(vids>=100) score+=20;
+    else if(vids>=50) score+=15;
+    else if(vids>=20) score+=10;
+    else if(vids>=5) score+=5;
+    var avg=vids>0?views/vids:0;
+    if(avg>=1000000) score+=30;
+    else if(avg>=100000) score+=20;
+    else if(avg>=10000) score+=10;
+    else if(avg>=1000) score+=5;
+    score=Math.min(100,score+10);
+    $('scoreNum').textContent=score;
+    $('scoreCircle').style.setProperty('--p', score+'%');
+    var level='';
+    if(score>=80) level='🏆 최우수 채널';
+    else if(score>=60) level='🥇 우수 채널';
+    else if(score>=40) level='📈 성장 중';
+    else if(score>=20) level='🌱 신생 채널';
+    else level='💡 시작 단계';
+    $('levelBadge').textContent=level;
+    var fb=[];
+    if(subs<1000) fb.push({icon:'⚠️',text:'구독자 1,000명 달성이 수익화의 첫 단계입니다. 꾸준한 업로드가 중요합니다.'});
+    else if(subs<10000) fb.push({icon:'📈',text:'구독자 10,000명 달성을 목표로 쇼츠 병행 전략을 추천드립니다.'});
+    else fb.push({icon:'✅',text:'안정적인 구독자 기반을 보유하고 있습니다. 꾸준한 시리즈 콘텐츠로 충성도를 높이세요.'});
+    if(vids<10) fb.push({icon:'📹',text:'영상 수가 적습니다. 최소 30개 이상의 영상이 알고리즘 추천에 유리합니다.'});
+    else if(vids>=100) fb.push({icon:'🎉',text:'풍부한 영상 아카이브를 보유하고 있어 검색 노출에 유리합니다.'});
+    if(avg>0 && avg<1000) fb.push({icon:'👁',text:'평균 조회수가 낮습니다. 썸네일과 제목 최적화로 CTR을 높여보세요.'});
+    else if(avg>=100000) fb.push({icon:'🔥',text:'높은 평균 조회수를 기록하고 있습니다. 현재 콘텐츠 방향을 유지하세요.'});
+    var fbHtml='';
+    fb.forEach(function(item){ fbHtml+='<li><span class="fb-icon">'+item.icon+'</span>'+item.text+'</li>'; });
+    $('fbList').innerHTML=fbHtml;
+    $('scoreWrap').style.display='block';
+
+    /* 채널분석 결과 시 광고 & 쿠팡 표시 */
+    $('chAdMid').style.display='block';
+    $('chCoupangMid').style.display='block';
+    $('chCoupangBottom').style.display='block';
+    $('chAdBottom').style.display='block';
+    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+    try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+
+    CFG.analyzeCount++;
+    if(CFG.analyzeCount%2===0) showInter();
+  }).catch(function(){ hideSpin('ch'); });
+}
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded',function(){
+  /* 탭 버튼 이벤트 바인딩 */
+  document.querySelectorAll('[data-tab]').forEach(function(btn){
+    btn.addEventListener('click',function(){ switchTab(btn.dataset.tab); });
+  });
+  syncLayout();
+  pushAllAds();
+  if(!keysOK()){ showKeyBanner(); hideSpin('hot'); }
+  else { loadHot(true); }
 });
 </script>
 </body>
