@@ -19,7 +19,7 @@
   --text1:#f0f0ff;--text2:#b0b0d0;--text3:#7070a0;
   --cp:#f59e0b;--cp2:#d97706;
   --sidebar-w:190px;
-  --right-ad-w:160px;
+  --right-ad-w:320px;
 }
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--text1);overflow-x:hidden}
 
@@ -29,36 +29,34 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
   border-bottom:1px solid var(--border);
   text-align:center;padding:5px 0;
   position:fixed;top:0;left:0;right:0;z-index:1001;
+  /* 내부에 실제 광고만 있을 때만 높이 확보 */
+  min-height:0;
 }
 #topAd ins{display:inline-block;width:728px;height:90px;max-width:100%}
 
-/* ══ HEADER: 로고만 딱 맞게 최소화 ══ */
+/* ══ HEADER ══ */
 #hdr{
   position:fixed;left:0;right:0;z-index:1000;
   background:rgba(37,40,64,.97);
   backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
+  /* top은 JS에서 동적으로 설정 */
 }
 .hdr-inner{
   display:flex;align-items:center;
-  padding:6px 14px;
-  gap:0;
+  padding:5px 14px;
 }
 .logo{
-  font-size:1.1rem;font-weight:900;
+  font-size:1.05rem;font-weight:900;
   background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
   white-space:nowrap;cursor:pointer;user-select:none;
   line-height:1.2;
-  /* 로고 텍스트 크기만큼만 차지 */
   display:inline-block;
+  padding:2px 0;
 }
 
 /* ══ 전체 레이아웃 ══ */
-/* topAd(90px) + hdr(~38px) = JS로 동적 계산 */
-#layout{
-  display:flex;
-  /* margin-top은 JS에서 설정 */
-}
+#layout{display:flex;}
 
 /* ══ SIDEBAR ══ */
 #sidebar{
@@ -84,30 +82,29 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 .sb-ad{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:5px;text-align:center}
 .sb-ad-label{font-size:.58rem;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
 
-/* ══ MAIN WRAP: 사이드바 바로 옆에 붙음 ══ */
+/* ══ MAIN WRAP ══ */
 #wrap{
   flex:1;min-width:0;
   margin-left:var(--sidebar-w);
   margin-right:var(--right-ad-w);
   padding:12px 12px 12px 10px;
-  /* padding-top은 JS에서 동적 설정 */
 }
 .sec{display:none}.sec.on{display:block}
 
-/* ══ 우측 광고 사이드바 ══ */
+/* ══ 우측 광고 사이드바 (2배 확장) ══ */
 #rightAd{
   width:var(--right-ad-w);min-width:var(--right-ad-w);
   background:var(--bg1);
   border-left:1px solid var(--border);
-  padding:10px 6px;
+  padding:10px 8px;
   position:fixed;
   right:0;bottom:0;
-  display:flex;flex-direction:column;gap:8px;
+  display:flex;flex-direction:column;gap:10px;
   overflow:hidden;
   z-index:800;
 }
 .rad-label{font-size:.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:center;margin-bottom:2px}
-.rad-slot{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:5px;text-align:center}
+.rad-slot{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:6px;text-align:center}
 
 /* ══ KEY BANNER ══ */
 #keyBanner{
@@ -135,18 +132,50 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 }
 .hero-ad ins{display:inline-block;width:100%;max-width:728px;height:90px}
 
-/* ══ 필터 블록 ══ */
+/* ══ 필터 블록 (버튼식) ══ */
 .filter-block{
   background:var(--bg2);border:1px solid var(--border);
   border-radius:12px;padding:11px 13px;margin-bottom:14px;
-  display:flex;flex-direction:column;gap:8px;
+  display:flex;flex-direction:column;gap:9px;
 }
-.filter-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
-.filter-block select{
-  background:var(--bg3);border:1px solid var(--border);
-  color:var(--text1);padding:6px 10px;border-radius:9px;font-size:.8rem;cursor:pointer;
-  flex:1;min-width:110px;
+
+/* 카테고리 버튼 행 */
+.cat-btn-row{
+  display:flex;gap:5px;flex-wrap:wrap;align-items:center;
 }
+.cat-btn{
+  padding:4px 11px;border-radius:18px;
+  border:1px solid var(--border);
+  background:var(--bg3);color:var(--text2);
+  cursor:pointer;font-size:.76rem;white-space:nowrap;
+  transition:.18s;font-family:inherit;
+}
+.cat-btn:hover{border-color:var(--g2);color:var(--text1);}
+.cat-btn.active{
+  background:var(--grad);border-color:transparent;
+  color:#fff;font-weight:700;
+  box-shadow:0 2px 8px rgba(139,92,246,.35);
+}
+
+/* 영상 유형 버튼 행 */
+.vtype-btn-row{
+  display:flex;gap:5px;flex-wrap:wrap;align-items:center;
+}
+.vtype-btn{
+  padding:4px 11px;border-radius:18px;
+  border:1px solid var(--border);
+  background:var(--bg3);color:var(--text2);
+  cursor:pointer;font-size:.76rem;white-space:nowrap;
+  transition:.18s;font-family:inherit;
+}
+.vtype-btn:hover{border-color:var(--g1);color:var(--text1);}
+.vtype-btn.active{
+  background:linear-gradient(135deg,#06b6d4,#0891b2);
+  border-color:transparent;color:#fff;font-weight:700;
+  box-shadow:0 2px 8px rgba(6,182,212,.35);
+}
+
+/* 검색창 */
 .filter-search{display:flex;gap:7px;width:100%}
 .filter-search input{
   flex:1;background:var(--bg3);border:1px solid var(--border);
@@ -166,11 +195,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 .vcard-thumb-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;overflow:hidden}
 .vcard-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:.2s}
 .vcard:hover .vcard-thumb-wrap img{opacity:.85}
-/* 재생 오버레이 */
 .play-overlay{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:.2s;
-  background:rgba(0,0,0,.3);
+  opacity:0;transition:.2s;background:rgba(0,0,0,.3);
 }
 .vcard:hover .play-overlay{opacity:1}
 .play-btn{
@@ -190,8 +217,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 
 /* ══ 인페이지 플레이어 ══ */
 #playerWrap{
-  display:none;
-  background:var(--bg1);border:1px solid var(--border);
+  display:none;background:var(--bg1);border:1px solid var(--border);
   border-radius:14px;overflow:hidden;margin-bottom:14px;
 }
 #playerWrap.on{display:block}
@@ -218,23 +244,41 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
   font-size:.8rem;font-weight:700;text-decoration:none;
 }
 
-/* ══ 쿠팡 정사각형 ══ */
+/* ══ 쿠팡 카드 — 눈에 띄는 황금빛 배경 ══ */
 .cp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;margin:12px 0}
 .cp-card{
-  position:relative;background:var(--bg2);border:1px solid var(--border);
+  position:relative;
+  background:linear-gradient(145deg,#1e1200,#2e1f00);
+  border:1px solid rgba(245,158,11,.45);
   border-radius:13px;overflow:hidden;transition:.25s;
   aspect-ratio:1/1;display:flex;flex-direction:column;
   align-items:center;justify-content:center;padding:11px 8px;
   text-align:center;cursor:pointer;text-decoration:none;
 }
-.cp-card::before{content:'';position:absolute;inset:0;background:var(--grad-soft);opacity:0;transition:.25s}
-.cp-card:hover{transform:translateY(-4px);box-shadow:0 6px 22px rgba(245,158,11,.3),var(--glow-v);border-color:var(--cp)}
-.cp-card:hover::before{opacity:1}
+.cp-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(145deg,rgba(245,158,11,.12),rgba(217,119,6,.08));
+  opacity:1;transition:.25s;
+}
+.cp-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 6px 22px rgba(245,158,11,.4),0 2px 10px rgba(245,158,11,.2);
+  border-color:rgba(245,158,11,.8);
+}
+.cp-card:hover::before{
+  background:linear-gradient(145deg,rgba(245,158,11,.22),rgba(217,119,6,.15));
+}
 .cp-card-icon{font-size:1.8rem;margin-bottom:6px;position:relative;z-index:1}
-.cp-card-title{font-size:.76rem;font-weight:700;color:var(--text1);margin-bottom:4px;line-height:1.25;position:relative;z-index:1}
-.cp-card-desc{font-size:.66rem;color:var(--text2);margin-bottom:8px;line-height:1.3;position:relative;z-index:1}
-.cp-card-btn{position:relative;z-index:1;display:inline-block;background:linear-gradient(135deg,var(--cp),var(--cp2));color:#fff;padding:5px 10px;border-radius:18px;font-size:.68rem;font-weight:700;white-space:nowrap;transition:.2s;box-shadow:0 2px 7px rgba(245,158,11,.3)}
-.cp-card:hover .cp-card-btn{box-shadow:var(--glow-cp);transform:scale(1.04)}
+.cp-card-title{font-size:.76rem;font-weight:700;color:#fde68a;margin-bottom:4px;line-height:1.25;position:relative;z-index:1}
+.cp-card-desc{font-size:.66rem;color:#d4a855;margin-bottom:8px;line-height:1.3;position:relative;z-index:1}
+.cp-card-btn{
+  position:relative;z-index:1;display:inline-block;
+  background:linear-gradient(135deg,var(--cp),var(--cp2));
+  color:#1a0f00;padding:5px 10px;border-radius:18px;
+  font-size:.68rem;font-weight:900;white-space:nowrap;
+  transition:.2s;box-shadow:0 2px 7px rgba(245,158,11,.4);
+}
+.cp-card:hover .cp-card-btn{box-shadow:var(--glow-cp);transform:scale(1.05)}
 
 /* ══ AI ══ */
 .ai-form{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px}
@@ -268,9 +312,25 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 .calc-field label{display:block;font-size:.74rem;color:var(--text2);margin-bottom:4px}
 .calc-field input,.calc-field select{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text1);padding:7px 10px;border-radius:9px;font-size:.84rem;transition:.2s}
 .calc-field input:focus,.calc-field select:focus{outline:none;border-color:var(--g2);box-shadow:var(--glow-v)}
-.calc-submit{width:100%;margin-top:4px;background:var(--grad);border:none;color:#fff;padding:12px;border-radius:11px;cursor:pointer;font-size:.95rem;font-weight:900;letter-spacing:.04em;box-shadow:0 4px 18px rgba(139,92,246,.5);transition:.25s}
-.calc-submit:hover{transform:translateY(-2px);box-shadow:0 7px 26px rgba(139,92,246,.7)}
-.calc-submit:active{transform:translateY(0)}
+.calc-submit{
+  width:100%;margin-top:6px;
+  background:var(--grad);border:none;color:#fff;
+  padding:13px;border-radius:11px;cursor:pointer;
+  font-size:.97rem;font-weight:900;letter-spacing:.05em;
+  box-shadow:0 4px 18px rgba(139,92,246,.5);
+  transition:.25s;position:relative;overflow:hidden;
+}
+.calc-submit::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  opacity:0;transition:.2s;
+}
+.calc-submit:hover{
+  transform:translateY(-2px);
+  box-shadow:0 7px 26px rgba(139,92,246,.7),0 0 0 1px rgba(139,92,246,.4);
+}
+.calc-submit:hover::after{opacity:1}
+.calc-submit:active{transform:translateY(1px);box-shadow:0 2px 10px rgba(139,92,246,.4)}
 .calc-result-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:12px}
 .calc-result-box h3{font-size:.94rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .result-card{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:13px;text-align:center}
@@ -327,7 +387,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 #footer a{color:var(--text2);text-decoration:none}
 
 /* ══ RESPONSIVE ══ */
-@media(max-width:1100px){
+@media(max-width:1200px){
   :root{--right-ad-w:0px}
   #rightAd{display:none}
   #wrap{margin-right:0}
@@ -340,13 +400,14 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 @media(max-width:700px){.calc-wrap{grid-template-columns:1fr}}
 @media(max-width:600px){
   .cp-grid{grid-template-columns:repeat(2,1fr)}
-  .filter-row{flex-direction:column}
+  .cat-btn-row,.vtype-btn-row{flex-wrap:nowrap;overflow-x:auto;padding-bottom:3px}
+  .cat-btn,.vtype-btn{flex-shrink:0}
 }
 </style>
 </head>
 <body>
 
-<!-- TOP AD -->
+<!-- TOP AD: 실제 광고만 — 빈 박스 없음 -->
 <div id="topAd">
   <ins class="adsbygoogle"
     style="display:inline-block;width:728px;height:90px;max-width:100%"
@@ -354,7 +415,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
     data-ad-slot="1111111111"></ins>
 </div>
 
-<!-- HEADER: 로고만 최소 크기로 -->
+<!-- HEADER: 로고만 최소 크기 -->
 <header id="hdr">
   <div class="hdr-inner">
     <div class="logo" onclick="goHome()">▶ YTAnalytics Pro</div>
@@ -413,24 +474,33 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
         data-ad-slot="4444444444"></ins>
     </div>
+
+    <!-- 필터: 카테고리 버튼 → 유형 버튼 → 검색창 순 -->
     <div class="filter-block">
-      <div class="filter-row">
-        <select id="catSel" onchange="changeCat()">
-          <option value="">전체 카테고리</option>
-          <option value="1">영화/애니</option><option value="2">자동차</option>
-          <option value="10">음악</option><option value="15">동물</option>
-          <option value="17">스포츠</option><option value="20">게임</option>
-          <option value="22">사람/블로그</option><option value="23">코미디</option>
-          <option value="24">엔터테인먼트</option><option value="25">뉴스/정치</option>
-          <option value="26">노하우/스타일</option><option value="27">교육</option>
-          <option value="28">과학/기술</option>
-        </select>
-        <select id="vtypeSel" onchange="changeVtype()">
-          <option value="all">전체 유형</option>
-          <option value="short">Shorts</option>
-          <option value="long">일반영상</option>
-        </select>
+      <!-- ① 카테고리 버튼 -->
+      <div class="cat-btn-row" id="catBtnRow">
+        <button class="cat-btn active" onclick="setCat('',this)">전체</button>
+        <button class="cat-btn" onclick="setCat('1',this)">영화/애니</button>
+        <button class="cat-btn" onclick="setCat('2',this)">자동차</button>
+        <button class="cat-btn" onclick="setCat('10',this)">음악</button>
+        <button class="cat-btn" onclick="setCat('15',this)">동물</button>
+        <button class="cat-btn" onclick="setCat('17',this)">스포츠</button>
+        <button class="cat-btn" onclick="setCat('20',this)">게임</button>
+        <button class="cat-btn" onclick="setCat('22',this)">블로그</button>
+        <button class="cat-btn" onclick="setCat('23',this)">코미디</button>
+        <button class="cat-btn" onclick="setCat('24',this)">엔터</button>
+        <button class="cat-btn" onclick="setCat('25',this)">뉴스</button>
+        <button class="cat-btn" onclick="setCat('26',this)">노하우</button>
+        <button class="cat-btn" onclick="setCat('27',this)">교육</button>
+        <button class="cat-btn" onclick="setCat('28',this)">과학/기술</button>
       </div>
+      <!-- ② 영상 유형 버튼 -->
+      <div class="vtype-btn-row" id="vtypeBtnRow">
+        <button class="vtype-btn active" onclick="setVtype('all',this)">전체 유형</button>
+        <button class="vtype-btn" onclick="setVtype('short',this)">⚡ Shorts</button>
+        <button class="vtype-btn" onclick="setVtype('long',this)">📹 일반영상</button>
+      </div>
+      <!-- ③ 검색창 -->
       <div class="filter-search">
         <input id="searchInput" type="text" placeholder="영상 제목·키워드로 검색…"
           onkeydown="if(event.key==='Enter')doSearch()">
@@ -465,24 +535,29 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 
     <div id="cardGrid"></div>
     <button id="loadMoreBtn" onclick="loadHot(false)" style="display:none">더 불러오기</button>
+
     <div class="cp-grid">
       <a class="cp-card" href="https://www.coupang.com/np/search?q=미러리스+카메라&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
-        <div class="cp-card-icon">📷</div><div class="cp-card-title">인기 미러리스 카메라</div>
+        <div class="cp-card-icon">📷</div>
+        <div class="cp-card-title">인기 미러리스 카메라</div>
         <div class="cp-card-desc">지금 가장 많이 팔리는 유튜브 촬영 카메라</div>
         <span class="cp-card-btn">지금 바로 확인</span>
       </a>
       <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+마이크&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
-        <div class="cp-card-icon">🎙</div><div class="cp-card-title">유튜버 추천 마이크</div>
+        <div class="cp-card-icon">🎙</div>
+        <div class="cp-card-title">유튜버 추천 마이크</div>
         <div class="cp-card-desc">음질 차이가 구독자를 만든다</div>
         <span class="cp-card-btn">놓치면 후회해요</span>
       </a>
       <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+조명+세트&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
-        <div class="cp-card-icon">💡</div><div class="cp-card-title">스튜디오 조명 세트</div>
+        <div class="cp-card-icon">💡</div>
+        <div class="cp-card-title">스튜디오 조명 세트</div>
         <div class="cp-card-desc">조명 하나로 영상 퀄리티 2배</div>
         <span class="cp-card-btn">특가 보러 가기</span>
       </a>
       <a class="cp-card" href="https://www.coupang.com/np/search?q=스마트폰+짐벌&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
-        <div class="cp-card-icon">🎬</div><div class="cp-card-title">촬영용 짐벌</div>
+        <div class="cp-card-icon">🎬</div>
+        <div class="cp-card-title">촬영용 짐벌</div>
         <div class="cp-card-desc">흔들림 없는 영상, 브이로그 필수</div>
         <span class="cp-card-btn">할인가 확인하기</span>
       </a>
@@ -626,63 +701,187 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
     </div>
     <div class="tool-section-title">✂️ 영상 편집</div>
     <div class="tool-grid">
-      <a class="tool-card" href="https://www.blackmagicdesign.com/kr/products/davinciresolve" target="_blank" rel="noopener"><div class="tool-icon">✂️</div><h3>DaVinci Resolve</h3><p>할리우드 수준의 색보정·편집을 무료로. 프로 크리에이터 표준.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.capcut.com" target="_blank" rel="noopener"><div class="tool-icon">🎞</div><h3>CapCut</h3><p>모바일·PC 모두 지원. Shorts 제작에 최적화.</p><span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.adobe.com/kr/products/premiere.html" target="_blank" rel="noopener"><div class="tool-icon">🎬</div><h3>Adobe Premiere Pro</h3><p>업계 표준 영상 편집. After Effects와 완벽 연동.</p><span class="tool-paid">유료 구독</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://clipchamp.com" target="_blank" rel="noopener"><div class="tool-icon">💻</div><h3>Clipchamp</h3><p>브라우저에서 바로 편집. 설치 불필요.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
+      <a class="tool-card" href="https://www.blackmagicdesign.com/kr/products/davinciresolve" target="_blank" rel="noopener">
+        <div class="tool-icon">✂️</div><h3>DaVinci Resolve</h3>
+        <p>할리우드 수준의 색보정·편집을 무료로. 프로 크리에이터 표준.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.capcut.com" target="_blank" rel="noopener">
+        <div class="tool-icon">🎞</div><h3>CapCut</h3>
+        <p>모바일·PC 모두 지원. Shorts 제작에 최적화.</p>
+        <span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.adobe.com/kr/products/premiere.html" target="_blank" rel="noopener">
+        <div class="tool-icon">🎬</div><h3>Adobe Premiere Pro</h3>
+        <p>업계 표준 영상 편집. After Effects와 완벽 연동.</p>
+        <span class="tool-paid">유료 구독</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://clipchamp.com" target="_blank" rel="noopener">
+        <div class="tool-icon">💻</div><h3>Clipchamp</h3>
+        <p>브라우저에서 바로 편집. 설치 불필요.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
     </div>
     <div class="tool-section-title">🎨 썸네일 & 디자인</div>
     <div class="tool-grid">
-      <a class="tool-card" href="https://www.canva.com" target="_blank" rel="noopener"><div class="tool-icon">🎨</div><h3>Canva</h3><p>썸네일·채널 아트·배너를 쉽게 만드는 온라인 디자인 툴.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.adobe.com/express" target="_blank" rel="noopener"><div class="tool-icon">🖼</div><h3>Adobe Express</h3><p>AI 기반 빠른 썸네일·그래픽 제작.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.fotor.com" target="_blank" rel="noopener"><div class="tool-icon">✨</div><h3>Fotor</h3><p>AI 배경 제거·보정 포함. 썸네일 퀄리티를 빠르게.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://remove.bg" target="_blank" rel="noopener"><div class="tool-icon">🪄</div><h3>Remove.bg</h3><p>클릭 한 번으로 배경 제거. 썸네일 컷아웃 필수.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
+      <a class="tool-card" href="https://www.canva.com" target="_blank" rel="noopener">
+        <div class="tool-icon">🎨</div><h3>Canva</h3>
+        <p>썸네일·채널 아트·배너를 쉽게 만드는 온라인 디자인 툴.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.adobe.com/express" target="_blank" rel="noopener">
+        <div class="tool-icon">🖼</div><h3>Adobe Express</h3>
+        <p>AI 기반 빠른 썸네일·그래픽 제작.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.fotor.com" target="_blank" rel="noopener">
+        <div class="tool-icon">✨</div><h3>Fotor</h3>
+        <p>AI 배경 제거·보정 포함. 썸네일 퀄리티를 빠르게.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://remove.bg" target="_blank" rel="noopener">
+        <div class="tool-icon">🪄</div><h3>Remove.bg</h3>
+        <p>클릭 한 번으로 배경 제거. 썸네일 컷아웃 필수.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
     </div>
-    <div class="hero-ad"><div class="sb-ad-label">AD</div>
-      <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666677"></ins>
+    <div class="hero-ad">
+      <div class="sb-ad-label">AD</div>
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666677"></ins>
     </div>
     <div class="tool-section-title">🎵 음악 & 자막</div>
     <div class="tool-grid">
-      <a class="tool-card" href="https://www.youtube.com/audiolibrary" target="_blank" rel="noopener"><div class="tool-icon">🎵</div><h3>YouTube Audio Library</h3><p>저작권 없는 배경음악·효과음 무료 다운로드.</p><span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.epidemicsound.com" target="_blank" rel="noopener"><div class="tool-icon">🎧</div><h3>Epidemic Sound</h3><p>4만 곡 이상 무제한. 상업용 라이선스 완전 포함.</p><span class="tool-paid">유료 구독</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.vrew.com" target="_blank" rel="noopener"><div class="tool-icon">📝</div><h3>Vrew</h3><p>AI 음성 인식 자막 자동 생성. 작업 시간 90% 단축.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://clova.ai" target="_blank" rel="noopener"><div class="tool-icon">🤖</div><h3>CLOVA Note</h3><p>네이버 AI 음성 인식. 한국어 정확도 최상위.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
+      <a class="tool-card" href="https://www.youtube.com/audiolibrary" target="_blank" rel="noopener">
+        <div class="tool-icon">🎵</div><h3>YouTube Audio Library</h3>
+        <p>저작권 없는 배경음악·효과음 무료 다운로드.</p>
+        <span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.epidemicsound.com" target="_blank" rel="noopener">
+        <div class="tool-icon">🎧</div><h3>Epidemic Sound</h3>
+        <p>4만 곡 이상 무제한. 상업용 라이선스 완전 포함.</p>
+        <span class="tool-paid">유료 구독</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.vrew.com" target="_blank" rel="noopener">
+        <div class="tool-icon">📝</div><h3>Vrew</h3>
+        <p>AI 음성 인식 자막 자동 생성. 작업 시간 90% 단축.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://clova.ai" target="_blank" rel="noopener">
+        <div class="tool-icon">🤖</div><h3>CLOVA Note</h3>
+        <p>네이버 AI 음성 인식. 한국어 정확도 최상위.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
     </div>
     <div class="tool-section-title">📋 스크립트 & 기획</div>
     <div class="tool-grid">
-      <a class="tool-card" href="https://www.notion.so" target="_blank" rel="noopener"><div class="tool-icon">📋</div><h3>Notion</h3><p>콘텐츠 캘린더·스크립트·아이디어를 한 곳에 관리.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://chat.openai.com" target="_blank" rel="noopener"><div class="tool-icon">💬</div><h3>ChatGPT</h3><p>스크립트·제목·설명란·해시태그 초안 즉시 생성.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.claude.ai" target="_blank" rel="noopener"><div class="tool-icon">🧠</div><h3>Claude AI</h3><p>긴 스크립트·기획안·전략 문서 작성에 특화.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.trello.com" target="_blank" rel="noopener"><div class="tool-icon">📌</div><h3>Trello</h3><p>기획→촬영→편집→업로드 워크플로우 시각화.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
+      <a class="tool-card" href="https://www.notion.so" target="_blank" rel="noopener">
+        <div class="tool-icon">📋</div><h3>Notion</h3>
+        <p>콘텐츠 캘린더·스크립트·아이디어를 한 곳에 관리.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://chat.openai.com" target="_blank" rel="noopener">
+        <div class="tool-icon">💬</div><h3>ChatGPT</h3>
+        <p>스크립트·제목·설명란·해시태그 초안 즉시 생성.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.claude.ai" target="_blank" rel="noopener">
+        <div class="tool-icon">🧠</div><h3>Claude AI</h3>
+        <p>긴 스크립트·기획안·전략 문서 작성에 특화.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.trello.com" target="_blank" rel="noopener">
+        <div class="tool-icon">📌</div><h3>Trello</h3>
+        <p>기획→촬영→편집→업로드 워크플로우 시각화.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
     </div>
     <div class="tool-section-title">📡 라이브 & 스트리밍</div>
     <div class="tool-grid">
-      <a class="tool-card" href="https://obsproject.com" target="_blank" rel="noopener"><div class="tool-icon">📡</div><h3>OBS Studio</h3><p>무료 오픈소스 방송. 라이브·화면 녹화 업계 표준.</p><span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://streamlabs.com" target="_blank" rel="noopener"><div class="tool-icon">🎙</div><h3>Streamlabs</h3><p>알림·오버레이·채팅 통합 올인원 방송 툴.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://restream.io" target="_blank" rel="noopener"><div class="tool-icon">🌊</div><h3>Restream</h3><p>유튜브·트위치·페이스북 동시 멀티 스트리밍.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.elgato.com/stream-deck" target="_blank" rel="noopener"><div class="tool-icon">🎛</div><h3>Stream Deck</h3><p>방송 전환·BGM을 버튼 하나로. 프로 필수 하드웨어.</p><span class="tool-paid">유료 하드웨어</span><div><span class="tool-link">바로가기 →</span></div></a>
+      <a class="tool-card" href="https://obsproject.com" target="_blank" rel="noopener">
+        <div class="tool-icon">📡</div><h3>OBS Studio</h3>
+        <p>무료 오픈소스 방송. 라이브·화면 녹화 업계 표준.</p>
+        <span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://streamlabs.com" target="_blank" rel="noopener">
+        <div class="tool-icon">🎙</div><h3>Streamlabs</h3>
+        <p>알림·오버레이·채팅 통합 올인원 방송 툴.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://restream.io" target="_blank" rel="noopener">
+        <div class="tool-icon">🌊</div><h3>Restream</h3>
+        <p>유튜브·트위치·페이스북 동시 멀티 스트리밍.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.elgato.com/stream-deck" target="_blank" rel="noopener">
+        <div class="tool-icon">🎛</div><h3>Stream Deck</h3>
+        <p>방송 전환·BGM을 버튼 하나로. 프로 필수 하드웨어.</p>
+        <span class="tool-paid">유료 하드웨어</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
     </div>
     <div class="tool-section-title">🖼 이미지 & AI 생성</div>
     <div class="tool-grid">
-      <a class="tool-card" href="https://www.midjourney.com" target="_blank" rel="noopener"><div class="tool-icon">🎭</div><h3>Midjourney</h3><p>텍스트 한 줄로 고퀄 썸네일 배경·일러스트 생성.</p><span class="tool-paid">유료 구독</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://ideogram.ai" target="_blank" rel="noopener"><div class="tool-icon">🖌</div><h3>Ideogram</h3><p>텍스트 포함 이미지 생성. 썸네일 텍스트 삽입에 유용.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://www.flaticon.com" target="_blank" rel="noopener"><div class="tool-icon">🔷</div><h3>Flaticon</h3><p>아이콘·스티커 수백만 개. 썸네일·인트로 디자인 소재.</p><span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div></a>
-      <a class="tool-card" href="https://unsplash.com" target="_blank" rel="noopener"><div class="tool-icon">📸</div><h3>Unsplash</h3><p>상업용 무료 고화질 사진. 라이선스 걱정 없이.</p><span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div></a>
+      <a class="tool-card" href="https://www.midjourney.com" target="_blank" rel="noopener">
+        <div class="tool-icon">🎭</div><h3>Midjourney</h3>
+        <p>텍스트 한 줄로 고퀄 썸네일 배경·일러스트 생성.</p>
+        <span class="tool-paid">유료 구독</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://ideogram.ai" target="_blank" rel="noopener">
+        <div class="tool-icon">🖌</div><h3>Ideogram</h3>
+        <p>텍스트 포함 이미지 생성. 썸네일 텍스트 삽입에 유용.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://www.flaticon.com" target="_blank" rel="noopener">
+        <div class="tool-icon">🔷</div><h3>Flaticon</h3>
+        <p>아이콘·스티커 수백만 개. 썸네일·인트로 디자인 소재.</p>
+        <span class="tool-free">무료/유료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
+      <a class="tool-card" href="https://unsplash.com" target="_blank" rel="noopener">
+        <div class="tool-icon">📸</div><h3>Unsplash</h3>
+        <p>상업용 무료 고화질 사진. 라이선스 걱정 없이.</p>
+        <span class="tool-free">무료</span><div><span class="tool-link">바로가기 →</span></div>
+      </a>
     </div>
     <div class="cp-grid">
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+촬영+세트&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🎬</div><div class="cp-card-title">촬영 풀세트 패키지</div><div class="cp-card-desc">카메라+조명+마이크 한 번에</div><span class="cp-card-btn">세트 가격 보기</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=스트림덱&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🖱</div><div class="cp-card-title">스트림덱 컨트롤러</div><div class="cp-card-desc">편집·방송 효율 3배</div><span class="cp-card-btn">프로 장비 보기</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=모니터링+헤드폰&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🎧</div><div class="cp-card-title">모니터링 헤드폰</div><div class="cp-card-desc">소리까지 완벽하게</div><span class="cp-card-btn">사운드 업그레이드</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=LED+패널+조명&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🔆</div><div class="cp-card-title">LED 패널 조명</div><div class="cp-card-desc">스튜디오급 빛을 내 방에서</div><span class="cp-card-btn">조명 특가 보기</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=스마트폰+삼각대&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">📱</div><div class="cp-card-title">스마트폰 삼각대</div><div class="cp-card-desc">Shorts 촬영 가성비 최고</div><span class="cp-card-btn">가성비 픽 보기</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=외장SSD&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🗂</div><div class="cp-card-title">고속 외장 SSD</div><div class="cp-card-desc">4K 영상도 버벅임 없이</div><span class="cp-card-btn">용량별 가격 보기</span></a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+촬영+세트&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🎬</div><div class="cp-card-title">촬영 풀세트 패키지</div>
+        <div class="cp-card-desc">카메라+조명+마이크 한 번에</div>
+        <span class="cp-card-btn">세트 가격 보기</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=스트림덱&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🖱</div><div class="cp-card-title">스트림덱 컨트롤러</div>
+        <div class="cp-card-desc">편집·방송 효율 3배</div>
+        <span class="cp-card-btn">프로 장비 보기</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=모니터링+헤드폰&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🎧</div><div class="cp-card-title">모니터링 헤드폰</div>
+        <div class="cp-card-desc">소리까지 완벽하게</div>
+        <span class="cp-card-btn">사운드 업그레이드</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=LED+패널+조명&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🔆</div><div class="cp-card-title">LED 패널 조명</div>
+        <div class="cp-card-desc">스튜디오급 빛을 내 방에서</div>
+        <span class="cp-card-btn">조명 특가 보기</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=스마트폰+삼각대&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">📱</div><div class="cp-card-title">스마트폰 삼각대</div>
+        <div class="cp-card-desc">Shorts 촬영 가성비 최고</div>
+        <span class="cp-card-btn">가성비 픽 보기</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=외장SSD&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🗂</div><div class="cp-card-title">고속 외장 SSD</div>
+        <div class="cp-card-desc">4K 영상도 버벅임 없이</div>
+        <span class="cp-card-btn">용량별 가격 보기</span>
+      </a>
     </div>
   </section>
 
   <!-- ════ 수익계산기 ════ -->
   <section id="sec-calc" class="sec">
-    <div class="hero-ad"><div class="sb-ad-label">AD</div>
-      <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777"></ins>
+    <div class="hero-ad">
+      <div class="sb-ad-label">AD</div>
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777777"></ins>
     </div>
     <div class="calc-wrap">
       <div class="calc-box">
@@ -728,13 +927,31 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
       </div>
     </div>
     <div class="cp-grid" id="cpCalcGrid" style="display:none">
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+수익화+책&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">📚</div><div class="cp-card-title">수익화 전략 도서</div><div class="cp-card-desc">수익을 2배 만드는 채널 운영 비법</div><span class="cp-card-btn">베스트셀러 보기</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=콘덴서+마이크&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🎙</div><div class="cp-card-title">콘덴서 마이크</div><div class="cp-card-desc">음질이 곧 수익</div><span class="cp-card-btn">음질 업그레이드</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=액션캠&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">📷</div><div class="cp-card-title">4K 액션캠</div><div class="cp-card-desc">다양한 앵글로 차별화</div><span class="cp-card-btn">할인가 확인하기</span></a>
-      <a class="cp-card" href="https://www.coupang.com/np/search?q=4K+모니터&partnerCode=AF8853448" target="_blank" rel="noopener sponsored"><div class="cp-card-icon">🖥</div><div class="cp-card-title">4K 편집 모니터</div><div class="cp-card-desc">색감 보정의 시작</div><span class="cp-card-btn">모니터 특가 보기</span></a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=유튜브+수익화+책&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">📚</div><div class="cp-card-title">수익화 전략 도서</div>
+        <div class="cp-card-desc">수익을 2배 만드는 채널 운영 비법</div>
+        <span class="cp-card-btn">베스트셀러 보기</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=콘덴서+마이크&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🎙</div><div class="cp-card-title">콘덴서 마이크</div>
+        <div class="cp-card-desc">음질이 곧 수익</div>
+        <span class="cp-card-btn">음질 업그레이드</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=액션캠&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">📷</div><div class="cp-card-title">4K 액션캠</div>
+        <div class="cp-card-desc">다양한 앵글로 차별화</div>
+        <span class="cp-card-btn">할인가 확인하기</span>
+      </a>
+      <a class="cp-card" href="https://www.coupang.com/np/search?q=4K+모니터&partnerCode=AF8853448" target="_blank" rel="noopener sponsored">
+        <div class="cp-card-icon">🖥</div><div class="cp-card-title">4K 편집 모니터</div>
+        <div class="cp-card-desc">색감 보정의 시작</div>
+        <span class="cp-card-btn">모니터 특가 보기</span>
+      </a>
     </div>
-    <div class="hero-ad" style="margin-top:8px"><div class="sb-ad-label">AD</div>
-      <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777788"></ins>
+    <div class="hero-ad" style="margin-top:8px">
+      <div class="sb-ad-label">AD</div>
+      <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%"
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="7777777788"></ins>
     </div>
   </section>
 
@@ -747,19 +964,19 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
   </footer>
 </div><!-- /wrap -->
 
-<!-- RIGHT AD SIDEBAR -->
+<!-- RIGHT AD SIDEBAR: 2배 확장 (320px) -->
 <aside id="rightAd">
   <div class="rad-label">AD</div>
   <div class="rad-slot">
     <ins class="adsbygoogle"
-      style="display:block;width:148px;height:250px"
+      style="display:block;width:300px;height:250px"
       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
       data-ad-slot="5000000001"
       data-ad-format="auto" data-full-width-responsive="true"></ins>
   </div>
   <div class="rad-slot">
     <ins class="adsbygoogle"
-      style="display:block;width:148px;height:250px"
+      style="display:block;width:300px;height:250px"
       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
       data-ad-slot="5000000002"
       data-ad-format="auto" data-full-width-responsive="true"></ins>
@@ -797,124 +1014,172 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg0);color:var(--tex
 </div>
 
 <script>
-var CURRENT_YEAR=new Date().getFullYear();
-var CFG={
-  KEYS:['YOUR_API_KEY_1','YOUR_API_KEY_2','YOUR_API_KEY_3'],
-  ki:0,busy:false,query:'',cat:'',region:'KR',lang:'ko',
-  vtype:'all',npt:'',allDone:false,hotCount:0,analyzeCount:0
+var CURRENT_YEAR = new Date().getFullYear();
+var CFG = {
+  KEYS: ['YOUR_API_KEY_1','YOUR_API_KEY_2','YOUR_API_KEY_3'],
+  ki: 0, busy: false, query: '', cat: '', region: 'KR', lang: 'ko',
+  vtype: 'all', npt: '', allDone: false, hotCount: 0, analyzeCount: 0
 };
-function $(id){return document.getElementById(id);}
+function $(id){ return document.getElementById(id); }
 
 /* ══ 레이아웃 동기화 ══ */
 function syncLayout(){
-  var topH=$('topAd')?$('topAd').offsetHeight:0;
-  var hdrH=$('hdr')?$('hdr').offsetHeight:0;
-  var total=topH+hdrH;
-  if($('hdr'))$('hdr').style.top=topH+'px';
+  var topEl = $('topAd');
+  var hdrEl = $('hdr');
+  /* topAd가 실제 콘텐츠를 가지고 있을 때만 높이 반영
+     광고가 로드되지 않으면 min-height:0이므로 0으로 처리 */
+  var topH  = topEl ? topEl.getBoundingClientRect().height : 0;
+  var hdrH  = hdrEl ? hdrEl.offsetHeight : 0;
+  var total = topH + hdrH;
+
+  if(hdrEl)  hdrEl.style.top = topH + 'px';
   if($('sidebar')){
-    $('sidebar').style.top=total+'px';
-    $('sidebar').style.height='calc(100vh - '+total+'px)';
+    $('sidebar').style.top    = total + 'px';
+    $('sidebar').style.height = 'calc(100vh - ' + total + 'px)';
   }
   if($('rightAd')){
-    $('rightAd').style.top=total+'px';
-    $('rightAd').style.height='calc(100vh - '+total+'px)';
+    $('rightAd').style.top    = total + 'px';
+    $('rightAd').style.height = 'calc(100vh - ' + total + 'px)';
   }
-  if($('wrap'))$('wrap').style.paddingTop=(total+14)+'px';
+  if($('wrap')) $('wrap').style.paddingTop = (total + 14) + 'px';
 }
-window.addEventListener('load',syncLayout);
-window.addEventListener('resize',syncLayout);
+window.addEventListener('load', syncLayout);
+window.addEventListener('resize', syncLayout);
+/* 광고 iframe이 뒤늦게 로드되면 다시 계산 */
+window.addEventListener('load', function(){
+  setTimeout(syncLayout, 800);
+  setTimeout(syncLayout, 2000);
+});
 
 /* ══ 유틸 ══ */
-function fmt(n){n=parseInt(n)||0;if(n>=100000000)return(n/100000000).toFixed(1)+'억';if(n>=10000)return(n/10000).toFixed(1)+'만';return n.toLocaleString();}
-function fmtW(n){return '₩'+Math.round(n).toLocaleString();}
-function fmtDur(iso){if(!iso)return '';var m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return '';var h=+m[1]||0,mi=+m[2]||0,s=+m[3]||0;if(h)return h+':'+(mi<10?'0':'')+mi+':'+(s<10?'0':'')+s;return mi+':'+(s<10?'0':'')+s;}
-function isShort(dur){if(!dur)return false;var m=dur.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return false;var h=+m[1]||0,mi=+m[2]||0,s=+m[3]||0;return(h*3600+mi*60+s)<=60;}
+function fmt(n){ n=parseInt(n)||0; if(n>=100000000)return(n/100000000).toFixed(1)+'억'; if(n>=10000)return(n/10000).toFixed(1)+'만'; return n.toLocaleString(); }
+function fmtW(n){ return '₩'+Math.round(n).toLocaleString(); }
+function fmtDur(iso){ if(!iso)return ''; var m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/); if(!m)return ''; var h=+m[1]||0,mi=+m[2]||0,s=+m[3]||0; if(h)return h+':'+(mi<10?'0':'')+mi+':'+(s<10?'0':'')+s; return mi+':'+(s<10?'0':'')+s; }
+function isShort(dur){ if(!dur)return false; var m=dur.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/); if(!m)return false; var h=+m[1]||0,mi=+m[2]||0,s=+m[3]||0; return(h*3600+mi*60+s)<=60; }
 
-/* ══ 탭 ══ */
-function switchTab(name,btn){
-  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('on');});
-  var sec=$('sec-'+name);if(sec)sec.classList.add('on');
-  document.querySelectorAll('.snav-btn').forEach(function(b){b.classList.remove('on');});
-  if(btn)btn.classList.add('on');
+/* ══ 탭 전환 ══ */
+function switchTab(name, btn){
+  document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
+  var sec = $('sec-'+name); if(sec) sec.classList.add('on');
+  document.querySelectorAll('.snav-btn').forEach(function(b){ b.classList.remove('on'); });
+  if(btn) btn.classList.add('on');
   closePlayer();
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function goHome(){
-  CFG.query='';CFG.cat='';CFG.vtype='all';
-  if($('searchInput'))$('searchInput').value='';
-  if($('catSel'))$('catSel').value='';
-  if($('vtypeSel'))$('vtypeSel').value='all';
-  switchTab('hot',document.querySelector('.snav-btn'));
+  CFG.query=''; CFG.cat=''; CFG.vtype='all';
+  if($('searchInput')) $('searchInput').value='';
+  /* 버튼 active 초기화 */
+  document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('active'); });
+  var first = document.querySelector('.cat-btn'); if(first) first.classList.add('active');
+  document.querySelectorAll('.vtype-btn').forEach(function(b){ b.classList.remove('active'); });
+  var vfirst = document.querySelector('.vtype-btn'); if(vfirst) vfirst.classList.add('active');
+  switchTab('hot', document.querySelector('.snav-btn'));
+  loadHot(true);
+}
+
+/* ══ 카테고리 버튼 핸들러 ══ */
+function setCat(val, btn){
+  CFG.cat = val; CFG.query = '';
+  document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  if($('searchInput')) $('searchInput').value='';
+  loadHot(true);
+}
+
+/* ══ 영상 유형 버튼 핸들러 ══ */
+function setVtype(val, btn){
+  CFG.vtype = val;
+  document.querySelectorAll('.vtype-btn').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
   loadHot(true);
 }
 
 /* ══ 모달 ══ */
-function openModal(id){var el=$(id);if(el)el.classList.add('open');}
-function closeModal(id){var el=$(id);if(el)el.classList.remove('open');}
-document.addEventListener('click',function(e){if(e.target.classList.contains('modal-bg'))e.target.classList.remove('open');});
+function openModal(id){ var el=$(id); if(el) el.classList.add('open'); }
+function closeModal(id){ var el=$(id); if(el) el.classList.remove('open'); }
+document.addEventListener('click', function(e){ if(e.target.classList.contains('modal-bg')) e.target.classList.remove('open'); });
 
 /* ══ 인터스티셜 ══ */
-function showInter(cb){var el=$('inter');if(el){el.classList.add('open');el._cb=cb;}try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}}
-function closeInter(){var el=$('inter');if(el){el.classList.remove('open');if(el._cb)el._cb();}}
+function showInter(cb){ var el=$('inter'); if(el){ el.classList.add('open'); el._cb=cb; } try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){} }
+function closeInter(){ var el=$('inter'); if(el){ el.classList.remove('open'); if(el._cb) el._cb(); } }
 
 /* ══ API 키 ══ */
-function saveKey(){var v=$('keyInput').value.trim();if(!v)return;CFG.KEYS.unshift(v);CFG.ki=0;localStorage.setItem('yt_key',v);$('keyBanner').style.display='none';loadHot(true);}
-(function(){var k=localStorage.getItem('yt_key');if(k){CFG.KEYS.unshift(k);CFG.ki=0;$('keyBanner').style.display='none';}})();
+function saveKey(){
+  var v = $('keyInput').value.trim(); if(!v) return;
+  CFG.KEYS.unshift(v); CFG.ki=0;
+  localStorage.setItem('yt_key', v);
+  $('keyBanner').style.display='none';
+  loadHot(true);
+}
+(function(){
+  var k = localStorage.getItem('yt_key');
+  if(k){ CFG.KEYS.unshift(k); CFG.ki=0; $('keyBanner').style.display='none'; }
+})();
 
 /* ══ API 호출 ══ */
-function apiCall(path,params,cb){
-  var key=CFG.KEYS[CFG.ki%Math.max(CFG.KEYS.length,1)];params.key=key;
-  var qs=Object.keys(params).map(function(k){return encodeURIComponent(k)+'='+encodeURIComponent(params[k]);}).join('&');
+function apiCall(path, params, cb){
+  var key = CFG.KEYS[CFG.ki % Math.max(CFG.KEYS.length,1)];
+  params.key = key;
+  var qs = Object.keys(params).map(function(k){ return encodeURIComponent(k)+'='+encodeURIComponent(params[k]); }).join('&');
   fetch('https://www.googleapis.com/youtube/v3/'+path+'?'+qs)
-    .then(function(r){return r.json();})
+    .then(function(r){ return r.json(); })
     .then(function(d){
-      if(d.error){if(d.error.code===403||d.error.code===400){CFG.ki++;if(CFG.ki<CFG.KEYS.length*2)apiCall(path,params,cb);else cb(null,d.error);}else cb(null,d.error);}
-      else cb(d,null);
-    }).catch(function(e){cb(null,e);});
+      if(d.error){
+        if(d.error.code===403||d.error.code===400){ CFG.ki++; if(CFG.ki<CFG.KEYS.length*2) apiCall(path,params,cb); else cb(null,d.error); }
+        else cb(null,d.error);
+      } else cb(d,null);
+    }).catch(function(e){ cb(null,e); });
 }
 
 /* ══ 인기영상 ══ */
 function loadHot(reset){
-  if(CFG.busy)return;
-  if(reset){CFG.npt='';CFG.allDone=false;CFG.hotCount=0;$('cardGrid').innerHTML='<div class="spinner"></div>';}
-  if(CFG.allDone)return;
-  CFG.busy=true;
-  var p,path;
-  if(CFG.query){p={part:'snippet',q:CFG.query,type:'video',maxResults:24,regionCode:CFG.region};path='search';}
-  else{p={part:'snippet,contentDetails,statistics',chart:'mostPopular',regionCode:CFG.region,hl:CFG.lang,maxResults:24};if(CFG.cat)p.videoCategoryId=CFG.cat;path='videos';}
-  if(CFG.npt)p.pageToken=CFG.npt;
-  apiCall(path,p,function(d,err){
+  if(CFG.busy) return;
+  if(reset){ CFG.npt=''; CFG.allDone=false; CFG.hotCount=0; $('cardGrid').innerHTML='<div class="spinner"></div>'; }
+  if(CFG.allDone) return;
+  CFG.busy = true;
+  var p, path;
+  if(CFG.query){
+    p={part:'snippet',q:CFG.query,type:'video',maxResults:24,regionCode:CFG.region};
+    path='search';
+  } else {
+    p={part:'snippet,contentDetails,statistics',chart:'mostPopular',regionCode:CFG.region,hl:CFG.lang,maxResults:24};
+    if(CFG.cat) p.videoCategoryId=CFG.cat;
+    path='videos';
+  }
+  if(CFG.npt) p.pageToken=CFG.npt;
+  apiCall(path, p, function(d, err){
     CFG.busy=false;
-    if(err||!d){showApiError();return;}
-    if(reset)$('cardGrid').innerHTML='';
-    var items=d.items||[];
+    if(err||!d){ showApiError(); return; }
+    if(reset) $('cardGrid').innerHTML='';
+    var items = d.items||[];
     if(CFG.query){
-      var ids=items.map(function(i){return i.id&&i.id.videoId?i.id.videoId:i.id;}).filter(Boolean).join(',');
-      if(!ids){appendCards([]);return;}
-      apiCall('videos',{part:'snippet,contentDetails,statistics',id:ids},function(d2){appendCards(d2?d2.items:items);});
-    }else{appendCards(items);}
-    CFG.npt=d.nextPageToken||'';CFG.allDone=!CFG.npt;
-    $('loadMoreBtn').style.display=CFG.allDone?'none':'block';
-    CFG.hotCount++;if(CFG.hotCount===2)showInter(function(){});
+      var ids = items.map(function(i){ return i.id&&i.id.videoId?i.id.videoId:i.id; }).filter(Boolean).join(',');
+      if(!ids){ appendCards([]); return; }
+      apiCall('videos',{part:'snippet,contentDetails,statistics',id:ids}, function(d2){ appendCards(d2?d2.items:items); });
+    } else { appendCards(items); }
+    CFG.npt = d.nextPageToken||''; CFG.allDone=!CFG.npt;
+    $('loadMoreBtn').style.display = CFG.allDone?'none':'block';
+    CFG.hotCount++; if(CFG.hotCount===2) showInter(function(){});
   });
 }
 
 /* ══ 카드 렌더 ══ */
 function appendCards(items){
-  var grid=$('cardGrid');
-  items.forEach(function(item,idx){
-    if(idx>0&&idx%6===0){
-      var ad=document.createElement('div');ad.className='infeed-ad';
+  var grid = $('cardGrid');
+  items.forEach(function(item, idx){
+    if(idx>0 && idx%6===0){
+      var ad=document.createElement('div'); ad.className='infeed-ad';
       ad.innerHTML='<div class="sb-ad-label">AD</div><ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px;max-width:100%" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="4444444455"></ins>';
-      grid.appendChild(ad);try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+      grid.appendChild(ad); try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
     }
-    var s=item.snippet||{},st=item.statistics||{},cd=item.contentDetails||{};
+    var s=item.snippet||{}, st=item.statistics||{}, cd=item.contentDetails||{};
     var dur=cd.duration||'';
     var thumb=(s.thumbnails&&(s.thumbnails.medium||s.thumbnails.default))||{};
     var short=isShort(dur);
     var vid=item.id&&item.id.videoId?item.id.videoId:item.id;
-    var card=document.createElement('div');card.className='vcard';
+    var card=document.createElement('div'); card.className='vcard';
     card.innerHTML=
       '<div class="vcard-thumb-wrap">'
       +'<img src="'+(thumb.url||'')+'" alt="" loading="lazy">'
@@ -928,16 +1193,14 @@ function appendCards(items){
       +'<span>❤️ '+fmt(st.likeCount)+'</span>'
       +(dur?'<span>⏱ '+fmtDur(dur)+'</span>':'')
       +'</div></div>';
-    /* 카드 클릭 → 인페이지 플레이어 */
-    card.onclick=function(){openPlayer(vid,item);};
+    card.onclick = function(){ openPlayer(vid, item); };
     grid.appendChild(card);
   });
 }
 
 /* ══ 인페이지 플레이어 ══ */
-function openPlayer(vid,item){
-  var s=item.snippet||{},st=item.statistics||{};
-  /* iframe에 autoplay=1 적용 */
+function openPlayer(vid, item){
+  var s=item.snippet||{}, st=item.statistics||{};
   $('playerIframe').src='https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1';
   $('playerTitle').textContent=s.title||'';
   $('playerInfoTitle').textContent=s.title||'';
@@ -950,66 +1213,105 @@ function openPlayer(vid,item){
   desc.textContent=(s.description||'설명 없음').slice(0,400);
   desc.classList.remove('expand');
   $('descToggle').textContent='더 보기 ▾';
-  /* 전체 설명 저장 */
   desc.dataset.full=(s.description||'');
   $('playerYtLink').href='https://www.youtube.com/watch?v='+vid;
-  var pw=$('playerWrap');pw.classList.add('on');
-  /* 플레이어 위치로 스크롤 */
-  pw.scrollIntoView({behavior:'smooth',block:'start'});
+  var pw=$('playerWrap'); pw.classList.add('on');
+  pw.scrollIntoView({behavior:'smooth', block:'start'});
 }
-
 function closePlayer(){
-  var pw=$('playerWrap');pw.classList.remove('on');
+  $('playerWrap').classList.remove('on');
   $('playerIframe').src='';
 }
-
 function toggleDesc(){
-  var desc=$('playerInfoDesc'),tog=$('descToggle');
+  var desc=$('playerInfoDesc'), tog=$('descToggle');
   if(desc.classList.contains('expand')){
-    desc.classList.remove('expand');desc.textContent=desc.dataset.full.slice(0,400);tog.textContent='더 보기 ▾';
-  }else{
-    desc.classList.add('expand');desc.textContent=desc.dataset.full;tog.textContent='접기 ▴';
+    desc.classList.remove('expand'); desc.textContent=desc.dataset.full.slice(0,400); tog.textContent='더 보기 ▾';
+  } else {
+    desc.classList.add('expand'); desc.textContent=desc.dataset.full; tog.textContent='접기 ▴';
   }
 }
+function showApiError(){
+  var g=$('cardGrid');
+  if(g) g.innerHTML='<p style="color:var(--text2);padding:20px;grid-column:1/-1">API 키가 없거나 할당량을 초과했습니다. 상단에서 API 키를 입력해 주세요.</p>';
+}
 
-function showApiError(){var g=$('cardGrid');if(g)g.innerHTML='<p style="color:var(--text2);padding:20px;grid-column:1/-1">API 키가 없거나 할당량을 초과했습니다. 상단에서 API 키를 입력해 주세요.</p>';}
-
-function doSearch(){CFG.query=$('searchInput').value.trim();switchTab('hot',document.querySelector('.snav-btn'));loadHot(true);}
-function changeCat(){CFG.cat=$('catSel').value;CFG.query='';loadHot(true);}
-function changeVtype(){CFG.vtype=$('vtypeSel').value;loadHot(true);}
+function doSearch(){ CFG.query=$('searchInput').value.trim(); switchTab('hot',document.querySelector('.snav-btn')); loadHot(true); }
 
 /* ══ AI 아이디어 ══ */
-var IDEA_TEMPLATES={
-  tutorial:['[주제] 완전정복 – 처음부터 끝까지 따라하기','초보자도 10분 만에 배우는 [주제] 핵심 스킬',CURRENT_YEAR+'년 최신 [주제] 튜토리얼 | 전문가 꿀팁','[주제] 실수 TOP 5와 올바른 해결법','[주제] 입문자를 위한 A-Z 가이드'],
-  vlog:['[주제] 하루 일상 브이로그 | 솔직한 이야기','[주제] 직업의 현실 – 아무도 말 안 해주는 것들','[주제] 여행 브이로그 | 숨은 명소 공개','하루 [주제] 챌린지 도전 브이로그','[주제] '+CURRENT_YEAR+' 루틴 공개'],
-  review:['솔직 리뷰: [주제] 써보니 달라진 점','[주제] 6개월 사용 후기 – 장단점 공개','최저가 vs 최고가 [주제] 비교 리뷰',CURRENT_YEAR+' 베스트 [주제] 추천 TOP 5','[주제] 돈값 하나? 직접 확인했습니다'],
-  challenge:['[주제] 30일 챌린지 – 달라진 점 공개','하루 동안 [주제] 전문가처럼 살아보기','[주제] 극한 챌린지 – 포기 직전 순간','SNS 유행 [주제] 챌린지 직접 해봄','[주제] 챌린지 성공·실패 모두 공개'],
-  reaction:['유명인 [주제] 영상에 반응했습니다','해외 반응: 한국 [주제]에 외국인들은?','전문가가 [주제] 유튜버 팩트체크','처음 보는 [주제]에 반응했더니…','구독자 [주제] 영상에 솔직 피드백'],
-  shorts:['[주제] 1분 핵심 요약 #shorts','[주제] 꿀팁 30초컷 #shorts','몰랐던 [주제] 사실 3가지 #shorts','[주제] '+CURRENT_YEAR+' 트렌드 정리 #viral','오늘의 [주제] 한 장면 #daily']
+var IDEA_TEMPLATES = {
+  tutorial: [
+    '[주제] 완전정복 – 처음부터 끝까지 따라하기',
+    '초보자도 10분 만에 배우는 [주제] 핵심 스킬',
+    CURRENT_YEAR+'년 최신 [주제] 튜토리얼 | 전문가 꿀팁',
+    '[주제] 실수 TOP 5와 올바른 해결법',
+    '[주제] 입문자를 위한 A-Z 가이드'
+  ],
+  vlog: [
+    '[주제] 하루 일상 브이로그 | 솔직한 이야기',
+    '[주제] 직업의 현실 – 아무도 말 안 해주는 것들',
+    '[주제] 여행 브이로그 | 숨은 명소 공개',
+    '하루 [주제] 챌린지 도전 브이로그',
+    '[주제] '+CURRENT_YEAR+' 루틴 공개'
+  ],
+  review: [
+    '솔직 리뷰: [주제] 써보니 달라진 점',
+    '[주제] 6개월 사용 후기 – 장단점 공개',
+    '최저가 vs 최고가 [주제] 비교 리뷰',
+    CURRENT_YEAR+' 베스트 [주제] 추천 TOP 5',
+    '[주제] 돈값 하나? 직접 확인했습니다'
+  ],
+  challenge: [
+    '[주제] 30일 챌린지 – 달라진 점 공개',
+    '하루 동안 [주제] 전문가처럼 살아보기',
+    '[주제] 극한 챌린지 – 포기 직전 순간',
+    'SNS 유행 [주제] 챌린지 직접 해봄',
+    '[주제] 챌린지 성공·실패 모두 공개'
+  ],
+  reaction: [
+    '유명인 [주제] 영상에 반응했습니다',
+    '해외 반응: 한국 [주제]에 외국인들은?',
+    '전문가가 [주제] 유튜버 팩트체크',
+    '처음 보는 [주제]에 반응했더니…',
+    '구독자 [주제] 영상에 솔직 피드백'
+  ],
+  shorts: [
+    '[주제] 1분 핵심 요약 #shorts',
+    '[주제] 꿀팁 30초컷 #shorts',
+    '몰랐던 [주제] 사실 3가지 #shorts',
+    '[주제] '+CURRENT_YEAR+' 트렌드 정리 #viral',
+    '오늘의 [주제] 한 장면 #daily'
+  ]
 };
-var TIPS=['검색 유입에 유리한 구체적 숫자나 날짜를 제목에 포함하세요.','썸네일에 궁금증을 유발하는 표정·텍스트를 추가하세요.','첫 30초 안에 시청자가 얻을 가치를 명확히 제시하세요.','댓글 유도 질문을 영상 중반에 넣어 참여율을 높이세요.','설명란에 타임스탬프를 추가해 재방문을 유도하세요.'];
+var TIPS = [
+  '검색 유입에 유리한 구체적 숫자나 날짜를 제목에 포함하세요.',
+  '썸네일에 궁금증을 유발하는 표정·텍스트를 추가하세요.',
+  '첫 30초 안에 시청자가 얻을 가치를 명확히 제시하세요.',
+  '댓글 유도 질문을 영상 중반에 넣어 참여율을 높이세요.',
+  '설명란에 타임스탬프를 추가해 재방문을 유도하세요.'
+];
 function generateIdeas(){
-  var niche=$('aiNiche').value.trim()||'유튜브';
-  var style=$('aiStyle').value;
-  var templates=IDEA_TEMPLATES[style]||IDEA_TEMPLATES.tutorial;
-  var list=$('ideaList');list.innerHTML='';
-  templates.forEach(function(t,i){
-    var item=document.createElement('div');item.className='idea-item';
-    item.innerHTML='<h4>'+(i+1)+'. '+t.replace(/\[주제\]/g,niche)+'</h4><p>💡 '+TIPS[i%TIPS.length]+'</p>';
+  var niche = $('aiNiche').value.trim() || '유튜브';
+  var style = $('aiStyle').value;
+  var templates = IDEA_TEMPLATES[style] || IDEA_TEMPLATES.tutorial;
+  var list = $('ideaList'); list.innerHTML='';
+  templates.forEach(function(t, i){
+    var item=document.createElement('div'); item.className='idea-item';
+    item.innerHTML='<h4>'+(i+1)+'. '+t.replace(/\[주제\]/g, niche)+'</h4><p>💡 '+TIPS[i%TIPS.length]+'</p>';
     list.appendChild(item);
   });
 }
 
 /* ══ 수익 계산기 ══ */
-function liveCalc(){$('calcPlaceholder').style.display='flex';$('calcResultInner').style.display='none';}
+function liveCalc(){ $('calcPlaceholder').style.display='flex'; $('calcResultInner').style.display='none'; }
 function doCalc(){
-  var views=parseInt($('cViews').value)||0;
-  var cpm=parseInt($('cCpm').value)||2500;
-  var type=parseFloat($('cType').value)||1;
-  var region=parseFloat($('cRegion').value)||1;
-  var gross=views/1000*cpm*type*region;
-  var net=gross*0.55,fee=gross*0.45;
-  $('calcPlaceholder').style.display='none';$('calcResultInner').style.display='block';
+  var views   = parseInt($('cViews').value)||0;
+  var cpm     = parseInt($('cCpm').value)||2500;
+  var type    = parseFloat($('cType').value)||1;
+  var region  = parseFloat($('cRegion').value)||1;
+  var gross   = views/1000*cpm*type*region;
+  var net=gross*0.55, fee=gross*0.45;
+  $('calcPlaceholder').style.display='none';
+  $('calcResultInner').style.display='block';
   $('calcMain').textContent=fmtW(net);
   $('calcSub').textContent='총 광고 수익 '+fmtW(gross)+' 기준';
   $('calcYear').textContent=fmtW(net*12);
@@ -1022,40 +1324,44 @@ function doCalc(){
 
 /* ══ 채널 분석 ══ */
 function analyzeChannel(){
-  var q=$('chInput').value.trim();if(!q)return;
+  var q = $('chInput').value.trim(); if(!q) return;
   $('chResult').style.display='none';
-  var handle=q.startsWith('@')?q.slice(1):q;
-  apiCall('search',{part:'snippet',q:handle,type:'channel',maxResults:1},function(d,err){
-    if(err||!d||!d.items||!d.items.length){alert('채널을 찾을 수 없습니다.');return;}
-    var chId=d.items[0].snippet.channelId||d.items[0].id.channelId;
-    apiCall('channels',{part:'snippet,statistics',id:chId},function(d2,e2){
-      if(e2||!d2||!d2.items||!d2.items.length){alert('채널 정보를 불러올 수 없습니다.');return;}
-      var ch=d2.items[0],s=ch.snippet||{},st=ch.statistics||{};
+  var handle = q.startsWith('@')?q.slice(1):q;
+  apiCall('search',{part:'snippet',q:handle,type:'channel',maxResults:1}, function(d, err){
+    if(err||!d||!d.items||!d.items.length){ alert('채널을 찾을 수 없습니다.'); return; }
+    var chId = d.items[0].snippet.channelId||d.items[0].id.channelId;
+    apiCall('channels',{part:'snippet,statistics',id:chId}, function(d2, e2){
+      if(e2||!d2||!d2.items||!d2.items.length){ alert('채널 정보를 불러올 수 없습니다.'); return; }
+      var ch=d2.items[0], s=ch.snippet||{}, st=ch.statistics||{};
       $('chAvatar').src=(s.thumbnails&&(s.thumbnails.medium||s.thumbnails.default)||{}).url||'';
       $('chName').textContent=s.title||'';
       $('chHandle').textContent='@'+(s.customUrl||handle);
       $('chSubs').textContent=fmt(st.subscriberCount);
       $('chViews').textContent=fmt(st.viewCount);
       $('chVids').textContent=fmt(st.videoCount);
-      var vids=parseInt(st.videoCount)||1,views=parseInt(st.viewCount)||0;
+      var vids=parseInt(st.videoCount)||1, views=parseInt(st.viewCount)||0;
       $('chAvgViews').textContent=fmt(Math.round(views/vids));
-      setBar('scoreUp',Math.min(100,vids*2));
-      setBar('scoreEng',Math.min(100,Math.round(views/vids/10000)));
-      setBar('scoreDi',Math.floor(Math.random()*40+50));
-      setBar('scoreGr',Math.min(100,Math.round((parseInt(st.subscriberCount)||0)/10000)));
+      setBar('scoreUp', Math.min(100,vids*2));
+      setBar('scoreEng', Math.min(100,Math.round(views/vids/10000)));
+      setBar('scoreDi', Math.floor(Math.random()*40+50));
+      setBar('scoreGr', Math.min(100,Math.round((parseInt(st.subscriberCount)||0)/10000)));
       $('chResult').style.display='block';
-      CFG.analyzeCount++;if(CFG.analyzeCount%3===0)showInter(function(){});
+      CFG.analyzeCount++; if(CFG.analyzeCount%3===0) showInter(function(){});
       try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
     });
   });
 }
-function setBar(id,val){var f=$(id),v=$(id+'V');if(f)f.style.width=val+'%';if(v)v.textContent=val;}
+function setBar(id, val){
+  var f=$(id), v=$(id+'V');
+  if(f) f.style.width=val+'%';
+  if(v) v.textContent=val;
+}
 
 /* ══ 초기화 ══ */
-window.addEventListener('DOMContentLoaded',function(){
+window.addEventListener('DOMContentLoaded', function(){
   syncLayout();
-  try{document.querySelectorAll('.adsbygoogle').forEach(function(){(adsbygoogle=window.adsbygoogle||[]).push({});});}catch(e){}
-  if(CFG.KEYS[0]!=='YOUR_API_KEY_1')loadHot(true);
+  try{ document.querySelectorAll('.adsbygoogle').forEach(function(){ (adsbygoogle=window.adsbygoogle||[]).push({}); }); }catch(e){}
+  if(CFG.KEYS[0]!=='YOUR_API_KEY_1') loadHot(true);
 });
 </script>
 </body>
