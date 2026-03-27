@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YTAnalytics Pro – 유튜브 채널 분석기</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
 /* ═══════════════════════════════════════════
    ROOT & RESET
@@ -18,20 +17,20 @@
   --text: #e8e8f0;
   --text2: #9090b0;
   --accent: #4f8ef7;
+  --card-bg: #12121e;
+  --card-border: #252535;
   --lv1: #9ca3af;
   --lv2: #6ee7b7;
   --lv3: #34d399;
   --lv4: #fbbf24;
   --lv5: #c0c0c0;
-  --lv6: #c0c0c0;
+  --lv6: #d4d4d4;
   --lv7: #ffd700;
   --lv8: #00e5ff;
   --lv9: #ff1744;
   --lv10-a: #ff0080;
-  --lv10-b: #7c3aed;
-  --lv10-c: #00e5ff;
   --r: 14px;
-  --sh: 0 4px 24px rgba(0,0,0,.5);
+  --sh: 0 4px 24px rgba(0,0,0,.6);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -46,747 +45,555 @@ body {
 /* ═══════════════════════════════════════════
    KEYFRAMES
 ═══════════════════════════════════════════ */
-@keyframes rainbowShift {
-  0%   { filter: hue-rotate(0deg)   brightness(1.2); }
-  50%  { filter: hue-rotate(180deg) brightness(1.5); }
-  100% { filter: hue-rotate(360deg) brightness(1.2); }
-}
 @keyframes rainbowText {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-@keyframes pulseGlow {
-  0%,100% { box-shadow: 0 0 16px 4px var(--glow,#4f8ef7), 0 0 32px 8px var(--glow,#4f8ef7)33; }
-  50%      { box-shadow: 0 0 32px 12px var(--glow,#4f8ef7), 0 0 64px 20px var(--glow,#4f8ef7)55; }
+@keyframes borderPulse {
+  0%,100% { opacity: .5; }
+  50%      { opacity: 1; }
 }
-@keyframes floatUp  { 0%{transform:translateY(0)} 50%{transform:translateY(-6px)} 100%{transform:translateY(0)} }
-@keyframes fadeIn   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-@keyframes slideIn  { from{transform:translateX(-24px);opacity:0} to{transform:translateX(0);opacity:1} }
-@keyframes spin3d   { 0%{transform:rotateY(0deg)} 100%{transform:rotateY(360deg)} }
-@keyframes borderGlow {
-  0%,100% { opacity:.6 }
-  50%      { opacity:1 }
+@keyframes floatUp {
+  0%   { transform: translateY(0) rotateY(0deg); }
+  50%  { transform: translateY(-8px) rotateY(3deg); }
+  100% { transform: translateY(0) rotateY(0deg); }
 }
+@keyframes fadeIn   { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes shimmer  {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes scoreCount { from { opacity:0; transform:scale(.8); } to { opacity:1; transform:scale(1); } }
 
 /* ═══════════════════════════════════════════
    HEADER
 ═══════════════════════════════════════════ */
 .header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(10,10,15,.92);
-  backdrop-filter: blur(16px);
+  background: rgba(10,10,15,.95);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 12px;
-  padding: 0 20px; height: 60px;
+  padding: 0 20px; height: 58px;
 }
-.logo { font-size: 1.3rem; font-weight: 900; color: #ff4040; flex-shrink: 0; }
+.logo { font-size: 1.2rem; font-weight: 900; color: #ff4040; flex-shrink: 0; letter-spacing: -0.5px; }
 .logo span { color: var(--accent); }
 .header-search {
-  flex: 1; max-width: 480px;
+  flex: 1; max-width: 420px;
   display: flex; background: var(--bg3);
   border: 1px solid var(--border); border-radius: 24px; overflow: hidden;
 }
 .header-search input {
   flex: 1; background: none; border: none; outline: none;
-  color: var(--text); padding: 8px 16px; font-size: .9rem;
-  font-family: inherit;
+  color: var(--text); padding: 8px 16px; font-size: .88rem; font-family: inherit;
 }
 .header-search button {
   background: var(--accent); border: none; color: #fff;
-  padding: 8px 16px; cursor: pointer; font-size: .9rem;
-  transition: background .2s;
+  padding: 8px 14px; cursor: pointer; font-size: .85rem; transition: background .2s;
 }
 .header-search button:hover { background: #3a7ae8; }
-.header-nav { display: flex; gap: 6px; margin-left: auto; }
+.header-nav { display: flex; gap: 4px; margin-left: auto; }
 .nav-btn {
   background: none; border: 1px solid var(--border);
-  color: var(--text2); padding: 6px 14px; border-radius: 20px;
-  cursor: pointer; font-size: .8rem; font-family: inherit;
+  color: var(--text2); padding: 5px 12px; border-radius: 18px;
+  cursor: pointer; font-size: .78rem; font-family: inherit;
   transition: all .2s; white-space: nowrap;
 }
-.nav-btn:hover,.nav-btn.active {
-  background: var(--accent); border-color: var(--accent); color: #fff;
-}
-.menu-btn {
-  display: none; background: none; border: 1px solid var(--border);
-  color: var(--text); padding: 6px 10px; border-radius: 8px; cursor: pointer;
-}
+.nav-btn:hover,.nav-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.menu-btn { display: none; background: none; border: 1px solid var(--border); color: var(--text); padding: 5px 9px; border-radius: 7px; cursor: pointer; }
 
 /* ═══════════════════════════════════════════
    LAYOUT
 ═══════════════════════════════════════════ */
-.layout { display: flex; min-height: calc(100vh - 60px); }
+.layout { display: flex; min-height: calc(100vh - 58px); }
 .sidebar {
-  width: 220px; flex-shrink: 0;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  padding: 16px 10px; position: sticky;
-  top: 60px; height: calc(100vh - 60px);
-  overflow-y: auto; transition: transform .3s;
+  width: 210px; flex-shrink: 0;
+  background: var(--bg2); border-right: 1px solid var(--border);
+  padding: 14px 8px; position: sticky; top: 58px;
+  height: calc(100vh - 58px); overflow-y: auto; transition: transform .3s;
 }
 .sidebar-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; border-radius: 10px;
-  cursor: pointer; color: var(--text2);
-  font-size: .88rem; transition: all .2s; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 11px; border-radius: 9px;
+  cursor: pointer; color: var(--text2); font-size: .85rem;
+  transition: all .2s; margin-bottom: 3px;
 }
-.sidebar-item:hover,.sidebar-item.active {
-  background: var(--bg3); color: var(--text);
-  transform: translateX(4px);
-}
-.sidebar-icon { font-size: 1.1rem; width: 22px; text-align: center; }
-.main { flex: 1; padding: 24px; overflow-y: auto; }
-.section { display: none; animation: fadeIn .4s ease; }
+.sidebar-item:hover,.sidebar-item.active { background: var(--bg3); color: var(--text); transform: translateX(3px); }
+.sidebar-icon { font-size: 1rem; width: 20px; text-align: center; }
+.main { flex: 1; padding: 22px; overflow-y: auto; }
+.section { display: none; animation: fadeIn .35s ease; }
 .section.active { display: block; }
 
 /* ═══════════════════════════════════════════
-   CARDS / COMMON
+   COMMON CARDS
 ═══════════════════════════════════════════ */
 .card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 20px;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--r); padding: 18px;
   transition: transform .25s, box-shadow .25s;
 }
-.card:hover { transform: translateY(-3px); box-shadow: var(--sh); }
+.card:hover { transform: translateY(-2px); box-shadow: var(--sh); }
 .section-title {
-  font-size: 1.4rem; font-weight: 900;
-  margin-bottom: 20px; color: var(--text);
+  font-size: 1.3rem; font-weight: 900; margin-bottom: 18px; color: var(--text);
   display: flex; align-items: center; gap: 10px;
 }
-.section-title::after {
-  content: ''; flex: 1; height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent);
-}
-.grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
-.tag {
-  display: inline-block; padding: 3px 10px;
-  border-radius: 20px; font-size: .75rem;
-  background: var(--bg3); border: 1px solid var(--border);
-  color: var(--text2); margin: 3px 2px;
-}
+.section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(90deg,var(--accent),transparent); }
+.tag { display: inline-block; padding: 3px 9px; border-radius: 18px; font-size: .72rem; background: var(--bg3); border: 1px solid var(--border); color: var(--text2); margin: 2px; }
 
 /* ═══════════════════════════════════════════
-   CHANNEL ANALYSIS – LEVEL CARD (3D CARD STYLE)
+   ★ UNIFIED CARD DESIGN (dark card, only text is colored)
 ═══════════════════════════════════════════ */
-.analysis-container {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 20px; align-items: start;
-}
-/* The 3-D level card wrapper */
-.lv-card-wrap {
-  perspective: 900px;
-  display: flex; justify-content: center;
-}
+.lv-card-wrap { perspective: 1000px; display: flex; justify-content: center; }
+
 .lv-card {
   position: relative;
-  width: 280px; height: 340px;
+  width: 270px; height: 330px;
   border-radius: 20px;
+  background: var(--card-bg);         /* ← unified dark background */
+  border: 1px solid var(--card-border);
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 0;
-  background: #0e0e18;
+  align-items: center; justify-content: center; gap: 0;
   transform-style: preserve-3d;
-  animation: floatUp 4s ease-in-out infinite;
-  transition: transform .5s;
-  overflow: visible;
-  cursor: pointer;
+  animation: floatUp 5s ease-in-out infinite;
+  transition: transform .5s, box-shadow .4s;
+  overflow: hidden; cursor: pointer;
+  box-shadow: 0 0 0 1px var(--card-border), var(--sh);
 }
-.lv-card::before {
-  content: '';
-  position: absolute; inset: -3px;
-  border-radius: 22px;
-  background: var(--card-glow, #4f8ef7);
-  filter: blur(8px);
-  opacity: .55;
-  animation: borderGlow 2.4s ease-in-out infinite;
-  z-index: -1;
-}
+/* subtle inner glow only — no heavy border flash */
 .lv-card::after {
   content: '';
-  position: absolute; inset: -1.5px;
-  border-radius: 22px;
-  border: 2px solid var(--card-glow, #4f8ef7);
-  opacity: .7;
-  z-index: 1;
-  pointer-events: none;
-}
-.lv-card:hover { transform: rotateY(8deg) rotateX(-4deg) scale(1.04); }
-
-/* spark canvas inside the card */
-.lv-card canvas.spark-canvas {
   position: absolute; inset: 0;
-  width: 100%; height: 100%;
   border-radius: 20px;
-  z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 110%, var(--lv-glow,#4f8ef7)18, transparent 65%);
+  opacity: .18; pointer-events: none; z-index: 1;
+}
+.lv-card:hover { transform: rotateY(8deg) rotateX(-5deg) scale(1.03); box-shadow: 0 16px 48px rgba(0,0,0,.7); }
+
+/* spark canvas */
+.lv-card canvas.spark-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border-radius: 20px; z-index: 0; pointer-events: none;
 }
 
-/* level number */
+/* ── LEVEL NUMBER (colored) ── */
 .lv-num {
-  font-size: 5.5rem; font-weight: 900;
-  line-height: 1; position: relative; z-index: 2;
-  color: var(--lv-color, #9ca3af);
-  -webkit-text-stroke: var(--lv-stroke, 2px) var(--lv-color, #9ca3af);
-  text-shadow: 0 0 20px var(--lv-color, #9ca3af);
-  letter-spacing: -2px;
-  filter: drop-shadow(0 0 12px var(--lv-color,#9ca3af));
-}
-/* rainbow for LV10 */
-.lv-num.rainbow {
-  background: linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0;
-  animation: rainbowText 2s linear infinite;
-  filter: none;
-}
-/* LV label */
-.lv-label {
-  font-size: .75rem; font-weight: 700; letter-spacing: 3px;
-  color: var(--lv-color, #9ca3af);
-  text-transform: uppercase; position: relative; z-index: 2;
-  opacity: .8; margin-top: -4px;
-}
-/* grade name */
-.lv-name {
-  font-size: 1.15rem; font-weight: 700;
-  color: var(--lv-color, #9ca3af);
+  font-size: 5.5rem; font-weight: 900; line-height: 1;
   position: relative; z-index: 2;
-  margin-top: 8px;
-  -webkit-text-stroke: var(--name-stroke, 1px) var(--lv-color, #9ca3af);
-  text-shadow: 0 0 10px var(--lv-color, #9ca3af);
+  color: var(--lv-color, #9ca3af);
+  -webkit-text-stroke: var(--lv-stroke, 3px) var(--lv-color, #9ca3af);
+  text-shadow: 0 0 24px var(--lv-color,#9ca3af), 0 0 48px var(--lv-color,#9ca3af)66;
+  filter: drop-shadow(0 0 10px var(--lv-color,#9ca3af));
+  letter-spacing: -2px;
+}
+.lv-num.rainbow {
+  background: linear-gradient(90deg,#ff0080,#ff6b00,#ffd700,#00e5ff,#7c3aed,#ff0080);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; -webkit-text-stroke: 0;
+  animation: rainbowText 2.5s linear infinite; filter: none;
+}
+
+/* ── LEVEL LABEL ── */
+.lv-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: 4px;
+  color: var(--text2); text-transform: uppercase;
+  position: relative; z-index: 2; margin-top: -6px;
+}
+
+/* ── GRADE NAME (colored) ── */
+.lv-name {
+  font-size: 1.1rem; font-weight: 700;
+  color: var(--lv-color, #9ca3af);
+  position: relative; z-index: 2; margin-top: 10px;
+  -webkit-text-stroke: var(--name-stroke, 1px) var(--lv-color,#9ca3af);
+  text-shadow: 0 0 10px var(--lv-color,#9ca3af)88;
 }
 .lv-name.rainbow {
-  background: linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);
+  background: linear-gradient(90deg,#ff0080,#ff6b00,#ffd700,#00e5ff,#7c3aed,#ff0080);
   background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0;
-  animation: rainbowText 2s linear infinite;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; -webkit-text-stroke: 0;
+  animation: rainbowText 2.5s linear infinite;
 }
-/* sub-range label */
-.lv-range {
-  font-size: .78rem; color: var(--text2);
-  position: relative; z-index: 2;
-  margin-top: 6px; text-align: center;
-}
-/* play button badge */
+
+/* ── sub info (neutral) ── */
+.lv-range { font-size: .75rem; color: var(--text2); position: relative; z-index: 2; margin-top: 5px; text-align: center; }
 .lv-play {
-  font-size: .7rem; padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--lv-color, #9ca3af);
-  color: var(--lv-color, #9ca3af);
-  background: rgba(0,0,0,.4);
-  position: relative; z-index: 2; margin-top: 10px;
-  letter-spacing: 1px;
+  font-size: .68rem; padding: 3px 11px; border-radius: 18px;
+  border: 1px solid var(--card-border); color: var(--text2);
+  background: var(--bg3); position: relative; z-index: 2; margin-top: 10px;
 }
-/* top-left rank badge */
+
+/* rank / pct overlays */
 .lv-rank-badge {
-  position: absolute; top: 12px; left: 14px;
-  font-size: .7rem; padding: 3px 8px;
-  border-radius: 10px;
-  background: rgba(0,0,0,.6);
-  border: 1px solid rgba(255,255,255,.15);
-  color: var(--text2);
-  z-index: 3;
+  position: absolute; top: 11px; left: 13px;
+  font-size: .65rem; padding: 3px 7px; border-radius: 8px;
+  background: rgba(0,0,0,.55); border: 1px solid var(--card-border);
+  color: var(--text2); z-index: 3;
 }
-/* percentile circle */
-.lv-pct-ring {
-  position: absolute; top: 10px; right: 12px;
-  width: 46px; height: 46px; z-index: 3;
-}
+.lv-pct-ring { position: absolute; top: 8px; right: 11px; width: 44px; height: 44px; z-index: 3; }
 .lv-pct-ring svg { width: 100%; height: 100%; }
 .lv-pct-text {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: .6rem; font-weight: 700;
+  font-size: .58rem; font-weight: 700; line-height: 1.2; text-align: center;
   color: var(--lv-color, #9ca3af);
 }
 
+/* algo score overlay */
+.lv-score-badge {
+  position: absolute; bottom: 12px; left: 0; right: 0;
+  display: flex; justify-content: center; z-index: 3;
+}
+.lv-score-inner {
+  background: rgba(0,0,0,.6); border: 1px solid var(--card-border);
+  border-radius: 20px; padding: 4px 14px;
+  font-size: .7rem; color: var(--text2);
+}
+.lv-score-inner span { color: var(--lv-color,#9ca3af); font-weight: 700; }
+
 /* ═══════════════════════════════════════════
-   ANALYSIS RIGHT PANEL
+   ANALYSIS LAYOUT
 ═══════════════════════════════════════════ */
-.analysis-right { display: flex; flex-direction: column; gap: 14px; }
+.analysis-container { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+
+/* right panels */
+.analysis-right { display: flex; flex-direction: column; gap: 12px; }
 .ch-info-card {
-  display: flex; align-items: center; gap: 14px;
-  background: var(--bg3); border-radius: 12px; padding: 14px 18px;
-  border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 13px 16px;
 }
-.ch-avatar {
-  width: 56px; height: 56px; border-radius: 50%;
-  object-fit: cover; flex-shrink: 0;
-}
-.ch-meta h3 { font-size: 1rem; font-weight: 700; }
-.ch-meta p  { font-size: .8rem; color: var(--text2); margin-top: 3px; }
+.ch-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--card-border); }
+.ch-meta h3 { font-size: .95rem; font-weight: 700; }
+.ch-meta p  { font-size: .75rem; color: var(--text2); margin-top: 2px; line-height: 1.4; }
 
-.gauge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.gauge-box {
-  background: var(--bg3); border-radius: 10px;
-  padding: 12px 14px; border: 1px solid var(--border);
+/* ── SCORE BREAKDOWN CARD ── */
+.score-breakdown {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 12px; padding: 16px;
 }
-.gauge-label { font-size: .75rem; color: var(--text2); margin-bottom: 6px; }
-.gauge-val { font-size: 1.1rem; font-weight: 700; color: var(--text); }
-.gauge-bar-wrap { margin-top: 6px; height: 5px; background: var(--border); border-radius: 3px; }
-.gauge-bar { height: 100%; border-radius: 3px; transition: width 1s ease; }
+.score-breakdown h4 { font-size: .88rem; font-weight: 700; margin-bottom: 12px; }
 
-.bench-card {
-  background: var(--bg3); border-radius: 12px; padding: 14px 18px;
-  border: 1px solid var(--border);
+.score-row { margin-bottom: 10px; }
+.score-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: .8rem; }
+.score-key { color: var(--text2); }
+.score-val { font-weight: 700; }
+.bonus-tag { font-size: .65rem; padding: 1px 7px; border-radius: 8px; background: #1a2e0a; color: #4ade80; border: 1px solid #2a4a14; margin-left: 5px; }
+.score-bar-wrap { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.score-bar { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.22,1,.36,1); }
+
+/* total score */
+.total-score-box {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg3); border-radius: 10px; padding: 12px 16px;
+  border: 1px solid var(--card-border); margin-top: 10px;
+  animation: scoreCount .6s ease;
 }
-.bench-card h4 { font-size: .88rem; font-weight: 700; margin-bottom: 10px; }
-.bench-item {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 6px 0; border-bottom: 1px solid var(--border); font-size: .82rem;
+.total-score-label { font-size: .8rem; color: var(--text2); }
+.total-score-num { font-size: 1.6rem; font-weight: 900; }
+.total-score-num.rainbow {
+  background: linear-gradient(90deg,#ff0080,#ffd700,#00e5ff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowText 2s linear infinite;
 }
-.bench-item:last-child { border-bottom: none; }
-.bench-score {
-  font-weight: 700; padding: 2px 8px; border-radius: 10px;
-  font-size: .75rem;
+
+/* algo factors grid */
+.factor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.factor-box {
+  background: var(--bg3); border: 1px solid var(--card-border);
+  border-radius: 9px; padding: 10px 12px;
 }
-.bench-good   { background: #06290e; color: #4ade80; }
-.bench-mid    { background: #27200a; color: #fbbf24; }
-.bench-low    { background: #2a0a0a; color: #f87171; }
+.factor-label { font-size: .7rem; color: var(--text2); margin-bottom: 3px; }
+.factor-val   { font-size: 1rem; font-weight: 700; }
+.factor-sub   { font-size: .65rem; color: var(--text2); margin-top: 1px; }
+.factor-bonus { font-size: .62rem; color: #4ade80; font-weight: 700; margin-top: 2px; }
+
+/* level decision row */
+.lv-decision {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 10px; padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.lv-dec-badge {
+  font-size: .8rem; font-weight: 700; padding: 4px 12px;
+  border-radius: 12px; background: var(--bg3); border: 1px solid var(--card-border);
+}
+.lv-dec-arrow { color: var(--text2); font-size: .8rem; }
+.lv-dec-final { font-size: .88rem; font-weight: 900; }
 
 /* ═══════════════════════════════════════════
-   INPUT FORM
+   GRADE TABLE
 ═══════════════════════════════════════════ */
-.search-form {
-  display: flex; gap: 10px; margin-bottom: 22px;
-  flex-wrap: wrap;
-}
-.search-form input {
-  flex: 1; min-width: 240px;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text);
-  padding: 10px 16px; font-size: .92rem; font-family: inherit;
-  outline: none; transition: border-color .2s;
-}
-.search-form input:focus { border-color: var(--accent); }
-.btn {
-  padding: 10px 22px; border-radius: 10px; border: none;
-  font-family: inherit; font-size: .88rem; font-weight: 700;
-  cursor: pointer; transition: all .2s;
-}
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: #3a7ae8; transform: translateY(-2px); }
-.btn-secondary { background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
-.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ═══════════════════════════════════════════
-   GRADE TABLE & CARDS
-═══════════════════════════════════════════ */
-.grade-controls {
-  display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
-  align-items: center;
-}
-.grade-view-toggle { display: flex; gap: 6px; }
+.grade-controls { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
 .toggle-btn {
-  padding: 6px 16px; border-radius: 8px;
+  padding: 5px 14px; border-radius: 7px;
   border: 1px solid var(--border); background: var(--bg3);
-  color: var(--text2); cursor: pointer; font-size: .82rem;
-  font-family: inherit; transition: all .2s;
+  color: var(--text2); cursor: pointer; font-size: .8rem; font-family: inherit; transition: all .2s;
 }
 .toggle-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-/* ── TABLE VIEW ── */
+/* table */
 .grade-table-wrap { overflow-x: auto; }
-table.grade-table {
-  width: 100%; border-collapse: collapse; font-size: .83rem;
-}
+table.grade-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
 .grade-table th {
   background: var(--bg3); color: var(--text2); font-weight: 600;
-  padding: 10px 10px; text-align: left;
-  border-bottom: 2px solid var(--border); white-space: nowrap;
+  padding: 9px 10px; text-align: left; border-bottom: 2px solid var(--border); white-space: nowrap;
 }
-.grade-table td {
-  padding: 9px 10px; border-bottom: 1px solid var(--border);
-  vertical-align: middle;
-}
+.grade-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 .grade-table tr { cursor: pointer; transition: background .15s; }
 .grade-table tr:hover   { background: var(--bg3); }
-.grade-table tr.selected{ background: rgba(79,142,247,.12); }
+.grade-table tr.selected{ background: rgba(79,142,247,.1); }
 
+/* LV chip — dark bg, colored text */
 .lv-chip {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px; border-radius: 50%;
-  font-size: .78rem; font-weight: 900;
-  border: 2px solid currentColor;
-  color: #fff; flex-shrink: 0;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--card-bg); border: 2px solid var(--chip-color,#555);
+  font-size: .75rem; font-weight: 900;
+  color: var(--chip-color,#9ca3af);
+  -webkit-text-stroke: var(--chip-stroke,.5px) var(--chip-color,#9ca3af);
+  text-shadow: 0 0 8px var(--chip-color,#9ca3af);
 }
-
-/* achievement bar */
-.ach-bar-wrap { width: 80px; height: 6px; background: var(--border); border-radius: 3px; }
+.ach-bar-wrap { width: 72px; height: 5px; background: var(--border); border-radius: 3px; }
 .ach-bar { height: 100%; border-radius: 3px; }
 
-/* ── CARD VIEW ── */
-.grade-card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-}
-/* Each grade card is a mini 3D card */
+/* card grid */
+.grade-card-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 12px; }
+
+/* ── grade mini card: dark unified bg ── */
 .grade-mini-card {
-  background: #0e0e18;
-  border-radius: 14px;
-  padding: 18px 14px;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: transform .3s, box-shadow .3s;
-  border: 2px solid var(--gmc, #333);
-  box-shadow: 0 0 10px var(--gmc, #333)44;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 13px; padding: 16px 12px;
+  text-align: center; cursor: pointer; position: relative; overflow: hidden;
+  transition: transform .28s, box-shadow .28s;
 }
-.grade-mini-card::before {
-  content: ''; position: absolute; inset: -2px;
-  background: var(--gmc, #333);
-  filter: blur(6px); opacity: .2; z-index: 0;
-  border-radius: 14px;
+.grade-mini-card::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: 13px;
+  background: radial-gradient(ellipse at 50% 120%, var(--gmc,#4f8ef7)20, transparent 60%);
+  opacity: .12; pointer-events: none;
 }
-.grade-mini-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 32px var(--gmc, #333)77;
-}
-.grade-mini-card.selected {
-  border-width: 3px;
-  box-shadow: 0 0 24px var(--gmc, #333)aa;
-}
+.grade-mini-card:hover { transform: translateY(-5px); box-shadow: 0 8px 28px rgba(0,0,0,.5); border-color: var(--gmc,#555); }
+.grade-mini-card.selected { border-color: var(--gmc,#555); box-shadow: 0 0 0 2px var(--gmc,#555)55; }
+
 .gmc-num {
-  font-size: 2.6rem; font-weight: 900; line-height: 1.1;
+  font-size: 2.5rem; font-weight: 900; line-height: 1.1;
+  color: var(--gmc,#9ca3af);
+  -webkit-text-stroke: var(--gmc-stroke,2px) var(--gmc,#9ca3af);
+  text-shadow: 0 0 12px var(--gmc,#9ca3af);
   position: relative; z-index: 1;
-  color: var(--gmc, #fff);
-  -webkit-text-stroke: var(--gmc-stroke, 2px) var(--gmc, #fff);
-  text-shadow: 0 0 14px var(--gmc, #fff);
 }
 .gmc-num.rainbow {
-  background: linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);
-  background-size: 300% 100%;
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0;
-  animation: rainbowText 2s linear infinite;
+  background: linear-gradient(90deg,#ff0080,#ffd700,#00e5ff,#7c3aed,#ff0080);
+  background-size:300% 100%; -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; -webkit-text-stroke:0; animation:rainbowText 2.5s linear infinite;
 }
 .gmc-name {
-  font-size: .78rem; font-weight: 700;
-  color: var(--gmc, #fff); position: relative; z-index: 1;
-  margin-top: 4px;
-  -webkit-text-stroke: .4px var(--gmc, #fff);
+  font-size: .75rem; font-weight: 700; color: var(--gmc,#9ca3af);
+  position: relative; z-index: 1; margin-top: 3px;
+  -webkit-text-stroke: .3px var(--gmc,#9ca3af);
 }
 .gmc-name.rainbow {
-  background: linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);
-  background-size: 300% 100%;
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0;
-  animation: rainbowText 2.2s linear infinite;
+  background: linear-gradient(90deg,#ff0080,#ffd700,#00e5ff,#7c3aed,#ff0080);
+  background-size:300% 100%; -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; -webkit-text-stroke:0; animation:rainbowText 2.5s linear infinite;
 }
-.gmc-range { font-size: .68rem; color: var(--text2); position: relative; z-index: 1; margin-top: 4px; }
-.gmc-pct   { font-size: .68rem; position: relative; z-index: 1; margin-top: 2px; color: var(--gmc, #fff); opacity: .8; }
+.gmc-range { font-size: .64rem; color: var(--text2); position: relative; z-index: 1; margin-top: 3px; }
+.gmc-pct   { font-size: .64rem; color: var(--gmc,#9ca3af); opacity: .75; position: relative; z-index: 1; margin-top: 1px; }
 .gmc-btn   {
-  margin-top: 8px; font-size: .68rem; padding: 4px 10px;
-  border-radius: 12px; border: 1px solid var(--gmc, #333);
-  background: transparent; color: var(--gmc, #fff);
-  cursor: pointer; font-family: inherit;
-  position: relative; z-index: 1; transition: all .2s;
+  margin-top: 7px; font-size: .65rem; padding: 3px 9px;
+  border-radius: 10px; border: 1px solid var(--card-border);
+  background: var(--bg3); color: var(--text2);
+  cursor: pointer; font-family: inherit; position: relative; z-index: 1; transition: all .2s;
 }
-.gmc-btn:hover { background: var(--gmc, #333)33; }
+.gmc-btn:hover { border-color: var(--gmc,#555); color: var(--gmc,#9ca3af); }
 
 /* ═══════════════════════════════════════════
-   COMPARE PANEL (below grade table)
+   COMPARE PANEL
 ═══════════════════════════════════════════ */
-.compare-panel {
-  display: none; margin-top: 20px;
-  animation: fadeIn .35s ease;
-}
+.compare-panel { display: none; margin-top: 18px; animation: fadeIn .35s ease; }
 .compare-panel.show { display: block; }
-.compare-grid {
-  display: grid; grid-template-columns: 1fr 1.1fr 1fr;
-  gap: 14px; margin-bottom: 16px;
-}
+.compare-grid { display: grid; grid-template-columns: 1fr 1.08fr 1fr; gap: 12px; margin-bottom: 14px; }
+
 .cmp-card {
-  border-radius: 14px; padding: 16px;
-  text-align: center; position: relative;
-  background: var(--bg2); overflow: hidden;
-  border: 1.5px solid var(--c-border, var(--border));
+  border-radius: 13px; padding: 15px; text-align: center;
+  background: var(--card-bg); border: 1px solid var(--card-border);
   transition: transform .3s;
 }
 .cmp-card.curr {
-  background: var(--bg3);
-  border-width: 2.5px;
-  transform: scale(1.04);
-  box-shadow: 0 0 24px var(--c-border,#4f8ef7)55;
+  border-color: var(--c-color,#4f8ef7);
+  box-shadow: 0 0 18px var(--c-color,#4f8ef7)33; transform: scale(1.03);
 }
-.cmp-label {
-  font-size: .65rem; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--text2); margin-bottom: 8px;
-}
+.cmp-label { font-size: .62rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); margin-bottom: 7px; }
 .cmp-num {
-  font-size: 2.8rem; font-weight: 900; line-height: 1;
-  color: var(--c-color, #fff);
-  -webkit-text-stroke: var(--c-stroke, 2px) var(--c-color, #fff);
-  text-shadow: 0 0 16px var(--c-color, #fff);
+  font-size: 2.6rem; font-weight: 900; line-height: 1;
+  color: var(--c-color,#fff);
+  -webkit-text-stroke: var(--c-stroke,2px) var(--c-color,#fff);
+  text-shadow: 0 0 14px var(--c-color,#fff);
 }
 .cmp-num.rainbow {
-  background: linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);
-  background-size: 300% 100%;
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0;
-  animation: rainbowText 2s linear infinite;
+  background:linear-gradient(90deg,#ff0080,#ffd700,#00e5ff,#7c3aed,#ff0080);background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;animation:rainbowText 2.5s linear infinite;
 }
-.cmp-name { font-size: .82rem; font-weight: 700; color: var(--c-color,#fff); margin-top: 4px; }
-.cmp-range { font-size: .7rem; color: var(--text2); margin-top: 3px; }
-.cmp-pct  { font-size: .72rem; color: var(--c-color,#fff); opacity:.85; margin-top: 2px; }
-
-/* compare stat bars */
-.cmp-stat-table { width:100%; font-size:.8rem; border-collapse:collapse; margin-top:14px; }
-.cmp-stat-table th {
-  background:var(--bg3); color:var(--text2); font-weight:600;
-  padding:7px 10px; text-align:center;
-  border-bottom:2px solid var(--border);
-}
-.cmp-stat-table td {
-  padding:7px 10px; text-align:center;
-  border-bottom:1px solid var(--border);
-}
-.cmp-highlight { font-weight:700; }
+.cmp-name  { font-size: .8rem; font-weight: 700; color: var(--c-color,#fff); margin-top: 3px; }
+.cmp-range { font-size: .68rem; color: var(--text2); margin-top: 2px; }
+.cmp-pct   { font-size: .68rem; color: var(--c-color,#fff); opacity:.8; margin-top: 1px; }
 
 /* ═══════════════════════════════════════════
-   EFFECT PREVIEW MODAL
+   EFFECT MODAL
 ═══════════════════════════════════════════ */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 999;
-  background: rgba(0,0,0,.85); backdrop-filter: blur(6px);
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
+.modal-overlay { display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center; }
+.modal-overlay.open { display:flex; }
 .effect-modal {
-  background: #0c0c16;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  width: min(820px, 96vw);
-  max-height: 90vh; overflow-y: auto;
-  padding: 28px;
-  animation: fadeIn .3s ease;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: 18px; width:min(780px,96vw); max-height:90vh;
+  overflow-y:auto; padding:24px; animation:fadeIn .3s ease;
 }
-.modal-head {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 22px;
-}
-.modal-head h2 { font-size: 1.2rem; font-weight: 900; }
+.modal-head { display:flex;justify-content:space-between;align-items:center;margin-bottom:18px; }
+.modal-head h2 { font-size:1.1rem;font-weight:900; }
 .modal-close {
-  background: none; border: 1px solid var(--border);
-  color: var(--text); width: 32px; height: 32px;
-  border-radius: 50%; cursor: pointer; font-size: 1rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .2s;
+  background:none;border:1px solid var(--border);color:var(--text);
+  width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
 }
-.modal-close:hover { background: var(--bg3); border-color: var(--accent); }
+.modal-close:hover{background:var(--bg3);border-color:var(--accent);}
+.modal-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;justify-content:center;}
+.lv-nav-btn {
+  width:32px;height:32px;border-radius:50%;border:2px solid var(--nb-color,#555);
+  background:var(--card-bg);color:var(--nb-color,#aaa);
+  font-size:.75rem;font-weight:900;cursor:pointer;transition:all .2s;font-family:inherit;
+}
+.lv-nav-btn:hover,.lv-nav-btn.active{background:var(--nb-color,#555);color:#000;transform:scale(1.12);}
+.modal-body{display:grid;grid-template-columns:250px 1fr;gap:20px;align-items:start;}
 
-.modal-body {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 22px; align-items: start;
-}
-/* preview card inside modal – reuses lv-card styles */
-.prev-card-wrap { perspective: 600px; display:flex; justify-content:center; }
+/* prev card in modal — same unified dark */
+.prev-card-wrap{perspective:600px;display:flex;justify-content:center;}
 .prev-card {
-  width: 240px; height: 300px;
-  border-radius: 18px;
-  background: #0e0e18;
-  position: relative;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 0;
-  transform-style: preserve-3d;
-  animation: floatUp 3.5s ease-in-out infinite;
-  overflow: hidden;
-}
-.prev-card::before {
-  content: ''; position: absolute; inset: -3px;
-  border-radius: 20px;
-  background: var(--prev-glow, #4f8ef7);
-  filter: blur(8px); opacity: .5;
-  animation: borderGlow 2.4s ease-in-out infinite;
-  z-index: -1;
+  width:230px;height:290px;border-radius:17px;
+  background:var(--card-bg);border:1px solid var(--card-border);
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:0;
+  transform-style:preserve-3d;animation:floatUp 3.5s ease-in-out infinite;overflow:hidden;
 }
 .prev-card::after {
-  content: ''; position: absolute; inset: -1.5px;
-  border-radius: 20px;
-  border: 2px solid var(--prev-glow, #4f8ef7);
-  opacity: .7; z-index: 1; pointer-events: none;
+  content:'';position:absolute;inset:0;border-radius:17px;
+  background:radial-gradient(ellipse at 50% 110%,var(--prev-glow,#4f8ef7)20,transparent 60%);
+  opacity:.2;pointer-events:none;z-index:1;
 }
-.prev-card canvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+.prev-card canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
 .prev-num {
-  font-size: 4.5rem; font-weight: 900; line-height: 1;
-  position: relative; z-index: 2;
-  color: var(--prev-color, #9ca3af);
-  -webkit-text-stroke: var(--prev-stroke, 2px) var(--prev-color, #9ca3af);
-  text-shadow: 0 0 18px var(--prev-color, #9ca3af);
+  font-size:4.2rem;font-weight:900;line-height:1;position:relative;z-index:2;
+  color:var(--prev-color,#9ca3af);
+  -webkit-text-stroke:var(--prev-stroke,3px) var(--prev-color,#9ca3af);
+  text-shadow:0 0 18px var(--prev-color,#9ca3af);
 }
-.prev-num.rainbow {
-  background: linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);
-  background-size: 300% 100%;
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0;
-  animation: rainbowText 2s linear infinite; filter: none;
-}
-.prev-label { font-size:.65rem; font-weight:700; letter-spacing:3px; color:var(--prev-color,#9ca3af); z-index:2; opacity:.8; margin-top:-4px; }
-.prev-name  { font-size:.95rem; font-weight:700; color:var(--prev-color,#9ca3af); z-index:2; margin-top:6px;
-  -webkit-text-stroke:.5px var(--prev-color,#9ca3af); }
-.prev-name.rainbow { background:linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);background-size:300% 100%;
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-  -webkit-text-stroke:0;animation:rainbowText 2s linear infinite; }
-.prev-range { font-size:.68rem; color:var(--text2); z-index:2; margin-top:4px; text-align:center; }
+.prev-num.rainbow{background:linear-gradient(90deg,#ff0080,#ffd700,#00e5ff,#7c3aed,#ff0080);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;animation:rainbowText 2.5s linear infinite;}
+.prev-label{font-size:.62rem;font-weight:700;letter-spacing:4px;color:var(--text2);z-index:2;margin-top:-5px;}
+.prev-name{font-size:.9rem;font-weight:700;color:var(--prev-color,#9ca3af);z-index:2;margin-top:7px;-webkit-text-stroke:.4px var(--prev-color,#9ca3af);}
+.prev-name.rainbow{background:linear-gradient(90deg,#ff0080,#ffd700,#00e5ff,#7c3aed,#ff0080);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;animation:rainbowText 2.5s linear infinite;}
+.prev-range{font-size:.65rem;color:var(--text2);z-index:2;margin-top:4px;text-align:center;}
 
-/* modal nav buttons */
-.modal-nav { display:flex; gap:8px; margin-top:14px; justify-content:center; flex-wrap:wrap; }
-.lv-nav-btn {
-  width:34px; height:34px; border-radius:50%;
-  border:2px solid var(--nb-color, #555);
-  background:transparent; color:var(--nb-color,#aaa);
-  font-size:.78rem; font-weight:900; cursor:pointer;
-  transition:all .2s; font-family:inherit;
-}
-.lv-nav-btn:hover,.lv-nav-btn.active {
-  background:var(--nb-color,#555); color:#000;
-  transform:scale(1.15);
-}
-
-/* modal info panel */
-.modal-info { display:flex; flex-direction:column; gap:12px; }
-.modal-info h3 { font-size:1rem; font-weight:900; }
-.stat-row {
-  display:flex; align-items:center; gap:10px;
-  font-size:.83rem; padding:6px 0;
-  border-bottom:1px solid var(--border);
-}
+/* modal info */
+.modal-info{display:flex;flex-direction:column;gap:10px;}
+.modal-info h3{font-size:.95rem;font-weight:900;}
+.stat-row{display:flex;align-items:center;gap:9px;font-size:.8rem;padding:5px 0;border-bottom:1px solid var(--border);}
 .stat-row:last-child{border-bottom:none;}
-.stat-key  { color:var(--text2); min-width:90px; }
-.stat-val  { font-weight:700; }
-.compare-bars { display:flex; flex-direction:column; gap:8px; }
-.cbar-row { display:flex; flex-direction:column; gap:3px; }
-.cbar-label{ font-size:.73rem; color:var(--text2); display:flex; justify-content:space-between; }
-.cbar-wrap { height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
-.cbar-fill { height:100%; border-radius:4px; transition:width .9s ease; }
-.perk-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:4px; }
-.perk-tag  {
-  padding:4px 10px; border-radius:12px;
-  background:var(--bg3); border:1px solid var(--border);
-  font-size:.72rem; color:var(--text2);
-}
+.stat-key{color:var(--text2);min-width:86px;}
+.stat-val{font-weight:700;}
+.compare-bars{display:flex;flex-direction:column;gap:7px;}
+.cbar-row{display:flex;flex-direction:column;gap:3px;}
+.cbar-label{font-size:.7rem;color:var(--text2);display:flex;justify-content:space-between;}
+.cbar-wrap{height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.cbar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.perk-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px;}
+.perk-tag{padding:3px 9px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);font-size:.68rem;color:var(--text2);}
 
 /* ═══════════════════════════════════════════
    HOT VIDEOS
 ═══════════════════════════════════════════ */
-.hot-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; }
-.hot-card {
-  background:var(--bg2); border:1px solid var(--border); border-radius:12px;
-  overflow:hidden; cursor:pointer; transition:transform .25s,box-shadow .25s;
-}
-.hot-card:hover { transform:translateY(-4px); box-shadow:var(--sh); }
-.hot-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
-.hot-meta  { padding:10px 12px; }
-.hot-title { font-size:.82rem; font-weight:600; line-height:1.4; margin-bottom:6px;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.hot-stats { font-size:.72rem; color:var(--text2); }
+.hot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.hot-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:11px;overflow:hidden;cursor:pointer;transition:transform .22s,box-shadow .22s;}
+.hot-card:hover{transform:translateY(-3px);box-shadow:var(--sh);}
+.hot-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;}
+.hot-meta{padding:9px 11px;}
+.hot-title{font-size:.8rem;font-weight:600;line-height:1.4;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hot-stats{font-size:.7rem;color:var(--text2);}
 
 /* ═══════════════════════════════════════════
    REVENUE CALCULATOR
 ═══════════════════════════════════════════ */
-.rev-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-.input-group { margin-bottom:14px; }
-.input-group label { display:block; font-size:.82rem; color:var(--text2); margin-bottom:6px; }
-.input-group input, .input-group select {
-  width:100%; background:var(--bg2); border:1px solid var(--border);
-  border-radius:8px; color:var(--text); padding:9px 12px;
-  font-size:.88rem; font-family:inherit; outline:none; transition:border-color .2s;
-}
-.input-group input:focus, .input-group select:focus { border-color:var(--accent); }
-.rev-result {
-  background: linear-gradient(135deg,#0a2040,#0d1530);
-  border:1px solid var(--accent); border-radius:14px;
-  padding:20px; text-align:center;
-}
-.rev-result .big-num { font-size:2.4rem; font-weight:900; color:var(--accent); }
-.rev-result .sub-text { font-size:.82rem; color:var(--text2); margin-top:6px; }
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.input-group{margin-bottom:12px;}
+.input-group label{display:block;font-size:.8rem;color:var(--text2);margin-bottom:5px;}
+.input-group input,.input-group select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:7px;color:var(--text);padding:8px 11px;font-size:.85rem;font-family:inherit;outline:none;transition:border-color .2s;}
+.input-group input:focus,.input-group select:focus{border-color:var(--accent);}
+.rev-result{background:linear-gradient(135deg,#0a1a35,#0d1225);border:1px solid var(--accent)33;border-radius:13px;padding:18px;text-align:center;}
+.rev-result .big-num{font-size:2.2rem;font-weight:900;color:var(--accent);}
+.rev-result .sub-text{font-size:.76rem;color:var(--text2);margin-top:5px;line-height:1.5;}
 
 /* ═══════════════════════════════════════════
-   TOOLS / IDEAS / SHOP GRIDS
+   BUTTONS
 ═══════════════════════════════════════════ */
-.tool-item,.idea-item,.shop-item {
-  display:flex; flex-direction:column; gap:6px;
-  background:var(--bg2); border:1px solid var(--border); border-radius:12px;
-  padding:16px; cursor:pointer; transition:all .25s;
-}
-.tool-item:hover,.idea-item:hover,.shop-item:hover {
-  transform:translateY(-4px); border-color:var(--accent);
-  box-shadow:0 4px 20px rgba(79,142,247,.25);
-}
-.tool-icon,.idea-icon,.shop-icon { font-size:1.6rem; }
-.tool-name,.idea-name,.shop-name { font-size:.85rem; font-weight:700; }
-.tool-desc,.idea-desc,.shop-desc { font-size:.72rem; color:var(--text2); }
+.btn{padding:9px 20px;border-radius:9px;border:none;font-family:inherit;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:#3a7ae8;transform:translateY(-1px);}
+.btn-secondary{background:var(--bg3);border:1px solid var(--border);color:var(--text);}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.search-form{display:flex;gap:9px;margin-bottom:20px;flex-wrap:wrap;}
+.search-form input{flex:1;min-width:220px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px 14px;font-size:.88rem;font-family:inherit;outline:none;transition:border-color .2s;}
+.search-form input:focus{border-color:var(--accent);}
 
 /* ═══════════════════════════════════════════
-   BENCHMARK SECTION
+   TOOLS / IDEAS / SHOP
 ═══════════════════════════════════════════ */
-.bench-tip-card {
-  background:var(--bg2); border:1px solid var(--border); border-radius:12px;
-  padding:16px 20px; margin-bottom:12px; transition:transform .2s;
-}
-.bench-tip-card:hover { transform:translateX(4px); border-color:var(--accent); }
-.bench-tip-card h4 { font-size:.9rem; font-weight:700; margin-bottom:6px; color:var(--accent); }
-.bench-tip-card p  { font-size:.8rem; color:var(--text2); line-height:1.6; }
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:11px;}
+.extra-item{display:flex;flex-direction:column;gap:5px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:11px;padding:14px 12px;cursor:pointer;transition:all .22s;}
+.extra-item:hover{transform:translateY(-3px);border-color:var(--accent)33;box-shadow:0 4px 18px rgba(79,142,247,.18);}
+.extra-icon{font-size:1.5rem;}
+.extra-name{font-size:.82rem;font-weight:700;}
+.extra-desc{font-size:.68rem;color:var(--text2);}
+
+/* ═══════════════════════════════════════════
+   BENCHMARK
+═══════════════════════════════════════════ */
+.bench-tip-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:11px;padding:14px 18px;margin-bottom:10px;transition:transform .18s,border-color .18s;}
+.bench-tip-card:hover{transform:translateX(3px);border-color:var(--accent)33;}
+.bench-tip-card h4{font-size:.87rem;font-weight:700;margin-bottom:5px;color:var(--accent);}
+.bench-tip-card p{font-size:.78rem;color:var(--text2);line-height:1.65;}
 
 /* ═══════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════ */
-@media(max-width:900px) {
-  .analysis-container { grid-template-columns:1fr; }
-  .lv-card-wrap { margin-bottom:16px; }
-  .compare-grid { grid-template-columns:1fr; }
-  .modal-body { grid-template-columns:1fr; }
-  .grid-2,.grid-3,.grid-4,.rev-grid { grid-template-columns:1fr; }
-}
-@media(max-width:680px) {
-  .sidebar { position:fixed; left:0; top:60px; height:calc(100vh - 60px); transform:translateX(-100%); z-index:90; }
-  .sidebar.open { transform:translateX(0); }
-  .menu-btn { display:flex; }
-  .header-nav { display:none; }
-  .main { padding:14px; }
-}
+@media(max-width:900px){.analysis-container{grid-template-columns:1fr;}.compare-grid{grid-template-columns:1fr;}.modal-body{grid-template-columns:1fr;}.rev-grid{grid-template-columns:1fr;}}
+@media(max-width:660px){.sidebar{position:fixed;left:0;top:58px;height:calc(100vh - 58px);transform:translateX(-100%);z-index:90;}.sidebar.open{transform:translateX(0);}.menu-btn{display:flex;}.header-nav{display:none;}.main{padding:12px;}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ HEADER ═══════════════ -->
+<!-- HEADER -->
 <header class="header">
   <div class="logo">YT<span>Analytics</span></div>
   <div class="header-search">
-    <input id="globalSearchInput" type="text" placeholder="채널명 또는 키워드 검색…">
+    <input id="globalSearchInput" type="text" placeholder="채널명 검색…">
     <button onclick="handleGlobalSearch()">🔍</button>
   </div>
   <nav class="header-nav">
     <button class="nav-btn active" onclick="showSection('hot')">🔥 급상승</button>
     <button class="nav-btn" onclick="showSection('channel')">📊 채널분석</button>
     <button class="nav-btn" onclick="showSection('grades')">🏆 등급표</button>
-    <button class="nav-btn" onclick="showSection('revenue')">💰 수익계산</button>
+    <button class="nav-btn" onclick="showSection('revenue')">💰 수익</button>
     <button class="nav-btn" onclick="showSection('tools')">🛠 도구</button>
     <button class="nav-btn" onclick="showSection('bench')">📈 벤치마킹</button>
   </nav>
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 </header>
 
-<!-- ═══════════════ LAYOUT ═══════════════ -->
 <div class="layout">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-item active" onclick="showSection('hot')"><span class="sidebar-icon">🔥</span>인기 급상승</div>
@@ -801,79 +608,52 @@ table.grade-table {
 
   <main class="main">
 
-    <!-- ══════ HOT VIDEOS ══════ -->
+    <!-- HOT VIDEOS -->
     <section class="section active" id="sec-hot">
       <div class="section-title">🔥 인기 급상승 영상</div>
       <div class="hot-grid" id="hotGrid"><p style="color:var(--text2)">로딩 중…</p></div>
     </section>
 
-    <!-- ══════ CHANNEL ANALYSIS ══════ -->
+    <!-- CHANNEL ANALYSIS -->
     <section class="section" id="sec-channel">
       <div class="section-title">📊 채널 분석</div>
       <div class="search-form">
-        <input id="channelInput" type="text" placeholder="채널명 또는 URL 입력 (예: @MrBeast)">
+        <input id="channelInput" type="text" placeholder="채널명 또는 @handle 입력 (예: @MrBeast)">
         <button class="btn btn-primary" onclick="analyzeChannel()">분석 시작</button>
         <button class="btn btn-secondary" onclick="analyzeChannel('demo')">데모 보기</button>
       </div>
       <div id="channelResult"></div>
     </section>
 
-    <!-- ══════ GRADE TABLE ══════ -->
+    <!-- GRADE TABLE -->
     <section class="section" id="sec-grades">
       <div class="section-title">🏆 레벨 등급표</div>
       <div class="grade-controls">
-        <div class="grade-view-toggle">
-          <button class="toggle-btn active" id="tblBtn" onclick="switchView('table')">📋 테이블</button>
-          <button class="toggle-btn" id="cardBtn" onclick="switchView('card')">🃏 카드</button>
-        </div>
-        <span style="font-size:.8rem;color:var(--text2);margin-left:8px;">
-          ※ 행/카드 클릭 → 비교표 &amp; 다음 레벨 특수효과 미리보기
-        </span>
+        <button class="toggle-btn active" id="tblBtn" onclick="switchView('table')">📋 테이블</button>
+        <button class="toggle-btn" id="cardBtn" onclick="switchView('card')">🃏 카드</button>
+        <span style="font-size:.75rem;color:var(--text2);margin-left:6px;">클릭 → 비교 &amp; 효과 미리보기</span>
       </div>
-
-      <!-- TABLE VIEW -->
       <div id="gradeTableWrap" class="grade-table-wrap">
-        <table class="grade-table" id="gradeTable">
-          <thead>
-            <tr>
-              <th>LV</th>
-              <th>등급명</th>
-              <th>구독자 범위</th>
-              <th>상위 %</th>
-              <th>채널 수</th>
-              <th>점수 범위</th>
-              <th>플레이버튼</th>
-              <th>달성도</th>
-            </tr>
-          </thead>
+        <table class="grade-table">
+          <thead><tr>
+            <th>LV</th><th>등급명</th><th>구독자 범위</th><th>상위 %</th>
+            <th>채널 수</th><th>점수 범위</th><th>플레이버튼</th><th>달성도</th>
+          </tr></thead>
           <tbody id="gradeTableBody"></tbody>
         </table>
       </div>
-
-      <!-- CARD VIEW -->
-      <div id="gradeCardWrap" style="display:none;">
-        <div class="grade-card-grid" id="gradeCardGrid"></div>
-      </div>
-
-      <!-- COMPARE PANEL -->
+      <div id="gradeCardWrap" style="display:none;"><div class="grade-card-grid" id="gradeCardGrid"></div></div>
       <div class="compare-panel" id="comparePanel"></div>
     </section>
 
-    <!-- ══════ REVENUE CALCULATOR ══════ -->
+    <!-- REVENUE -->
     <section class="section" id="sec-revenue">
       <div class="section-title">💰 수익 계산기</div>
       <div class="rev-grid">
         <div class="card">
-          <div class="input-group">
-            <label>월 평균 조회수</label>
-            <input type="number" id="rv_views" value="100000" placeholder="100000">
-          </div>
-          <div class="input-group">
-            <label>CPM 단가 (₩)</label>
-            <input type="number" id="rv_cpm" value="3000" placeholder="3000">
-          </div>
-          <div class="input-group">
-            <label>국가 / 지역</label>
+          <div class="input-group"><label>월 평균 조회수</label><input type="number" id="rv_views" value="100000"></div>
+          <div class="input-group"><label>CPM 단가 (₩)</label><input type="number" id="rv_cpm" value="3000"></div>
+          <div class="input-group"><label>국가/지역</label>
             <select id="rv_country">
               <option value="1">한국 (×1.0)</option>
               <option value="1.5">미국 (×1.5)</option>
@@ -882,39 +662,36 @@ table.grade-table {
               <option value="0.7">인도 (×0.7)</option>
             </select>
           </div>
-          <div class="input-group">
-            <label>광고 시청률 (%)</label>
-            <input type="number" id="rv_vtr" value="35" min="0" max="100">
-          </div>
-          <button class="btn btn-primary" style="width:100%" onclick="calcRevenue()">수익 계산</button>
+          <div class="input-group"><label>광고 시청률 (%)</label><input type="number" id="rv_vtr" value="35" min="0" max="100"></div>
+          <button class="btn btn-primary" style="width:100%" onclick="calcRevenue()">계산하기</button>
         </div>
         <div class="rev-result card" id="revResult">
-          <div style="font-size:1.1rem;font-weight:700;margin-bottom:12px;">예상 월 수익</div>
+          <div style="font-size:1rem;font-weight:700;margin-bottom:10px;">예상 월 수익</div>
           <div class="big-num" id="revNum">₩0</div>
           <div class="sub-text" id="revDetail">계산 버튼을 눌러주세요</div>
         </div>
       </div>
     </section>
 
-    <!-- ══════ TOOLS ══════ -->
+    <!-- TOOLS -->
     <section class="section" id="sec-tools">
       <div class="section-title">🛠 도구 모음</div>
-      <div class="grid-4" id="toolsGrid"></div>
+      <div class="extra-grid" id="toolsGrid"></div>
     </section>
 
-    <!-- ══════ IDEAS ══════ -->
+    <!-- IDEAS -->
     <section class="section" id="sec-ideas">
       <div class="section-title">💡 콘텐츠 아이디어</div>
-      <div class="grid-3" id="ideasGrid"></div>
+      <div class="extra-grid" id="ideasGrid"></div>
     </section>
 
-    <!-- ══════ SHOP ══════ -->
+    <!-- SHOP -->
     <section class="section" id="sec-shop">
       <div class="section-title">🛒 크리에이터 스토어</div>
-      <div class="grid-4" id="shopGrid"></div>
+      <div class="extra-grid" id="shopGrid"></div>
     </section>
 
-    <!-- ══════ BENCHMARK ══════ -->
+    <!-- BENCHMARK -->
     <section class="section" id="sec-bench">
       <div class="section-title">📈 벤치마킹 전략</div>
       <div id="benchContent"></div>
@@ -923,7 +700,7 @@ table.grade-table {
   </main>
 </div>
 
-<!-- ═══════════════ EFFECT MODAL ═══════════════ -->
+<!-- EFFECT MODAL -->
 <div class="modal-overlay" id="effectModal">
   <div class="effect-modal">
     <div class="modal-head">
@@ -931,7 +708,7 @@ table.grade-table {
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-nav" id="modalNav"></div>
-    <div class="modal-body" style="margin-top:18px;">
+    <div class="modal-body">
       <div>
         <div class="prev-card-wrap">
           <div class="prev-card" id="prevCard">
@@ -939,7 +716,7 @@ table.grade-table {
             <div class="prev-num" id="prevNum">1</div>
             <div class="prev-label">LEVEL</div>
             <div class="prev-name" id="prevName">입문 크리에이터</div>
-            <div class="prev-range" id="prevRange">0 ~ 100 구독자</div>
+            <div class="prev-range" id="prevRange">0 ~ 100</div>
           </div>
         </div>
       </div>
@@ -949,665 +726,644 @@ table.grade-table {
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════
-   1. GRADE DATA  (based on vidIQ 65M channels Sep 2025
-      & DemandSage 115M channels Dec 2025)
-═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   GRADE DATA  (vidIQ 65M ch Sep 2025 +
+   DemandSage 115M ch Dec 2025)
+══════════════════════════════════════════ */
 const GRADES = [
-  { lv:1, name:'입문 크리에이터', color:'#9ca3af',
-    subMin:0,        subMax:100,       rankPct:'100%',   chCount:'~43M',
+  { lv:1,  name:'입문 크리에이터',   color:'#9ca3af',
+    subMin:0,        subMax:100,       rankPct:'하위 37%',  chCount:'~43M',
     scoreMin:0,      scoreMax:499,     play:'없음',
-    desc:'유튜브 여정의 시작점. 전체 채널의 37%가 이 구간.',
-    nextGoal:'첫 구독자 100명 달성 → 채널 커스텀 URL 획득',
-    perks:['채널 개설','기본 업로드','커뮤니티 탭 제한'],
-    intensity:0.08, source:'vidIQ 65M채널 2025.09' },
-
-  { lv:2, name:'성장 시작', color:'#6ee7b7',
-    subMin:100,      subMax:500,       rankPct:'상위 63%', chCount:'~24M',
+    desc:'유튜브 여정의 시작. 꾸준한 업로드로 알고리즘 노출을 확보하세요.',
+    nextGoal:'첫 100명 달성 → 커스텀 URL 획득',
+    perks:['채널 개설','기본 업로드'],
+    intensity:0.08 },
+  { lv:2,  name:'성장 시작',         color:'#6ee7b7',
+    subMin:100,      subMax:500,       rankPct:'상위 63%',  chCount:'~24M',
     scoreMin:500,    scoreMax:1499,    play:'없음',
-    desc:'알고리즘이 채널을 인식하기 시작하는 단계.',
+    desc:'알고리즘이 채널을 인식하기 시작. 썸네일과 제목 최적화가 핵심.',
     nextGoal:'구독자 500명 → 커뮤니티 탭 해금',
-    perks:['커스텀 URL 획득','커뮤니티 탭(일부)'],
-    intensity:0.16, source:'vidIQ 65M채널 2025.09' },
-
-  { lv:3, name:'모멘텀 빌더', color:'#34d399',
-    subMin:500,      subMax:1000,      rankPct:'상위 42%', chCount:'~10M',
+    perks:['커스텀 URL','커뮤니티 탭(일부)'],
+    intensity:0.16 },
+  { lv:3,  name:'모멘텀 빌더',       color:'#34d399',
+    subMin:500,      subMax:1000,      rankPct:'상위 42%',  chCount:'~10M',
     scoreMin:1500,   scoreMax:2999,    play:'없음',
-    desc:'수익화 직전 단계. 업로드 일관성이 핵심.',
-    nextGoal:'구독자 1,000명 + 시청시간 4,000h → YPP 수익화',
-    perks:['커뮤니티 탭 완전 해금','라이브 스트리밍'],
-    intensity:0.25, source:'vidIQ 65M채널 2025.09' },
-
-  { lv:4, name:'수익화 크리에이터', color:'#fbbf24',
-    subMin:1000,     subMax:10000,     rankPct:'상위 34%', chCount:'~10.35M',
+    desc:'수익화 직전 단계. 업로드 일관성과 참여율이 핵심.',
+    nextGoal:'1,000명 + 4,000시청시간 → YPP 수익화',
+    perks:['커뮤니티 탭','라이브 스트리밍'],
+    intensity:0.25 },
+  { lv:4,  name:'수익화 크리에이터', color:'#fbbf24',
+    subMin:1000,     subMax:10000,     rankPct:'상위 34%',  chCount:'~10.35M',
     scoreMin:3000,   scoreMax:7999,    play:'없음',
-    desc:'YPP 수익화 달성. 진정한 크리에이터의 시작.',
-    nextGoal:'구독자 10,000명 → 알고리즘 추천 증가',
-    perks:['광고 수익','채널 멤버십','슈퍼챗'],
-    intensity:0.36, source:'DemandSage 115M채널 2025.12' },
-
-  { lv:5, name:'실버 트래커', color:'#c0c0c0',
-    subMin:10000,    subMax:100000,    rankPct:'상위 6%',  chCount:'~3.45M',
+    desc:'YPP 수익화 달성! 광고 수익과 멤버십으로 수익 다각화.',
+    nextGoal:'10,000명 → 알고리즘 추천 급증',
+    perks:['광고 수익','멤버십','슈퍼챗'],
+    intensity:0.36 },
+  { lv:5,  name:'실버 트래커',       color:'#c0c0c0',
+    subMin:10000,    subMax:100000,    rankPct:'상위 6%',   chCount:'~3.45M',
     scoreMin:8000,   scoreMax:24999,   play:'실버 버튼 준비',
-    desc:'상위 6% 진입. 콘텐츠 전문성이 요구되는 구간.',
-    nextGoal:'구독자 100,000명 → 실버 플레이버튼 수령',
-    perks:['브랜드 협찬 기회','YouTube Analytics 심화','쇼츠 수익화'],
-    intensity:0.50, source:'DemandSage 115M채널 2025.12' },
-
-  { lv:6, name:'실버 플레이버튼', color:'#d4d4d4',
-    subMin:100000,   subMax:1000000,   rankPct:'상위 1%',  chCount:'~619K',
+    desc:'상위 6% 진입! 콘텐츠 전문성과 SEO 최적화가 필요한 시점.',
+    nextGoal:'100,000명 → 실버 플레이버튼 수령',
+    perks:['브랜드 협찬','Analytics 심화','쇼츠 수익'],
+    intensity:0.50 },
+  { lv:6,  name:'실버 플레이버튼',   color:'#e0e0e0',
+    subMin:100000,   subMax:1000000,   rankPct:'상위 1%',   chCount:'~619K',
     scoreMin:25000,  scoreMax:74999,   play:'🥈 실버 버튼',
-    desc:'상위 1% 엘리트. 실버 플레이버튼 수령 자격.',
-    nextGoal:'구독자 1,000,000명 → 골드 플레이버튼',
-    perks:['실버 플레이버튼','브랜드딜 주류화','YouTube 파트너 지원'],
-    intensity:0.62, source:'나무위키 크리에이터어워즈 2025.12' },
-
-  { lv:7, name:'골드 플레이버튼', color:'#ffd700',
+    desc:'상위 1% 엘리트! 실버 플레이버튼과 함께 브랜드딜이 주류화.',
+    nextGoal:'1,000,000명 → 골드 플레이버튼',
+    perks:['실버 플레이버튼','브랜드딜','YT 파트너 지원'],
+    intensity:0.62 },
+  { lv:7,  name:'골드 플레이버튼',   color:'#ffd700',
     subMin:1000000,  subMax:5000000,   rankPct:'상위 0.1%', chCount:'~69K',
     scoreMin:75000,  scoreMax:199999,  play:'🥇 골드 버튼',
-    desc:'100만 구독자의 영광. 전체 채널의 0.1%만 달성.',
-    nextGoal:'구독자 5,000,000명 → 다이아몬드 버튼',
-    perks:['골드 플레이버튼','YouTube 크리에이터 행사 초청','전문 매니저 배정'],
-    intensity:0.74, source:'DemandSage 115M채널 2025.12' },
-
-  { lv:8, name:'다이아몬드 버튼', color:'#00e5ff',
-    subMin:5000000,  subMax:10000000,  rankPct:'상위 0.02%', chCount:'~5K',
+    desc:'100만 구독자! 전체의 0.1%만 달성하는 골드 등급.',
+    nextGoal:'5,000,000명 → 다이아몬드 버튼',
+    perks:['골드 버튼','행사 초청','전담 매니저'],
+    intensity:0.74 },
+  { lv:8,  name:'다이아몬드 버튼',   color:'#00e5ff',
+    subMin:5000000,  subMax:10000000,  rankPct:'상위 0.02%',chCount:'~5K',
     scoreMin:200000, scoreMax:499999,  play:'💎 다이아몬드',
-    desc:'500만 이상. 전 세계 크리에이터 상위 0.02%.',
-    nextGoal:'구독자 10,000,000명 → 레드 다이아몬드',
-    perks:['다이아몬드 버튼','YouTube 공식 프로모션','글로벌 스폰서 협찬'],
-    intensity:0.85, source:'YouTube 공식 Creator Awards' },
-
-  { lv:9, name:'레드 다이아몬드', color:'#ff1744',
-    subMin:10000000, subMax:50000000,  rankPct:'상위 0.002%', chCount:'~2.6K',
+    desc:'500만 이상! 글로벌 인플루언서 반열. 전 세계 0.02%.',
+    nextGoal:'10,000,000명 → 레드 다이아몬드',
+    perks:['다이아몬드 버튼','YT 공식 프로모션','글로벌 스폰서'],
+    intensity:0.85 },
+  { lv:9,  name:'레드 다이아몬드',   color:'#ff1744',
+    subMin:10000000, subMax:50000000,  rankPct:'상위 0.002%',chCount:'~2.6K',
     scoreMin:500000, scoreMax:999999,  play:'🔴 레드 다이아몬드',
-    desc:'1000만 구독자 레전드. 실질적 글로벌 인플루언서.',
-    nextGoal:'구독자 50,000,000명 → 유튜브 레전드',
-    perks:['레드 다이아몬드 버튼','YouTube 이사회 면담 기회','독점 콘텐츠 지원'],
-    intensity:0.94, source:'YouTube 공식 Creator Awards' },
-
-  { lv:10, name:'유튜브 레전드', color:'#ff0080',
-    subMin:50000000, subMax:Infinity, rankPct:'상위 0.00005%', chCount:'~74개',
+    desc:'1000만 구독자 레전드! 실질적 글로벌 미디어 파워.',
+    nextGoal:'50,000,000명 → 유튜브 레전드',
+    perks:['레드 다이아몬드','이사회 면담','독점 지원'],
+    intensity:0.94 },
+  { lv:10, name:'유튜브 레전드',     color:'#ff0080',
+    subMin:50000000, subMax:Infinity,  rankPct:'상위 0.00005%',chCount:'~74개',
     scoreMin:1000000,scoreMax:Infinity,play:'👑 레전드 트로피',
-    desc:'5000만 이상. MrBeast(460M), T-Series(308M) 등 74개 채널만 달성.',
+    desc:'5000만+ 구독자. MrBeast(460M), T-Series(308M) 등 74채널만 달성.',
     nextGoal:'전 세계 최고 크리에이터의 전당',
-    perks:['레전드 트로피','YouTube 공동 마케팅','플랫폼 알고리즘 우선권'],
-    intensity:1.0, source:'Wikipedia 최다구독 채널 2025.12' }
+    perks:['레전드 트로피','공동 마케팅','알고리즘 우선권'],
+    intensity:1.0 }
 ];
 
-/* ═══════════════════════════════════════════════════
-   2. SPARK RENDERER (no beam, no pillar)
-═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   SPARK RENDERER (sparks only, no beam)
+══════════════════════════════════════════ */
 class Spark {
   constructor(canvas, g) {
-    this.c = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.g = g;
-    this.particles = [];
-    this.raf = null;
-    this.intensity = g.intensity;
+    this.c = canvas; this.ctx = canvas.getContext('2d');
+    this.g = g; this.particles = []; this.raf = null;
   }
   _spawn() {
     const W = this.c.width, H = this.c.height;
     const side = Math.floor(Math.random() * 4);
     let x, y, vx, vy;
-    const spd = .8 + Math.random() * 1.8 * this.intensity;
-    if (side === 0) { x = Math.random()*W; y = H; vx = (Math.random()-.5)*2; vy = -spd; }
-    else if (side===1){ x=0; y=Math.random()*H; vx=spd; vy=(Math.random()-.5)*2; }
-    else if (side===2){ x=W; y=Math.random()*H; vx=-spd; vy=(Math.random()-.5)*2; }
-    else              { x=Math.random()*W; y=0; vx=(Math.random()-.5)*2; vy=spd; }
-    const lv = this.g.lv;
-    const colors = lv===10
+    const spd = 0.7 + Math.random() * 1.6 * this.g.intensity;
+    if (side===0){x=Math.random()*W;y=H;vx=(Math.random()-.5)*1.8;vy=-spd;}
+    else if(side===1){x=0;y=Math.random()*H;vx=spd;vy=(Math.random()-.5)*1.8;}
+    else if(side===2){x=W;y=Math.random()*H;vx=-spd;vy=(Math.random()-.5)*1.8;}
+    else{x=Math.random()*W;y=0;vx=(Math.random()-.5)*1.8;vy=spd;}
+    const isR = this.g.lv === 10;
+    const palette = isR
       ? ['#ff0080','#7c3aed','#00e5ff','#ffd700','#ff4500']
-      : [this.g.color, '#ffffff', this.g.color+'aa'];
+      : [this.g.color, '#ffffff', this.g.color + '99'];
     return {
       x, y, vx, vy,
-      life: 0.8 + Math.random() * 1.2,
-      maxLife: 0.8 + Math.random() * 1.2,
-      size: 1.2 + Math.random() * 2.6 * this.intensity,
-      color: colors[Math.floor(Math.random()*colors.length)],
-      trail: [],
+      maxLife: 0.7 + Math.random() * 1.3,
+      life: 0.7 + Math.random() * 1.3,
+      size: 1.1 + Math.random() * 2.4 * this.g.intensity,
+      color: palette[Math.floor(Math.random() * palette.length)],
+      trail: []
     };
   }
   tick() {
-    const W = this.c.width, H = this.c.height;
-    const ctx = this.ctx;
+    const W = this.c.width, H = this.c.height, ctx = this.ctx;
     ctx.clearRect(0, 0, W, H);
-    const spawnN = Math.ceil(this.intensity * 6);
-    for (let i = 0; i < spawnN; i++) this.particles.push(this._spawn());
+    const n = Math.ceil(this.g.intensity * 5);
+    for (let i = 0; i < n; i++) this.particles.push(this._spawn());
     this.particles = this.particles.filter(p => p.life > 0);
     for (const p of this.particles) {
       p.trail.push({x: p.x, y: p.y});
-      if (p.trail.length > 7) p.trail.shift();
-      p.x += p.vx; p.y += p.vy;
-      p.vy -= 0.03 * this.intensity;
-      p.vx *= 0.98;
-      p.life -= 0.025;
-      const alpha = Math.max(0, p.life / p.maxLife);
-      // trail
+      if (p.trail.length > 6) p.trail.shift();
+      p.x += p.vx; p.y += p.vy; p.vy -= 0.025 * this.g.intensity; p.vx *= 0.985;
+      p.life -= 0.022;
+      const a = Math.max(0, p.life / p.maxLife);
       if (p.trail.length > 1) {
         ctx.beginPath();
         ctx.moveTo(p.trail[0].x, p.trail[0].y);
         for (let i = 1; i < p.trail.length; i++) ctx.lineTo(p.trail[i].x, p.trail[i].y);
-        ctx.strokeStyle = p.color + Math.floor(alpha * 80).toString(16).padStart(2,'0');
-        ctx.lineWidth = p.size * .5;
-        ctx.stroke();
+        ctx.strokeStyle = p.color + Math.floor(a * 70).toString(16).padStart(2,'0');
+        ctx.lineWidth = p.size * .45; ctx.stroke();
       }
-      // glow (lv >= 4)
       if (this.g.lv >= 4) {
-        const gr = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3.5);
-        gr.addColorStop(0, p.color + Math.floor(alpha*120).toString(16).padStart(2,'0'));
-        gr.addColorStop(1, 'transparent');
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3.5,0,Math.PI*2);
+        const gr = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size*3.2);
+        gr.addColorStop(0, p.color + Math.floor(a*100).toString(16).padStart(2,'0'));
+        gr.addColorStop(1,'transparent');
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.size*3.2,0,Math.PI*2);
         ctx.fillStyle = gr; ctx.fill();
       }
-      // core
       ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-      ctx.fillStyle = p.color + Math.floor(alpha*255).toString(16).padStart(2,'0');
+      ctx.fillStyle = p.color + Math.floor(a*255).toString(16).padStart(2,'0');
       ctx.fill();
     }
   }
-  start() {
-    const loop = () => { this.tick(); this.raf = requestAnimationFrame(loop); };
-    loop();
-  }
-  stop() { cancelAnimationFrame(this.raf); this.ctx.clearRect(0,0,this.c.width,this.c.height); }
+  start() { const loop=()=>{this.tick();this.raf=requestAnimationFrame(loop);}; loop(); }
+  stop()  { cancelAnimationFrame(this.raf); if(this.ctx) this.ctx.clearRect(0,0,this.c.width,this.c.height); }
 }
 
 let mainSpark = null, prevSpark = null;
 
-/* ═══════════════════════════════════════════════════
-   3. GRADE HELPERS
-═══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   STROKE / COLOR HELPERS
+══════════════════════════════════════════ */
 function getStrokeWidth(lv) {
-  // base stroke 3× wider than LV1 reference (≈1px) per level
-  const base = [3, 4.5, 6, 7.5, 9, 10.5, 12, 15, 21, 0];
-  return base[lv - 1] + 'px';
+  return [3,4.5,6,7.5,9,10.5,12,15,21,0][lv-1] + 'px';
 }
 function getNameStroke(lv) {
-  const base = [1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 0];
-  return base[lv - 1] + 'px';
+  return [1.2,1.6,2,2.5,3,3.5,4,5,7,0][lv-1] + 'px';
 }
 function fmt(n) {
-  if (n >= 1e8) return (n/1e8).toFixed(1)+'억';
-  if (n >= 1e4) return (n/1e4).toFixed(1)+'만';
-  if (n >= 1e3) return (n/1e3).toFixed(1)+'천';
-  return n.toString();
+  if(n>=1e8) return (n/1e8).toFixed(1)+'억';
+  if(n>=1e4) return (n/1e4).toFixed(1)+'만';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'천';
+  return n+'';
 }
-function fmtMoney(n) {
-  return '₩' + n.toLocaleString('ko-KR');
+function fmtMoney(n){ return '₩'+n.toLocaleString('ko-KR'); }
+
+/* ══════════════════════════════════════════
+   SCORING ENGINE
+   Factors: subscribers, views, engagement,
+   upload frequency, avg views per video.
+   Bonus multipliers for outliers.
+══════════════════════════════════════════ */
+function computeDetailedScore(subs, totalViews, videos, engRate, uploadFreqPerMonth, avgViewsPerVideo) {
+
+  /* base scores */
+  const subScore = subs < 1000    ? subs * 0.5
+                 : subs < 10000   ? 500  + (subs-1000)*0.22
+                 : subs < 100000  ? 2700 + (subs-10000)*0.11
+                 : subs < 1e6     ? 13000+ (subs-100000)*0.045
+                 : 53500 + Math.sqrt(subs-1e6)*22;
+
+  const viewScore  = totalViews * 0.000018;
+  const engScore   = Math.min(engRate, 20) * 1400;
+  const freqScore  = Math.min(uploadFreqPerMonth, 16) * 380;
+  const avgVScore  = Math.min(avgViewsPerVideo, 8e6) * 0.00045;
+
+  /* bonus multipliers for outstanding metrics */
+  let bonus = 0;
+  const bonusLog = [];
+
+  // subs bonus
+  if (subs >= 1e7)       { bonus += subScore * 0.25; bonusLog.push({key:'구독자 압도적',val:'+25%'}); }
+  else if (subs >= 1e6)  { bonus += subScore * 0.15; bonusLog.push({key:'구독자 우수',val:'+15%'}); }
+
+  // view ratio bonus (avg views / subs)
+  const viewRatio = subs > 0 ? avgViewsPerVideo / subs : 0;
+  if (viewRatio >= 2)     { bonus += avgVScore * 0.5; bonusLog.push({key:'조회수 압도적(구독비 200%+)',val:'+50%'}); }
+  else if (viewRatio >= 1){ bonus += avgVScore * 0.3; bonusLog.push({key:'조회수 우수(구독비 100%+)',val:'+30%'}); }
+
+  // engagement bonus
+  if (engRate >= 8)       { bonus += engScore * 0.4;  bonusLog.push({key:'참여율 압도적(8%+)',val:'+40%'}); }
+  else if (engRate >= 4)  { bonus += engScore * 0.2;  bonusLog.push({key:'참여율 우수(4%+)',val:'+20%'}); }
+
+  // upload frequency bonus
+  if (uploadFreqPerMonth >= 12){ bonus += freqScore * 0.35; bonusLog.push({key:'업로드 압도적(월12+)',val:'+35%'}); }
+  else if (uploadFreqPerMonth >= 6){ bonus += freqScore * 0.15; bonusLog.push({key:'업로드 우수(월6+)',val:'+15%'}); }
+
+  const total = Math.round(subScore + viewScore + engScore + freqScore + avgVScore + bonus);
+
+  return {
+    total,
+    breakdown: {
+      subScore:   Math.round(subScore),
+      viewScore:  Math.round(viewScore),
+      engScore:   Math.round(engScore),
+      freqScore:  Math.round(freqScore),
+      avgVScore:  Math.round(avgVScore),
+      bonus:      Math.round(bonus),
+    },
+    bonusLog,
+    factors: { subs, totalViews, videos, engRate, uploadFreqPerMonth, avgViewsPerVideo, viewRatio }
+  };
 }
 
-/* ═══════════════════════════════════════════════════
-   4. BUILD GRADE TABLE & CARDS
-═══════════════════════════════════════════════════ */
+function getLvFromScore(score) {
+  for (let i = GRADES.length-1; i >= 0; i--)
+    if (score >= GRADES[i].scoreMin) return GRADES[i].lv;
+  return 1;
+}
+function getLvFromSubs(subs) {
+  for (let i = GRADES.length-1; i >= 0; i--)
+    if (subs >= GRADES[i].subMin) return GRADES[i].lv;
+  return 1;
+}
+function calcPercentile(subs) {
+  if(subs>=5e7)  return '0.00005%';
+  if(subs>=1e7)  return '0.002%';
+  if(subs>=5e6)  return '0.02%';
+  if(subs>=1e6)  return '0.1%';
+  if(subs>=1e5)  return '1%';
+  if(subs>=1e4)  return '6%';
+  if(subs>=1e3)  return '34%';
+  if(subs>=500)  return '42%';
+  if(subs>=100)  return '63%';
+  return '100%';
+}
+
+/* ══════════════════════════════════════════
+   GRADE TABLE BUILD
+══════════════════════════════════════════ */
 function buildGradeTable() {
   const tbody = document.getElementById('gradeTableBody');
   const cgrid = document.getElementById('gradeCardGrid');
   tbody.innerHTML = ''; cgrid.innerHTML = '';
 
   GRADES.forEach((g, idx) => {
-    const isRainbow = g.lv === 10;
-    const stroke    = getStrokeWidth(g.lv);
-    const nsStroke  = getNameStroke(g.lv);
-    const ach       = Math.min(100, (idx + 1) * 10);
+    const isR   = g.lv === 10;
+    const stroke = getStrokeWidth(g.lv);
+    const ach    = (idx+1)*10;
 
-    /* ── TABLE ROW ── */
+    /* TABLE ROW */
     const tr = document.createElement('tr');
-    tr.setAttribute('data-lv', g.lv);
+    tr.dataset.lv = g.lv;
     tr.onclick = () => selectGrade(g.lv);
 
-    const numStyle  = isRainbow
-      ? `background:linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 100%;animation:rainbowText 2s linear infinite;`
-      : `color:${g.color};-webkit-text-stroke:${stroke} ${g.color};text-shadow:0 0 10px ${g.color};`;
-
-    const nameStyle = isRainbow
-      ? `background:linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff,#ff0080);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-size:300% 100%;animation:rainbowText 2s linear infinite;font-weight:700;`
-      : `color:${g.color};font-weight:700;-webkit-text-stroke:.4px ${g.color};`;
+    const chipColor = isR ? '#ff0080' : g.color;
+    const nameStyle = isR
+      ? `background:linear-gradient(90deg,#ff0080,#ffd700,#00e5ff,#7c3aed,#ff0080);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;-webkit-text-stroke:0;animation:rainbowText 2.5s linear infinite;font-weight:700;display:inline-block;`
+      : `color:${g.color};font-weight:700;-webkit-text-stroke:.3px ${g.color};`;
 
     tr.innerHTML = `
       <td>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="display:inline-block;width:36px;height:36px;border-radius:50%;
-            border:2px solid ${isRainbow?'#ff0080':g.color};
-            background:#111;display:flex;align-items:center;justify-content:center;">
-            <span style="${numStyle}font-size:.8rem;font-weight:900;">${g.lv}</span>
-          </span>
-        </div>
+        <span class="lv-chip"
+          style="--chip-color:${chipColor};--chip-stroke:${stroke};color:${chipColor};">
+          ${g.lv}
+        </span>
       </td>
       <td><span style="${nameStyle}">${g.name}</span></td>
-      <td style="color:var(--text2);font-size:.78rem;">${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)}</td>
-      <td><span style="color:${isRainbow?'#ff0080':g.color};font-weight:700;">${g.rankPct}</span></td>
-      <td style="color:var(--text2);font-size:.78rem;">${g.chCount}</td>
-      <td style="color:var(--text2);font-size:.78rem;">${g.scoreMin.toLocaleString()} ~ ${g.scoreMax===Infinity?'∞':g.scoreMax.toLocaleString()}</td>
-      <td style="font-size:.75rem;">${g.play}</td>
-      <td>
-        <div class="ach-bar-wrap">
-          <div class="ach-bar" style="width:${ach}%;background:${isRainbow?'linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff)':g.color};"></div>
-        </div>
-      </td>`;
+      <td style="color:var(--text2);font-size:.76rem;">${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)}</td>
+      <td><span style="color:${chipColor};font-weight:700;font-size:.78rem;">${g.rankPct}</span></td>
+      <td style="color:var(--text2);font-size:.76rem;">${g.chCount}</td>
+      <td style="color:var(--text2);font-size:.76rem;">${g.scoreMin.toLocaleString()} ~ ${g.scoreMax===Infinity?'∞':g.scoreMax.toLocaleString()}</td>
+      <td style="font-size:.73rem;">${g.play}</td>
+      <td><div class="ach-bar-wrap"><div class="ach-bar" style="width:${ach}%;background:${isR?'linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff)':g.color};"></div></div></td>`;
     tbody.appendChild(tr);
 
-    /* ── MINI CARD ── */
+    /* MINI CARD */
     const mc = document.createElement('div');
     mc.className = 'grade-mini-card';
-    mc.setAttribute('data-lv', g.lv);
-    mc.style.setProperty('--gmc', g.color);
+    mc.dataset.lv = g.lv;
+    mc.style.setProperty('--gmc', isR?'#ff0080':g.color);
     mc.style.setProperty('--gmc-stroke', stroke);
     mc.onclick = () => selectGrade(g.lv);
-
-    const numCls  = 'gmc-num'  + (isRainbow ? ' rainbow' : '');
-    const nameCls = 'gmc-name' + (isRainbow ? ' rainbow' : '');
+    const numCls  = 'gmc-num'  + (isR?' rainbow':'');
+    const nameCls = 'gmc-name' + (isR?' rainbow':'');
     mc.innerHTML = `
       <div class="${numCls}">${g.lv}</div>
       <div class="${nameCls}">${g.name}</div>
       <div class="gmc-range">${fmt(g.subMin)}~${g.subMax===Infinity?'∞':fmt(g.subMax)}</div>
       <div class="gmc-pct">${g.rankPct}</div>
-      <button class="gmc-btn" onclick="event.stopPropagation();openModal(${g.lv})">🔥 효과 미리보기</button>`;
+      <button class="gmc-btn" onclick="event.stopPropagation();openModal(${g.lv})">🔥 효과 보기</button>`;
     cgrid.appendChild(mc);
   });
 }
 
-/* ═══════════════════════════════════════════════════
-   5. SELECT GRADE → COMPARE PANEL
-═══════════════════════════════════════════════════ */
-let selectedLv = 1;
+/* ══════════════════════════════════════════
+   SELECT GRADE → COMPARE
+══════════════════════════════════════════ */
 function selectGrade(lv) {
-  selectedLv = lv;
-  // highlight
-  document.querySelectorAll('#gradeTableBody tr').forEach(r =>
-    r.classList.toggle('selected', +r.dataset.lv === lv));
-  document.querySelectorAll('.grade-mini-card').forEach(c =>
-    c.classList.toggle('selected', +c.dataset.lv === lv));
+  document.querySelectorAll('#gradeTableBody tr').forEach(r=>r.classList.toggle('selected',+r.dataset.lv===lv));
+  document.querySelectorAll('.grade-mini-card').forEach(c=>c.classList.toggle('selected',+c.dataset.lv===lv));
 
-  const idx   = lv - 1;
-  const curr  = GRADES[idx];
-  const prev  = GRADES[idx - 1] || null;
-  const next  = GRADES[idx + 1] || null;
+  const idx  = lv-1;
+  const curr = GRADES[idx];
+  const prev = GRADES[idx-1]||null;
+  const next = GRADES[idx+1]||null;
 
-  function cmpCardHTML(g, role) {
-    if (!g) return `<div class="cmp-card"><div class="cmp-label">${role==='prev'?'이전 레벨':'다음 레벨'}</div><div style="color:var(--text2);font-size:.8rem;margin-top:20px;">없음</div></div>`;
-    const isR = g.lv===10;
-    const s   = getStrokeWidth(g.lv);
-    const nCls = 'cmp-num' + (isR?' rainbow':'');
-    return `
-      <div class="cmp-card ${role==='curr'?'curr':''}"
-        style="--c-border:${g.color};--c-color:${g.color};--c-stroke:${s};">
-        <div class="cmp-label">${role==='prev'?'◀ 이전 레벨':role==='curr'?'★ 현재 레벨':'▶ 다음 레벨'}</div>
-        <div class="${nCls}">${g.lv}</div>
-        <div class="cmp-name">${g.name}</div>
-        <div class="cmp-range">${fmt(g.subMin)}~${g.subMax===Infinity?'∞':fmt(g.subMax)} 구독자</div>
-        <div class="cmp-pct">${g.rankPct}</div>
-        ${role==='next'?`<button class="btn btn-primary" style="margin-top:10px;font-size:.72rem;padding:6px 12px;"
-          onclick="openModal(${g.lv})">🔥 효과 미리보기</button>`:''}
-      </div>`;
+  function cmpHTML(g, role) {
+    if(!g) return `<div class="cmp-card"><div class="cmp-label">${role==='prev'?'이전':'다음'} 레벨</div><div style="color:var(--text2);font-size:.8rem;margin-top:18px;">없음</div></div>`;
+    const isR=g.lv===10; const s=getStrokeWidth(g.lv);
+    const numCls='cmp-num'+(isR?' rainbow':'');
+    return `<div class="cmp-card ${role==='curr'?'curr':''}"
+      style="--c-color:${isR?'#ff0080':g.color};--c-border:${isR?'#ff0080':g.color};--c-stroke:${s};">
+      <div class="cmp-label">${role==='prev'?'◀ 이전':role==='curr'?'★ 현재':'▶ 다음'}</div>
+      <div class="${numCls}">${g.lv}</div>
+      <div class="cmp-name">${g.name}</div>
+      <div class="cmp-range">${fmt(g.subMin)}~${g.subMax===Infinity?'∞':fmt(g.subMax)}</div>
+      <div class="cmp-pct">${g.rankPct}</div>
+      ${role==='next'?`<button class="btn btn-primary" style="margin-top:8px;font-size:.7rem;padding:5px 10px;" onclick="openModal(${g.lv})">🔥 효과 미리보기</button>`:''}
+    </div>`;
   }
 
-  // stat comparison table
-  const statRows = ['구독자 최소','구독자 최대','알고리즘 점수 최소','채널 수','상위 %','플레이버튼'].map((k,i) => {
-    const vals = [prev,curr,next].map(g => {
-      if (!g) return '–';
-      if (i===0) return fmt(g.subMin);
-      if (i===1) return g.subMax===Infinity?'∞':fmt(g.subMax);
-      if (i===2) return g.scoreMin.toLocaleString();
-      if (i===3) return g.chCount;
-      if (i===4) return g.rankPct;
-      if (i===5) return g.play;
-    });
-    const highlight = [false,false,true];
-    return `<tr>
-      <td style="color:var(--text2);text-align:left;">${k}</td>
-      ${vals.map((v,j)=>`<td class="${highlight[j]?'cmp-highlight':''}" style="${j===1?`color:${curr.color};font-weight:700`:''}">${v}</td>`).join('')}
-    </tr>`;
-  }).join('');
+  const statRows = [
+    ['구독자 범위',`${fmt(curr.subMin)}~${curr.subMax===Infinity?'∞':fmt(curr.subMax)}`],
+    ['상위 %',curr.rankPct],['채널 수',curr.chCount],
+    ['점수 범위',`${curr.scoreMin.toLocaleString()}~${curr.scoreMax===Infinity?'∞':curr.scoreMax.toLocaleString()}`],
+    ['플레이버튼',curr.play],
+  ].map(([k,v])=>`<tr><td style="color:var(--text2);padding:6px 10px;font-size:.78rem;">${k}</td><td style="font-weight:700;color:${curr.lv===10?'#ff0080':curr.color};padding:6px 10px;font-size:.78rem;">${v}</td></tr>`).join('');
 
   const panel = document.getElementById('comparePanel');
   panel.className = 'compare-panel show';
   panel.innerHTML = `
-    <div class="section-title" style="font-size:1rem;">🔍 레벨 비교 분석</div>
-    <div class="compare-grid">
-      ${cmpCardHTML(prev,'prev')}
-      ${cmpCardHTML(curr,'curr')}
-      ${cmpCardHTML(next,'next')}
-    </div>
-    <table class="cmp-stat-table">
-      <thead><tr><th>항목</th><th>이전 LV${prev?prev.lv:'–'}</th><th style="color:${curr.color};">현재 LV${curr.lv}</th><th>다음 LV${next?next.lv:'–'}</th></tr></thead>
-      <tbody>${statRows}</tbody>
-    </table>
-    <div style="margin-top:14px;background:var(--bg3);border-radius:12px;padding:14px 18px;border:1px solid var(--border);">
-      <div style="font-weight:700;margin-bottom:8px;color:${curr.color};">📌 ${curr.name} 레벨 특징 & 다음 목표</div>
-      <p style="font-size:.83rem;color:var(--text2);line-height:1.7;">${curr.desc}</p>
-      <p style="font-size:.83rem;margin-top:8px;"><span style="color:var(--accent);font-weight:700;">다음 목표: </span>${curr.nextGoal}</p>
-      <div class="perk-tags" style="margin-top:8px;">${curr.perks.map(p=>`<span class="perk-tag">✓ ${p}</span>`).join('')}</div>
-      <p style="font-size:.7rem;color:var(--text2);margin-top:10px;">📊 출처: ${curr.source}</p>
+    <div style="font-size:.95rem;font-weight:900;margin-bottom:12px;color:var(--text);">🔍 레벨 비교 분석</div>
+    <div class="compare-grid">${cmpHTML(prev,'prev')}${cmpHTML(curr,'curr')}${cmpHTML(next,'next')}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;">
+      <table style="border-collapse:collapse;font-size:.78rem;background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;">
+        <thead><tr style="background:var(--bg3);"><th style="padding:7px 10px;text-align:left;color:var(--text2);">항목</th><th style="padding:7px 10px;text-align:left;color:var(--text2);">값</th></tr></thead>
+        <tbody>${statRows}</tbody>
+      </table>
+      <div style="background:var(--card-bg);border:1px solid ${curr.lv===10?'#ff0080':curr.color}33;border-radius:10px;padding:13px 15px;">
+        <div style="font-weight:700;margin-bottom:6px;color:${curr.lv===10?'#ff0080':curr.color};font-size:.85rem;">${curr.name} – 다음 목표</div>
+        <p style="font-size:.76rem;color:var(--text2);line-height:1.65;">${curr.nextGoal}</p>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;">
+          ${curr.perks.map(p=>`<span class="perk-tag">✓ ${p}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ══════════════════════════════════════════
+   CHANNEL ANALYSIS
+══════════════════════════════════════════ */
+const API_KEYS = ['AIzaSyAYi9B4vIFjl75uYBS56GbTSMJfV_TLuzE','YOUR_API_KEY_2'];
+let apiIdx = 0;
+const getKey = () => API_KEYS[apiIdx % API_KEYS.length];
+
+async function analyzeChannel(demo) {
+  const query   = demo==='demo'?'@MrBeast':(document.getElementById('channelInput').value.trim()||'@MrBeast');
+  const result  = document.getElementById('channelResult');
+  result.innerHTML = '<p style="color:var(--text2);padding:20px 0;">분석 중…</p>';
+
+  let subs,totalViews,videos,title,avatar,desc,uploadFreq,avgViews,engRate;
+
+  if (demo==='demo' || getKey()==='YOUR_API_KEY_1') {
+    /* Demo: MrBeast approx 2025.12 */
+    subs=460000000; totalViews=70000000000; videos=830;
+    title='MrBeast (데모)'; avatar='https://yt3.googleusercontent.com/ytc/AL5GRJVDk1pPh3Kut9-VBowXSmxgMOHJOFEwt9-RHJiE=s240';
+    desc='세계 최대 유튜브 채널 – 데모 데이터'; uploadFreq=6; avgViews=120000000; engRate=2.4;
+  } else {
+    try {
+      const sr = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=1&key=${getKey()}`);
+      const sd = await sr.json();
+      if(!sd.items?.length){result.innerHTML='<p style="color:#f87171">채널을 찾을 수 없습니다.</p>';return;}
+      const cId = sd.items[0].snippet.channelId||sd.items[0].id.channelId;
+      const cr  = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${cId}&key=${getKey()}`);
+      const cd  = await cr.json();
+      const ch  = cd.items[0];
+      subs=+ch.statistics.subscriberCount; totalViews=+ch.statistics.viewCount; videos=+ch.statistics.videoCount;
+      title=ch.snippet.title; avatar=ch.snippet.thumbnails.medium?.url||ch.snippet.thumbnails.default?.url;
+      desc=(ch.snippet.description||'').slice(0,110)+'…';
+      avgViews=videos>0?totalViews/videos:0; uploadFreq=2; engRate=subs>0?(avgViews*0.02/subs)*100:0;
+    } catch(e) {
+      result.innerHTML='<p style="color:#f87171">API 오류. 데모 데이터로 대체합니다.</p>';
+      setTimeout(()=>analyzeChannel('demo'),1000); return;
+    }
+  }
+
+  const scoreData = computeDetailedScore(subs, totalViews, videos, engRate, uploadFreq, avgViews);
+  const score     = scoreData.total;
+  const bd        = scoreData.breakdown;
+
+  const scoreLv = getLvFromScore(score);
+  const subsLv  = getLvFromSubs(subs);
+  const finalLv = Math.max(scoreLv, subsLv);
+  const g       = GRADES[finalLv-1];
+  const isR     = finalLv===10;
+  const stroke  = getStrokeWidth(finalLv);
+  const nStroke = getNameStroke(finalLv);
+  const pct     = calcPercentile(subs);
+  const lvColor = isR ? '#ff0080' : g.color;
+
+  /* score bars max reference */
+  const maxRef = { sub:300000,view:200000,eng:28000,freq:6000,avg:3600,bonus:50000 };
+
+  /* factor quality labels */
+  const qual = (v,tiers) => v>=tiers[0]?{cls:'good',txt:'압도적 🔥'}:v>=tiers[1]?{cls:'good',txt:'우수'}:v>=tiers[2]?{cls:'mid',txt:'보통'}:{cls:'low',txt:'개선 필요'};
+  const engQ   = qual(engRate,  [8,4,1]);
+  const freqQ  = qual(uploadFreq,[12,6,2]);
+  const vRatioQ= qual(scoreData.factors.viewRatio,[2,1,0.3]);
+
+  result.innerHTML = `
+    <div class="analysis-container">
+      <!-- LEFT: level card -->
+      <div>
+        <div class="lv-card-wrap">
+          <div class="lv-card" id="mainLvCard"
+            style="--lv-glow:${lvColor};--lv-color:${lvColor};--lv-stroke:${stroke};--name-stroke:${nStroke};"
+            onclick="openModal(${finalLv})">
+            <canvas class="spark-canvas" id="mainSparkCanvas"></canvas>
+            <div class="lv-rank-badge">상위 ${pct}</div>
+            <div class="lv-pct-ring">
+              <svg viewBox="0 0 44 44">
+                <circle cx="22" cy="22" r="18" fill="none" stroke="#2a2a3a" stroke-width="3.2"/>
+                <circle cx="22" cy="22" r="18" fill="none"
+                  stroke="${lvColor}" stroke-width="3.2"
+                  stroke-dasharray="${Math.min(100,parseFloat(pct)||50)*1.131} 113.1"
+                  stroke-linecap="round" transform="rotate(-90 22 22)"/>
+              </svg>
+              <div class="lv-pct-text" style="color:${lvColor};">${pct.replace('%','')}<br><span style="font-size:.5rem;">%</span></div>
+            </div>
+            <div class="lv-num ${isR?'rainbow':''}">${finalLv}</div>
+            <div class="lv-label">LEVEL</div>
+            <div class="lv-name ${isR?'rainbow':''}">${g.name}</div>
+            <div class="lv-range">${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)}</div>
+            <div class="lv-play">${g.play}</div>
+            <div class="lv-score-badge">
+              <div class="lv-score-inner">알고리즘 <span>${score.toLocaleString()}</span></div>
+            </div>
+          </div>
+        </div>
+        <p style="text-align:center;font-size:.68rem;color:var(--text2);margin-top:7px;">카드 클릭 → 효과 미리보기</p>
+
+        <!-- LV decision row -->
+        <div class="lv-decision" style="margin-top:12px;">
+          <span class="lv-dec-badge" style="color:${isR?'#ff0080':GRADES[subsLv-1].color};border-color:${isR?'#ff0080':GRADES[subsLv-1].color}33;">구독자 LV${subsLv}</span>
+          <span class="lv-dec-arrow">vs</span>
+          <span class="lv-dec-badge" style="color:${isR?'#ff0080':GRADES[scoreLv-1].color};border-color:${isR?'#ff0080':GRADES[scoreLv-1].color}33;">알고리즘 LV${scoreLv}</span>
+          <span class="lv-dec-arrow">→</span>
+          <span class="lv-dec-final" style="color:${lvColor};">최종 LV${finalLv}</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: details -->
+      <div class="analysis-right">
+        <!-- channel info -->
+        <div class="ch-info-card">
+          <img class="ch-avatar" src="${avatar}" onerror="this.src='https://via.placeholder.com/52x52/1a1a25/666?text=YT'">
+          <div class="ch-meta"><h3>${title}</h3><p>${desc}</p></div>
+        </div>
+
+        <!-- factor grid -->
+        <div class="factor-grid">
+          ${[
+            {label:'구독자',   val:fmt(subs),     sub:pct+' 구간',
+             bonus: subsLv>=9?'압도적':subsLv>=7?'우수':null},
+            {label:'총 조회수', val:fmt(totalViews), sub:videos+'개 영상',bonus:null},
+            {label:'평균 조회수',val:fmt(avgViews),  sub:'조회/구독 '+scoreData.factors.viewRatio.toFixed(2)+'×',
+             bonus:vRatioQ.txt, bonusCls:vRatioQ.cls},
+            {label:'참여율',   val:engRate.toFixed(2)+'%', sub:'업계 기준: 4%+',
+             bonus:engQ.txt, bonusCls:engQ.cls},
+            {label:'업로드 주기',val:'월 '+uploadFreq+'회',  sub:'주 '+(uploadFreq/4).toFixed(1)+'회',
+             bonus:freqQ.txt, bonusCls:freqQ.cls},
+            {label:'알고리즘 점수',val:score.toLocaleString(), sub:'LV'+finalLv+' – '+g.name,
+             bonus: scoreData.bonusLog.length?'보너스 적용':null},
+          ].map(f=>`
+            <div class="factor-box">
+              <div class="factor-label">${f.label}</div>
+              <div class="factor-val" style="color:${lvColor}">${f.val}</div>
+              <div class="factor-sub">${f.sub}</div>
+              ${f.bonus?`<div class="factor-bonus">${f.bonus==='압도적'||f.bonus==='우수'||f.bonus==='보너스 적용'?'🔥':''} ${f.bonus}</div>`:''}
+            </div>`).join('')}
+        </div>
+
+        <!-- score breakdown -->
+        <div class="score-breakdown">
+          <h4>📊 알고리즘 점수 세부 분석</h4>
+          ${[
+            {key:'구독자 점수',    val:bd.subScore,  max:200000, color:lvColor},
+            {key:'조회수 점수',    val:bd.viewScore, max:80000,  color:'#4f8ef7'},
+            {key:'참여율 점수',    val:bd.engScore,  max:28000,  color:'#34d399'},
+            {key:'업로드 빈도 점수',val:bd.freqScore,max:6000,  color:'#fbbf24'},
+            {key:'평균 조회 점수', val:bd.avgVScore, max:4000,   color:'#a78bfa'},
+            {key:'보너스 점수',    val:bd.bonus,     max:Math.max(bd.bonus,5000), color:'#4ade80'},
+          ].map(r=>{
+            const pct2=Math.min(100,(r.val/(r.max||1))*100);
+            const hasBonusForThis = r.key==='보너스 점수' && scoreData.bonusLog.length>0;
+            return `<div class="score-row">
+              <div class="score-row-head">
+                <span class="score-key">${r.key}</span>
+                <span class="score-val" style="color:${r.color};">${r.val.toLocaleString()}
+                  ${hasBonusForThis?scoreData.bonusLog.map(b=>`<span class="bonus-tag">${b.key} ${b.val}</span>`).join(''):''}
+                </span>
+              </div>
+              <div class="score-bar-wrap">
+                <div class="score-bar" style="width:${pct2}%;background:${r.color};"></div>
+              </div>
+            </div>`;
+          }).join('')}
+
+          <div class="total-score-box">
+            <div>
+              <div class="total-score-label">최종 알고리즘 점수</div>
+              <div style="font-size:.72rem;color:var(--text2);margin-top:2px;">LV${finalLv} – ${g.name}</div>
+            </div>
+            <div class="total-score-num ${isR?'rainbow':''}" style="${isR?'':'color:'+lvColor}">${score.toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
     </div>`;
 
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  /* spark */
+  if (mainSpark) mainSpark.stop();
+  requestAnimationFrame(() => {
+    const cv = document.getElementById('mainSparkCanvas');
+    const cd2= document.getElementById('mainLvCard');
+    if(!cv||!cd2) return;
+    cv.width=cd2.offsetWidth; cv.height=cd2.offsetHeight;
+    mainSpark = new Spark(cv, g); mainSpark.start();
+  });
 }
 
-/* ═══════════════════════════════════════════════════
-   6. EFFECT MODAL
-═══════════════════════════════════════════════════ */
-let currentModalLv = 1;
-function openModal(lv) {
-  currentModalLv = lv;
+/* ══════════════════════════════════════════
+   EFFECT MODAL
+══════════════════════════════════════════ */
+function openModal(lv){
   document.getElementById('effectModal').classList.add('open');
-  buildModalNav();
-  renderModal(lv);
+  buildModalNav(); renderModal(lv);
 }
-function closeModal() {
+function closeModal(){
   document.getElementById('effectModal').classList.remove('open');
-  if (prevSpark) { prevSpark.stop(); prevSpark = null; }
+  if(prevSpark){prevSpark.stop();prevSpark=null;}
 }
-function buildModalNav() {
-  const nav = document.getElementById('modalNav');
-  nav.innerHTML = GRADES.map(g => {
-    const isR = g.lv===10;
+function buildModalNav(){
+  document.getElementById('modalNav').innerHTML = GRADES.map(g=>{
+    const c = g.lv===10?'#ff0080':g.color;
     return `<button class="lv-nav-btn" id="mnb${g.lv}" data-lv="${g.lv}"
-      style="--nb-color:${isR?'#ff0080':g.color};border-color:${isR?'#ff0080':g.color};"
-      onclick="renderModal(${g.lv})">${g.lv}</button>`;
+      style="--nb-color:${c};border-color:${c};" onclick="renderModal(${g.lv})">${g.lv}</button>`;
   }).join('');
 }
-function renderModal(lv) {
-  currentModalLv = lv;
-  document.querySelectorAll('.lv-nav-btn').forEach(b =>
-    b.classList.toggle('active', +b.dataset.lv === lv));
+function renderModal(lv){
+  document.querySelectorAll('.lv-nav-btn').forEach(b=>b.classList.toggle('active',+b.dataset.lv===lv));
+  const g=GRADES[lv-1]; const isR=lv===10;
+  const stroke=getStrokeWidth(lv); const nStroke=getNameStroke(lv);
+  const lvC=isR?'#ff0080':g.color;
 
-  const g     = GRADES[lv - 1];
-  const isR   = lv === 10;
-  const stroke = getStrokeWidth(lv);
-  const nStroke= getNameStroke(lv);
+  document.getElementById('modalTitle').textContent=`LV${lv} – ${g.name} 효과 미리보기`;
 
-  document.getElementById('modalTitle').textContent = `LV${lv} – ${g.name} 효과 미리보기`;
+  const prevCard=document.getElementById('prevCard');
+  prevCard.style.setProperty('--prev-glow',lvC);
+  prevCard.style.setProperty('--prev-color',lvC);
+  prevCard.style.setProperty('--prev-stroke',stroke);
 
-  // card CSS vars
-  const prevCard = document.getElementById('prevCard');
-  prevCard.style.setProperty('--prev-glow', isR ? '#ff0080' : g.color);
-  prevCard.style.setProperty('--prev-color', isR ? '#ff0080' : g.color);
-  prevCard.style.setProperty('--prev-stroke', stroke);
+  const numEl=document.getElementById('prevNum');
+  numEl.className='prev-num'+(isR?' rainbow':'');
+  if(!isR){numEl.style.color=lvC;numEl.style.webkitTextStroke=`${stroke} ${lvC}`;numEl.style.textShadow=`0 0 18px ${lvC}`;numEl.style.filter=`drop-shadow(0 0 10px ${lvC})`;}
+  else{numEl.style.cssText='';}
+  numEl.textContent=lv;
 
-  // number
-  const numEl = document.getElementById('prevNum');
-  numEl.className = 'prev-num' + (isR ? ' rainbow' : '');
-  if (!isR) {
-    numEl.style.color = g.color;
-    numEl.style.webkitTextStroke = `${stroke} ${g.color}`;
-    numEl.style.textShadow = `0 0 18px ${g.color}`;
-    numEl.style.filter = `drop-shadow(0 0 10px ${g.color})`;
-  } else {
-    numEl.style.cssText = '';
-  }
-  numEl.textContent = lv;
+  const nameEl=document.getElementById('prevName');
+  nameEl.className='prev-name'+(isR?' rainbow':'');
+  if(!isR){nameEl.style.color=lvC;nameEl.style.webkitTextStroke=`${nStroke} ${lvC}`;nameEl.style.textShadow=`0 0 8px ${lvC}`;}
+  else{nameEl.style.cssText='';}
+  nameEl.textContent=g.name;
+  document.getElementById('prevRange').textContent=`${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)} 구독자`;
 
-  // name
-  const nameEl = document.getElementById('prevName');
-  nameEl.className = 'prev-name' + (isR ? ' rainbow' : '');
-  if (!isR) {
-    nameEl.style.color = g.color;
-    nameEl.style.webkitTextStroke = `${nStroke} ${g.color}`;
-    nameEl.style.textShadow = `0 0 10px ${g.color}`;
-  } else {
-    nameEl.style.cssText = '';
-  }
-  nameEl.textContent = g.name;
+  if(prevSpark)prevSpark.stop();
+  const cv=document.getElementById('prevCanvas');
+  const pc=document.getElementById('prevCard');
+  cv.width=pc.offsetWidth||230; cv.height=pc.offsetHeight||290;
+  prevSpark=new Spark(cv,g); prevSpark.start();
 
-  document.getElementById('prevRange').textContent =
-    `${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)} 구독자`;
-
-  // spark
-  if (prevSpark) prevSpark.stop();
-  const canvas = document.getElementById('prevCanvas');
-  const wrap   = document.getElementById('prevCard');
-  canvas.width  = wrap.offsetWidth  || 240;
-  canvas.height = wrap.offsetHeight || 300;
-  prevSpark = new Spark(canvas, g);
-  prevSpark.start();
-
-  // info panel
-  const bars = [
-    { label:'구독자 규모',   val: Math.min(100, ((lv-1)/9)*100 + 5) },
-    { label:'스파크 강도',   val: g.intensity * 100 },
-    { label:'알고리즘 점수', val: Math.min(100, g.scoreMin / 10000) },
-    { label:'희귀도',        val: [0.1,1,5,10,20,35,55,72,88,100][lv-1] },
+  const bars=[
+    {label:'구독자 규모',   val:Math.min(100,((lv-1)/9)*100+5)},
+    {label:'스파크 강도',   val:g.intensity*100},
+    {label:'알고리즘 점수', val:Math.min(100,g.scoreMin/10000)},
+    {label:'희귀도',        val:[0.1,1,5,10,20,35,55,72,88,100][lv-1]},
   ];
-
-  document.getElementById('modalInfo').innerHTML = `
-    <h3 style="color:${isR?'#ff0080':g.color};">LV${lv} – ${g.name}</h3>
+  document.getElementById('modalInfo').innerHTML=`
+    <h3 style="color:${lvC};">LV${lv} – ${g.name}</h3>
     <div class="compare-bars">
       ${bars.map(b=>`
         <div class="cbar-row">
           <div class="cbar-label"><span>${b.label}</span><span>${b.val.toFixed(0)}%</span></div>
-          <div class="cbar-wrap">
-            <div class="cbar-fill" style="width:${b.val}%;background:${isR?'linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff)':g.color};"></div>
-          </div>
+          <div class="cbar-wrap"><div class="cbar-fill" style="width:${b.val}%;background:${isR?'linear-gradient(90deg,#ff0080,#7c3aed,#00e5ff)':lvC};"></div></div>
         </div>`).join('')}
     </div>
-    ${[
-      ['구독자 범위', `${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)}`],
-      ['상위 %',      g.rankPct],
-      ['채널 수',     g.chCount],
-      ['점수 범위',   `${g.scoreMin.toLocaleString()} ~ ${g.scoreMax===Infinity?'∞':g.scoreMax.toLocaleString()}`],
-      ['플레이버튼',  g.play],
-    ].map(([k,v])=>`
-      <div class="stat-row">
-        <span class="stat-key">${k}</span>
-        <span class="stat-val" style="color:${isR?'#ff0080':g.color}">${v}</span>
-      </div>`).join('')}
-    <div style="background:var(--bg3);border-radius:10px;padding:12px;border:1px solid var(--border);">
-      <div style="font-size:.8rem;font-weight:700;margin-bottom:6px;">📌 다음 목표</div>
-      <p style="font-size:.78rem;color:var(--text2);line-height:1.6;">${g.nextGoal}</p>
+    ${[['구독자 범위',`${fmt(g.subMin)}~${g.subMax===Infinity?'∞':fmt(g.subMax)}`],['상위 %',g.rankPct],['채널 수',g.chCount],['점수 범위',`${g.scoreMin.toLocaleString()}~${g.scoreMax===Infinity?'∞':g.scoreMax.toLocaleString()}`],['플레이버튼',g.play]]
+      .map(([k,v])=>`<div class="stat-row"><span class="stat-key">${k}</span><span class="stat-val" style="color:${lvC}">${v}</span></div>`).join('')}
+    <div style="background:var(--bg3);border-radius:9px;padding:10px 13px;border:1px solid var(--card-border);">
+      <div style="font-size:.78rem;font-weight:700;margin-bottom:4px;">📌 다음 목표</div>
+      <p style="font-size:.75rem;color:var(--text2);line-height:1.55;">${g.nextGoal}</p>
     </div>
-    <div class="perk-tags">${g.perks.map(p=>`<span class="perk-tag">✓ ${p}</span>`).join('')}</div>
-    <p style="font-size:.68rem;color:var(--text2)">출처: ${g.source}</p>`;
+    <div class="perk-tags">${g.perks.map(p=>`<span class="perk-tag">✓ ${p}</span>`).join('')}</div>`;
 }
 
-/* ═══════════════════════════════════════════════════
-   7. VIEW SWITCH
-═══════════════════════════════════════════════════ */
-function switchView(v) {
-  const isTable = v === 'table';
-  document.getElementById('gradeTableWrap').style.display = isTable ? '' : 'none';
-  document.getElementById('gradeCardWrap').style.display  = isTable ? 'none' : '';
-  document.getElementById('tblBtn').classList.toggle('active', isTable);
-  document.getElementById('cardBtn').classList.toggle('active', !isTable);
+/* ══════════════════════════════════════════
+   VIEW SWITCH
+══════════════════════════════════════════ */
+function switchView(v){
+  const t=v==='table';
+  document.getElementById('gradeTableWrap').style.display=t?'':'none';
+  document.getElementById('gradeCardWrap').style.display=t?'none':'';
+  document.getElementById('tblBtn').classList.toggle('active',t);
+  document.getElementById('cardBtn').classList.toggle('active',!t);
 }
 
-/* ═══════════════════════════════════════════════════
-   8. CHANNEL ANALYSIS
-═══════════════════════════════════════════════════ */
-const API_KEYS = ['AIzaSyAYi9B4vIFjl75uYBS56GbTSMJfV_TLuzE', 'YOUR_API_KEY_2'];
-let   apiKeyIdx = 0;
-function getKey() { return API_KEYS[apiKeyIdx % API_KEYS.length]; }
-function nextKey(){ apiKeyIdx++; }
-
-function computeScore(subs, views, engRate, uploadFreq, avgViews) {
-  const subScore  = subs < 1000   ? subs * 0.5
-                  : subs < 10000  ? 500 + (subs-1000) * 0.2
-                  : subs < 100000 ? 2300 + (subs-10000) * 0.1
-                  : subs < 1e6    ? 11300 + (subs-100000) * 0.04
-                  : 47300 + Math.sqrt(subs - 1e6) * 20;
-  const viewScore = views * 0.00002;
-  const engScore  = engRate * 1200;
-  const freqScore = Math.min(uploadFreq, 14) * 400;
-  const avgScore  = Math.min(avgViews, 5e6) * 0.0005;
-  return Math.round(subScore + viewScore + engScore + freqScore + avgScore);
-}
-function getLvFromScore(score) {
-  for (let i = GRADES.length - 1; i >= 0; i--)
-    if (score >= GRADES[i].scoreMin) return GRADES[i].lv;
-  return 1;
-}
-function getLvFromSubs(subs) {
-  for (let i = GRADES.length - 1; i >= 0; i--)
-    if (subs >= GRADES[i].subMin) return GRADES[i].lv;
-  return 1;
-}
-function calcPercentile(subs) {
-  if (subs >= 5e7)  return '0.00005%';
-  if (subs >= 1e7)  return '0.002%';
-  if (subs >= 5e6)  return '0.02%';
-  if (subs >= 1e6)  return '0.1%';
-  if (subs >= 1e5)  return '1%';
-  if (subs >= 1e4)  return '6%';
-  if (subs >= 1e3)  return '34%';
-  if (subs >= 500)  return '42%';
-  if (subs >= 100)  return '63%';
-  return '100%';
-}
-function gauge(val, max, color) {
-  const pct = Math.min(100, (val/max)*100);
-  return `<div class="gauge-bar-wrap"><div class="gauge-bar" style="width:${pct}%;background:${color};"></div></div>`;
-}
-
-async function analyzeChannel(demo) {
-  const query  = demo === 'demo' ? '@MrBeast' : (document.getElementById('channelInput').value.trim() || '@MrBeast');
-  const result = document.getElementById('channelResult');
-  result.innerHTML = '<p style="color:var(--text2);">분석 중…</p>';
-
-  let subs, views, videos, title, avatar, desc, uploadFreq, avgViews, engRate;
-
-  if (demo === 'demo' || getKey() === 'YOUR_API_KEY_1') {
-    // Demo data (MrBeast approximation 2025.12)
-    subs = 460000000; views = 70000000000; videos = 830;
-    title = 'MrBeast'; avatar = 'https://yt3.googleusercontent.com/ytc/AL5GRJVDk1pPh3Kut9-VBowXSmxgMOHJOFEwt9-RHJiE=s240';
-    desc  = '세계 최대 유튜브 채널 (데모 데이터)';
-    uploadFreq = 6; avgViews = 120000000; engRate = 2.4;
-  } else {
-    try {
-      const sRes = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=1&key=${getKey()}`);
-      const sData = await sRes.json();
-      if (!sData.items?.length) { result.innerHTML='<p style="color:#f87171">채널을 찾을 수 없습니다.</p>'; return; }
-      const cId = sData.items[0].snippet.channelId || sData.items[0].id.channelId;
-      const cRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet&id=${cId}&key=${getKey()}`);
-      const cData = await cRes.json();
-      const ch = cData.items[0];
-      subs   = +ch.statistics.subscriberCount;
-      views  = +ch.statistics.viewCount;
-      videos = +ch.statistics.videoCount;
-      title  = ch.snippet.title;
-      avatar = ch.snippet.thumbnails.medium?.url || ch.snippet.thumbnails.default?.url;
-      desc   = ch.snippet.description?.slice(0,120) + '…';
-      avgViews   = videos > 0 ? views / videos : 0;
-      uploadFreq = 2;
-      engRate    = subs > 0 ? (avgViews * 0.02 / subs) * 100 : 0;
-    } catch(e) {
-      result.innerHTML = '<p style="color:#f87171">API 오류. 데모 데이터를 사용합니다.</p>';
-      setTimeout(() => analyzeChannel('demo'), 1200);
-      return;
-    }
-  }
-
-  const score   = computeScore(subs, views, engRate, uploadFreq, avgViews);
-  const scoreLv = getLvFromScore(score);
-  const subsLv  = getLvFromSubs(subs);
-  const finalLv = Math.max(scoreLv, subsLv);
-  const g       = GRADES[finalLv - 1];
-  const isR     = finalLv === 10;
-  const stroke  = getStrokeWidth(finalLv);
-  const nStroke = getNameStroke(finalLv);
-  const pct     = calcPercentile(subs);
-
-  // build level card canvas
-  result.innerHTML = `
-    <div class="analysis-container">
-      <div>
-        <div class="lv-card-wrap">
-          <div class="lv-card" id="mainLvCard"
-            style="--card-glow:${isR?'#ff0080':g.color};"
-            onclick="openModal(${finalLv})">
-            <canvas class="spark-canvas" id="mainSparkCanvas"></canvas>
-            <div class="lv-rank-badge">상위 ${pct}</div>
-            <!-- percentile ring -->
-            <div class="lv-pct-ring">
-              <svg viewBox="0 0 46 46">
-                <circle cx="23" cy="23" r="19" fill="none" stroke="#333" stroke-width="3.5"/>
-                <circle cx="23" cy="23" r="19" fill="none"
-                  stroke="${isR?'#ff0080':g.color}" stroke-width="3.5"
-                  stroke-dasharray="${Math.min(100,+pct.replace(/[^0-9.]/g,'') || 50) * 1.193} 119.3"
-                  stroke-linecap="round"
-                  transform="rotate(-90 23 23)"/>
-              </svg>
-              <div class="lv-pct-text" style="color:${isR?'#ff0080':g.color}">상위<br>${pct}</div>
-            </div>
-            <div class="lv-num ${isR?'rainbow':''}"
-              ${isR?'':`style="color:${g.color};-webkit-text-stroke:${stroke} ${g.color};text-shadow:0 0 20px ${g.color};filter:drop-shadow(0 0 12px ${g.color});"`}>${finalLv}</div>
-            <div class="lv-label">LEVEL</div>
-            <div class="lv-name ${isR?'rainbow':''}"
-              ${isR?'':`style="color:${g.color};-webkit-text-stroke:${nStroke} ${g.color};text-shadow:0 0 10px ${g.color};"`}>${g.name}</div>
-            <div class="lv-range">${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)} 구독자</div>
-            <div class="lv-play" style="border-color:${isR?'#ff0080':g.color};color:${isR?'#ff0080':g.color};">${g.play}</div>
-          </div>
-        </div>
-        <p style="text-align:center;font-size:.72rem;color:var(--text2);margin-top:8px;">카드 클릭 → 효과 미리보기</p>
-      </div>
-      <div class="analysis-right">
-        <div class="ch-info-card">
-          <img class="ch-avatar" src="${avatar}" onerror="this.src='https://via.placeholder.com/56'">
-          <div class="ch-meta">
-            <h3>${title}</h3>
-            <p>${desc}</p>
-          </div>
-        </div>
-        <div class="gauge-grid">
-          ${[
-            ['구독자',   fmt(subs),   subs/5e8*100,          isR?'#ff0080':g.color],
-            ['총 조회수',fmt(views),  Math.min(100,views/1e11*100), '#4f8ef7'],
-            ['영상 수',  videos+'개', Math.min(100,videos/1000*100),'#34d399'],
-            ['참여율',   engRate.toFixed(2)+'%', Math.min(100,engRate/10*100), '#fbbf24'],
-          ].map(([k,v,p,c])=>`
-            <div class="gauge-box">
-              <div class="gauge-label">${k}</div>
-              <div class="gauge-val">${v}</div>
-              ${gauge(p,100,c)}
-            </div>`).join('')}
-        </div>
-        <div class="bench-card">
-          <h4>📊 알고리즘 점수 분석</h4>
-          ${[
-            ['종합 점수',    score.toLocaleString(),  score>=75000?'good':score>=8000?'mid':'low'],
-            ['구독자 등급',  `LV${subsLv}`,           subsLv>=7?'good':subsLv>=4?'mid':'low'],
-            ['최종 레벨',    `LV${finalLv} – ${g.name}`, finalLv>=7?'good':finalLv>=4?'mid':'low'],
-            ['참여율',       engRate.toFixed(2)+'%',  engRate>=3?'good':engRate>=1?'mid':'low'],
-            ['상위 %',       pct,                     finalLv>=7?'good':finalLv>=4?'mid':'low'],
-          ].map(([k,v,cls])=>`
-            <div class="bench-item">
-              <span>${k}</span>
-              <span class="bench-score bench-${cls}">${v}</span>
-            </div>`).join('')}
-        </div>
-      </div>
-    </div>`;
-
-  // start spark on main card
-  if (mainSpark) mainSpark.stop();
-  requestAnimationFrame(() => {
-    const canvas = document.getElementById('mainSparkCanvas');
-    const card   = document.getElementById('mainLvCard');
-    if (!canvas || !card) return;
-    canvas.width  = card.offsetWidth;
-    canvas.height = card.offsetHeight;
-    mainSpark = new Spark(canvas, g);
-    mainSpark.start();
-  });
-}
-
-/* ═══════════════════════════════════════════════════
-   9. HOT VIDEOS
-═══════════════════════════════════════════════════ */
-async function loadHotVideos() {
-  const grid = document.getElementById('hotGrid');
-  const DEMO = [
-    { id:'dQw4w9WgXcQ', title:'[2025 인기] 어떻게 유튜브를 성장시키나 – 실전 가이드',  views:'1,240만', ch:'GrowthLab' },
-    { id:'jNQXAC9IVRw', title:'구독자 0→100만 가는 법 – 알고리즘 완전 분석',          views:'980만',  ch:'AlgoMaster' },
-    { id:'9bZkp7q19f0', title:'쇼츠 vs 롱폼 2025: 어떤 게 더 유리한가?',              views:'870만',  ch:'CreatorTips' },
-    { id:'kJQP7kiw5Fk', title:'유튜브 수익화 조건 총정리 (2025 최신)',                 views:'750만',  ch:'MoneyTube' },
-    { id:'CevxZvSJLk8', title:'CTR 높이는 썸네일 제작 비법 10가지',                   views:'630만',  ch:'ThumbnailPro' },
-    { id:'YbJOTdZBX1g', title:'유튜브 쇼츠 수익 공개 – 월 500만 구독자 기준',         views:'590만',  ch:'ShortsKing' },
+/* ══════════════════════════════════════════
+   HOT VIDEOS (demo)
+══════════════════════════════════════════ */
+function loadHotVideos(){
+  const D=[
+    {id:'dQw4w9WgXcQ',title:'유튜브 성장 알고리즘 완전 분석 2025',views:'1,240만',ch:'GrowthLab'},
+    {id:'jNQXAC9IVRw',title:'구독자 0→100만 실전 가이드',views:'980만',ch:'AlgoMaster'},
+    {id:'9bZkp7q19f0',title:'쇼츠 vs 롱폼 – 2025 완전 비교',views:'870만',ch:'CreatorTips'},
+    {id:'kJQP7kiw5Fk',title:'유튜브 수익화 조건 총정리',views:'750만',ch:'MoneyTube'},
+    {id:'CevxZvSJLk8',title:'CTR 높이는 썸네일 비법 10가지',views:'630만',ch:'ThumbnailPro'},
+    {id:'YbJOTdZBX1g',title:'쇼츠 수익 공개 – 500만 구독자 기준',views:'590만',ch:'ShortsKing'},
   ];
-  grid.innerHTML = DEMO.map(v => `
+  document.getElementById('hotGrid').innerHTML=D.map(v=>`
     <div class="hot-card" onclick="window.open('https://youtube.com/watch?v=${v.id}','_blank')">
       <img class="hot-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg"
-        onerror="this.src='https://via.placeholder.com/320x180/111/444?text=썸네일'">
+        onerror="this.src='https://via.placeholder.com/320x180/12121e/444?text=YT'">
       <div class="hot-meta">
         <div class="hot-title">${v.title}</div>
         <div class="hot-stats">👁 ${v.views} • 📺 ${v.ch}</div>
@@ -1615,130 +1371,92 @@ async function loadHotVideos() {
     </div>`).join('');
 }
 
-/* ═══════════════════════════════════════════════════
-   10. REVENUE CALCULATOR
-═══════════════════════════════════════════════════ */
-function calcRevenue() {
-  const views   = +document.getElementById('rv_views').value   || 0;
-  const cpm     = +document.getElementById('rv_cpm').value     || 0;
-  const country = +document.getElementById('rv_country').value || 1;
-  const vtr     = +document.getElementById('rv_vtr').value     / 100 || 0.35;
-  const revenue = views * vtr * (cpm / 1000) * country * 0.55; // YT takes 45%
-  document.getElementById('revNum').textContent    = fmtMoney(Math.round(revenue));
-  document.getElementById('revDetail').textContent =
-    `조회수 ${views.toLocaleString()} × VTR ${(vtr*100).toFixed(0)}% × CPM ₩${cpm.toLocaleString()} × 국가계수 ×${country} × YT공유 55%`;
+/* ══════════════════════════════════════════
+   REVENUE
+══════════════════════════════════════════ */
+function calcRevenue(){
+  const views=+document.getElementById('rv_views').value||0;
+  const cpm=+document.getElementById('rv_cpm').value||0;
+  const country=+document.getElementById('rv_country').value||1;
+  const vtr=+document.getElementById('rv_vtr').value/100||.35;
+  const rev=views*vtr*(cpm/1000)*country*0.55;
+  document.getElementById('revNum').textContent=fmtMoney(Math.round(rev));
+  document.getElementById('revDetail').textContent=`조회수 ${views.toLocaleString()} × VTR ${(vtr*100).toFixed(0)}% × CPM ₩${cpm.toLocaleString()} × 국가 ×${country} × YT 55%`;
 }
 
-/* ═══════════════════════════════════════════════════
-   11. TOOLS / IDEAS / SHOP
-═══════════════════════════════════════════════════ */
-const TOOLS = [
-  { icon:'🔍', name:'키워드 리서치',    desc:'검색량 & 경쟁 분석',     url:'https://keywordtool.io' },
-  { icon:'🎨', name:'썸네일 제작',       desc:'Canva 연동 디자인',      url:'https://canva.com' },
-  { icon:'📊', name:'채널 분석',         desc:'Social Blade 통계',      url:'https://socialblade.com' },
-  { icon:'📝', name:'스크립트 작성',     desc:'AI 콘텐츠 보조',         url:'https://chat.openai.com' },
-  { icon:'🎬', name:'영상 편집',         desc:'DaVinci Resolve',        url:'https://blackmagicdesign.com' },
-  { icon:'🎵', name:'무료 음원',         desc:'YouTube 오디오 라이브러리', url:'https://studio.youtube.com' },
-  { icon:'📱', name:'쇼츠 최적화',       desc:'세로형 영상 전략',        url:'https://youtube.com/shorts' },
-  { icon:'📈', name:'VidIQ',             desc:'SEO & 알고리즘 최적화',   url:'https://vidiq.com' },
+/* ══════════════════════════════════════════
+   EXTRAS
+══════════════════════════════════════════ */
+const TOOLS=[
+  {icon:'🔍',name:'키워드 리서치',desc:'검색량 & 경쟁 분석',url:'https://keywordtool.io'},
+  {icon:'🎨',name:'썸네일 제작',desc:'Canva 디자인',url:'https://canva.com'},
+  {icon:'📊',name:'채널 통계',desc:'Social Blade',url:'https://socialblade.com'},
+  {icon:'📝',name:'AI 스크립트',desc:'ChatGPT 연동',url:'https://chat.openai.com'},
+  {icon:'🎬',name:'영상 편집',desc:'DaVinci Resolve',url:'https://blackmagicdesign.com'},
+  {icon:'🎵',name:'무료 음원',desc:'YT 오디오 라이브러리',url:'https://studio.youtube.com'},
+  {icon:'📱',name:'쇼츠 최적화',desc:'세로형 영상 전략',url:'https://youtube.com/shorts'},
+  {icon:'📈',name:'VidIQ',desc:'SEO & 알고리즘',url:'https://vidiq.com'},
 ];
-const IDEAS = [
-  { icon:'🔥', name:'트렌드 챌린지',  desc:'실시간 트렌드 활용 콘텐츠' },
-  { icon:'🎮', name:'게임 리뷰',       desc:'신작 게임 24시간 선리뷰' },
-  { icon:'🍳', name:'요리 & 푸드',     desc:'10분 완성 레시피 시리즈' },
-  { icon:'💪', name:'피트니스',        desc:'30일 챌린지 루틴' },
-  { icon:'🌍', name:'여행 브이로그',   desc:'당일치기 국내여행 시리즈' },
-  { icon:'💼', name:'재테크 & 투자',   desc:'월 100만원 만들기 도전' },
+const IDEAS=[
+  {icon:'🔥',name:'트렌드 챌린지',desc:'실시간 트렌드 활용'},
+  {icon:'🎮',name:'게임 리뷰',desc:'신작 24시간 선리뷰'},
+  {icon:'🍳',name:'요리 & 푸드',desc:'10분 완성 레시피'},
+  {icon:'💪',name:'피트니스',desc:'30일 챌린지 루틴'},
+  {icon:'🌍',name:'여행 브이로그',desc:'당일치기 국내여행'},
+  {icon:'💼',name:'재테크',desc:'월 100만원 도전'},
 ];
-const SHOP = [
-  { icon:'🎙', name:'마이크 추천',    desc:'USB 콘덴서 마이크 Top5',  url:'https://coupang.com' },
-  { icon:'💡', name:'조명 세트',      desc:'링라이트 & 소프트박스',   url:'https://coupang.com' },
-  { icon:'📷', name:'카메라 가이드',  desc:'유튜브용 카메라 비교',    url:'https://coupang.com' },
-  { icon:'🖥', name:'편집 PC',        desc:'영상편집 최적 사양 추천', url:'https://coupang.com' },
+const SHOP=[
+  {icon:'🎙',name:'마이크 추천',desc:'USB 콘덴서 Top5',url:'https://coupang.com'},
+  {icon:'💡',name:'조명 세트',desc:'링라이트 & 소프트박스',url:'https://coupang.com'},
+  {icon:'📷',name:'카메라 가이드',desc:'유튜브용 카메라 비교',url:'https://coupang.com'},
+  {icon:'🖥',name:'편집 PC',desc:'영상편집 최적 사양',url:'https://coupang.com'},
 ];
-
-function buildExtras() {
-  document.getElementById('toolsGrid').innerHTML = TOOLS.map(t =>
-    `<div class="tool-item" onclick="window.open('${t.url}','_blank')">
-      <div class="tool-icon">${t.icon}</div>
-      <div class="tool-name">${t.name}</div>
-      <div class="tool-desc">${t.desc}</div>
-    </div>`).join('');
-  document.getElementById('ideasGrid').innerHTML = IDEAS.map(i =>
-    `<div class="idea-item">
-      <div class="idea-icon">${i.icon}</div>
-      <div class="idea-name">${i.name}</div>
-      <div class="idea-desc">${i.desc}</div>
-    </div>`).join('');
-  document.getElementById('shopGrid').innerHTML = SHOP.map(s =>
-    `<div class="shop-item" onclick="window.open('${s.url}','_blank')">
-      <div class="shop-icon">${s.icon}</div>
-      <div class="shop-name">${s.name}</div>
-      <div class="shop-desc">${s.desc}</div>
-    </div>`).join('');
+function buildExtras(){
+  document.getElementById('toolsGrid').innerHTML=TOOLS.map(t=>`<div class="extra-item" onclick="window.open('${t.url}','_blank')"><div class="extra-icon">${t.icon}</div><div class="extra-name">${t.name}</div><div class="extra-desc">${t.desc}</div></div>`).join('');
+  document.getElementById('ideasGrid').innerHTML=IDEAS.map(i=>`<div class="extra-item"><div class="extra-icon">${i.icon}</div><div class="extra-name">${i.name}</div><div class="extra-desc">${i.desc}</div></div>`).join('');
+  document.getElementById('shopGrid').innerHTML=SHOP.map(s=>`<div class="extra-item" onclick="window.open('${s.url}','_blank')"><div class="extra-icon">${s.icon}</div><div class="extra-name">${s.name}</div><div class="extra-desc">${s.desc}</div></div>`).join('');
 }
 
-/* ═══════════════════════════════════════════════════
-   12. BENCHMARK TIPS
-═══════════════════════════════════════════════════ */
-const BENCH_TIPS = [
-  { title:'📌 구독자 티어별 실제 비율 (2025 기준)',
-    body:`vidIQ가 6500만 채널을 분석한 결과, 구독자 1,000명 미만 채널이 전체의 66%, 10,000명 미만이 94%, 100,000명 미만이 99%를 차지합니다. 현재 위치를 파악하고 다음 단계 목표를 설정하세요.` },
-  { title:'🎯 CTR(클릭률) 벤치마크',
-    body:`게임·엔터테인먼트 채널 평균 CTR 8~12%, 교육 콘텐츠 4~7%, 신규 채널 2~4%가 업계 기준입니다. (InstantViews 2025) 썸네일과 제목 A/B 테스트를 통해 CTR 개선이 성장의 핵심입니다.` },
-  { title:'📅 업로드 빈도 최적화',
-    body:`알고리즘은 일관된 업로드 패턴을 선호합니다. 주 1~2회 업로드가 성장에 가장 효과적이며, 쇼츠는 주 3~5회가 권장됩니다. 2024년 기준 쇼츠 채널은 50% YoY 성장했습니다.` },
-  { title:'💬 참여율(Engagement Rate) 목표',
-    body:`참여율 6% 이상이면 상위권으로 분류됩니다. (LinkedIn Influencer Benchmark 2025) 댓글 답변, 커뮤니티 포스트, 라이브 방송으로 참여율을 높이세요.` },
-  { title:'🔍 키워드 & SEO 전략',
-    body:`제목에 핵심 키워드를 앞에 배치하고, 설명란 첫 200자에 키워드를 포함하세요. 해시태그는 3~5개가 최적이며, 태그는 15개 이하로 유지하는 것이 권장됩니다.` },
-  { title:'🤝 콜라보레이션 효과',
-    body:`비슷한 규모(구독자 ±30% 범위)의 채널과 콜라보하면 양측 모두 신규 구독자 유입이 크게 증가합니다. 분기당 1~2회 콜라보를 목표로 하세요.` },
-  { title:'💰 수익화 달성 조건',
-    body:`YouTube Partner Program(YPP) 기본 조건: 구독자 1,000명 + 최근 12개월 시청시간 4,000시간 또는 쇼츠 조회수 1,000만회. 수익화 이후 RPM은 한국 기준 ₩2,000~₩8,000, 미국 기준 $3~$15입니다.` },
-  { title:'🤖 AI 도구 활용 (2026 트렌드)',
-    body:`2026년 기준 크리에이터의 84%가 AI 도구를 사용합니다. 스크립트 작성, 썸네일 아이디어, 키워드 리서치에 AI를 적극 활용하여 콘텐츠 생산성을 높이세요.` },
+/* ══════════════════════════════════════════
+   BENCHMARK
+══════════════════════════════════════════ */
+const BENCH=[
+  {title:'📌 구독자 티어별 실제 비율 (2025)',body:'vidIQ 6500만 채널 분석: 1,000명 미만이 전체의 66%, 10,000명 미만 94%, 100,000명 미만 99%. 현재 위치를 파악하고 다음 단계 목표를 설정하세요.'},
+  {title:'🎯 CTR 벤치마크',body:'게임·엔터 8~12%, 교육 4~7%, 신규 채널 2~4%. (InstantViews 2025) 썸네일+제목 A/B 테스트가 성장의 핵심입니다.'},
+  {title:'📅 업로드 빈도 최적화',body:'주 1~2회가 장기 성장에 효과적. 쇼츠는 주 3~5회 권장. 2024년 쇼츠 채널은 50% YoY 성장했습니다.'},
+  {title:'💬 참여율 목표',body:'6% 이상이면 상위권. 댓글 답변·커뮤니티 포스트·라이브 방송으로 참여율을 높이세요. 참여율은 알고리즘 점수에 가장 큰 가중치를 가집니다.'},
+  {title:'🔍 SEO 전략',body:'제목 앞에 핵심 키워드 배치, 설명란 첫 200자에 키워드 포함. 해시태그 3~5개, 태그 15개 이하가 최적입니다.'},
+  {title:'💰 수익화 달성 조건',body:'YPP 기본: 구독자 1,000명 + 시청시간 4,000시간 또는 쇼츠 1,000만 조회. 한국 RPM ₩2,000~₩8,000, 미국 $3~$15.'},
+  {title:'🤖 AI 도구 활용 (2026)',body:'크리에이터의 84%가 AI 도구를 활용. 스크립트 작성·썸네일 아이디어·키워드 리서치에 AI를 적극 활용하세요.'},
+  {title:'🔥 압도적 성과의 보너스 점수',body:'조회수/구독자 비율 200% 이상, 참여율 8% 이상, 월 업로드 12회 이상인 경우 알고리즘 점수에 추가 보너스가 적용되어 레벨이 상향될 수 있습니다.'},
 ];
-
-function buildBench() {
-  document.getElementById('benchContent').innerHTML =
-    BENCH_TIPS.map(t => `
-      <div class="bench-tip-card">
-        <h4>${t.title}</h4>
-        <p>${t.body}</p>
-      </div>`).join('');
+function buildBench(){
+  document.getElementById('benchContent').innerHTML=BENCH.map(t=>`<div class="bench-tip-card"><h4>${t.title}</h4><p>${t.body}</p></div>`).join('');
 }
 
-/* ═══════════════════════════════════════════════════
-   13. NAVIGATION
-═══════════════════════════════════════════════════ */
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn,.sidebar-item').forEach(b => b.classList.remove('active'));
-  const sec = document.getElementById('sec-' + id);
-  if (sec) sec.classList.add('active');
-  document.querySelectorAll(`[onclick*="'${id}'"]`).forEach(b => b.classList.add('active'));
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn,.sidebar-item').forEach(b=>b.classList.remove('active'));
+  const s=document.getElementById('sec-'+id);
+  if(s)s.classList.add('active');
+  document.querySelectorAll(`[onclick*="'${id}'"]`).forEach(b=>b.classList.add('active'));
 }
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-function handleGlobalSearch() {
-  const q = document.getElementById('globalSearchInput').value.trim();
-  if (!q) return;
-  document.getElementById('channelInput').value = q;
-  showSection('channel');
-  analyzeChannel();
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
+function handleGlobalSearch(){
+  const q=document.getElementById('globalSearchInput').value.trim();
+  if(!q)return;
+  document.getElementById('channelInput').value=q;
+  showSection('channel'); analyzeChannel();
 }
 
-/* ═══════════════════════════════════════════════════
-   14. INIT
-═══════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  buildGradeTable();
-  buildExtras();
-  buildBench();
-  loadHotVideos();
-  calcRevenue();
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  buildGradeTable(); buildExtras(); buildBench(); loadHotVideos(); calcRevenue();
 });
 </script>
 </body>
