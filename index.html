@@ -69,75 +69,51 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-main);color:var(-
 .ch-srow input:focus{border-color:var(--accent);}
 .ch-srow button{padding:9px 18px;background:var(--accent);border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:13px;font-weight:600;}
 
-/* ── FIRE BADGE ── */
+/* ══ FIRE BADGE ══ */
 .fire-section{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px;}
 .fire-badge-wrap{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;}
 
-/* 스테이지: 캔버스가 뒤, 텍스트가 앞 */
 .fire-stage{
   position:relative;
-  width:240px;
-  height:280px;
+  width:260px; height:300px;
   background:#000;
-  border-radius:14px;
+  border-radius:16px;
   overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
-#fireCanvas{
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
-  pointer-events:none;
-}
+#fireCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 
-/* 텍스트 레이어 — z-index 높여서 스파크 위에 표시 */
+/* 텍스트 레이어: 캔버스(z1) 위에 표시 */
 .fire-text-layer{
-  position:relative;
-  z-index:10;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
   pointer-events:none;
 }
 
-/* 첫줄: LV 숫자 — 크기 줄임, 순수 흰색, 효과 없음 */
+/* ── LV 숫자: 흰 글씨 + 레벨 색 테두리 ── */
 .lv-number{
-  font-size:52px;
+  font-size:56px;
   font-weight:900;
   line-height:1;
   color:#ffffff;
   letter-spacing:-1px;
   font-family:'Noto Sans KR',sans-serif;
-  text-shadow: 0 2px 8px rgba(0,0,0,.9);
+  /* 테두리: -webkit-text-stroke으로 레벨색 아웃라인 */
+  -webkit-text-stroke: 2.5px var(--lv-color, #9ca3af);
+  /* paint-order: 획 먼저, 채우기 나중 → 흰 글씨 위에 테두리 */
+  paint-order: stroke fill;
+  /* 그림자는 JS에서 동적으로 설정 */
 }
-/* 두번째줄: 이름 + 상위% */
-.lv-row2{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
+
+.lv-row2{display:flex;align-items:center;gap:8px;}
 .lv-name{
-  font-size:15px;
-  font-weight:700;
-  text-shadow: 0 1px 4px rgba(0,0,0,.9);
+  font-size:16px;font-weight:700;
+  color:#fff;
+  -webkit-text-stroke:1px var(--lv-color,#9ca3af);
+  paint-order:stroke fill;
 }
-.lv-rank{
-  font-size:12px;
-  font-weight:500;
-  color:rgba(255,255,255,.8);
-  text-shadow: 0 1px 3px rgba(0,0,0,.9);
-}
-/* 세번째줄: 알고리즘 점수 */
-.lv-score{
-  font-size:11px;
-  font-weight:500;
-  color:rgba(255,255,255,.65);
-  text-shadow: 0 1px 3px rgba(0,0,0,.8);
-}
+.lv-rank{font-size:12px;font-weight:500;color:rgba(255,255,255,.82);}
+.lv-score{font-size:11px;font-weight:500;color:rgba(255,255,255,.62);}
 
 /* GRADE TABLE */
 .grade-wrap{margin-left:auto;}
@@ -223,15 +199,23 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-main);color:var(-
 .mc{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--text-secondary);font-size:18px;cursor:pointer;}
 .modal-box h3{font-size:15px;font-weight:700;margin-bottom:14px;}
 .prev-stage{
-  position:relative;width:200px;height:230px;
+  position:relative;width:200px;height:240px;
   background:#000;border-radius:12px;overflow:hidden;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   margin:0 auto 10px;
 }
-#prevCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
-.prev-text-layer{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;}
-.prev-lv{font-size:40px;font-weight:900;line-height:1;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.9);}
-.prev-nm{font-size:13px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.9);}
+#prevCanvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.prev-text-layer{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:5px;pointer-events:none;}
+.prev-lv{
+  font-size:44px;font-weight:900;line-height:1;color:#fff;
+  -webkit-text-stroke:2px var(--lv-color,#9ca3af);
+  paint-order:stroke fill;
+}
+.prev-nm{
+  font-size:13px;font-weight:700;color:#fff;
+  -webkit-text-stroke:0.8px var(--lv-color,#9ca3af);
+  paint-order:stroke fill;
+}
 .prev-nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
 .prev-nav button{padding:4px 12px;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);cursor:pointer;font-size:11px;}
 .prev-nav button:hover{background:var(--accent);}
@@ -313,7 +297,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-main);color:var(-
           <div class="fire-badge-wrap">
             <div class="fire-stage" id="fireStage">
               <canvas id="fireCanvas"></canvas>
-              <div class="fire-text-layer">
+              <div class="fire-text-layer" id="fireTextLayer">
                 <div class="lv-number" id="lvNumber">LV.1</div>
                 <div class="lv-row2">
                   <span class="lv-name" id="lvName">입문</span>
@@ -383,7 +367,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-main);color:var(-
     <h3>레벨 효과 미리보기</h3>
     <div class="prev-stage" id="prevStage">
       <canvas id="prevCanvas"></canvas>
-      <div class="prev-text-layer">
+      <div class="prev-text-layer" id="prevTextLayer">
         <div class="prev-lv" id="pvLv">LV.1</div>
         <div class="prev-nm" id="pvNm">입문</div>
       </div>
@@ -404,176 +388,192 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-main);color:var(-
 </div>
 
 <script>
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    CONFIG
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 const API_KEYS=['AIzaSyAYi9B4vIFjl75uYBS56GbTSMJfV_TLuzE','YOUR_API_KEY_2'];
 let keyIdx=0;
 const getKey=()=>API_KEYS[keyIdx%API_KEYS.length];
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    GRADES
-═══════════════════════════════════════ */
+   - color: 레벨 대표색 (테두리+스파크)
+   - glow1/glow2: 배경 그라데이션 내부/외부 색
+   - strokeW: 텍스트 테두리 굵기
+══════════════════════════════════════ */
 const GRADES=[
-  {lv:1, name:'입문',   color:'#9ca3af', rank:99, range:[0,9]},
-  {lv:2, name:'성장',   color:'#3b82f6', rank:85, range:[10,19]},
-  {lv:3, name:'활성',   color:'#eab308', rank:72, range:[20,29]},
-  {lv:4, name:'주목',   color:'#f97316', rank:58, range:[30,39]},
-  {lv:5, name:'인기',   color:'#fb923c', rank:45, range:[40,49]},
-  {lv:6, name:'급상승', color:'#22c55e', rank:32, range:[50,59]},
-  {lv:7, name:'바이럴', color:'#ef4444', rank:18, range:[60,69]},
-  {lv:8, name:'전설',   color:'#a855f7', rank:8,  range:[70,79]},
-  {lv:9, name:'신화',   color:'#ec4899', rank:3,  range:[80,89]},
-  {lv:10,name:'레전드', color:'rainbow', rank:1,  range:[90,100]},
+  // LV1 회색 — 은은한 회색 그라데이션
+  {lv:1, name:'입문',   color:'#9ca3af', glow1:'rgba(156,163,175,.22)', glow2:'rgba(156,163,175,.0)',  strokeW:2,   rank:99, range:[0,9]},
+  // LV2 파랑 — 차가운 파란 글로우
+  {lv:2, name:'성장',   color:'#3b82f6', glow1:'rgba(59,130,246,.28)',  glow2:'rgba(29,78,216,.0)',    strokeW:2.2, rank:85, range:[10,19]},
+  // LV3 노랑 — 따뜻한 황금빛
+  {lv:3, name:'활성',   color:'#eab308', glow1:'rgba(234,179,8,.32)',   glow2:'rgba(161,98,7,.0)',     strokeW:2.4, rank:72, range:[20,29]},
+  // LV4 주황 — 강렬한 주황
+  {lv:4, name:'주목',   color:'#f97316', glow1:'rgba(249,115,22,.35)',  glow2:'rgba(194,65,12,.0)',    strokeW:2.6, rank:58, range:[30,39]},
+  // LV5 주황(연) — 살구빛 그라데이션
+  {lv:5, name:'인기',   color:'#fb923c', glow1:'rgba(251,146,60,.38)',  glow2:'rgba(234,88,12,.0)',    strokeW:2.8, rank:45, range:[40,49]},
+  // LV6 초록 — 네온 초록
+  {lv:6, name:'급상승', color:'#22c55e', glow1:'rgba(34,197,94,.40)',   glow2:'rgba(21,128,61,.0)',    strokeW:3.0, rank:32, range:[50,59]},
+  // LV7 빨강 — 붉은 불꽃
+  {lv:7, name:'바이럴', color:'#ef4444', glow1:'rgba(239,68,68,.42)',   glow2:'rgba(185,28,28,.0)',    strokeW:3.2, rank:18, range:[60,69]},
+  // LV8 보라 — 신비로운 퍼플
+  {lv:8, name:'전설',   color:'#a855f7', glow1:'rgba(168,85,247,.45)',  glow2:'rgba(126,34,206,.0)',   strokeW:3.5, rank:8,  range:[70,79]},
+  // LV9 분홍 — 핑크 네온
+  {lv:9, name:'신화',   color:'#ec4899', glow1:'rgba(236,72,153,.48)',  glow2:'rgba(190,24,93,.0)',    strokeW:3.8, rank:3,  range:[80,89]},
+  // LV10 무지개 — 풀 스펙트럼
+  {lv:10,name:'레전드', color:'rainbow', glow1:'rgba(255,200,100,.5)',  glow2:'rgba(200,100,255,.0)',  strokeW:4.2, rank:1,  range:[90,100]},
 ];
 
-function hexRgb(h){
-  return{r:parseInt(h.slice(1,3),16),g:parseInt(h.slice(3,5),16),b:parseInt(h.slice(5,7),16)};
-}
-function getColor(color,t=0){
-  if(color==='rainbow') return`hsl(${(t*80)%360},100%,65%)`;
-  return color;
-}
-function toRgba(color,a,t=0){
-  if(color==='rainbow') return`hsla(${(t*80)%360},100%,65%,${a})`;
-  const{r,g,b}=hexRgb(color);
-  return`rgba(${r},${g},${b},${a})`;
-}
+function hexRgb(h){return{r:parseInt(h.slice(1,3),16),g:parseInt(h.slice(3,5),16),b:parseInt(h.slice(5,7),16)};}
 
-/* ═══════════════════════════════════════
-   SPARK PARTICLE
-   - 스파크만 존재 (엠버 없음)
-   - 레벨 높을수록 수 많고 크고 빠름
-   - 텍스트 테두리에서 발생 → 위로 날아감
-═══════════════════════════════════════ */
-class Spark{
-  constructor(){this.alive=false;}
-
-  spawn(x, y, intensity, color){
-    this.x = x + (Math.random()-.5)*4;
-    this.y = y + (Math.random()-.5)*4;
-
-    // 발사 각도: 주로 위쪽, 레벨 높을수록 넓은 각도 분포
-    const spreadAngle = (0.4 + intensity*0.9) * Math.PI;
-    const angle = -Math.PI/2 + (Math.random()-.5)*spreadAngle;
-
-    // 속도: 레벨 높을수록 빠름
-    const speed = (1.2 + Math.random()*3.5) * (0.3 + intensity*0.9);
-    this.vx = Math.cos(angle)*speed;
-    this.vy = Math.sin(angle)*speed;
-
-    // 중력
-    this.gravity = 0.025 + Math.random()*0.02;
-    // 수평 흔들림
-    this.wobble = (Math.random()-.5)*0.06;
-
-    this.life = 1.0;
-    // 레벨 높을수록 더 오래 살아있음
-    this.decay = 0.008 + Math.random()*0.018 * (1.2-intensity*0.4);
-
-    // 크기: 레벨에 따라 증가
-    this.size = 0.6 + Math.random()*1.4 * (0.3+intensity*0.85);
-
-    this.color = color;
-    this.alive = true;
-
-    // trail 잔상
-    this.trail = [];
-    this.maxTrail = Math.floor(3 + intensity*5);
-  }
-
-  update(){
-    if(!this.alive) return;
-    // 잔상 저장
-    this.trail.push({x:this.x, y:this.y, l:this.life});
-    if(this.trail.length > this.maxTrail) this.trail.shift();
-
-    this.vx += this.wobble;
-    this.vy += this.gravity;
-    this.x  += this.vx;
-    this.y  += this.vy;
-    this.life -= this.decay;
-    if(this.life<=0) this.alive=false;
-  }
-}
-
-/* ═══════════════════════════════════════
-   SPARK RENDERER
-═══════════════════════════════════════ */
+/* ══════════════════════════════════════
+   CANVAS BACKGROUND RENDERER
+   - 배경 그라데이션 (레벨별 차별화)
+   - 스파크 파티클 (스파크만, 엠버 없음)
+══════════════════════════════════════ */
 class SparkRenderer{
   constructor(canvas, textLayerEl, lvIdx, isPreview=false){
-    this.canvas     = canvas;
-    this.textEl     = textLayerEl;
-    this.lvIdx      = lvIdx;
-    this.isPreview  = isPreview;
-    this.intensity  = (lvIdx+1)/10; // 0.1~1.0
-    this.grade      = GRADES[lvIdx];
-    this.color      = this.grade.color;
-
-    // 스파크 풀: 레벨별 최대 수 × 2 (이전 대비 2배)
-    const poolSize  = Math.floor(20 + this.intensity*380); // LV1≈58, LV10≈400
-    this.sparks     = Array.from({length: Math.max(poolSize,400)}, ()=>new Spark());
-
-    this.t   = 0;
-    this.raf = null;
+    this.canvas    = canvas;
+    this.textEl    = textLayerEl;
+    this.lvIdx     = lvIdx;
+    this.isPreview = isPreview;
+    this.grade     = GRADES[lvIdx];
+    this.intensity = (lvIdx+1)/10;
+    this.color     = this.grade.color;
+    this.isRb      = this.color==='rainbow';
+    this.t         = 0;
+    this.raf       = null;
+    // 스파크 풀: 레벨에 비례
+    const poolSize = Math.max(400, Math.floor(20+this.intensity*380));
+    this.sparks    = Array.from({length:poolSize}, ()=>new Spark());
     this._resize();
+    this._applyTextStyle();
+    this._applyStageGlow();
   }
 
   _resize(){
-    const s = this.canvas.parentElement;
-    this.W = s.offsetWidth  || (this.isPreview?200:240);
-    this.H = s.offsetHeight || (this.isPreview?230:280);
-    this.canvas.width  = this.W;
-    this.canvas.height = this.H;
+    const s=this.canvas.parentElement;
+    this.W=s.offsetWidth ||(this.isPreview?200:260);
+    this.H=s.offsetHeight||(this.isPreview?240:300);
+    this.canvas.width =this.W;
+    this.canvas.height=this.H;
   }
 
-  /* 텍스트 엘리먼트 경계 좌표 (캔버스 기준) */
+  /* 텍스트 테두리 + 그림자 스타일 적용 */
+  _applyTextStyle(){
+    const g=this.grade;
+    const isRb=this.isRb;
+    const c=isRb?'#fff':g.color;
+
+    // LV 숫자
+    const lvEl=this.textEl.querySelector('.lv-number,.prev-lv');
+    if(lvEl){
+      lvEl.style.setProperty('--lv-color', c);
+      lvEl.style.webkitTextStroke=`${g.strokeW}px ${c}`;
+
+      if(isRb){
+        // 무지개: text-stroke를 CSS animation으로 처리 어려워서 그림자로 대체
+        lvEl.style.webkitTextStroke=`${g.strokeW}px #fff`;
+        lvEl.style.textShadow=`
+          0 0 ${8+this.intensity*14}px #ff0,
+          0 0 ${16+this.intensity*20}px #f70,
+          0 0 ${24+this.intensity*28}px #f0f,
+          0 2px 6px rgba(0,0,0,.95)`;
+      } else {
+        // 레벨별 그림자: 테두리 색 기반 글로우
+        const{r,g:gr,b}=hexRgb(c);
+        const glowR=this.intensity;
+        lvEl.style.textShadow=`
+          0 0 ${4+glowR*8}px rgba(${r},${gr},${b},${0.5+glowR*0.4}),
+          0 0 ${10+glowR*18}px rgba(${r},${gr},${b},${0.3+glowR*0.3}),
+          0 0 ${20+glowR*30}px rgba(${r},${gr},${b},${0.15+glowR*0.2}),
+          0 2px 6px rgba(0,0,0,.95)`;
+      }
+    }
+
+    // 이름 텍스트
+    const nmEl=this.textEl.querySelector('.lv-name,.prev-nm');
+    if(nmEl){
+      if(isRb){
+        nmEl.style.webkitTextStroke=`0.8px #fff`;
+        nmEl.style.textShadow=`0 0 8px #ff0, 0 0 14px #f70, 0 1px 3px rgba(0,0,0,.9)`;
+      } else {
+        const{r,g:gr,b}=hexRgb(c);
+        nmEl.style.setProperty('--lv-color', c);
+        nmEl.style.webkitTextStroke=`1px ${c}`;
+        nmEl.style.textShadow=`
+          0 0 6px rgba(${r},${gr},${b},${0.5+this.intensity*0.4}),
+          0 0 12px rgba(${r},${gr},${b},${0.25+this.intensity*0.2}),
+          0 1px 3px rgba(0,0,0,.9)`;
+      }
+    }
+  }
+
+  /* 스테이지 배경 그라데이션 (레벨별 차별화) */
+  _applyStageGlow(){
+    const g=this.grade;
+    const stage=this.canvas.parentElement;
+    if(!stage) return;
+    const lvIdx=this.lvIdx;
+    const isRb=this.isRb;
+
+    // 레벨별 고유 배경 그라데이션
+    if(isRb){
+      stage.style.background=`
+        radial-gradient(ellipse 80% 60% at 50% 70%,
+          rgba(255,100,200,.18) 0%,
+          rgba(100,200,255,.12) 35%,
+          rgba(200,255,100,.08) 65%,
+          #000 100%)`;
+    } else {
+      const{r,g:gr,b}=hexRgb(g.color);
+      // 레벨이 높을수록 안쪽 글로우 강하고 넓어짐
+      const innerA = 0.08 + lvIdx*0.025;
+      const midA   = 0.04 + lvIdx*0.015;
+      const innerR = 40  + lvIdx*5;
+      const midR   = 65  + lvIdx*4;
+      stage.style.background=`
+        radial-gradient(ellipse ${innerR}% ${innerR*.6}% at 50% 68%,
+          rgba(${r},${gr},${b},${innerA}) 0%,
+          rgba(${r},${gr},${b},${midA}) ${midR}%,
+          #000 100%)`;
+    }
+  }
+
   _getBounds(){
-    const stage = this.canvas.parentElement;
-    const sr    = stage.getBoundingClientRect();
-    const tr    = this.textEl.getBoundingClientRect();
+    const stage=this.canvas.parentElement;
+    const sr=stage.getBoundingClientRect();
+    const tr=this.textEl.getBoundingClientRect();
     return{
-      top:   tr.top    - sr.top,
-      bot:   tr.bottom - sr.top,
-      left:  tr.left   - sr.left,
-      right: tr.right  - sr.left,
-      cx:   (tr.left+tr.right)/2 - sr.left,
-      w:     tr.right  - tr.left,
-      h:     tr.bottom - tr.top,
+      top:   tr.top   -sr.top,
+      bot:   tr.bottom-sr.top,
+      left:  tr.left  -sr.left,
+      right: tr.right -sr.left,
+      cx:   (tr.left+tr.right)/2-sr.left,
+      w:     tr.right -tr.left,
+      h:     tr.bottom-tr.top,
     };
   }
 
-  /* 텍스트 테두리 위 스폰 포인트 생성 */
   _getEdgePoints(bd){
     const pts=[];
     const{top,bot,left,right}=bd;
-    const step = Math.max(2, 8 - this.intensity*5); // 레벨 높을수록 촘촘
-    // 상단
-    for(let x=left; x<=right; x+=step) pts.push({x,y:top});
-    // 좌측
-    for(let y=top;  y<=bot;   y+=step) pts.push({x:left, y});
-    // 우측
-    for(let y=top;  y<=bot;   y+=step) pts.push({x:right,y});
-    // 하단 (LV5 이상)
+    const step=Math.max(2, 8-this.intensity*5);
+    for(let x=left;x<=right;x+=step) pts.push({x,y:top});
+    for(let y=top; y<=bot;  y+=step) pts.push({x:left, y});
+    for(let y=top; y<=bot;  y+=step) pts.push({x:right,y});
     if(this.intensity>=0.5){
-      for(let x=left; x<=right; x+=step) pts.push({x,y:bot});
+      for(let x=left;x<=right;x+=step) pts.push({x,y:bot});
     }
     return pts;
   }
 
   start(){
     this.stop();
-    const loop=()=>{
-      this.t += 0.02;
-      this._frame();
-      this.raf=requestAnimationFrame(loop);
-    };
+    const loop=()=>{this.t+=0.02;this._frame();this.raf=requestAnimationFrame(loop);};
     loop();
   }
-
-  stop(){
-    if(this.raf){cancelAnimationFrame(this.raf);this.raf=null;}
-  }
+  stop(){if(this.raf){cancelAnimationFrame(this.raf);this.raf=null;}}
 
   _frame(){
     const{canvas,t}=this;
@@ -581,215 +581,200 @@ class SparkRenderer{
     const{W,H}=this;
     ctx.clearRect(0,0,W,H);
 
-    const bd          = this._getBounds();
-    const edgePts     = this._getEdgePoints(bd);
-    const intensity   = this.intensity;
-    const color       = this.color;
-    const isRb        = color==='rainbow';
+    const bd=this._getBounds();
+    const edgePts=this._getEdgePoints(bd);
+    const intensity=this.intensity;
+    const color=this.color;
+    const isRb=this.isRb;
 
-    // ── 스파크 스폰 ─────────────────────────────────
-    // 레벨별 초당 스폰 수: LV1≈2, LV10≈20
-    const spawnPerFrame = Math.floor(1 + intensity*19);
+    // 스파크 스폰
+    const spawnPerFrame=Math.floor(1+intensity*19);
     let spawned=0;
-    for(let i=0; i<this.sparks.length && spawned<spawnPerFrame; i++){
+    for(let i=0;i<this.sparks.length&&spawned<spawnPerFrame;i++){
       if(!this.sparks[i].alive){
-        const ep = edgePts[Math.floor(Math.random()*edgePts.length)];
-        this.sparks[i].spawn(ep.x, ep.y, intensity, color);
+        const ep=edgePts[Math.floor(Math.random()*edgePts.length)];
+        this.sparks[i].spawn(ep.x,ep.y,intensity,color);
         spawned++;
       }
     }
 
-    // ── 스파크 렌더 ─────────────────────────────────
+    // 스파크 렌더
     this.sparks.forEach(s=>{
       s.update();
       if(!s.alive) return;
 
-      const a = s.life * (0.55 + intensity*0.4);
-
-      // 색상 결정
+      const a=s.life*(0.55+intensity*.4);
       let cr,cg,cb;
       if(isRb){
-        const h=(t*80+s.x*0.05)%360;
-        // hsl → approximate rgb
-        cr=255; cg=150+(Math.sin(h*Math.PI/180)*80|0); cb=200;
+        // 무지개: 위치 기반 색상 변화
+        const hue=(t*80+s.x*0.08)%360;
+        const hsl2rgb=h=>{
+          const k=(n,h)=>(n+h/30)%12;
+          const f=n=>1-Math.max(Math.min(k(n,h)-3,Math.min(9-k(n,h),1)),-1);
+          return{r:Math.round(f(0)*255),g:Math.round(f(8)*255),b:Math.round(f(4)*255)};
+        };
+        const rgb=hsl2rgb(hue);
+        cr=rgb.r;cg=rgb.g;cb=rgb.b;
       } else {
-        const rgb=hexRgb(color);
-        cr=rgb.r; cg=rgb.g; cb=rgb.b;
+        const rgb=hexRgb(color);cr=rgb.r;cg=rgb.g;cb=rgb.b;
       }
 
-      // ── 잔상 (trail) ─────────────────────────────
+      // 잔상
       if(s.trail.length>1){
-        for(let ti=0; ti<s.trail.length-1; ti++){
-          const p0=s.trail[ti];
-          const p1=s.trail[ti+1];
+        for(let ti=0;ti<s.trail.length-1;ti++){
+          const p0=s.trail[ti],p1=s.trail[ti+1];
           const ratio=(ti+1)/s.trail.length;
-          const ta=p0.l * ratio * (0.12+intensity*0.18);
+          const ta=p0.l*ratio*(0.12+intensity*.18);
           ctx.beginPath();
-          ctx.moveTo(p0.x,p0.y);
-          ctx.lineTo(p1.x,p1.y);
-          if(isRb){
-            const h2=((t*80+s.x*0.05)+(ti*15))%360;
-            ctx.strokeStyle=`hsla(${h2},100%,70%,${ta})`;
-          } else {
-            ctx.strokeStyle=`rgba(${cr},${cg},${cb},${ta})`;
-          }
-          ctx.lineWidth = s.size * 0.55 * ratio;
-          ctx.lineCap='round';
-          ctx.stroke();
+          ctx.moveTo(p0.x,p0.y);ctx.lineTo(p1.x,p1.y);
+          ctx.strokeStyle=`rgba(${cr},${cg},${cb},${ta})`;
+          ctx.lineWidth=s.size*.55*ratio;
+          ctx.lineCap='round';ctx.stroke();
         }
       }
 
-      // ── 스파크 코어: 순백 중심점 ─────────────────
+      // 코어: 흰 점
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.size*0.5, 0, Math.PI*2);
-      ctx.fillStyle=`rgba(255,255,255,${a*0.95})`;
+      ctx.arc(s.x,s.y,s.size*.5,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${a*.95})`;
       ctx.fill();
 
-      // ── 내부 글로우 (레벨 색상) ──────────────────
+      // 내부 글로우
       const g1=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.size*2.2);
-      if(isRb){
-        const h3=(t*80+s.x*0.05)%360;
-        g1.addColorStop(0,`hsla(${h3},100%,75%,${a*0.55})`);
-        g1.addColorStop(1,`hsla(${h3},100%,65%,0)`);
-      } else {
-        g1.addColorStop(0,`rgba(${cr},${cg},${cb},${a*0.55})`);
-        g1.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);
-      }
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.size*2.2,0,Math.PI*2);
-      ctx.fillStyle=g1;
-      ctx.fill();
+      g1.addColorStop(0,`rgba(${cr},${cg},${cb},${a*.55})`);
+      g1.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);
+      ctx.beginPath();ctx.arc(s.x,s.y,s.size*2.2,0,Math.PI*2);
+      ctx.fillStyle=g1;ctx.fill();
 
-      // ── 외부 확산 글로우 (LV3 이상) ──────────────
+      // 외부 확산
       if(intensity>0.2){
-        const outerR = s.size*(3.5+intensity*3.5);
+        const outerR=s.size*(3.5+intensity*3.5);
         const g2=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,outerR);
-        if(isRb){
-          const h4=(t*80+s.x*0.05+30)%360;
-          g2.addColorStop(0,`hsla(${h4},100%,70%,${a*0.18})`);
-          g2.addColorStop(1,`hsla(${h4},100%,65%,0)`);
-        } else {
-          g2.addColorStop(0,`rgba(${cr},${cg},${cb},${a*0.18})`);
-          g2.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);
-        }
-        ctx.beginPath();
-        ctx.arc(s.x,s.y,outerR,0,Math.PI*2);
-        ctx.fillStyle=g2;
-        ctx.fill();
+        g2.addColorStop(0,`rgba(${cr},${cg},${cb},${a*.18})`);
+        g2.addColorStop(1,`rgba(${cr},${cg},${cb},0)`);
+        ctx.beginPath();ctx.arc(s.x,s.y,outerR,0,Math.PI*2);
+        ctx.fillStyle=g2;ctx.fill();
+      }
+
+      // 무지개: 스파크 색 애니메이션
+      if(isRb){
+        const hue2=(t*80+s.x*0.08+40)%360;
+        const g3=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.size*4);
+        g3.addColorStop(0,`hsla(${hue2},100%,70%,${a*.12})`);
+        g3.addColorStop(1,`hsla(${hue2},100%,65%,0)`);
+        ctx.beginPath();ctx.arc(s.x,s.y,s.size*4,0,Math.PI*2);
+        ctx.fillStyle=g3;ctx.fill();
       }
     });
-
-    // ── 텍스트 색상 업데이트 ─────────────────────────
-    this._updateText();
-  }
-
-  _updateText(){
-    const isRb = this.color==='rainbow';
-    const c    = isRb ? '#fff' : this.color;
-
-    // LV 숫자
-    const lvEl=this.textEl.querySelector('.lv-number,.prev-lv');
-    if(lvEl){
-      if(isRb){
-        lvEl.style.backgroundImage='linear-gradient(90deg,#ff0,#f70,#f00,#f0f,#70f,#07f,#0ff)';
-        lvEl.style.webkitBackgroundClip='text';
-        lvEl.style.webkitTextFillColor='transparent';
-        lvEl.style.backgroundClip='text';
-      } else {
-        lvEl.style.backgroundImage='none';
-        lvEl.style.webkitTextFillColor=c;
-        lvEl.style.color=c;
-      }
-    }
-    // 이름
-    const nmEl=this.textEl.querySelector('.lv-name,.prev-nm');
-    if(nmEl){
-      if(isRb){
-        nmEl.style.backgroundImage='linear-gradient(90deg,#f00,#f70,#ff0,#0f0,#07f,#80f)';
-        nmEl.style.webkitBackgroundClip='text';
-        nmEl.style.webkitTextFillColor='transparent';
-      } else {
-        nmEl.style.backgroundImage='none';
-        nmEl.style.webkitTextFillColor=c;
-        nmEl.style.color=c;
-      }
-    }
   }
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
+   SPARK PARTICLE
+══════════════════════════════════════ */
+class Spark{
+  constructor(){this.alive=false;}
+  spawn(x,y,intensity,color){
+    this.x=x+(Math.random()-.5)*4;
+    this.y=y+(Math.random()-.5)*4;
+    const spread=(0.4+intensity*0.9)*Math.PI;
+    const angle=-Math.PI/2+(Math.random()-.5)*spread;
+    const speed=(1.2+Math.random()*3.5)*(0.3+intensity*0.9);
+    this.vx=Math.cos(angle)*speed;
+    this.vy=Math.sin(angle)*speed;
+    this.gravity=0.025+Math.random()*.02;
+    this.wobble=(Math.random()-.5)*.06;
+    this.life=1.0;
+    this.decay=0.008+Math.random()*.018*(1.2-intensity*.4);
+    this.size=0.6+Math.random()*1.4*(0.3+intensity*.85);
+    this.color=color;
+    this.alive=true;
+    this.trail=[];
+    this.maxTrail=Math.floor(3+intensity*5);
+  }
+  update(){
+    if(!this.alive)return;
+    this.trail.push({x:this.x,y:this.y,l:this.life});
+    if(this.trail.length>this.maxTrail)this.trail.shift();
+    this.vx+=this.wobble;
+    this.vy+=this.gravity;
+    this.x+=this.vx;
+    this.y+=this.vy;
+    this.life-=this.decay;
+    if(this.life<=0)this.alive=false;
+  }
+}
+
+/* ══════════════════════════════════════
    GLOBAL INSTANCES
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 let mainFire=null, prevFire=null;
 
 function startMainFire(lvIdx){
   if(mainFire){mainFire.stop();mainFire=null;}
   const canvas=document.getElementById('fireCanvas');
-  const textEl=document.querySelector('#fireStage .fire-text-layer');
-  if(!canvas||!textEl) return;
+  const textEl=document.getElementById('fireTextLayer');
+  if(!canvas||!textEl)return;
   mainFire=new SparkRenderer(canvas,textEl,lvIdx,false);
   mainFire.start();
 }
 function startPrevFire(lvIdx){
   if(prevFire){prevFire.stop();prevFire=null;}
   const canvas=document.getElementById('prevCanvas');
-  const textEl=document.querySelector('#prevStage .prev-text-layer');
-  if(!canvas||!textEl) return;
+  const textEl=document.getElementById('prevTextLayer');
+  if(!canvas||!textEl)return;
   prevFire=new SparkRenderer(canvas,textEl,lvIdx,true);
   prevFire.start();
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    GRADE TABLE
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 function buildGradeTable(curLv){
   const tb=document.getElementById('gtbody');
-  if(!tb) return;
+  if(!tb)return;
   tb.innerHTML='';
   GRADES.forEach((g,i)=>{
     const tr=document.createElement('tr');
-    if(g.lv===curLv) tr.classList.add('cur');
+    if(g.lv===curLv)tr.classList.add('cur');
     const isRb=g.color==='rainbow';
     tr.innerHTML=`
-      <td><span class="gdot" style="${isRb?'background:linear-gradient(90deg,#f00,#f70,#ff0,#0f0,#07f,#80f)':'background:'+g.color}"></span>LV.${g.lv}</td>
-      <td style="${isRb?'background:linear-gradient(90deg,#f00,#f70,#ff0,#0f0,#07f,#80f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text':'color:'+g.color}">${g.name}</td>
+      <td><span class="gdot" style="${isRb
+        ?'background:linear-gradient(90deg,#f00,#f70,#ff0,#0f0,#07f,#80f)'
+        :'background:'+g.color}"></span>LV.${g.lv}</td>
+      <td style="${isRb
+        ?'background:linear-gradient(90deg,#f00,#f70,#ff0,#0f0,#07f,#80f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text'
+        :'color:'+g.color}">${g.name}</td>
       <td style="color:var(--text-secondary)">${g.range[0]}~${g.range[1]}</td>`;
     tr.onclick=()=>openPrev(i);
     tb.appendChild(tr);
   });
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    PREVIEW MODAL
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 let prevLvIdx=0;
 function openPrev(idx){prevLvIdx=idx;renderPrev();document.getElementById('prevModal').classList.add('show');}
 function closePrev(){if(prevFire){prevFire.stop();prevFire=null;}document.getElementById('prevModal').classList.remove('show');}
 function chPrev(d){prevLvIdx=(prevLvIdx+d+GRADES.length)%GRADES.length;renderPrev();}
 function renderPrev(){
   const g=GRADES[prevLvIdx];
-  const isRb=g.color==='rainbow';
   const pvLv=document.getElementById('pvLv');
   const pvNm=document.getElementById('pvNm');
   pvLv.textContent=`LV.${g.lv}`;
   pvNm.textContent=g.name;
   document.getElementById('pvIdx').textContent=`${prevLvIdx+1} / ${GRADES.length}`;
   document.getElementById('pvInfo').textContent=`${g.name} · ${g.range[0]}~${g.range[1]}점 · 상위 ${g.rank}%`;
-  if(isRb){
-    pvLv.style.backgroundImage='linear-gradient(90deg,#ff0,#f70,#f00,#f0f,#70f,#07f)';
-    pvLv.style.webkitBackgroundClip='text';pvLv.style.webkitTextFillColor='transparent';
-    pvNm.style.backgroundImage='linear-gradient(90deg,#f00,#f70,#ff0,#0f0)';
-    pvNm.style.webkitBackgroundClip='text';pvNm.style.webkitTextFillColor='transparent';
-  } else {
-    pvLv.style.backgroundImage='none';pvLv.style.webkitTextFillColor=g.color;pvLv.style.color=g.color;
-    pvNm.style.backgroundImage='none';pvNm.style.webkitTextFillColor=g.color;pvNm.style.color=g.color;
-  }
+  // 미리보기 텍스트 초기 색 (SparkRenderer에서 덮어씀)
+  pvLv.style.color='#fff';
+  pvNm.style.color=g.color==='rainbow'?'#fff':g.color;
   startPrevFire(prevLvIdx);
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    UTILS
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 function fmt(n){if(n>=100000000)return(n/100000000).toFixed(1)+'억';if(n>=10000)return(n/10000).toFixed(1)+'만';if(n>=1000)return(n/1000).toFixed(1)+'천';return String(n||0);}
 function fmtW(n){return'₩'+Math.round(n).toLocaleString();}
 function hashScore(id){let h=0;for(let i=0;i<id.length;i++){h=(h*31+id.charCodeAt(i))>>>0;}return h%101;}
@@ -797,9 +782,9 @@ function getLv(s){for(let i=GRADES.length-1;i>=0;i--){if(s>=GRADES[i].range[0])r
 function parseDur(d){const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);return(+(m&&m[1]||0))*3600+(+(m&&m[2]||0))*60+(+(m&&m[3]||0));}
 function fmtDur(d){const s=parseDur(d),m=Math.floor(s/60),ss=s%60;if(m>=60){const h=Math.floor(m/60);return`${h}:${String(m%60).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;}return`${m}:${String(ss).padStart(2,'0')}`;}
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    SECTION / NAV
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 function showSec(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.mi').forEach(m=>m.classList.remove('active'));
@@ -823,9 +808,9 @@ function doGlobalSearch(){
   showSec('channel');analyzeChannel();
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    HOT VIDEOS
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 let hotLoaded=false,hotPage=0,hotTokens=[''],curType='all',curCat='0';
 function setF(type,val,btn){
   document.querySelectorAll(type==='type'?'#typeF .fbtn':'#catF .fbtn').forEach(b=>b.classList.remove('active'));
@@ -864,9 +849,9 @@ function buildPgn(){
   if(hotTokens[hotPage+1]){const b=document.createElement('button');b.className='pb';b.textContent='▶';b.onclick=()=>{hotPage++;loadHot();};p.appendChild(b);}
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    CHANNEL ANALYSIS
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 async function analyzeChannel(){
   const q=document.getElementById('chInput').value.trim();
   if(!q)return;
@@ -896,8 +881,6 @@ async function analyzeChannel(){
     const lvIdx=grade.lv-1;
 
     renderChInfo(ch);
-
-    // 배지 텍스트
     document.getElementById('lvNumber').textContent=`LV.${grade.lv}`;
     document.getElementById('lvName').textContent=grade.name;
     document.getElementById('lvRank').textContent=`상위 ${grade.rank}%`;
@@ -923,9 +906,9 @@ function renderChInfo(ch){
   card.innerHTML=`<div class="ch-info-hdr"><img class="ch-av" src="${sn.thumbnails?.high?.url||sn.thumbnails?.default?.url||''}" alt="" onerror="this.style.display='none'"><div class="ch-meta"><h2>${sn.title}</h2><p>${sn.customUrl||''} · 개설일 ${pub}</p><p style="font-size:10px;margin-top:3px">${(sn.description||'').substring(0,80)}${(sn.description||'').length>80?'...':''}</p></div></div><div class="ch-stats"><div class="cs-item"><div class="cs-val">${fmt(+s.subscriberCount||0)}</div><div class="cs-lab">구독자</div></div><div class="cs-item"><div class="cs-val">${fmt(+s.viewCount||0)}</div><div class="cs-lab">총 조회수</div></div><div class="cs-item"><div class="cs-val">${fmt(+s.videoCount||0)}</div><div class="cs-lab">영상 수</div></div><div class="cs-item"><div class="cs-val">${avgV}</div><div class="cs-lab">평균 조회수</div></div></div>`;
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    CONTENT ANALYSIS
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 function renderContentAnalysis(details,vids,chStats){
   const card=document.getElementById('caCard');
   if(!details.length){card.innerHTML='<p style="color:var(--text-secondary)">데이터 부족</p>';return;}
@@ -943,9 +926,9 @@ function renderContentAnalysis(details,vids,chStats){
   card.innerHTML=`<div class="card-title" style="margin-bottom:8px">📈 콘텐츠 분석 <span style="font-size:10px;color:var(--text-secondary);font-weight:400">최근 ${total}개 기준</span></div><div class="gauge-list"><div class="gi"><div class="gl"><span>🎬 Shorts 비율</span><span>${sR}%</span></div><div class="gtrack"><div class="gfill bl" style="width:${sR}%"></div></div></div><div class="gi"><div class="gl"><span>🎥 롱폼 비율</span><span>${lR}%</span></div><div class="gtrack"><div class="gfill pu" style="width:${lR}%"></div></div></div><div class="gi"><div class="gl"><span>🔥 바이럴 지수</span><span>${viral}/100</span></div><div class="gtrack"><div class="gfill ${gc(viral)}" style="width:${viral}%"></div></div></div><div class="gi"><div class="gl"><span>💬 참여율</span><span>${engRate}%</span></div><div class="gtrack"><div class="gfill ${gc(engScore)}" style="width:${engScore}%"></div></div></div><div class="gi"><div class="gl"><span>📅 업로드 빈도</span><span>${freqText}</span></div><div class="gtrack"><div class="gfill ${gc(uploadScore)}" style="width:${uploadScore}%"></div></div></div><div class="gi"><div class="gl"><span>📊 구독자 영향력</span><span>${vps}점</span></div><div class="gtrack"><div class="gfill ${gc(vps)}" style="width:${vps}%"></div></div></div></div><p style="margin-top:8px;font-size:10px;color:var(--text-secondary)">📌 평균 영상 길이: <strong style="color:var(--text-primary)">${avgDurMin}분</strong></p>`;
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    BENCHMARKING
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 function renderBenchmarking(details,vids,ch){
   const card=document.getElementById('bmCard');
   if(!details.length||!vids.length){card.innerHTML='<p style="color:var(--text-secondary)">벤치마킹 데이터 부족</p>';return;}
@@ -978,7 +961,6 @@ function renderBenchmarking(details,vids,ch){
   if(shorts>longs)strats.push('Shorts 선행 노출 → 본채널 유입 전략');
   else strats.push('롱폼 심층 콘텐츠로 체류시간 확보 전략');
   strats.push(`${dayN[topDay]}요일 집중 업로드로 알고리즘 패턴화`);
-
   card.innerHTML=`<div class="card-title" style="margin-bottom:12px">🔍 벤치마킹 분석</div>
   <div class="bm-sec"><div class="bm-sec-title">📝 제목 패턴 분석</div><div class="title-grid"><div class="title-item"><div class="ti-label">평균 제목 길이</div><div class="ti-value">${avgTL}자</div></div><div class="title-item"><div class="ti-label">숫자 포함 비율</div><div class="ti-value">${Math.round(hasNum/titles.length*100)}%</div></div><div class="title-item"><div class="ti-label">질문형 비율</div><div class="ti-value">${Math.round(hasQ/titles.length*100)}%</div></div><div class="title-item"><div class="ti-label">이모지 사용률</div><div class="ti-value">${Math.round(hasEmoji/titles.length*100)}%</div></div></div></div>
   <div class="bm-sec"><div class="bm-sec-title">🏷 해시태그 & 카테고리</div><div>${topHT.length?topHT.map(h=>`<span class="bm-tag">${h}</span>`).join(''):'<span style="color:var(--text-secondary);font-size:11px">해시태그 없음</span>'}</div><p style="font-size:10px;color:var(--text-secondary);margin-top:5px">사용 ${hasHT}/${details.length}개 · 평균 ${avgHTC.toFixed(1)}개 · 주요 카테고리: <strong style="color:var(--text-primary)">${topCatName}</strong></p></div>
@@ -988,9 +970,9 @@ function renderBenchmarking(details,vids,ch){
   <div class="bm-two"><div class="bm-half str"><div style="font-size:11px;font-weight:700;color:#4ade80;margin-bottom:5px">✅ 벤치마킹 포인트</div>${Math.round(hasNum/titles.length*100)>30?'<span class="bm-tag grn">숫자형 제목</span>':''}${topHT.length>4?'<span class="bm-tag grn">해시태그 최적화</span>':''}${Math.round(hasEmoji/titles.length*100)>25?'<span class="bm-tag grn">이모지 활용</span>':''}${shorts>5?'<span class="bm-tag grn">Shorts 바이럴</span>':''}</div><div class="bm-half imp"><div style="font-size:11px;font-weight:700;color:#fb923c;margin-bottom:5px">⚡ 모방 전략</div>${topHT.length<3?'<span class="bm-tag ora">해시태그 강화</span>':`<span class="bm-tag ora">동일 해시태그</span>`}<span class="bm-tag ora">${dayN[topDay]}요일 업로드</span>${shorts>longs?'<span class="bm-tag ora">Shorts 선행</span>':'<span class="bm-tag ora">롱폼 심층분석</span>'}</div></div>`;
 }
 
-/* ═══════════════════════════════════════
+/* ══════════════════════════════════════
    REVENUE / TOOLS / IDEAS / SHOP
-═══════════════════════════════════════ */
+══════════════════════════════════════ */
 function calcRev(){
   const v=+(document.getElementById('rvViews').value)||0,r=+(document.getElementById('rvRpm').value)||0,sp=+(document.getElementById('rvSponsor').value)||0;
   const ad=Math.round((v/1000)*r),tot=ad+sp;
@@ -1006,9 +988,6 @@ function renderIdeas(){const g=document.getElementById('igrid');g.innerHTML='';c
 const SHOP=[{n:'소니 ZV-E10',p:'₩699,000',q:'소니 ZV-E10'},{n:'로데 NT-USB',p:'₩199,000',q:'로데 NT-USB 마이크'},{n:'엘가토 키 라이트',p:'₩229,000',q:'엘가토 키라이트'},{n:'고릴라팟 삼각대',p:'₩39,000',q:'고릴라팟 삼각대'},{n:'블루 예티 마이크',p:'₩159,000',q:'블루 예티 마이크'},{n:'Insta360 X4',p:'₩599,000',q:'Insta360 X4'}];
 function renderShop(){const g=document.getElementById('sgrid');g.innerHTML='';SHOP.forEach(item=>{const d=document.createElement('div');d.className='shop-c';d.innerHTML=`<div style="padding:18px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:32px">🎁</div><div style="padding:9px;flex:1"><div style="font-size:11px;font-weight:600">${item.n}</div><div style="font-size:12px;font-weight:700;color:var(--accent2)">${item.p}</div></div><button class="shop-btn" onclick="window.open('https://www.coupang.com/np/search?q=${encodeURIComponent(item.q)}','_blank')">쿠팡에서 보기</button>`;g.appendChild(d);});}
 
-/* ═══════════════════════════════════════
-   INIT
-═══════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded',()=>{
   loadHot();
   setTimeout(()=>document.getElementById('popAd').classList.add('show'),8000);
