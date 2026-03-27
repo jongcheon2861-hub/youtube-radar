@@ -7,7 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
 <style>
+/* ══════════════════════════════════════
+   CSS CUSTOM PROPERTY (Houdini)
+══════════════════════════════════════ */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 :root {
   --bg: #0a0a14;
   --bg2: #10101e;
@@ -20,369 +30,318 @@
   --ad-w: 200px;
 
   /* Level colors */
-  --lv1: #ffffff;
-  --lv2: #4fc3f7;
-  --lv3: #fff176;
-  --lv4: #ffb74d;
-  --lv5: #66bb6a;
-  --lv6: #ce93d8;
-  --lv7: #f48fb1;
-  --lv8: #ef5350;
-  --lv9-a: #ff6b6b; --lv9-b: #ffd93d; --lv9-c: #6bcb77; --lv9-d: #4d96ff;
-  --lv10-a:#ff0040; --lv10-b:#ff8c00; --lv10-c:#ffe600; --lv10-d:#00ff88; --lv10-e:#00cfff; --lv10-f:#bf00ff;
+  --c1:  #e8e8e8;
+  --c2:  #4fc3f7;
+  --c3:  #fff176;
+  --c4:  #ffb74d;
+  --c5:  #66bb6a;
+  --c6:  #ce93d8;
+  --c7:  #f48fb1;
+  --c8:  #ef5350;
+  --c9a: #ff6b6b; --c9b: #ffd93d; --c9c: #6bcb77; --c9d: #4d96ff;
+  --c10a:#ff0040; --c10b:#ff8c00; --c10c:#ffe600; --c10d:#00ff88; --c10e:#00cfff; --c10f:#bf00ff;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-/* ── KEYFRAMES ── */
-@keyframes rotateBorder {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* ═══════════════ KEYFRAMES ═══════════════ */
+@keyframes beamSpin {
+  to { --beam-angle: 360deg; }
 }
-@keyframes rainbowRotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes beamSpin9 {
+  to { --beam-angle: 360deg; }
 }
 @keyframes glowPulse {
-  0%, 100% { opacity: 1; filter: brightness(1); }
-  50% { opacity: 0.7; filter: brightness(1.6); }
+  0%,100% { opacity:1; }
+  50%      { opacity:.55; }
 }
 @keyframes rainbowText {
-  0%   { color: #ff0040; }
-  16%  { color: #ff8c00; }
-  33%  { color: #ffe600; }
-  50%  { color: #00ff88; }
-  66%  { color: #00cfff; }
-  83%  { color: #bf00ff; }
-  100% { color: #ff0040; }
+  0%  { color:#ff0040; }
+  16% { color:#ff8c00; }
+  33% { color:#ffe600; }
+  50% { color:#00ff88; }
+  66% { color:#00cfff; }
+  83% { color:#bf00ff; }
+  100%{ color:#ff0040; }
 }
 @keyframes float3d {
-  0%, 100% { transform: translateY(0) rotateX(0deg); }
-  50% { transform: translateY(-6px) rotateX(3deg); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0%,100% { transform:translateY(0) rotateX(0deg); }
+  50%     { transform:translateY(-5px) rotateX(2deg); }
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
 }
-@keyframes colorPulse {
-  0%, 100% { filter: brightness(1) saturate(1); }
-  50% { filter: brightness(1.4) saturate(1.5); }
+@keyframes shimmer {
+  0%   { background-position:-200% center; }
+  100% { background-position:200% center; }
 }
 
-/* ── LAYOUT ── */
-.app-wrap { display: flex; flex-direction: column; min-height: 100vh; }
+/* ═══════════════ LAYOUT ═══════════════ */
+.app-wrap { display:flex; flex-direction:column; min-height:100vh; }
+
 header {
-  display: flex; align-items: center; gap: 12px;
-  padding: 0 20px; height: 56px;
-  background: linear-gradient(135deg, #0f0f20, #1a1a30);
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100;
+  display:flex; align-items:center; gap:12px;
+  padding:0 20px; height:56px;
+  background:linear-gradient(135deg,#0f0f20,#1a1a30);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100;
 }
-.logo { font-size: 1.3rem; font-weight: 900; background: linear-gradient(90deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.search-bar { flex: 1; max-width: 480px; display: flex; gap: 8px; }
-.search-bar input { flex: 1; padding: 8px 14px; background: #1a1a2e; border: 1px solid var(--border); border-radius: 24px; color: var(--text); font-size: .9rem; }
-.search-bar input:focus { outline: none; border-color: var(--accent); }
-.btn { padding: 8px 18px; border: none; border-radius: 20px; cursor: pointer; font-size: .85rem; font-weight: 700; transition: all .2s; }
-.btn-primary { background: linear-gradient(135deg, #6c63ff, #a855f7); color: #fff; }
-.btn-primary:hover { transform: scale(1.04); filter: brightness(1.15); }
+.logo {
+  font-size:1.3rem; font-weight:900;
+  background:linear-gradient(90deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  white-space:nowrap;
+}
+.search-bar { flex:1; max-width:480px; display:flex; gap:8px; }
+.search-bar input { flex:1; padding:8px 14px; background:#1a1a2e; border:1px solid var(--border); border-radius:24px; color:var(--text); font-size:.9rem; }
+.search-bar input:focus { outline:none; border-color:var(--accent); }
+.btn { padding:8px 18px; border:none; border-radius:20px; cursor:pointer; font-size:.85rem; font-weight:700; transition:all .2s; }
+.btn-primary { background:linear-gradient(135deg,#6c63ff,#a855f7); color:#fff; }
+.btn-primary:hover { transform:scale(1.04); filter:brightness(1.15); }
 
-.body-row { display: flex; flex: 1; overflow: hidden; }
+.body-row { display:flex; flex:1; overflow:hidden; }
 
 /* Sidebar */
 .sidebar {
-  width: 200px; min-width: 200px; background: var(--bg2);
-  border-right: 1px solid var(--border);
-  padding: 12px 8px; display: flex; flex-direction: column; gap: 4px;
-  overflow-y: auto;
+  width:200px; min-width:200px; background:var(--bg2);
+  border-right:1px solid var(--border);
+  padding:12px 8px; display:flex; flex-direction:column; gap:4px; overflow-y:auto;
 }
 .sidebar-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 12px; border-radius: 10px; cursor: pointer;
-  font-size: .85rem; font-weight: 500; color: var(--text2);
-  transition: all .2s;
+  display:flex; align-items:center; gap:8px;
+  padding:9px 12px; border-radius:10px; cursor:pointer;
+  font-size:.85rem; font-weight:500; color:var(--text2); transition:all .2s;
 }
-.sidebar-item:hover, .sidebar-item.active { background: #1e1e35; color: var(--text); }
-.sidebar-item span.ic { font-size: 1.1rem; }
+.sidebar-item:hover, .sidebar-item.active { background:#1e1e35; color:var(--text); }
+.sidebar-item .ic { font-size:1.1rem; }
 
-/* Main content */
-.main-area { flex: 1; overflow-y: auto; padding: 20px; min-width: 0; }
+/* Main */
+.main-area { flex:1; overflow-y:auto; padding:20px; min-width:0; }
 
-/* Ad zone */
+/* Ad */
 .ad-zone {
-  width: var(--ad-w); min-width: var(--ad-w); flex-shrink: 0;
-  background: var(--bg2); border-left: 1px solid var(--border);
-  padding: 12px 8px; display: flex; flex-direction: column; gap: 12px;
-  overflow-y: auto;
+  width:var(--ad-w); min-width:var(--ad-w); flex-shrink:0;
+  background:var(--bg2); border-left:1px solid var(--border);
+  padding:12px 8px; display:flex; flex-direction:column; gap:12px; overflow-y:auto;
 }
 .ad-slot {
-  background: #1a1a2e; border: 1px dashed var(--border);
-  border-radius: 10px; display: flex; align-items: center; justify-content: center;
-  font-size: .7rem; color: var(--text2); text-align: center;
-  flex: 1; min-height: 180px;
+  background:#1a1a2e; border:1px dashed var(--border); border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.7rem; color:var(--text2); text-align:center;
+  flex:1; min-height:180px;
 }
 
-/* ── SECTIONS ── */
-.section { display: none; animation: fadeIn .4s ease; }
-.section.active { display: block; }
+/* Sections */
+.section { display:none; animation:fadeIn .4s ease; }
+.section.active { display:block; }
 
-/* ── LEVEL CARD (conic-gradient border) ── */
-.lv-card-outer {
-  position: relative;
-  padding: 3px;
-  border-radius: calc(var(--r) + 3px);
-  cursor: pointer;
-  transition: transform .3s ease;
-  animation: float3d 4s ease-in-out infinite;
+/* ═══════════════════════════════════════
+   ★ BEAM BORDER CARD
+   구조: .lv-card-wrap > .lv-card-beam (회전 레이어) + .lv-card-face (내용)
+═══════════════════════════════════════ */
+.lv-card-wrap {
+  position:relative;
+  border-radius:calc(var(--r) + 4px);
+  padding:2px;                        /* 테두리 두께 = 2px */
+  background:var(--card-bg);          /* fallback */
+  cursor:pointer;
+  animation:float3d 4s ease-in-out infinite;
+  transition:transform .3s, filter .3s;
+  overflow:hidden;
 }
-.lv-card-outer:hover { transform: scale(1.04) translateY(-4px); animation-play-state: paused; }
-
-/* Rotating conic border pseudo-element */
-.lv-card-outer::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: calc(var(--r) + 5px);
-  z-index: 0;
-  animation: rotateBorder 2.5s linear infinite;
-}
-/* Glow layer */
-.lv-card-outer::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: calc(var(--r) + 7px);
-  z-index: -1;
-  filter: blur(12px);
-  opacity: 0.7;
-  animation: rotateBorder 2.5s linear infinite, glowPulse 2s ease-in-out infinite;
+.lv-card-wrap:hover {
+  transform:scale(1.05) translateY(-4px) rotateX(4deg);
+  filter:brightness(1.1);
+  animation-play-state:paused;
 }
 
-.lv-card-inner {
-  position: relative; z-index: 1;
-  background: var(--card-bg);
-  border-radius: var(--r);
-  padding: 20px 16px;
-  text-align: center;
-  overflow: hidden;
-}
-/* shimmer overlay inside card */
-.lv-card-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.04) 50%, transparent 60%);
-  background-size: 200% 100%;
-  animation: shimmer 3s infinite;
-  pointer-events: none;
+/* 회전하는 빔 레이어 (::before = 얇은 라인, ::after = 글로우) */
+.lv-card-wrap::before,
+.lv-card-wrap::after {
+  content:'';
+  position:absolute;
+  inset:-3px;
+  border-radius:calc(var(--r) + 7px);
+  animation:beamSpin var(--beam-dur, 2.4s) linear infinite;
 }
 
-.lv-num {
-  font-size: 3.2rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 4px;
-  letter-spacing: -1px;
+/* ──── 각 레벨별 빔 색상 ──── */
+/* LV1 흰색 */
+.beam1::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #e8e8e8 85%, #ffffff 90%, #e8e8e8 95%, transparent 100%); }
+.beam1::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #e8e8e888 88%, #ffffffcc 92%, #e8e8e888 96%, transparent 100%); filter:blur(6px); }
+/* LV2 파랑 */
+.beam2::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #0288d1 85%, #4fc3f7 90%, #0288d1 95%, transparent 100%); }
+.beam2::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #0288d188 88%, #4fc3f7cc 92%, #0288d188 96%, transparent 100%); filter:blur(6px); }
+/* LV3 노랑 */
+.beam3::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #f9a825 85%, #fff176 90%, #f9a825 95%, transparent 100%); }
+.beam3::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #f9a82588 88%, #fff176cc 92%, #f9a82588 96%, transparent 100%); filter:blur(6px); }
+/* LV4 오렌지 */
+.beam4::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #e65100 85%, #ffb74d 90%, #e65100 95%, transparent 100%); }
+.beam4::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #e6510088 88%, #ffb74dcc 92%, #e6510088 96%, transparent 100%); filter:blur(6px); }
+/* LV5 초록 */
+.beam5::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #1b5e20 85%, #66bb6a 90%, #1b5e20 95%, transparent 100%); }
+.beam5::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #1b5e2088 88%, #66bb6acc 92%, #1b5e2088 96%, transparent 100%); filter:blur(6px); }
+/* LV6 보라 */
+.beam6::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #6a1b9a 85%, #ce93d8 90%, #6a1b9a 95%, transparent 100%); }
+.beam6::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #6a1b9a88 88%, #ce93d8cc 92%, #6a1b9a88 96%, transparent 100%); filter:blur(8px); }
+/* LV7 분홍 */
+.beam7::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #880e4f 85%, #f48fb1 90%, #880e4f 95%, transparent 100%); }
+.beam7::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #880e4f88 88%, #f48fb1cc 92%, #880e4f88 96%, transparent 100%); filter:blur(8px); }
+/* LV8 빨강 */
+.beam8::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 75%, #b71c1c 85%, #ef5350 90%, #b71c1c 95%, transparent 100%); }
+.beam8::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 78%, #b71c1c88 88%, #ef5350cc 92%, #b71c1c88 96%, transparent 100%); filter:blur(8px); }
+/* LV9 다색 레인보우 빔 */
+.beam9::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 60%, #4d96ff 70%, #6bcb77 75%, #ffd93d 80%, #ff6b6b 85%, #4d96ff 90%, transparent 100%); --beam-dur:1.8s; }
+.beam9::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 63%, #4d96ff99 72%, #6bcb7799 77%, #ffd93d99 82%, #ff6b6b99 87%, #4d96ff99 92%, transparent 100%); filter:blur(10px); --beam-dur:1.8s; }
+/* LV10 무지개 빔 (더 빠르게) */
+.beam10::before { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 55%, #bf00ff 65%, #ff0040 70%, #ff8c00 75%, #ffe600 80%, #00ff88 85%, #00cfff 90%, #bf00ff 95%, transparent 100%); --beam-dur:1.2s; }
+.beam10::after  { background:conic-gradient(from var(--beam-angle), transparent 0%, transparent 58%, #bf00ffaa 68%, #ff0040aa 73%, #ff8c00aa 78%, #ffe600aa 83%, #00ff88aa 88%, #00cfff aa 93%, transparent 100%); filter:blur(12px); --beam-dur:1.2s; }
+
+/* 카드 내용 레이어 (빔 위에 덮기) */
+.lv-card-face {
+  position:relative; z-index:1;
+  background:var(--card-bg);
+  border-radius:calc(var(--r) + 1px);
+  padding:20px 16px;
+  text-align:center;
+  overflow:hidden;
 }
-.lv-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-.lv-sub-range {
-  font-size: .78rem;
-  color: var(--text2);
-  margin-bottom: 6px;
-}
-.lv-rank {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 20px;
-  font-size: .72rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.lv-desc {
-  font-size: .75rem;
-  color: var(--text2);
-  line-height: 1.5;
-}
-.lv-score-range {
-  font-size: .7rem;
-  margin-top: 6px;
-  font-weight: 600;
-  opacity: .8;
+/* 내부 shimmer */
+.lv-card-face::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(105deg, transparent 40%, rgba(255,255,255,.035) 50%, transparent 60%);
+  background-size:200% 100%;
+  animation:shimmer 3s infinite;
+  pointer-events:none;
 }
 
-/* Level colors for conic gradients */
-.lv1-border::before  { background: conic-gradient(from 0deg, #ffffff, #cccccc, #ffffff); }
-.lv1-border::after   { background: conic-gradient(from 0deg, #ffffff, #cccccc, #ffffff); }
-.lv2-border::before  { background: conic-gradient(from 0deg, #4fc3f7, #0288d1, #4fc3f7); }
-.lv2-border::after   { background: conic-gradient(from 0deg, #4fc3f7, #0288d1, #4fc3f7); }
-.lv3-border::before  { background: conic-gradient(from 0deg, #fff176, #f9a825, #fff176); }
-.lv3-border::after   { background: conic-gradient(from 0deg, #fff176, #f9a825, #fff176); }
-.lv4-border::before  { background: conic-gradient(from 0deg, #ffb74d, #e65100, #ffb74d); }
-.lv4-border::after   { background: conic-gradient(from 0deg, #ffb74d, #e65100, #ffb74d); }
-.lv5-border::before  { background: conic-gradient(from 0deg, #66bb6a, #1b5e20, #66bb6a); }
-.lv5-border::after   { background: conic-gradient(from 0deg, #66bb6a, #1b5e20, #66bb6a); }
-.lv6-border::before  { background: conic-gradient(from 0deg, #ce93d8, #6a1b9a, #ce93d8); }
-.lv6-border::after   { background: conic-gradient(from 0deg, #ce93d8, #6a1b9a, #ce93d8); }
-.lv7-border::before  { background: conic-gradient(from 0deg, #f48fb1, #880e4f, #f48fb1); }
-.lv7-border::after   { background: conic-gradient(from 0deg, #f48fb1, #880e4f, #f48fb1); }
-.lv8-border::before  { background: conic-gradient(from 0deg, #ef5350, #b71c1c, #ef5350); }
-.lv8-border::after   { background: conic-gradient(from 0deg, #ef5350, #b71c1c, #ef5350); }
-.lv9-border::before  { background: conic-gradient(from 0deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b); }
-.lv9-border::after   { background: conic-gradient(from 0deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #ff6b6b); }
-.lv10-border::before { background: conic-gradient(from 0deg, #ff0040, #ff8c00, #ffe600, #00ff88, #00cfff, #bf00ff, #ff0040); animation-duration: 1.5s; }
-.lv10-border::after  { background: conic-gradient(from 0deg, #ff0040, #ff8c00, #ffe600, #00ff88, #00cfff, #bf00ff, #ff0040); animation-duration: 1.5s; }
+/* 카드 텍스트 */
+.lv-num  { font-size:3rem; font-weight:900; line-height:1; margin-bottom:4px; letter-spacing:-1px; }
+.lv-name { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
+.lv-sub-range { font-size:.76rem; color:var(--text2); margin-bottom:6px; }
+.lv-rank { display:inline-block; padding:2px 10px; border-radius:20px; font-size:.7rem; font-weight:700; margin-bottom:8px; }
+.lv-desc { font-size:.73rem; color:var(--text2); line-height:1.5; }
+.lv-score-range { font-size:.68rem; margin-top:6px; font-weight:600; opacity:.8; }
 
-/* ── GRADE TABLE ── */
-.grade-table-wrap { background: var(--card-bg); border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); }
-.grade-table { width: 100%; border-collapse: collapse; font-size: .83rem; }
-.grade-table th { background: #1a1a30; padding: 10px 12px; font-size: .75rem; color: var(--text2); font-weight: 600; text-align: left; }
-.grade-table td { padding: 9px 12px; border-top: 1px solid var(--border); }
-.grade-table tr.current-row td { background: rgba(108,99,255,.12); }
+/* LV6+ glow text */
+.glow-text { animation:glowPulse 2s ease-in-out infinite; }
+.rainbow-text { animation:rainbowText 2s linear infinite; }
+
+/* ═══════════════ GRADE TABLE ═══════════════ */
+.grade-table-wrap { background:var(--card-bg); border-radius:var(--r); overflow:hidden; border:1px solid var(--border); }
+.grade-table { width:100%; border-collapse:collapse; font-size:.83rem; }
+.grade-table th { background:#1a1a30; padding:10px 12px; font-size:.75rem; color:var(--text2); font-weight:600; text-align:left; }
+.grade-table td { padding:9px 12px; border-top:1px solid var(--border); }
+.grade-table tr.cur-row td { background:rgba(108,99,255,.1); }
+
+/* LV chip — 클릭 가능 */
 .lv-chip {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px; border-radius: 8px; font-weight: 900; font-size: .85rem;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:32px; height:32px; border-radius:9px;
+  font-weight:900; font-size:.85rem;
+  cursor:pointer; transition:all .2s;
+  border:2px solid transparent;
 }
-.star-badge { color: #ffd700; font-size: .9rem; margin-left: 4px; }
+.lv-chip:hover { transform:scale(1.2); filter:brightness(1.3); }
+.star-badge { color:#ffd700; font-size:.9rem; margin-left:3px; }
 
-/* ── ANALYZE SECTION ── */
-.analyze-box {
-  background: var(--card-bg); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 20px; margin-bottom: 20px;
+/* ═══════════════ ANALYZE ═══════════════ */
+.analyze-box { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r); padding:20px; margin-bottom:20px; }
+.analyze-box h3 { font-size:1rem; margin-bottom:14px; color:var(--text2); }
+.input-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px; }
+.field { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
+.field label { font-size:.75rem; color:var(--text2); }
+.field input, .field select {
+  padding:9px 12px; background:#1a1a2e; border:1px solid var(--border);
+  border-radius:10px; color:var(--text); font-size:.87rem;
 }
-.analyze-box h3 { font-size: 1rem; margin-bottom: 14px; color: var(--text2); }
-.input-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 10px; }
-.field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
-.field label { font-size: .75rem; color: var(--text2); }
-.field input {
-  padding: 9px 12px; background: #1a1a2e; border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text); font-size: .87rem;
-}
-.field input:focus { outline: none; border-color: var(--accent); }
+.field input:focus, .field select:focus { outline:none; border-color:var(--accent); }
 
-/* Result */
-.result-wrap { animation: fadeIn .5s ease; }
-.result-hero { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
-.result-card-col { flex: 0 0 220px; }
-.result-info-col { flex: 1; min-width: 260px; }
+.result-wrap { animation:fadeIn .5s ease; }
+.result-hero { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; }
+.result-card-col { flex:0 0 220px; }
+.result-info-col { flex:1; min-width:260px; }
 
-.decision-row {
-  display: flex; gap: 10px; flex-wrap: wrap;
-  background: #1a1a2e; border-radius: 12px; padding: 14px; margin-bottom: 16px;
-}
-.dec-item { flex: 1; min-width: 120px; text-align: center; }
-.dec-label { font-size: .7rem; color: var(--text2); margin-bottom: 4px; }
-.dec-val { font-size: 1.1rem; font-weight: 900; }
-.dec-arrow { display: flex; align-items: center; font-size: 1.4rem; color: var(--text2); }
+.decision-row { display:flex; gap:10px; flex-wrap:wrap; background:#1a1a2e; border-radius:12px; padding:14px; margin-bottom:16px; }
+.dec-item { flex:1; min-width:100px; text-align:center; }
+.dec-label { font-size:.68rem; color:var(--text2); margin-bottom:4px; }
+.dec-val { font-size:1.05rem; font-weight:900; }
+.dec-arrow { display:flex; align-items:center; font-size:1.2rem; color:var(--text2); }
 
-.factor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-bottom: 16px; }
-.factor-card {
-  background: #1a1a2e; border-radius: 12px; padding: 12px 14px;
-  border-left: 3px solid var(--accent); transition: transform .2s;
-}
-.factor-card:hover { transform: translateY(-2px); }
-.fc-label { font-size: .7rem; color: var(--text2); margin-bottom: 4px; }
-.fc-value { font-size: 1.2rem; font-weight: 900; margin-bottom: 4px; }
-.fc-bar-wrap { height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; }
-.fc-bar { height: 4px; border-radius: 2px; transition: width .8s ease; }
-.fc-badge {
-  display: inline-block; font-size: .62rem; font-weight: 700;
-  padding: 1px 7px; border-radius: 10px; margin-top: 5px;
-}
-.fq-best { background: rgba(102,187,106,.2); color: #66bb6a; }
-.fq-good { background: rgba(79,195,247,.2); color: #4fc3f7; }
-.fq-mid  { background: rgba(255,183,77,.2);  color: #ffb74d; }
-.fq-low  { background: rgba(239,83,80,.2);   color: #ef5350; }
+.factor-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin-bottom:16px; }
+.factor-card { background:#1a1a2e; border-radius:12px; padding:12px 14px; border-left:3px solid; transition:transform .2s; }
+.factor-card:hover { transform:translateY(-2px); }
+.fc-label { font-size:.68rem; color:var(--text2); margin-bottom:4px; }
+.fc-value { font-size:1.15rem; font-weight:900; margin-bottom:4px; }
+.fc-bar-wrap { height:4px; background:rgba(255,255,255,.08); border-radius:2px; }
+.fc-bar { height:4px; border-radius:2px; }
+.fc-badge { display:inline-block; font-size:.6rem; font-weight:700; padding:1px 7px; border-radius:10px; margin-top:5px; }
+.fq-best { background:rgba(102,187,106,.2); color:#66bb6a; }
+.fq-good { background:rgba(79,195,247,.2);  color:#4fc3f7; }
+.fq-mid  { background:rgba(255,183,77,.2);   color:#ffb74d; }
+.fq-low  { background:rgba(239,83,80,.2);    color:#ef5350; }
 
-.score-breakdown { background: #1a1a2e; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
-.score-breakdown h4 { font-size: .85rem; margin-bottom: 10px; color: var(--text2); }
-.sb-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.sb-label { font-size: .75rem; color: var(--text2); width: 100px; flex-shrink: 0; }
-.sb-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,.08); border-radius: 3px; }
-.sb-bar { height: 6px; border-radius: 3px; }
-.sb-val { font-size: .75rem; font-weight: 700; width: 60px; text-align: right; }
+.score-breakdown { background:#1a1a2e; border-radius:12px; padding:14px; margin-bottom:16px; }
+.score-breakdown h4 { font-size:.85rem; margin-bottom:10px; color:var(--text2); }
+.sb-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.sb-label { font-size:.73rem; color:var(--text2); width:105px; flex-shrink:0; }
+.sb-bar-wrap { flex:1; height:6px; background:rgba(255,255,255,.08); border-radius:3px; }
+.sb-bar { height:6px; border-radius:3px; }
+.sb-val { font-size:.73rem; font-weight:700; width:58px; text-align:right; }
 
-/* Bonus log */
-.bonus-log { background: #1a1a2e; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; }
-.bonus-log h4 { font-size: .82rem; margin-bottom: 8px; color: #66bb6a; }
-.bonus-item { font-size: .75rem; color: #66bb6a; padding: 2px 0; }
+.bonus-log { background:#1a1a2e; border-radius:12px; padding:12px 14px; margin-bottom:16px; }
+.bonus-log h4 { font-size:.8rem; margin-bottom:8px; color:#66bb6a; }
+.bonus-item { font-size:.73rem; color:#66bb6a; padding:2px 0; }
 
-/* Inline grade table */
-.inline-grade-table-wrap { margin-top: 16px; background: var(--card-bg); border-radius: var(--r); overflow: hidden; border: 1px solid var(--border); }
+.inline-grade-table-wrap { margin-top:16px; background:var(--card-bg); border-radius:var(--r); overflow:hidden; border:1px solid var(--border); }
 
-/* ── CARD GRID ── */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+/* ═══════════════ REVENUE ═══════════════ */
+.rev-box { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r); padding:20px; }
+.rev-box h3 { margin-bottom:14px; }
+.rev-inputs { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px; margin-bottom:14px; }
+.rev-result { background:#1a1a2e; border-radius:12px; padding:16px; text-align:center; }
+.rev-amount { font-size:2rem; font-weight:900; color:#66bb6a; }
+.rev-note { font-size:.73rem; color:var(--text2); margin-top:4px; }
 
-/* ── REVENUE ── */
-.rev-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; }
-.rev-box h3 { margin-bottom: 14px; }
-.rev-inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 14px; }
-.rev-result { background: #1a1a2e; border-radius: 12px; padding: 16px; text-align: center; }
-.rev-result .rev-amount { font-size: 2rem; font-weight: 900; color: #66bb6a; }
-.rev-result .rev-note { font-size: .75rem; color: var(--text2); margin-top: 4px; }
+/* ═══════════════ HOT VIDEOS ═══════════════ */
+.hot-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px; }
+.hot-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:transform .2s; }
+.hot-card:hover { transform:translateY(-3px); }
+.hot-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; }
+.hot-info { padding:8px 10px; }
+.hot-title { font-size:.76rem; font-weight:600; margin-bottom:3px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.hot-meta { font-size:.67rem; color:var(--text2); }
 
-/* ── MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85);
-  z-index: 1000; align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; animation: fadeIn .3s ease; }
-.modal-box {
-  background: var(--card-bg); border-radius: 20px; padding: 28px;
-  width: 380px; max-width: 95vw; text-align: center; position: relative;
-}
-.modal-close { position: absolute; top: 12px; right: 16px; background: none; border: none; color: var(--text2); font-size: 1.4rem; cursor: pointer; }
-.modal-nav { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-.modal-nav-btn { padding: 4px 10px; border-radius: 8px; border: none; cursor: pointer; font-size: .75rem; font-weight: 700; background: #1a1a2e; color: var(--text2); transition: all .2s; }
-.modal-nav-btn.active, .modal-nav-btn:hover { color: #fff; }
+/* ═══════════════ EXTRAS ═══════════════ */
+.extra-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(155px, 1fr)); gap:12px; }
+.extra-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; cursor:pointer; transition:all .2s; text-decoration:none; display:block; color:var(--text); }
+.extra-card:hover { transform:translateY(-3px); border-color:var(--accent); }
+.ex-icon { font-size:1.7rem; margin-bottom:6px; }
+.ex-name { font-size:.8rem; font-weight:700; margin-bottom:3px; }
+.ex-desc { font-size:.68rem; color:var(--text2); }
 
-/* ── HOT VIDEOS ── */
-.hot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
-.hot-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform .2s; }
-.hot-card:hover { transform: translateY(-3px); }
-.hot-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
-.hot-info { padding: 8px 10px; }
-.hot-title { font-size: .78rem; font-weight: 600; margin-bottom: 3px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.hot-meta { font-size: .68rem; color: var(--text2); }
-
-/* ── BENCH TIPS ── */
-.bench-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-.bench-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; transition: transform .2s; }
-.bench-card:hover { transform: translateY(-3px); }
-.bench-card .bench-icon { font-size: 1.6rem; margin-bottom: 8px; }
-.bench-card h4 { font-size: .88rem; font-weight: 700; margin-bottom: 6px; }
-.bench-card p { font-size: .75rem; color: var(--text2); line-height: 1.5; }
-
-/* ── EXTRAS ── */
-.extra-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-.extra-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; transition: all .2s; text-decoration: none; display: block; color: var(--text); }
-.extra-card:hover { transform: translateY(-3px); border-color: var(--accent); }
-.extra-card .ex-icon { font-size: 1.8rem; margin-bottom: 6px; }
-.extra-card .ex-name { font-size: .82rem; font-weight: 700; margin-bottom: 3px; }
-.extra-card .ex-desc { font-size: .7rem; color: var(--text2); }
+/* ═══════════════ MODAL ═══════════════ */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; animation:fadeIn .3s ease; }
+.modal-box { background:var(--card-bg); border-radius:20px; padding:28px; width:400px; max-width:95vw; text-align:center; position:relative; }
+.modal-close { position:absolute; top:12px; right:16px; background:none; border:none; color:var(--text2); font-size:1.4rem; cursor:pointer; }
+.modal-nav { display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-bottom:16px; }
+.modal-nav-btn { padding:4px 10px; border-radius:8px; border:none; cursor:pointer; font-size:.73rem; font-weight:700; background:#1a1a2e; color:var(--text2); transition:all .2s; }
+.modal-nav-btn:hover { transform:scale(1.08); }
 
 /* Section header */
-.sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.sec-head h2 { font-size: 1.15rem; font-weight: 800; }
-.sec-head .sec-badge { padding: 2px 10px; background: var(--accent); border-radius: 20px; font-size: .72rem; font-weight: 700; }
-
-/* Utility */
-.mt16 { margin-top: 16px; }
-.mb16 { margin-bottom: 16px; }
-.text-lv { font-weight: 900; }
+.sec-head { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.sec-head h2 { font-size:1.15rem; font-weight:800; }
+.sec-badge { padding:2px 10px; background:var(--accent); border-radius:20px; font-size:.72rem; font-weight:700; }
 </style>
 </head>
 <body>
 <div class="app-wrap">
 
-<!-- HEADER -->
+<!-- ══ HEADER ══ -->
 <header>
   <div class="logo">📊 YTAnalytics Pro</div>
   <div class="search-bar">
@@ -394,7 +353,7 @@ header {
 
 <div class="body-row">
 
-<!-- SIDEBAR -->
+<!-- ══ SIDEBAR ══ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-item active" onclick="showSection('analyze');setActive(this)"><span class="ic">🔍</span>채널 분석</div>
   <div class="sidebar-item" onclick="showSection('hot');setActive(this)"><span class="ic">🔥</span>인기 영상</div>
@@ -404,44 +363,29 @@ header {
   <div class="sidebar-item" onclick="showSection('shop');setActive(this)"><span class="ic">🛒</span>추천 장비</div>
 </aside>
 
-<!-- MAIN -->
+<!-- ══ MAIN ══ -->
 <main class="main-area" id="mainArea">
 
-  <!-- ── ANALYZE ── -->
+  <!-- ANALYZE -->
   <div id="sec-analyze" class="section active">
     <div class="sec-head">
       <h2>🔍 채널 분석</h2>
       <span class="sec-badge">Algorithm Score</span>
     </div>
     <div class="analyze-box">
-      <h3>채널 URL 또는 정보 입력</h3>
+      <h3>채널 정보 입력</h3>
       <div class="input-row">
-        <div class="field" style="flex:2;min-width:220px">
+        <div class="field" style="flex:2;min-width:200px">
           <label>채널 URL / @핸들</label>
-          <input type="text" id="chanInput" placeholder="예: @MrBeast 또는 채널 URL">
+          <input type="text" id="chanInput" placeholder="예: @MrBeast">
         </div>
-        <div class="field">
-          <label>구독자 수</label>
-          <input type="number" id="inSubs" placeholder="예: 1000000">
-        </div>
-        <div class="field">
-          <label>총 조회수</label>
-          <input type="number" id="inViews" placeholder="예: 50000000">
-        </div>
+        <div class="field"><label>구독자 수</label><input type="number" id="inSubs" placeholder="1000000"></div>
+        <div class="field"><label>총 조회수</label><input type="number" id="inViews" placeholder="50000000"></div>
       </div>
       <div class="input-row">
-        <div class="field">
-          <label>업로드 영상 수</label>
-          <input type="number" id="inVids" placeholder="예: 500">
-        </div>
-        <div class="field">
-          <label>참여율 (%)</label>
-          <input type="number" id="inEng" placeholder="예: 4.5" step="0.1">
-        </div>
-        <div class="field">
-          <label>월 업로드 빈도</label>
-          <input type="number" id="inFreq" placeholder="예: 8">
-        </div>
+        <div class="field"><label>업로드 영상 수</label><input type="number" id="inVids" placeholder="500"></div>
+        <div class="field"><label>참여율 (%)</label><input type="number" id="inEng" placeholder="4.5" step="0.1"></div>
+        <div class="field"><label>월 업로드 빈도</label><input type="number" id="inFreq" placeholder="8"></div>
         <button class="btn btn-primary" style="align-self:flex-end;height:38px" onclick="analyzeChannel(false)">분석 시작</button>
         <button class="btn" style="align-self:flex-end;height:38px;background:#1a1a2e;color:var(--text2)" onclick="analyzeChannel(true)">데모 실행</button>
       </div>
@@ -449,13 +393,13 @@ header {
     <div id="resultArea"></div>
   </div>
 
-  <!-- ── HOT ── -->
+  <!-- HOT -->
   <div id="sec-hot" class="section">
     <div class="sec-head"><h2>🔥 인기 영상 트렌드</h2></div>
     <div class="hot-grid" id="hotGrid"></div>
   </div>
 
-  <!-- ── REVENUE ── -->
+  <!-- REVENUE -->
   <div id="sec-revenue" class="section">
     <div class="sec-head"><h2>💰 수익 계산기</h2></div>
     <div class="rev-box">
@@ -465,7 +409,7 @@ header {
         <div class="field"><label>VTR (%)</label><input type="number" id="rVtr" value="45" oninput="calcRevenue()"></div>
         <div class="field">
           <label>국가 배율</label>
-          <select id="rCountry" oninput="calcRevenue()" style="padding:9px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:10px;color:var(--text)">
+          <select id="rCountry" oninput="calcRevenue()">
             <option value="1.0">🇺🇸 미국 (1.0×)</option>
             <option value="1.15">🇬🇧 영국 (1.15×)</option>
             <option value="0.5" selected>🇰🇷 한국 (0.5×)</option>
@@ -478,19 +422,17 @@ header {
     </div>
   </div>
 
-  <!-- ── TOOLS ── -->
+  <!-- TOOLS -->
   <div id="sec-tools" class="section">
     <div class="sec-head"><h2>🛠️ 크리에이터 도구</h2></div>
     <div class="extra-grid" id="toolsGrid"></div>
   </div>
-
-  <!-- ── IDEAS ── -->
+  <!-- IDEAS -->
   <div id="sec-ideas" class="section">
     <div class="sec-head"><h2>💡 콘텐츠 아이디어</h2></div>
     <div class="extra-grid" id="ideasGrid"></div>
   </div>
-
-  <!-- ── SHOP ── -->
+  <!-- SHOP -->
   <div id="sec-shop" class="section">
     <div class="sec-head"><h2>🛒 추천 장비 & 서비스</h2></div>
     <div class="extra-grid" id="shopGrid"></div>
@@ -498,47 +440,23 @@ header {
 
 </main>
 
-<!-- AD ZONE -->
+<!-- ══ AD ZONE ══ -->
 <aside class="ad-zone">
-  <div class="ad-slot">
-    <div>
-      <div style="font-size:1.4rem;margin-bottom:6px">📢</div>
-      광고 영역<br>
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="1111111111"
-           data-ad-format="auto"></ins>
-    </div>
-  </div>
-  <div class="ad-slot">
-    <div>
-      <div style="font-size:1.4rem;margin-bottom:6px">📢</div>
-      광고 영역
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="2222222222"
-           data-ad-format="auto"></ins>
-    </div>
-  </div>
-  <div class="ad-slot">
-    <div>
-      <div style="font-size:1.4rem;margin-bottom:6px">📢</div>
-      광고 영역
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="3333333333"
-           data-ad-format="auto"></ins>
-    </div>
-  </div>
+  <div class="ad-slot"><div>📢<br>광고 영역
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111" data-ad-format="auto"></ins>
+  </div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="2222222222" data-ad-format="auto"></ins>
+  </div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333" data-ad-format="auto"></ins>
+  </div></div>
 </aside>
 
 </div><!-- /body-row -->
 </div><!-- /app-wrap -->
 
-<!-- MODAL -->
+<!-- ══ MODAL ══ -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal-box" id="modalBox">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -548,33 +466,32 @@ header {
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    DATA
-═══════════════════════════════════════════════ */
+══════════════════════════════════════ */
 const GRADES = [
-  { lv:1,  name:'씨앗',     color:'#ffffff', subMin:0,        subMax:100,      rankPct:'하위 37%',         score:[0,499],     desc:'채널을 막 시작한 단계. 첫 콘텐츠 업로드 후 방향성을 잡는 시기',   nextGoal:'구독자 100명 달성 후 커뮤니티 탭 활성화', perks:['채널 아트 최적화','키워드 리서치 시작','첫 10개 영상 업로드'],  intensity:1 },
-  { lv:2,  name:'새싹',     color:'#4fc3f7', subMin:100,      subMax:1000,     rankPct:'하위 57%',         score:[500,1999],  desc:'초기 팬층이 생기기 시작. 수익화를 위한 기반을 다지는 단계',       nextGoal:'구독자 1,000명 & 시청 4,000시간 → 수익화', perks:['쇼츠 활용 급성장','끝화면·카드 설정','댓글 소통 강화'],       intensity:2 },
-  { lv:3,  name:'새내기',   color:'#fff176', subMin:1000,     subMax:10000,    rankPct:'상위 36%',         score:[2000,7999], desc:'YouTube 파트너 프로그램 수익화 달성. 광고 수익이 시작되는 구간',  nextGoal:'월 4회 이상 업로드로 알고리즘 신뢰 확보',   perks:['YPP 수익화 시작','커뮤니티 탭 활성화','Super Thanks 활성화'], intensity:2 },
-  { lv:4,  name:'성장주',   color:'#ffb74d', subMin:10000,    subMax:50000,    rankPct:'상위 18%',         score:[8000,24999],desc:'알고리즘이 채널을 인식하기 시작. 바이럴 잠재력이 높아지는 구간',  nextGoal:'시리즈물 기획으로 재방문율 높이기',         perks:['채널 멤버십 개설','Super Chat 활성화','브랜드 딜 시작'],     intensity:3 },
-  { lv:5,  name:'인플루언서',color:'#66bb6a', subMin:50000,    subMax:100000,   rankPct:'상위 8%',          score:[25000,59999],desc:'MCN 협업 및 스폰서십이 활발한 구간. 전업 크리에이터 진입 가능',   nextGoal:'실버 버튼(10만) 달성 목표',                 perks:['실버 버튼 목전','MCN 계약 가능','쇼핑 기능 활성화'],         intensity:4 },
-  { lv:6,  name:'실버급',   color:'#ce93d8', subMin:100000,   subMax:500000,   rankPct:'상위 3%',          score:[60000,149999],desc:'실버 플레이 버튼 보유. 안정적 수익과 팬덤이 형성된 구간',        nextGoal:'골드 버튼(100만) 도전 시작',                perks:['실버 버튼 보유','브랜드 협찬 정기화','해외 시청자 유입'],     intensity:5 },
-  { lv:7,  name:'골드급',   color:'#f48fb1', subMin:500000,   subMax:1000000,  rankPct:'상위 0.8%',        score:[150000,349999],desc:'골드 플레이 버튼 목전. 국내외 광고주가 주목하는 프리미엄 구간', nextGoal:'골드 버튼(100만) 달성',                     perks:['초대형 브랜드 딜','해외 진출 가속','오프라인 이벤트 가능'],  intensity:6 },
-  { lv:8,  name:'다이아급', color:'#ef5350', subMin:1000000,  subMax:10000000, rankPct:'상위 0.1%',        score:[350000,699999],desc:'골드 버튼 보유. 국내 메이저 크리에이터. 미디어·기업 협업 다수', nextGoal:'다이아몬드 버튼(1000만) 도전',              perks:['골드 버튼 보유','TV·미디어 출연','글로벌 캠페인 참여'],     intensity:8 },
-  { lv:9,  name:'레전드',   color:'#ffd93d', subMin:10000000, subMax:50000000, rankPct:'상위 0.003%',      score:[700000,999999],desc:'다이아몬드 버튼 보유. 글로벌 탑티어 크리에이터. 세계적 인지도', nextGoal:'레드 다이아몬드(5000만) 또는 자체 IP 구축',perks:['다이아몬드 버튼 보유','글로벌 투어','영화·드라마 참여'],    intensity:9 },
-  { lv:10, name:'신화',     color:'#ff0040', subMin:50000000, subMax:Infinity, rankPct:'상위 0.00005%',    score:[1000000,Infinity],desc:'레드 다이아몬드 보유. YouTube 역사상 극소수만 달성. MrBeast급 글로벌 아이콘', nextGoal:'유튜브를 넘어 글로벌 미디어 제국 건설',  perks:['레드 다이아몬드 보유','자체 기업 운영','글로벌 아이콘'],    intensity:10 }
+  { lv:1,  name:'씨앗',      color:'#e8e8e8', subMin:0,        subMax:100,       rankPct:'하위 37%',       score:[0,499],        desc:'채널을 막 시작한 단계. 첫 콘텐츠 업로드 후 방향성을 잡는 시기',            nextGoal:'구독자 100명 달성 후 커뮤니티 탭 활성화', perks:['채널 아트 최적화','키워드 리서치 시작','첫 10개 영상 업로드'],   intensity:1 },
+  { lv:2,  name:'새싹',      color:'#4fc3f7', subMin:100,       subMax:1000,      rankPct:'하위 57%',       score:[500,1999],     desc:'초기 팬층이 생기기 시작. 수익화를 위한 기반을 다지는 단계',              nextGoal:'구독자 1,000명 & 시청 4,000시간 → 수익화', perks:['쇼츠 활용 급성장','끝화면·카드 설정','댓글 소통 강화'],        intensity:2 },
+  { lv:3,  name:'새내기',    color:'#fff176', subMin:1000,      subMax:10000,     rankPct:'상위 36%',       score:[2000,7999],    desc:'YouTube 파트너 프로그램 수익화 달성. 광고 수익이 시작되는 구간',        nextGoal:'월 4회 이상 업로드로 알고리즘 신뢰 확보',   perks:['YPP 수익화 시작','커뮤니티 탭 활성화','Super Thanks 활성화'],  intensity:2 },
+  { lv:4,  name:'성장주',    color:'#ffb74d', subMin:10000,     subMax:50000,     rankPct:'상위 18%',       score:[8000,24999],   desc:'알고리즘이 채널을 인식하기 시작. 바이럴 잠재력이 높아지는 구간',        nextGoal:'시리즈물 기획으로 재방문율 높이기',         perks:['채널 멤버십 개설','Super Chat 활성화','브랜드 딜 시작'],      intensity:3 },
+  { lv:5,  name:'인플루언서',color:'#66bb6a', subMin:50000,     subMax:100000,    rankPct:'상위 8%',        score:[25000,59999],  desc:'MCN 협업 및 스폰서십이 활발한 구간. 전업 크리에이터 진입 가능',         nextGoal:'실버 버튼(10만) 달성 목표',                 perks:['실버 버튼 목전','MCN 계약 가능','쇼핑 기능 활성화'],          intensity:4 },
+  { lv:6,  name:'실버급',    color:'#ce93d8', subMin:100000,    subMax:500000,    rankPct:'상위 3%',        score:[60000,149999], desc:'실버 플레이 버튼 보유. 안정적 수익과 팬덤이 형성된 구간',              nextGoal:'골드 버튼(100만) 도전 시작',                perks:['실버 버튼 보유','브랜드 협찬 정기화','해외 시청자 유입'],      intensity:5 },
+  { lv:7,  name:'골드급',    color:'#f48fb1', subMin:500000,    subMax:1000000,   rankPct:'상위 0.8%',      score:[150000,349999],desc:'골드 플레이 버튼 목전. 국내외 광고주가 주목하는 프리미엄 구간',         nextGoal:'골드 버튼(100만) 달성',                     perks:['초대형 브랜드 딜','해외 진출 가속','오프라인 이벤트 가능'],   intensity:6 },
+  { lv:8,  name:'다이아급',  color:'#ef5350', subMin:1000000,   subMax:10000000,  rankPct:'상위 0.1%',      score:[350000,699999],desc:'골드 버튼 보유. 국내 메이저 크리에이터. 미디어·기업 협업 다수',        nextGoal:'다이아몬드 버튼(1000만) 도전',              perks:['골드 버튼 보유','TV·미디어 출연','글로벌 캠페인 참여'],      intensity:8 },
+  { lv:9,  name:'레전드',    color:'#ffd93d', subMin:10000000,  subMax:50000000,  rankPct:'상위 0.003%',    score:[700000,999999],desc:'다이아몬드 버튼 보유. 글로벌 탑티어 크리에이터. 세계적 인지도',       nextGoal:'레드 다이아몬드(5000만) 또는 자체 IP 구축', perks:['다이아몬드 버튼 보유','글로벌 투어','영화·드라마 참여'],     intensity:9 },
+  { lv:10, name:'신화',      color:'#ff0040', subMin:50000000,  subMax:Infinity,  rankPct:'상위 0.00005%',  score:[1000000,Infinity], desc:'레드 다이아몬드 보유. YouTube 역사상 극소수만 달성. MrBeast급 글로벌 아이콘', nextGoal:'유튜브를 넘어 글로벌 미디어 제국 건설', perks:['레드 다이아몬드 보유','자체 기업 운영','글로벌 아이콘'],  intensity:10 }
 ];
 
 const API_KEYS = ['AIzaSyAYi9B4vIFjl75uYBS56GbTSMJfV_TLuzE','YOUR_API_KEY_2'];
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    HELPERS
-═══════════════════════════════════════════════ */
+══════════════════════════════════════ */
 function fmt(n){
-  if(n===undefined||n===null) return '0';
-  n = parseFloat(n);
+  n = parseFloat(n)||0;
   if(n>=100000000) return (n/100000000).toFixed(1)+'억';
-  if(n>=10000) return (n/10000).toFixed(1)+'만';
-  if(n>=1000) return (n/1000).toFixed(1)+'천';
+  if(n>=10000)     return (n/10000).toFixed(1)+'만';
+  if(n>=1000)      return (n/1000).toFixed(1)+'천';
   return n.toLocaleString();
 }
 function fmtMoney(usd){
@@ -582,282 +499,208 @@ function fmtMoney(usd){
   return `$${usd.toFixed(2)} (₩${krw.toLocaleString()})`;
 }
 function qual(v, good, great){
-  if(v >= great) return {cls:'fq-best', label:'최상'};
-  if(v >= good)  return {cls:'fq-good', label:'양호'};
-  if(v >= good*0.5) return {cls:'fq-mid', label:'보통'};
+  if(v>=great)       return {cls:'fq-best', label:'최상'};
+  if(v>=good)        return {cls:'fq-good', label:'양호'};
+  if(v>=good*0.5)    return {cls:'fq-mid',  label:'보통'};
   return {cls:'fq-low', label:'부족'};
 }
+function lvFromScore(s){ for(let i=9;i>=0;i--){ if(s>=GRADES[i].score[0]) return GRADES[i].lv; } return 1; }
+function lvFromSubs(s){  for(let i=9;i>=0;i--){ if(s>=GRADES[i].subMin)   return GRADES[i].lv; } return 1; }
 
-function lvFromScore(score){
-  for(let i=GRADES.length-1;i>=0;i--){
-    if(score>=GRADES[i].score[0]) return GRADES[i].lv;
-  }
-  return 1;
-}
-function lvFromSubs(subs){
-  for(let i=GRADES.length-1;i>=0;i--){
-    if(subs>=GRADES[i].subMin) return GRADES[i].lv;
-  }
-  return 1;
-}
+/* ══════════════════════════════════════
+   BUILD CARD HTML
+   빔 라인 효과: .lv-card-wrap.beamN
+══════════════════════════════════════ */
+function buildCardHTML(g, clickFn){
+  const lv = g.lv;
+  const isHigh = lv >= 6;
+  const is10   = lv === 10;
+  const click  = clickFn || `openModal(${lv})`;
 
-/* ═══════════════════════════════════════════════
-   CONIC BORDER HELPER
-═══════════════════════════════════════════════ */
-function lvBorderClass(lv){ return `lv${lv}-border`; }
-
-/* ═══════════════════════════════════════════════
-   BUILD LEVEL CARD HTML
-═══════════════════════════════════════════════ */
-function buildCardHTML(g, extraClass=''){
-  const isHigh = g.lv >= 6;
-  const is10   = g.lv === 10;
-  // Number styling
+  // LV 숫자 스타일
   let numStyle = `color:${g.color};`;
-  if(isHigh && !is10){
-    numStyle += `text-shadow:0 0 12px ${g.color},0 0 24px ${g.color};animation:glowPulse 2s infinite;`;
-  }
-  if(is10){
-    numStyle += `animation:rainbowText 2s linear infinite;text-shadow:0 0 20px #fff;`;
-  }
-  // Name styling
+  if(isHigh && !is10) numStyle += `text-shadow:0 0 14px ${g.color},0 0 28px ${g.color}88;`;
+  // 애니메이션 클래스
+  const numCls  = is10 ? 'lv-num rainbow-text' : (isHigh ? 'lv-num glow-text' : 'lv-num');
+  const nameCls = is10 ? 'lv-name rainbow-text': (isHigh ? 'lv-name glow-text': 'lv-name');
   let nameStyle = `color:${g.color};`;
-  if(isHigh && !is10){
-    nameStyle += `text-shadow:0 0 8px ${g.color};animation:glowPulse 2s infinite;`;
-  }
-  if(is10){
-    nameStyle += `animation:rainbowText 2s linear infinite;`;
-  }
-  // Rank badge
-  const rankBg = g.color+'33';
-  const subRangeText = g.subMax === Infinity
-    ? `${fmt(g.subMin)}+ 구독자`
-    : `${fmt(g.subMin)} ~ ${fmt(g.subMax)} 구독자`;
+  if(isHigh && !is10) nameStyle += `text-shadow:0 0 10px ${g.color}88;`;
+
+  const subMax = g.subMax===Infinity ? '∞' : fmt(g.subMax);
+  const scoreMax = g.score[1]===Infinity ? '∞' : fmt(g.score[1]);
 
   return `
-  <div class="lv-card-outer ${lvBorderClass(g.lv)} ${extraClass}" onclick="openModal(${g.lv})">
-    <div class="lv-card-inner">
-      <div class="lv-num" style="${numStyle}">LV.${g.lv}</div>
-      <div class="lv-name" style="${nameStyle}">${g.name}</div>
-      <div class="lv-sub-range">${subRangeText}</div>
-      <div class="lv-rank" style="background:${rankBg};color:${g.color}">${g.rankPct}</div>
-      <div class="lv-desc">${g.desc}</div>
-      <div class="lv-score-range" style="color:${g.color}">점수 ${fmt(g.score[0])} ~ ${g.score[1]===Infinity?'∞':fmt(g.score[1])}</div>
-    </div>
-  </div>`;
+<div class="lv-card-wrap beam${lv}" onclick="${click}">
+  <div class="lv-card-face">
+    <div class="${numCls}" style="${numStyle}">LV.${lv}</div>
+    <div class="${nameCls}" style="${nameStyle}">${g.name}</div>
+    <div class="lv-sub-range">${fmt(g.subMin)} ~ ${subMax} 구독자</div>
+    <div class="lv-rank" style="background:${g.color}22;color:${g.color}">${g.rankPct}</div>
+    <div class="lv-desc">${g.desc}</div>
+    <div class="lv-score-range" style="color:${g.color}">점수 ${fmt(g.score[0])} ~ ${scoreMax}</div>
+  </div>
+</div>`;
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    COMPUTE SCORE
-═══════════════════════════════════════════════ */
-function computeDetailedScore(subs, views, vids, eng, freq){
-  subs  = parseFloat(subs)||0;
-  views = parseFloat(views)||0;
-  vids  = parseInt(vids)||1;
-  eng   = parseFloat(eng)||0;
-  freq  = parseFloat(freq)||0;
-
-  const avgViews = views / Math.max(vids,1);
-  const vsr      = views / Math.max(subs,1);  // view-to-sub ratio
-
-  // Base scores
-  const sSubs  = Math.min(Math.log10(Math.max(subs,1))*80000, 400000);
+══════════════════════════════════════ */
+function computeDetailedScore(subs,views,vids,eng,freq){
+  subs=parseFloat(subs)||0; views=parseFloat(views)||0;
+  vids=parseInt(vids)||1;   eng=parseFloat(eng)||0; freq=parseFloat(freq)||0;
+  const avgV = views/Math.max(vids,1);
+  const vsr  = views/Math.max(subs,1);
+  const sSubs  = Math.min(Math.log10(Math.max(subs,1))*80000,  400000);
   const sViews = Math.min(Math.log10(Math.max(views,1))*50000, 250000);
-  const sEng   = Math.min(eng * 30000, 150000);
-  const sFreq  = Math.min(freq * 8000, 80000);
-  const sAvg   = Math.min(Math.log10(Math.max(avgViews,1))*25000, 120000);
-
-  let base = sSubs + sViews + sEng + sFreq + sAvg;
-
-  // Bonus
-  let bonus = 0;
-  let bonusLog = [];
-  if(subs >= 1000000)   { bonus += base*0.15; bonusLog.push('구독자 100만+ 보너스 +15%'); }
-  else if(subs >= 100000){ bonus += base*0.07; bonusLog.push('구독자 10만+ 보너스 +7%'); }
-  if(vsr >= 5)          { bonus += base*0.12; bonusLog.push('조회/구독 비율 5배+ 보너스 +12%'); }
-  else if(vsr >= 2)     { bonus += base*0.06; bonusLog.push('조회/구독 비율 2배+ 보너스 +6%'); }
-  if(eng >= 10)         { bonus += base*0.10; bonusLog.push('참여율 10%+ 보너스 +10%'); }
-  else if(eng >= 6)     { bonus += base*0.05; bonusLog.push('참여율 6%+ 보너스 +5%'); }
-  if(freq >= 15)        { bonus += base*0.08; bonusLog.push('주 3회+ 업로드 보너스 +8%'); }
-  else if(freq >= 8)    { bonus += base*0.04; bonusLog.push('주 2회+ 업로드 보너스 +4%'); }
-
-  const total = Math.round(base + bonus);
-  return {
-    total, base: Math.round(base), bonus: Math.round(bonus), bonusLog,
-    breakdown:{ subs: Math.round(sSubs), views: Math.round(sViews), eng: Math.round(sEng), freq: Math.round(sFreq), avg: Math.round(sAvg) },
-    factors:{ subs, views, vids, eng, freq, avgViews, vsr }
-  };
+  const sEng   = Math.min(eng*30000, 150000);
+  const sFreq  = Math.min(freq*8000,  80000);
+  const sAvg   = Math.min(Math.log10(Math.max(avgV,1))*25000, 120000);
+  let base = sSubs+sViews+sEng+sFreq+sAvg;
+  let bonus=0, bonusLog=[];
+  if(subs>=1000000){bonus+=base*.15;bonusLog.push('구독자 100만+ 보너스 +15%');}
+  else if(subs>=100000){bonus+=base*.07;bonusLog.push('구독자 10만+ 보너스 +7%');}
+  if(vsr>=5){bonus+=base*.12;bonusLog.push('조회/구독 비율 5배+ 보너스 +12%');}
+  else if(vsr>=2){bonus+=base*.06;bonusLog.push('조회/구독 비율 2배+ 보너스 +6%');}
+  if(eng>=10){bonus+=base*.10;bonusLog.push('참여율 10%+ 보너스 +10%');}
+  else if(eng>=6){bonus+=base*.05;bonusLog.push('참여율 6%+ 보너스 +5%');}
+  if(freq>=15){bonus+=base*.08;bonusLog.push('업로드 주 3회+ 보너스 +8%');}
+  else if(freq>=8){bonus+=base*.04;bonusLog.push('업로드 주 2회+ 보너스 +4%');}
+  const total=Math.round(base+bonus);
+  return { total, base:Math.round(base), bonus:Math.round(bonus), bonusLog,
+    breakdown:{subs:Math.round(sSubs),views:Math.round(sViews),eng:Math.round(sEng),freq:Math.round(sFreq),avg:Math.round(sAvg)},
+    factors:{subs,views,vids,eng,freq,avgViews:avgV,vsr} };
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    ANALYZE CHANNEL
-═══════════════════════════════════════════════ */
+══════════════════════════════════════ */
 function analyzeChannel(isDemo){
-  let subs, views, vids, eng, freq, chanName, avatarUrl;
+  let subs,views,vids,eng,freq,chanName,avatarUrl;
   if(isDemo){
-    subs=460000000; views=70000000000; vids=800; eng=8.5; freq=4;
-    chanName='@MrBeast'; avatarUrl='https://yt3.googleusercontent.com/ytc/APkrFKa6XiLa13mMVPzkmmTBcgNPjjqCGPrY86mT0OfS=s88-c-k-c0x00ffffff-no-rj';
+    subs=460000000;views=70000000000;vids=800;eng=8.5;freq=4;
+    chanName='@MrBeast';
+    avatarUrl='https://yt3.googleusercontent.com/ytc/APkrFKa6XiLa13mMVPzkmmTBcgNPjjqCGPrY86mT0OfS=s88-c-k-c0x00ffffff-no-rj';
   } else {
     subs  = parseFloat(document.getElementById('inSubs').value)||0;
     views = parseFloat(document.getElementById('inViews').value)||0;
     vids  = parseInt(document.getElementById('inVids').value)||1;
     eng   = parseFloat(document.getElementById('inEng').value)||0;
     freq  = parseFloat(document.getElementById('inFreq').value)||0;
-    chanName = document.getElementById('chanInput').value || '분석 채널';
-    avatarUrl = '';
+    chanName = document.getElementById('chanInput').value||'분석 채널';
+    avatarUrl='';
   }
+  const sc     = computeDetailedScore(subs,views,vids,eng,freq);
+  const subLv  = lvFromSubs(subs);
+  const scLv   = lvFromScore(sc.total);
+  const finLv  = Math.min(10, Math.max(1, Math.round(subLv*0.4+scLv*0.6)));
+  const fG=GRADES[finLv-1], subG=GRADES[subLv-1], scG=GRADES[scLv-1];
+  const maxScore=1000000;
+  const f=sc.factors;
+  const qS=qual(subs,10000,100000), qV=qual(f.views,1000000,10000000);
+  const qA=qual(f.avgViews,10000,100000), qE=qual(f.eng,3,7);
+  const qF=qual(f.freq,4,12), qSc=qual(sc.total,10000,100000);
 
-  const sc = computeDetailedScore(subs,views,vids,eng,freq);
-  const subLv   = lvFromSubs(subs);
-  const scoreLv = lvFromScore(sc.total);
-  const finalLv = Math.round((subLv*0.4 + scoreLv*0.6));
-  const fG      = GRADES[Math.min(finalLv,10)-1];
-  const subG    = GRADES[subLv-1];
-  const scG     = GRADES[scoreLv-1];
-
-  // Factor quality
-  const factors = sc.factors;
-  const avgViews = factors.avgViews;
-  const qSubs  = qual(subs, 10000, 100000);
-  const qViews = qual(views, 1000000, 10000000);
-  const qAvg   = qual(avgViews, 10000, 100000);
-  const qEng   = qual(eng, 3, 7);
-  const qFreq  = qual(freq, 4, 12);
-  const qScore = qual(sc.total, 10000, 100000);
-
-  const maxScore = 1000000;
-
-  const html = `
-  <div class="result-wrap">
-    <div class="result-hero">
-      <div class="result-card-col">
-        ${buildCardHTML(fG)}
-      </div>
-      <div class="result-info-col">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-          ${avatarUrl?`<img src="${avatarUrl}" style="width:48px;height:48px;border-radius:50%;border:2px solid ${fG.color}">`:''}
-          <div>
-            <div style="font-size:1.1rem;font-weight:800">${chanName}</div>
-            <div style="font-size:.8rem;color:var(--text2)">최종 등급: <span style="color:${fG.color};font-weight:900">${fG.name} LV.${fG.lv}</span></div>
-          </div>
-        </div>
-        <!-- Decision Row -->
-        <div class="decision-row">
-          <div class="dec-item">
-            <div class="dec-label">구독자 레벨</div>
-            <div class="dec-val" style="color:${subG.color}">LV.${subLv}<br><small style="font-size:.65rem">${subG.name}</small></div>
-          </div>
-          <div class="dec-arrow">×0.4</div>
-          <div class="dec-item">
-            <div class="dec-label">알고리즘 레벨</div>
-            <div class="dec-val" style="color:${scG.color}">LV.${scoreLv}<br><small style="font-size:.65rem">${scG.name}</small></div>
-          </div>
-          <div class="dec-arrow">×0.6</div>
-          <div class="dec-item">
-            <div class="dec-label">⭐ 최종 레벨</div>
-            <div class="dec-val" style="color:${fG.color};font-size:1.4rem">LV.${finalLv}</div>
-          </div>
-        </div>
-        <!-- Factor Grid -->
-        <div class="factor-grid">
-          ${factorCard('👥 구독자', fmt(subs), Math.min(subs/1000000*100,100), fG.color, qSubs)}
-          ${factorCard('👁 총 조회수', fmt(views), Math.min(views/1000000000*100,100), '#4fc3f7', qViews)}
-          ${factorCard('📹 평균 조회수', fmt(avgViews), Math.min(avgViews/100000*100,100), '#fff176', qAvg)}
-          ${factorCard('💬 참여율', eng.toFixed(1)+'%', Math.min(eng/10*100,100), '#66bb6a', qEng)}
-          ${factorCard('📅 월 업로드', freq+'회', Math.min(freq/20*100,100), '#ffb74d', qFreq)}
-          ${factorCard('🤖 알고리즘 점수', fmt(sc.total), Math.min(sc.total/maxScore*100,100), '#ce93d8', qScore)}
+  const html=`
+<div class="result-wrap">
+  <div class="result-hero">
+    <div class="result-card-col">${buildCardHTML(fG)}</div>
+    <div class="result-info-col">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        ${avatarUrl?`<img src="${avatarUrl}" style="width:48px;height:48px;border-radius:50%;border:2px solid ${fG.color}">`:''}
+        <div>
+          <div style="font-size:1.1rem;font-weight:800">${chanName}</div>
+          <div style="font-size:.78rem;color:var(--text2)">최종 등급: <span style="color:${fG.color};font-weight:900">${fG.name} LV.${finLv}</span></div>
         </div>
       </div>
-    </div>
-
-    <!-- Score Breakdown -->
-    <div class="score-breakdown">
-      <h4>📊 점수 상세 분석</h4>
-      ${sbRow('구독자 점수', sc.breakdown.subs, maxScore, fG.color)}
-      ${sbRow('조회수 점수', sc.breakdown.views, maxScore, '#4fc3f7')}
-      ${sbRow('참여율 점수', sc.breakdown.eng, maxScore, '#66bb6a')}
-      ${sbRow('업로드 빈도 점수', sc.breakdown.freq, maxScore, '#ffb74d')}
-      ${sbRow('평균 조회수 점수', sc.breakdown.avg, maxScore, '#fff176')}
-      <div class="sb-row">
-        <div class="sb-label" style="color:#66bb6a">⚡ 보너스</div>
-        <div class="sb-bar-wrap" style="flex:1"><div class="sb-bar" style="width:${Math.min(sc.bonus/maxScore*100,100)}%;background:#66bb6a"></div></div>
-        <div class="sb-val" style="color:#66bb6a">+${fmt(sc.bonus)}</div>
+      <div class="decision-row">
+        <div class="dec-item"><div class="dec-label">구독자 레벨</div><div class="dec-val" style="color:${subG.color}">LV.${subLv}<br><small style="font-size:.62rem">${subG.name}</small></div></div>
+        <div class="dec-arrow">×0.4</div>
+        <div class="dec-item"><div class="dec-label">알고리즘 레벨</div><div class="dec-val" style="color:${scG.color}">LV.${scLv}<br><small style="font-size:.62rem">${scG.name}</small></div></div>
+        <div class="dec-arrow">×0.6</div>
+        <div class="dec-item"><div class="dec-label">⭐ 최종 레벨</div><div class="dec-val" style="color:${fG.color};font-size:1.3rem">LV.${finLv}</div></div>
       </div>
-      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-        <span style="font-weight:700">🎯 총 알고리즘 점수</span>
-        <span style="font-size:1.3rem;font-weight:900;color:${fG.color}">${fmt(sc.total)}</span>
+      <div class="factor-grid">
+        ${fc('👥 구독자',fmt(subs),Math.min(subs/1000000*100,100),fG.color,qS)}
+        ${fc('👁 총 조회수',fmt(f.views),Math.min(f.views/1e10*100,100),'#4fc3f7',qV)}
+        ${fc('📹 평균 조회수',fmt(f.avgViews),Math.min(f.avgViews/100000*100,100),'#fff176',qA)}
+        ${fc('💬 참여율',f.eng.toFixed(1)+'%',Math.min(f.eng/10*100,100),'#66bb6a',qE)}
+        ${fc('📅 월 업로드',f.freq+'회',Math.min(f.freq/20*100,100),'#ffb74d',qF)}
+        ${fc('🤖 알고리즘 점수',fmt(sc.total),Math.min(sc.total/maxScore*100,100),'#ce93d8',qSc)}
       </div>
     </div>
-
-    ${sc.bonusLog.length ? `
-    <div class="bonus-log">
-      <h4>⚡ 보너스 적용 항목</h4>
-      ${sc.bonusLog.map(b=>`<div class="bonus-item">✔ ${b}</div>`).join('')}
-    </div>` : ''}
-
-    <!-- Next Goal & Perks -->
-    <div style="background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px">
-      <div style="font-size:.82rem;color:var(--text2);margin-bottom:6px">🎯 다음 목표</div>
-      <div style="font-size:.9rem;font-weight:600">${fG.nextGoal}</div>
-      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-        ${fG.perks.map(p=>`<span style="background:${fG.color}22;color:${fG.color};border-radius:20px;padding:3px 12px;font-size:.75rem;font-weight:600">${p}</span>`).join('')}
-      </div>
+  </div>
+  <div class="score-breakdown">
+    <h4>📊 점수 상세 분석</h4>
+    ${sbr('구독자 점수',sc.breakdown.subs,maxScore,fG.color)}
+    ${sbr('조회수 점수',sc.breakdown.views,maxScore,'#4fc3f7')}
+    ${sbr('참여율 점수',sc.breakdown.eng,maxScore,'#66bb6a')}
+    ${sbr('업로드 빈도 점수',sc.breakdown.freq,maxScore,'#ffb74d')}
+    ${sbr('평균 조회수 점수',sc.breakdown.avg,maxScore,'#fff176')}
+    <div class="sb-row">
+      <div class="sb-label" style="color:#66bb6a">⚡ 보너스</div>
+      <div class="sb-bar-wrap"><div class="sb-bar" style="width:${Math.min(sc.bonus/maxScore*100,100)}%;background:#66bb6a"></div></div>
+      <div class="sb-val" style="color:#66bb6a">+${fmt(sc.bonus)}</div>
     </div>
-
-    <!-- Inline Grade Table -->
-    <div class="inline-grade-table-wrap">
-      <table class="grade-table" id="inlineGradeTable">
-        <thead><tr><th>LV</th><th>등급</th><th>구독자 구간</th><th>상위%</th><th>점수 범위</th></tr></thead>
-        <tbody id="inlineGradeTbody"></tbody>
-      </table>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700">🎯 총 알고리즘 점수</span>
+      <span style="font-size:1.25rem;font-weight:900;color:${fG.color}">${fmt(sc.total)}</span>
     </div>
-  </div>`;
+  </div>
+  ${sc.bonusLog.length?`<div class="bonus-log"><h4>⚡ 보너스 적용 항목</h4>${sc.bonusLog.map(b=>`<div class="bonus-item">✔ ${b}</div>`).join('')}</div>`:''}
+  <div style="background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px">
+    <div style="font-size:.8rem;color:var(--text2);margin-bottom:6px">🎯 다음 목표</div>
+    <div style="font-size:.88rem;font-weight:600">${fG.nextGoal}</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      ${fG.perks.map(p=>`<span style="background:${fG.color}22;color:${fG.color};border-radius:20px;padding:3px 12px;font-size:.73rem;font-weight:600">${p}</span>`).join('')}
+    </div>
+  </div>
+  <div class="inline-grade-table-wrap">
+    <table class="grade-table">
+      <thead><tr><th>LV</th><th>등급</th><th>구독자 구간</th><th>상위%</th><th>점수 범위</th></tr></thead>
+      <tbody id="iGradeTbody"></tbody>
+    </table>
+  </div>
+</div>`;
 
   document.getElementById('resultArea').innerHTML = html;
-  buildInlineGradeTable(finalLv);
+  // 인라인 등급표 채우기
+  const tbody = document.getElementById('iGradeTbody');
+  tbody.innerHTML = GRADES.map(g=>{
+    const cur = g.lv===finLv;
+    const smx = g.subMax===Infinity?'∞':fmt(g.subMax);
+    const scmx= g.score[1]===Infinity?'∞':fmt(g.score[1]);
+    return `<tr class="${cur?'cur-row':''}">
+      <td><span class="lv-chip" style="background:${g.color}22;color:${g.color};border-color:${g.color}44" onclick="openModal(${g.lv})">${g.lv}</span>${cur?'<span class="star-badge">★</span>':''}</td>
+      <td style="color:${g.color};font-weight:700">${g.name}</td>
+      <td>${fmt(g.subMin)} ~ ${smx}</td>
+      <td>${g.rankPct}</td>
+      <td>${fmt(g.score[0])} ~ ${scmx}</td>
+    </tr>`;
+  }).join('');
 }
 
-function factorCard(label, value, pct, color, q){
-  return `
-  <div class="factor-card" style="border-left-color:${color}">
+function fc(label,value,pct,color,q){
+  return `<div class="factor-card" style="border-left-color:${color}">
     <div class="fc-label">${label}</div>
     <div class="fc-value" style="color:${color}">${value}</div>
     <div class="fc-bar-wrap"><div class="fc-bar" style="width:${Math.min(pct,100)}%;background:${color}"></div></div>
     <span class="fc-badge ${q.cls}">${q.label}</span>
   </div>`;
 }
-
-function sbRow(label, val, max, color){
-  const pct = Math.min(val/max*100,100);
-  return `
-  <div class="sb-row">
+function sbr(label,val,max,color){
+  const pct=Math.min(val/max*100,100);
+  return `<div class="sb-row">
     <div class="sb-label">${label}</div>
     <div class="sb-bar-wrap"><div class="sb-bar" style="width:${pct}%;background:${color}"></div></div>
     <div class="sb-val" style="color:${color}">${fmt(val)}</div>
   </div>`;
 }
 
-function buildInlineGradeTable(currentLv){
-  const tbody = document.getElementById('inlineGradeTbody');
-  if(!tbody) return;
-  tbody.innerHTML = GRADES.map(g=>{
-    const isCur = g.lv === currentLv;
-    const subMax = g.subMax===Infinity ? '∞' : fmt(g.subMax);
-    const scoreMax = g.score[1]===Infinity ? '∞' : fmt(g.score[1]);
-    return `<tr class="${isCur?'current-row':''}">
-      <td><span class="lv-chip" style="background:${g.color}22;color:${g.color}">${g.lv}</span>${isCur?'<span class="star-badge">★</span>':''}</td>
-      <td style="color:${g.color};font-weight:700">${g.name}</td>
-      <td>${fmt(g.subMin)} ~ ${subMax}</td>
-      <td>${g.rankPct}</td>
-      <td>${fmt(g.score[0])} ~ ${scoreMax}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ═══════════════════════════════════════════════
-   MODAL
-═══════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   MODAL — LV 버튼 클릭 시 해당 레벨 카드 표시
+══════════════════════════════════════ */
 let modalLv = 1;
+
 function openModal(lv){
   modalLv = lv;
   document.getElementById('modalOverlay').classList.add('open');
@@ -865,38 +708,36 @@ function openModal(lv){
   renderModal(lv);
 }
 function closeModal(e){
-  if(!e || e.target===document.getElementById('modalOverlay')){
+  if(!e || e.target===document.getElementById('modalOverlay'))
     document.getElementById('modalOverlay').classList.remove('open');
-  }
 }
 function buildModalNav(){
-  const nav = document.getElementById('modalNav');
-  nav.innerHTML = GRADES.map(g=>`
-    <button class="modal-nav-btn ${g.lv===modalLv?'active':''}"
-      style="${g.lv===modalLv?'background:'+g.color+';color:#000':''}"
-      onclick="renderModal(${g.lv})">${g.lv}</button>
-  `).join('');
+  document.getElementById('modalNav').innerHTML = GRADES.map(g=>{
+    const act = g.lv===modalLv;
+    return `<button class="modal-nav-btn${act?' active':''}"
+      style="${act?`background:${g.color};color:#000`:''}"
+      onclick="renderModal(${g.lv})">${g.lv}</button>`;
+  }).join('');
 }
 function renderModal(lv){
-  modalLv = lv;
-  const g = GRADES[lv-1];
+  modalLv=lv;
+  const g=GRADES[lv-1];
   buildModalNav();
-  const isHigh = lv>=6; const is10 = lv===10;
-  let numStyle = `color:${g.color};font-size:3rem;font-weight:900;`;
-  if(isHigh&&!is10) numStyle+=`text-shadow:0 0 16px ${g.color};animation:glowPulse 2s infinite;`;
-  if(is10) numStyle+=`animation:rainbowText 2s linear infinite;`;
-  let nameStyle = `color:${g.color};font-size:1.2rem;font-weight:700;`;
-  if(isHigh&&!is10) nameStyle+=`text-shadow:0 0 10px ${g.color};animation:glowPulse 2s infinite;`;
-  if(is10) nameStyle+=`animation:rainbowText 2s linear infinite;`;
+  const isHigh=lv>=6, is10=lv===10;
+  let ns=`color:${g.color};font-size:3rem;font-weight:900;display:block;margin-bottom:4px;`;
+  let nmS=`color:${g.color};font-size:1.15rem;font-weight:700;display:block;margin-bottom:10px;`;
+  if(isHigh&&!is10){ ns+=`text-shadow:0 0 16px ${g.color};`; nmS+=`text-shadow:0 0 10px ${g.color}88;`; }
+  const numCls  = is10?'rainbow-text':(isHigh?'glow-text':'');
+  const nameCls = is10?'rainbow-text':(isHigh?'glow-text':'');
   const subMax = g.subMax===Infinity?'∞':fmt(g.subMax);
-  document.getElementById('modalContent').innerHTML = `
-    <div class="lv-card-outer ${lvBorderClass(lv)}" style="margin:0 auto 16px;max-width:280px">
-      <div class="lv-card-inner">
-        <div style="${numStyle}">LV.${lv}</div>
-        <div style="${nameStyle};margin-bottom:10px">${g.name}</div>
-        <div style="font-size:.8rem;color:var(--text2);margin-bottom:8px">${fmt(g.subMin)} ~ ${subMax} 구독자</div>
-        <div class="lv-rank" style="background:${g.color}33;color:${g.color}">${g.rankPct}</div>
-        <div style="font-size:.75rem;color:var(--text2);margin-top:8px;line-height:1.5">${g.desc}</div>
+  document.getElementById('modalContent').innerHTML=`
+    <div class="lv-card-wrap beam${lv}" style="margin:0 auto 16px;max-width:280px">
+      <div class="lv-card-face">
+        <span class="${numCls}" style="${ns}">LV.${lv}</span>
+        <span class="${nameCls}" style="${nmS}">${g.name}</span>
+        <div style="font-size:.78rem;color:var(--text2);margin-bottom:8px">${fmt(g.subMin)} ~ ${subMax} 구독자</div>
+        <div class="lv-rank" style="background:${g.color}33;color:${g.color};margin-bottom:8px">${g.rankPct}</div>
+        <div style="font-size:.73rem;color:var(--text2);line-height:1.5">${g.desc}</div>
       </div>
     </div>
     <div style="background:#1a1a2e;border-radius:10px;padding:12px;text-align:left;font-size:.78rem">
@@ -907,10 +748,10 @@ function renderModal(lv){
     </div>`;
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    HOT VIDEOS
-═══════════════════════════════════════════════ */
-const HOT_VIDEOS = [
+══════════════════════════════════════ */
+const HOT_VIDEOS=[
   {id:'dQw4w9WgXcQ',title:'알고리즘 마스터하는 7가지 전략',views:'2.4M',ch:'크리에이터 아카데미'},
   {id:'jNQXAC9IVRw',title:'유튜브 쇼츠로 10만 달성한 방법',views:'1.8M',ch:'숏폼연구소'},
   {id:'9bZkp7q19f0',title:'2025 유튜브 수익화 완벽 가이드',views:'3.1M',ch:'수익화마스터'},
@@ -919,7 +760,7 @@ const HOT_VIDEOS = [
   {id:'JGwWNGJdvx8',title:'AI로 영상 편집 시간 70% 단축',views:'2.7M',ch:'AI크리에이터'},
 ];
 function loadHotVideos(){
-  document.getElementById('hotGrid').innerHTML = HOT_VIDEOS.map(v=>`
+  document.getElementById('hotGrid').innerHTML=HOT_VIDEOS.map(v=>`
     <div class="hot-card" onclick="window.open('https://youtube.com/watch?v=${v.id}','_blank')">
       <img class="hot-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="${v.title}">
       <div class="hot-info">
@@ -929,37 +770,37 @@ function loadHotVideos(){
     </div>`).join('');
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    REVENUE
-═══════════════════════════════════════════════ */
+══════════════════════════════════════ */
 function calcRevenue(){
-  const views   = parseFloat(document.getElementById('rViews').value)||0;
-  const cpm     = parseFloat(document.getElementById('rCpm').value)||0;
-  const vtr     = parseFloat(document.getElementById('rVtr').value)||0;
-  const country = parseFloat(document.getElementById('rCountry').value)||1;
-  const mViews  = views * (vtr/100);
-  const gross   = (mViews/1000) * cpm * country;
-  const net     = gross * 0.55;
-  document.getElementById('revResult').innerHTML = `
-    <div style="font-size:.8rem;color:var(--text2);margin-bottom:6px">예상 월 수익 (YouTube 55% 지급)</div>
+  const views  =parseFloat(document.getElementById('rViews').value)||0;
+  const cpm    =parseFloat(document.getElementById('rCpm').value)||0;
+  const vtr    =parseFloat(document.getElementById('rVtr').value)||0;
+  const country=parseFloat(document.getElementById('rCountry').value)||1;
+  const mViews =views*(vtr/100);
+  const gross  =(mViews/1000)*cpm*country;
+  const net    =gross*0.55;
+  document.getElementById('revResult').innerHTML=`
+    <div style="font-size:.78rem;color:var(--text2);margin-bottom:6px">예상 월 수익 (YouTube 55% 지급)</div>
     <div class="rev-amount">${fmtMoney(net)}</div>
     <div class="rev-note">수익화 조회수 ${fmt(mViews)} · 총 예상 ${fmtMoney(gross)} → YouTube 수수료 45% 제외</div>`;
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    EXTRAS
-═══════════════════════════════════════════════ */
-const TOOLS = [
+══════════════════════════════════════ */
+const TOOLS=[
   {icon:'🔍',name:'KeywordTool',desc:'유튜브 키워드 리서치',url:'https://keywordtool.io/youtube'},
   {icon:'🎨',name:'Canva',desc:'섬네일 디자인',url:'https://canva.com'},
   {icon:'📊',name:'Social Blade',desc:'채널 통계 분석',url:'https://socialblade.com'},
   {icon:'🤖',name:'ChatGPT',desc:'스크립트 작성 AI',url:'https://chat.openai.com'},
   {icon:'✂️',name:'DaVinci Resolve',desc:'무료 영상 편집',url:'https://blackmagicdesign.com/products/davinciresolve'},
-  {icon:'🎵',name:'YT Audio Library',desc:'저작권 무료 음악',url:'https://studio.youtube.com/channel/UC/music'},
+  {icon:'🎵',name:'YT Audio Library',desc:'저작권 무료 음악',url:'https://studio.youtube.com'},
   {icon:'📈',name:'VidIQ',desc:'SEO 분석 도구',url:'https://vidiq.com'},
   {icon:'🎬',name:'TubeBuddy',desc:'채널 성장 도구',url:'https://tubebuddy.com'},
 ];
-const IDEAS = [
+const IDEAS=[
   {icon:'💡',name:'브이로그',desc:'일상 기록으로 친밀감 형성',url:'#'},
   {icon:'📚',name:'튜토리얼',desc:'전문 지식 공유 시리즈',url:'#'},
   {icon:'🎮',name:'게임 리뷰',desc:'신작 게임 플레이 & 리뷰',url:'#'},
@@ -969,7 +810,7 @@ const IDEAS = [
   {icon:'💰',name:'재테크',desc:'투자·절약 팁 공유',url:'#'},
   {icon:'🎭',name:'챌린지',desc:'트렌드 챌린지 참여',url:'#'},
 ];
-const SHOP = [
+const SHOP=[
   {icon:'📷',name:'소니 ZV-E10',desc:'Vlog 최적 카메라',url:'https://www.sony.co.kr'},
   {icon:'🎙',name:'슈어 MV7',desc:'팟캐스트·유튜브 마이크',url:'https://www.shure.com'},
   {icon:'💡',name:'엘게이토 링라이트',desc:'스트리밍 조명',url:'https://www.elgato.com'},
@@ -977,27 +818,24 @@ const SHOP = [
   {icon:'⚙️',name:'VidIQ Pro',desc:'SEO 프리미엄 플랜',url:'https://vidiq.com/pricing'},
   {icon:'🎬',name:'어도비 프리미어',desc:'전문 영상 편집',url:'https://adobe.com/products/premiere'},
 ];
-
 function buildExtras(){
-  function grid(data, id){
-    document.getElementById(id).innerHTML = data.map(d=>`
+  function grid(data,id){
+    document.getElementById(id).innerHTML=data.map(d=>`
       <a class="extra-card" href="${d.url}" target="_blank" rel="noopener">
         <div class="ex-icon">${d.icon}</div>
         <div class="ex-name">${d.name}</div>
         <div class="ex-desc">${d.desc}</div>
       </a>`).join('');
   }
-  grid(TOOLS,'toolsGrid');
-  grid(IDEAS,'ideasGrid');
-  grid(SHOP,'shopGrid');
+  grid(TOOLS,'toolsGrid'); grid(IDEAS,'ideasGrid'); grid(SHOP,'shopGrid');
 }
 
-/* ═══════════════════════════════════════════════
-   NAVIGATION
-═══════════════════════════════════════════════ */
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
 function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  const el = document.getElementById('sec-'+id);
+  const el=document.getElementById('sec-'+id);
   if(el) el.classList.add('active');
 }
 function setActive(el){
@@ -1005,21 +843,20 @@ function setActive(el){
   el.classList.add('active');
 }
 function handleGlobalSearch(){
-  const q = document.getElementById('globalSearch').value.trim();
+  const q=document.getElementById('globalSearch').value.trim();
   if(!q) return;
-  document.getElementById('chanInput').value = q;
+  document.getElementById('chanInput').value=q;
   showSection('analyze');
   setActive(document.querySelector('.sidebar-item'));
 }
 
-/* ═══════════════════════════════════════════════
+/* ══════════════════════════════════════
    INIT
-═══════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', ()=>{
+══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
   loadHotVideos();
   buildExtras();
   calcRevenue();
-  // Auto-run demo on first load
   analyzeChannel(true);
 });
 </script>
