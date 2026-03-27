@@ -55,24 +55,27 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
 .card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px}
 .card-title{font-size:.95rem;font-weight:700;margin-bottom:12px;color:var(--text)}
 
-/* ════════════════════════════════════
-   LEVEL CARD — 빛기둥이 텍스트 뒤 중앙
-════════════════════════════════════ */
-.lv-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px}
+/* ══════════════════════════════════════════
+   ★ LEVEL CARD — 스파크 캔버스 + 텍스트 오버레이
+══════════════════════════════════════════ */
+.lv-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap}
 
-/* 레벨 카드: canvas가 배경, 텍스트가 중앙 위에 */
-.lv-card-wrap{
+/* 스파크 캔버스 래퍼 */
+.lv-spark-wrap{
   position:relative;
-  min-width:200px;
-  display:flex;align-items:center;justify-content:center;
+  width:200px;height:260px;
   flex-shrink:0;
+  border-radius:16px;
+  overflow:hidden;
+  background:#000;
 }
-/* Canvas = 배경 빛기둥 */
-.lv-bg-canvas{
+.lv-spark-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
   display:block;
   border-radius:16px;
 }
-/* 텍스트 오버레이: canvas 위 중앙 절대위치 */
+/* 텍스트는 캔버스 위 절대위치 */
 .lv-text-overlay{
   position:absolute;
   top:50%;left:50%;
@@ -84,20 +87,27 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
   width:100%;
   text-align:center;
 }
-.lv-num-big{font-size:2.6rem;font-weight:900;line-height:1;letter-spacing:-.02em}
-.lv-name-big{font-size:.9rem;font-weight:700;letter-spacing:.05em}
-.lv-pct-txt{font-size:.78rem;font-weight:600;opacity:.9;animation:pctPulse 2.2s ease-in-out infinite}
-.lv-algo-box{
-  margin-top:2px;padding:5px 14px;border-radius:20px;
-  background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.12);
-  font-size:.78rem;font-weight:700;color:var(--text);
-  backdrop-filter:blur(6px);
-  pointer-events:auto;
+/* 행1: 레벨 번호 */
+.lv-num-big{
+  font-size:2.4rem;font-weight:900;
+  line-height:1;letter-spacing:-.02em;
+  color:#fff;
+  paint-order:stroke fill;
 }
-@keyframes pctPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+/* 행2: 등급명 */
+.lv-name-big{font-size:.9rem;font-weight:700;letter-spacing:.04em}
+/* 행3: 상위 % */
+.lv-pct-txt{font-size:.76rem;font-weight:600;opacity:.9}
+/* 행4: 알고리즘 점수 */
+.lv-algo-box{
+  margin-top:2px;padding:4px 12px;border-radius:20px;
+  background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.12);
+  font-size:.74rem;font-weight:700;color:var(--text);
+  backdrop-filter:blur(6px);pointer-events:auto;
+}
 
 /* 등급표 */
-.grade-mini-wrap{flex:1;max-width:50%;margin-left:auto}
+.grade-mini-wrap{flex:1;min-width:220px}
 .grade-mini-title{font-size:.82rem;font-weight:700;color:var(--text2);margin-bottom:8px}
 .grade-mini-table{width:100%;border-collapse:collapse;font-size:.76rem}
 .grade-mini-table th{padding:5px 8px;text-align:left;color:var(--text3);border-bottom:1px solid var(--border);font-weight:600;font-size:.7rem}
@@ -106,7 +116,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
 .grade-mini-table tr.cur-lv td{background:rgba(124,92,252,.15);font-weight:700}
 .grade-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
 
-/* CHANNEL INFO CARD */
+/* CHANNEL INFO */
 .ch-info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
 .ch-info-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .ch-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--acc)}
@@ -118,28 +128,25 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
 .ch-stat-label{font-size:.68rem;color:var(--text3);margin-bottom:4px}
 .ch-stat-val{font-size:1.05rem;font-weight:800;color:var(--text)}
 
-/* CONTENT ANALYSIS CARD (벤치마킹 대체) */
+/* CONTENT ANALYSIS */
 .content-analysis-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
 .ca-section{margin-bottom:16px}
 .ca-section:last-child{margin-bottom:0}
 .ca-label{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
 .ca-value{font-size:.88rem;color:var(--text2);line-height:1.7}
-/* 태그 칩 */
 .ca-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .ca-tag{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(124,92,252,.15);color:var(--acc2);border:1px solid rgba(124,92,252,.2)}
 .ca-tag.green{background:rgba(34,197,94,.12);color:#4ade80;border-color:rgba(34,197,94,.2)}
 .ca-tag.gold{background:rgba(245,158,11,.12);color:#fbbf24;border-color:rgba(245,158,11,.2)}
 .ca-tag.red{background:rgba(239,68,68,.12);color:#f87171;border-color:rgba(239,68,68,.2)}
-/* 바이럴 지수 바 */
 .viral-index-wrap{display:flex;align-items:center;gap:12px;margin-top:6px}
 .viral-index-bar{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}
 .viral-index-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--acc),var(--gold));transition:width 1s}
 .viral-index-val{font-size:.82rem;font-weight:700;color:var(--gold);min-width:40px;text-align:right}
-/* 포맷 아이콘 */
 .format-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 .format-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);font-size:.78rem;font-weight:600}
 
-/* PROS / CONS */
+/* PROS/CONS */
 .pros-cons-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
 .pros-card{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:14px}
 .cons-card{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:14px}
@@ -226,7 +233,6 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
 .shop-orig{font-size:.7rem;color:var(--text3);text-decoration:line-through}
 .shop-disc{font-size:.7rem;font-weight:700;color:var(--red)}
 .shop-btn{display:block;padding:9px;background:linear-gradient(135deg,#ff6600,#ff9900);color:#fff;font-size:.78rem;font-weight:700;text-align:center;border-top:1px solid rgba(255,255,255,.1);cursor:pointer;width:100%;white-space:nowrap}
-.shop-btn:hover{opacity:.85}
 
 /* RIGHT COL */
 .right-ad-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;min-height:100px}
@@ -258,16 +264,67 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
 .copy-btn:hover{background:var(--acc);color:#fff}
 .tag-pill{display:inline-block;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(124,92,252,.15);color:var(--acc2)}
 
-/* BEAM PREVIEW MODAL */
-.beam-preview-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:3000;align-items:center;justify-content:center;flex-direction:column;gap:16px}
-.beam-preview-overlay.open{display:flex}
-.beam-preview-box{background:rgba(10,10,20,.95);border-radius:20px;padding:28px 36px;border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;min-width:260px}
-.bp-close{position:absolute;top:12px;right:16px;font-size:1.2rem;color:var(--text2);cursor:pointer}
-.bp-close:hover{color:var(--red)}
-.bp-nav{display:flex;gap:12px;margin-top:8px}
-.bp-nav-btn{padding:7px 18px;border-radius:10px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s}
-.bp-nav-btn:hover{background:var(--acc);color:#fff}
-.bp-nav-btn:disabled{opacity:.3;cursor:not-allowed}
+/* ══════════════════════════════════════════
+   ★ SPARK PREVIEW MODAL
+══════════════════════════════════════════ */
+.spark-preview-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.92);z-index:3000;
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:14px;
+}
+.spark-preview-overlay.open{display:flex}
+.sp-box{
+  background:rgba(10,10,20,.96);border-radius:20px;
+  padding:24px 32px;border:1px solid rgba(255,255,255,.1);
+  display:flex;flex-direction:column;align-items:center;
+  gap:10px;position:relative;min-width:220px;
+}
+.sp-close{position:absolute;top:12px;right:16px;font-size:1.2rem;color:var(--text2);cursor:pointer}
+.sp-close:hover{color:var(--red)}
+
+/* 스파크 미리보기 스테이지 */
+.sp-stage{
+  position:relative;
+  width:200px;height:260px;
+  border-radius:14px;
+  overflow:hidden;
+  background:#000;
+}
+.sp-stage canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:block;
+}
+/* 텍스트 오버레이 (미리보기) */
+.sp-text{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  pointer-events:none;z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;
+}
+.sp-lv-num{font-size:2.2rem;font-weight:900;color:#fff;paint-order:stroke fill;line-height:1}
+.sp-lv-name{font-size:.88rem;font-weight:700}
+.sp-lv-range{font-size:.7rem;color:rgba(255,255,255,.6);background:rgba(0,0,0,.55);padding:2px 10px;border-radius:10px;margin-top:2px}
+
+/* 레벨 점프 버튼 */
+.sp-jump-row{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:320px}
+.sp-jump-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--bg2);border:2px solid transparent;
+  font-size:.72rem;font-weight:800;color:var(--text3);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:.15s;
+}
+.sp-jump-btn:hover{transform:scale(1.1)}
+.sp-jump-btn.active{color:#000!important;transform:scale(1.15);}
+
+/* 미리보기 네비 */
+.sp-nav{display:flex;gap:10px;margin-top:4px}
+.sp-nav-btn{padding:7px 18px;border-radius:10px;background:var(--bg2);color:var(--text2);border:1px solid var(--border);font-size:.82rem;font-weight:600;cursor:pointer;transition:.15s}
+.sp-nav-btn:hover{background:var(--acc);color:#fff}
+.sp-nav-btn:disabled{opacity:.3;cursor:not-allowed}
 
 /* POPUP */
 .popup-ad-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center}
@@ -286,7 +343,7 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
 .ch-search-box input{flex:1;padding:12px 18px;border-radius:24px;border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:.9rem;outline:none;transition:.2s}
 .ch-search-box input:focus{border-color:var(--acc)}
 .ch-search-box button{padding:12px 24px;border-radius:24px;font-size:.9rem;font-weight:700;background:linear-gradient(135deg,var(--acc),#a78bfa);color:#fff}
-.ch-search-box button:hover{opacity:.85}
+@keyframes rainbowShift{0%{background-position:0% center}100%{background-position:200% center}}
 </style>
 </head>
 <body>
@@ -436,19 +493,24 @@ header{position:fixed;top:0;left:0;right:0;height:var(--header);background:rgba(
   </div>
 </div>
 
-<!-- BEAM PREVIEW MODAL -->
-<div class="beam-preview-overlay" id="beamPreview">
-  <div class="beam-preview-box">
-    <span class="bp-close" onclick="closeBeamPreview()">✕</span>
-    <div id="bpLabel" style="font-size:1rem;font-weight:700;color:var(--text2)"></div>
-    <!-- beam preview: canvas가 배경, 텍스트가 절대위치 -->
-    <div style="position:relative;display:flex;align-items:center;justify-content:center;">
-      <canvas id="bpCanvas"></canvas>
-      <div id="bpTextInner" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;z-index:2;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%"></div>
+<!-- ★ SPARK PREVIEW MODAL -->
+<div class="spark-preview-overlay" id="sparkPreview">
+  <div class="sp-box">
+    <span class="sp-close" onclick="closeSparkPreview()">✕</span>
+    <!-- 레벨 점프 버튼 -->
+    <div class="sp-jump-row" id="spJumpRow"></div>
+    <!-- 스파크 스테이지 -->
+    <div class="sp-stage" id="spStage">
+      <canvas id="spCanvas"></canvas>
+      <div class="sp-text" id="spText"></div>
     </div>
-    <div class="bp-nav">
-      <button class="bp-nav-btn" id="bpPrev" onclick="bpNavigate(-1)">◀ 이전</button>
-      <button class="bp-nav-btn" id="bpNext" onclick="bpNavigate(1)">다음 ▶</button>
+    <!-- 정보 -->
+    <div id="spInfo" style="font-size:.78rem;color:var(--text2);text-align:center;line-height:1.6;max-width:220px"></div>
+    <!-- 네비 -->
+    <div class="sp-nav">
+      <button class="sp-nav-btn" id="spPrev" onclick="spNavigate(-1)">◀ 이전</button>
+      <span id="spIndicator" style="font-size:.8rem;color:var(--text3);display:flex;align-items:center">1/10</span>
+      <button class="sp-nav-btn" id="spNext" onclick="spNavigate(1)">다음 ▶</button>
     </div>
   </div>
 </div>
@@ -476,312 +538,562 @@ function getKey(){ return API_KEYS[0]; }
    색상: 회색→파랑→노랑→주황→오렌지→초록→빨강→핑크→보라→무지개
 ══════════════════════════════════════ */
 const GRADES = [
-  { lv:1,  name:'새싹',  min:0,  max:9,  color:'#9ca3af', rgb:[156,163,175], neon:false, beamW:8,  beamH:200, coreW:2, sides:4  },
-  { lv:2,  name:'성장',  min:10, max:19, color:'#3b82f6', rgb:[59,130,246],  neon:false, beamW:12, beamH:220, coreW:3, sides:6  },
-  { lv:3,  name:'활성',  min:20, max:29, color:'#eab308', rgb:[234,179,8],   neon:false, beamW:16, beamH:230, coreW:4, sides:8  },
-  { lv:4,  name:'강자',  min:30, max:39, color:'#f97316', rgb:[249,115,22],  neon:false, beamW:21, beamH:240, coreW:5, sides:10 },
-  { lv:5,  name:'유명',  min:40, max:49, color:'#fb923c', rgb:[251,146,60],  neon:false, beamW:26, beamH:248, coreW:6, sides:12 },
-  { lv:6,  name:'파워',  min:50, max:59, color:'#22c55e', rgb:[34,197,94],   neon:true,  beamW:32, beamH:256, coreW:7, sides:14 },
-  { lv:7,  name:'전설',  min:60, max:69, color:'#ef4444', rgb:[239,68,68],   neon:true,  beamW:38, beamH:264, coreW:8, sides:16 },
-  { lv:8,  name:'초월',  min:70, max:79, color:'#ec4899', rgb:[236,72,153],  neon:true,  beamW:45, beamH:272, coreW:9, sides:18 },
-  { lv:9,  name:'신화',  min:80, max:89, color:'#a855f7', rgb:[168,85,247],  neon:true,  beamW:52, beamH:280, coreW:10,sides:20 },
-  { lv:10, name:'신',    min:90, max:100,color:'#fbbf24', rgb:[251,191,36],  neon:true,  beamW:60, beamH:290, coreW:12,sides:24, rainbow:true }
+  { lv:1,  name:'새싹',  min:0,  max:9,  color:'#9ca3af', rainbow:false },
+  { lv:2,  name:'성장',  min:10, max:19, color:'#3b82f6', rainbow:false },
+  { lv:3,  name:'활성',  min:20, max:29, color:'#eab308', rainbow:false },
+  { lv:4,  name:'강자',  min:30, max:39, color:'#f97316', rainbow:false },
+  { lv:5,  name:'유명',  min:40, max:49, color:'#fb923c', rainbow:false },
+  { lv:6,  name:'파워',  min:50, max:59, color:'#22c55e', rainbow:false },
+  { lv:7,  name:'전설',  min:60, max:69, color:'#ef4444', rainbow:false },
+  { lv:8,  name:'초월',  min:70, max:79, color:'#ec4899', rainbow:false },
+  { lv:9,  name:'신화',  min:80, max:89, color:'#a855f7', rainbow:false },
+  { lv:10, name:'신',    min:90, max:100,color:'rainbow', rainbow:true  }
 ];
 
 /* ══════════════════════════════════════
-   BEAM RENDERER (Canvas 빛기둥)
+   ★ SPARK ENGINE
+   빛기둥 없음 — 스파크 파티클만
+   레벨이 낮을수록 약하고(1~3), 높을수록 강함(8~10)
 ══════════════════════════════════════ */
-class BeamRenderer {
-  constructor(canvas, gi){
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.g = GRADES[gi] || GRADES[0];
-    this.t = 0;
-    this.pts = [];
-    this.running = false;
-    this.raf = null;
-    this._initPts();
-  }
-  _rgb(a){ const [r,g,b]=this.g.rgb; return `rgba(${r},${g},${b},${a})`; }
-  _rainbow(a){ return `hsla(${(this.t*1.8)%360},100%,65%,${a})`; }
-  _col(a){ return this.g.rainbow ? this._rainbow(a) : this._rgb(a); }
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16);
+  const g=parseInt(hex.slice(3,5),16);
+  const b=parseInt(hex.slice(5,7),16);
+  return [r,g,b];
+}
 
-  _initPts(){
-    this.pts=[];
-    const cx=this.canvas.width/2, h=this.canvas.height, g=this.g;
-    const n = g.sides * 3;
-    for(let i=0;i<n;i++) this.pts.push(this._newPt(cx,true));
-  }
-  _newPt(cx,rand){
-    const g=this.g, h=this.canvas.height;
-    const side=Math.random()<.5?-1:1;
-    const spread=g.beamW*.5+Math.random()*g.beamW*2;
-    return{
-      x:cx+side*(g.beamW*.4+Math.random()*spread),
-      y:rand?Math.random()*h:h,
-      vy:-(0.5+Math.random()*1.6)*(g.lv*.1+.4),
-      vx:side*(Math.random()*.5),
-      sz:g.beamW*.04+Math.random()*g.beamW*.06,
-      life:1, decay:.007+Math.random()*.016,
-      side, wb:Math.random()*Math.PI*2, wbs:.04+Math.random()*.07
-    };
+class Spark {
+  constructor(x, y, lvIdx, t){
+    const intensity = (lvIdx + 1) / 10;   // 0.1(LV1) ~ 1.0(LV10)
+    const g = GRADES[lvIdx];
+
+    // 속도: 레벨에 따라 강해짐
+    const speed = (0.3 + Math.random() * 2.2) * (0.25 + intensity * 0.75);
+    const angle = -Math.PI/2 + (-0.75 + Math.random() * 1.5) * Math.PI;
+
+    this.x = x;
+    this.y = y;
+    this.vx = Math.cos(angle) * speed;
+    this.vy = Math.sin(angle) * speed - (0.6 + Math.random()) * intensity;
+    this.life = 1;
+    // 낮은 레벨: 빠르게 소멸
+    this.decay = 0.022 + Math.random() * 0.025 - intensity * 0.010;
+    // 크기: 레벨에 비례
+    this.radius = 0.7 + Math.random() * 1.5 * intensity;
+    this.rainbow = g.rainbow;
+    this.baseColor = g.rainbow ? null : hexToRgb(g.color);
+    // 궤적
+    this.trail = [];
+    this.trailLen = Math.floor(2 + intensity * 5);
+    this.t0 = t;
   }
 
-  _drawGlow(){
-    const ctx=this.ctx, g=this.g, cw=this.canvas.width, ch=this.canvas.height, cx=cw/2;
-    const wb=Math.sin(this.t*.035)*(g.lv*.25);
-    const layers=g.neon?6:4;
-    for(let i=layers;i>=1;i--){
-      const w=g.beamW*(1+i*.85), a=g.neon?.065+i*.008:.04+i*.006;
-      ctx.save();
-      ctx.filter=`blur(${i*5+3}px)`;
-      const gr=ctx.createLinearGradient(cx,0,cx,ch);
-      gr.addColorStop(0,this._col(0));
-      gr.addColorStop(.18,this._col(a));
-      gr.addColorStop(.65,this._col(a*1.5));
-      gr.addColorStop(1,this._col(a*.4));
-      ctx.fillStyle=gr;
-      ctx.fillRect(cx-w/2+wb*.3,0,w,ch);
-      ctx.restore();
+  getColor(t, alpha){
+    if(this.rainbow){
+      const h = ((t * 3 + this.x * 0.5) % 360);
+      return `hsla(${h},100%,65%,${alpha})`;
     }
+    const [r,g,b] = this.baseColor;
+    return `rgba(${r},${g},${b},${alpha})`;
   }
-  _drawMain(){
-    const ctx=this.ctx, g=this.g, cw=this.canvas.width, ch=this.canvas.height, cx=cw/2;
-    const wb=Math.sin(this.t*.035)*(g.lv*.25);
-    const gr=ctx.createLinearGradient(cx,0,cx,ch);
-    if(g.rainbow){
-      const t=this.t*.015;
-      gr.addColorStop(0,`hsla(${(t*360)%360},100%,65%,0)`);
-      gr.addColorStop(.12,`hsla(${(t*360+60)%360},100%,65%,.75)`);
-      gr.addColorStop(.5,`hsla(${(t*360+120)%360},100%,65%,1)`);
-      gr.addColorStop(.88,`hsla(${(t*360+180)%360},100%,65%,.75)`);
-      gr.addColorStop(1,`hsla(${(t*360+240)%360},100%,65%,0)`);
-    } else {
-      const [r,gb,b]=g.rgb;
-      gr.addColorStop(0,`rgba(${r},${gb},${b},0)`);
-      gr.addColorStop(.1,`rgba(${r},${gb},${b},.65)`);
-      gr.addColorStop(.5,`rgba(${r},${gb},${b},1)`);
-      gr.addColorStop(.9,`rgba(${r},${gb},${b},.65)`);
-      gr.addColorStop(1,`rgba(${r},${gb},${b},0)`);
-    }
-    ctx.save();
-    if(g.neon) ctx.filter='blur(.8px)';
-    ctx.fillStyle=gr;
-    ctx.fillRect(cx-g.beamW/2+wb,0,g.beamW,ch);
-    ctx.restore();
-    // Core white line
-    const cr=ctx.createLinearGradient(cx,0,cx,ch);
-    cr.addColorStop(0,'rgba(255,255,255,0)');
-    cr.addColorStop(.2,'rgba(255,255,255,.55)');
-    cr.addColorStop(.5,'rgba(255,255,255,.98)');
-    cr.addColorStop(.8,'rgba(255,255,255,.55)');
-    cr.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.save();
-    ctx.fillStyle=cr;
-    ctx.fillRect(cx-g.coreW/2+wb,0,g.coreW,ch);
-    ctx.restore();
+
+  update(){
+    this.trail.push({x:this.x, y:this.y});
+    if(this.trail.length > this.trailLen) this.trail.shift();
+    this.vy += 0.055;          // 중력
+    this.vx *= 0.995;          // 마찰
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life -= this.decay;
+    return this.life > 0;
   }
-  _drawSides(){
-    const ctx=this.ctx, g=this.g, cw=this.canvas.width, ch=this.canvas.height, cx=cw/2;
-    const wb=Math.sin(this.t*.035)*(g.lv*.25);
-    const n=Math.floor(g.sides/2);
-    for(let i=0;i<n;i++){
-      const ph=this.t*.05+i*.65, side=i%2===0?1:-1;
-      const sp=g.beamW*(.5+i*.14), amp=g.beamW*(.28+Math.sin(ph)*.28);
-      const a=g.neon?.22-i*.035:.13-i*.018;
-      if(a<=0) continue;
-      ctx.save();
-      ctx.strokeStyle=this._col(Math.max(.04,a));
-      ctx.lineWidth=Math.max(.8,g.beamW*.1-i*.4);
-      if(g.neon){ctx.shadowColor=g.color;ctx.shadowBlur=8+g.lv;}
+
+  draw(ctx, t, intensity){
+    // 궤적
+    for(let i = 1; i < this.trail.length; i++){
+      const tf = i / this.trail.length;
       ctx.beginPath();
-      const sy=ch*.04, ey=ch*.94;
-      const cp1x=cx+wb+side*(sp+amp*Math.sin(ph));
-      const cp2x=cx+wb+side*(sp*.55+amp*Math.cos(ph+1));
-      ctx.moveTo(cx+wb+side*g.beamW*.3,sy);
-      ctx.bezierCurveTo(cp1x,ch*.28,cp2x,ch*.68,cx+wb+side*g.beamW*.2,ey);
+      ctx.moveTo(this.trail[i-1].x, this.trail[i-1].y);
+      ctx.lineTo(this.trail[i].x, this.trail[i].y);
+      ctx.strokeStyle = this.getColor(t, tf * this.life * 0.5);
+      ctx.lineWidth = this.radius * tf * 0.8;
       ctx.stroke();
-      ctx.restore();
+    }
+
+    // 외곽 글로우 (LV4 이상)
+    if(intensity >= 0.4){
+      const gr = ctx.createRadialGradient(
+        this.x, this.y, 0,
+        this.x, this.y, this.radius * 5
+      );
+      gr.addColorStop(0, this.getColor(t, this.life * 0.28));
+      gr.addColorStop(1, this.getColor(t, 0));
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 5, 0, Math.PI * 2);
+      ctx.fillStyle = gr;
+      ctx.fill();
+    }
+
+    // 코어 스파크
+    const gr2 = ctx.createRadialGradient(
+      this.x, this.y, 0,
+      this.x, this.y, this.radius * 2.5
+    );
+    gr2.addColorStop(0, `rgba(255,255,240,${this.life})`);
+    gr2.addColorStop(0.4, this.getColor(t, this.life * 0.9));
+    gr2.addColorStop(1, this.getColor(t, 0));
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius * 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = gr2;
+    ctx.fill();
+  }
+}
+
+/* ══════════════════════════════════════
+   SparkRenderer
+   텍스트 엘리먼트 경계에서 스파크 방출
+══════════════════════════════════════ */
+class SparkRenderer {
+  constructor(canvas, lvIdx){
+    this.canvas  = canvas;
+    this.ctx     = canvas.getContext('2d');
+    this.lvIdx   = lvIdx;
+    this.intensity = (lvIdx + 1) / 10;
+    this.sparks  = [];
+    this.t       = 0;
+    this.raf     = null;
+    this.running = false;
+    this._resizeCanvas();
+    // ResizeObserver 대신 단순 실행
+  }
+
+  _resizeCanvas(){
+    const el = this.canvas.parentElement;
+    if(!el) return;
+    this.canvas.width  = el.offsetWidth  || 200;
+    this.canvas.height = el.offsetHeight || 260;
+  }
+
+  _getEmitPoints(textEl){
+    if(!textEl) return [{x: this.canvas.width/2, y: this.canvas.height/2}];
+    const pr = this.canvas.parentElement.getBoundingClientRect();
+    const tr = textEl.getBoundingClientRect();
+    const ox = tr.left - pr.left;
+    const oy = tr.top  - pr.top;
+    const pts = [];
+    const n = Math.ceil(4 + this.intensity * 10);
+    for(let i = 0; i < n; i++){
+      // 상단 엣지
+      pts.push({ x: ox + Math.random() * tr.width, y: oy });
+      // 좌우 엣지
+      pts.push({ x: ox,             y: oy + Math.random() * tr.height });
+      pts.push({ x: ox + tr.width,  y: oy + Math.random() * tr.height });
+      // LV5 이상: 하단도 방출
+      if(this.intensity >= 0.5){
+        pts.push({ x: ox + Math.random() * tr.width, y: oy + tr.height });
+      }
+    }
+    return pts;
+  }
+
+  start(textEl){
+    if(this.running) return;
+    this.running = true;
+    this._resizeCanvas();
+
+    const loop = () => {
+      if(!this.running) return;
+      this.t++;
+
+      // 스파크 생성량 = 레벨에 따라 증가
+      const spawnCount = Math.floor(1 + this.intensity * 16);
+      const pts = this._getEmitPoints(textEl);
+
+      for(let i = 0; i < spawnCount; i++){
+        const p = pts[Math.floor(Math.random() * pts.length)];
+        this.sparks.push(new Spark(p.x, p.y, this.lvIdx, this.t));
+      }
+
+      // 업데이트 & 제거
+      this.sparks = this.sparks.filter(s => s.update());
+
+      // 렌더
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.sparks.forEach(s => s.draw(this.ctx, this.t, this.intensity));
+
+      this.raf = requestAnimationFrame(loop);
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+
+  stop(){
+    this.running = false;
+    if(this.raf){ cancelAnimationFrame(this.raf); this.raf = null; }
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.sparks = [];
+  }
+
+  switchLevel(lvIdx){
+    this.lvIdx     = lvIdx;
+    this.intensity = (lvIdx + 1) / 10;
+    this.sparks    = [];
+  }
+}
+
+/* ══════════════════════════════════════
+   텍스트 스타일 적용
+   행1: LV번호 (흰색 + 레벨색 테두리)
+   행2: 등급명 (레벨색)
+   행3: 상위 %
+   행4: 알고리즘 점수
+══════════════════════════════════════ */
+function applyLvTextStyle(lvIdx, numEl, nameEl, rankEl, scoreEl, scoreVal, subsText){
+  const g = GRADES[lvIdx];
+  const sw = (1 + lvIdx * 0.22).toFixed(2) + 'px';  // 테두리 두께
+
+  if(g.rainbow){
+    const rb = 'linear-gradient(90deg,#f00,#f80,#ff0,#0f0,#08f,#80f,#f00)';
+    [numEl, nameEl].forEach(el => {
+      if(!el) return;
+      el.style.backgroundImage   = rb;
+      el.style.webkitBackgroundClip = 'text';
+      el.style.webkitTextFillColor  = 'transparent';
+      el.style.backgroundSize    = '200% auto';
+      el.style.animation         = 'rainbowShift 2s linear infinite';
+    });
+    if(numEl) numEl.style.webkitTextStroke = `${sw} transparent`;
+  } else {
+    const c = g.color;
+    if(numEl){
+      numEl.style.webkitTextStroke      = `${sw} ${c}`;
+      numEl.style.backgroundImage       = 'none';
+      numEl.style.webkitBackgroundClip  = '';
+      numEl.style.webkitTextFillColor   = 'white';
+      numEl.style.animation             = 'none';
+    }
+    if(nameEl){
+      nameEl.style.color                = c;
+      nameEl.style.backgroundImage      = 'none';
+      nameEl.style.webkitBackgroundClip = '';
+      nameEl.style.webkitTextFillColor  = '';
+      nameEl.style.animation            = 'none';
     }
   }
-  _drawParticles(){
-    const ctx=this.ctx, g=this.g, cx=this.canvas.width/2;
-    this.pts.forEach((p,i)=>{
-      p.y+=p.vy; p.x+=p.vx+Math.sin(p.wb)*.45; p.wb+=p.wbs; p.life-=p.decay;
-      if(p.life<=0||p.y<-8){ this.pts[i]=this._newPt(cx,false); return; }
-      const a=p.life*(g.neon?.88:.7);
-      ctx.save(); ctx.globalAlpha=a;
-      ctx.fillStyle=g.rainbow?`hsla(${(this.t*2+i*8)%360},100%,65%,1)`:this._rgb(1);
-      if(g.neon){ctx.shadowColor=g.color;ctx.shadowBlur=p.sz*3;}
-      ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(.5,p.sz*p.life),0,Math.PI*2); ctx.fill();
-      ctx.restore();
-    });
-  }
-  _drawGroundTop(){
-    const ctx=this.ctx, g=this.g, cw=this.canvas.width, ch=this.canvas.height, cx=cw/2;
-    // ground
-    const rg=ctx.createRadialGradient(cx,ch-6,0,cx,ch-6,g.beamW*2.4);
-    rg.addColorStop(0,this._col(g.neon?.55:.38)); rg.addColorStop(1,this._col(0));
-    ctx.save(); if(g.neon){ctx.shadowColor=g.color;ctx.shadowBlur=18;}
-    ctx.fillStyle=rg; ctx.beginPath(); ctx.ellipse(cx,ch-6,g.beamW*2.4,16,0,0,Math.PI*2); ctx.fill(); ctx.restore();
-    // top
-    const rt=ctx.createRadialGradient(cx,8,0,cx,8,g.beamW*2);
-    rt.addColorStop(0,this._col(g.neon?.6:.45)); rt.addColorStop(1,this._col(0));
-    ctx.save(); if(g.neon){ctx.shadowColor=g.color;ctx.shadowBlur=18;}
-    ctx.fillStyle=rt; ctx.beginPath(); ctx.ellipse(cx,8,g.beamW*2,12,0,0,Math.PI*2); ctx.fill(); ctx.restore();
-  }
 
-  render(){
-    const ctx=this.ctx, cw=this.canvas.width, ch=this.canvas.height;
-    ctx.clearRect(0,0,cw,ch);
-    this._drawGroundTop();
-    this._drawGlow();
-    this._drawMain();
-    this._drawSides();
-    this._drawParticles();
-    this.t++;
+  if(numEl)  numEl.textContent  = `LV.${g.lv}`;
+  if(nameEl) nameEl.textContent = g.name;
+  const c = g.rainbow ? '#ffd700' : g.color;
+  if(rankEl){
+    rankEl.textContent = `상위 ${100 - (lvIdx * 11)}%`;
+    rankEl.style.color = c;
   }
-  start(){ if(this.running)return; this.running=true; const f=()=>{ if(!this.running)return; this.render(); this.raf=requestAnimationFrame(f); }; f(); }
-  stop(){ this.running=false; if(this.raf)cancelAnimationFrame(this.raf); this.raf=null; }
-  switchGrade(gi){ this.stop(); this.g=GRADES[gi]||GRADES[0]; this._initPts(); this.t=0; this.start(); }
+  if(scoreEl){
+    if(scoreVal !== undefined)
+      scoreEl.textContent = `알고리즘 점수 ${scoreVal}점`;
+    else if(subsText)
+      scoreEl.textContent = subsText;
+  }
 }
 
 /* ══════════════════════════════════════
-   BEAM CANVAS SETUP HELPER
-   canvas 크기 = 텍스트가 잘 보일 만큼 충분히, 빛기둥은 중앙
+   메인 채널 분석용 SparkRenderer 인스턴스
 ══════════════════════════════════════ */
-function setupBeamCanvas(canvas, gi){
-  const g = GRADES[gi];
-  // 카드 크기: 너비는 빛기둥 너비 * 5 (최소 180), 높이는 빛기둥 높이 + 여유
-  const cw = Math.max(180, g.beamW * 6 + 80);
-  const ch = Math.max(220, g.beamH + 30);
-  canvas.width  = cw;
-  canvas.height = ch;
-  // 표시 크기 (CSS px) — 너무 커지지 않게 제한
-  canvas.style.width  = Math.min(cw, 200) + 'px';
-  canvas.style.height = Math.min(ch, 280) + 'px';
-  canvas.style.display = 'block';
-  canvas.style.borderRadius = '14px';
-}
+let mainSpark = null;
 
-/* ══════════════════════════════════════
-   MAIN BEAM RENDERER (채널분석 화면)
-══════════════════════════════════════ */
-let mainBeam = null;
-function startMainBeam(canvas, gi){
-  if(mainBeam){ mainBeam.stop(); mainBeam = null; }
-  mainBeam = new BeamRenderer(canvas, gi);
-  mainBeam.start();
-}
-
-/* ══════════════════════════════════════
-   BEAM PREVIEW MODAL
-══════════════════════════════════════ */
-let bpRenderer = null, bpIdx = 0;
-function openBeamPreview(gi){
-  bpIdx = Math.max(0, Math.min(9, gi));
-  document.getElementById('beamPreview').classList.add('open');
-  _renderBp();
-}
-function _renderBp(){
-  const g = GRADES[bpIdx];
-  const neonStyle = g.neon
-    ? `text-shadow:0 0 10px ${g.color},0 0 24px ${g.color},0 0 48px ${g.color}`
-    : `text-shadow:0 0 6px ${g.color}`;
-
-  document.getElementById('bpLabel').innerHTML =
-    `<span style="color:${g.color};${neonStyle}">LV.${g.lv} — ${g.name}</span>`;
-
-  const canvas = document.getElementById('bpCanvas');
-  setupBeamCanvas(canvas, bpIdx);
-  // 텍스트 오버레이
-  document.getElementById('bpTextInner').innerHTML = `
-    <div style="font-size:2.2rem;font-weight:900;color:${g.color};line-height:1;${neonStyle}">LV.${g.lv}</div>
-    <div style="font-size:.9rem;font-weight:700;color:${g.color};${neonStyle}">${g.name}</div>
-    <div style="font-size:.75rem;color:rgba(255,255,255,.7);margin-top:2px">점수 ${g.min}–${g.max}</div>`;
-
-  document.getElementById('bpPrev').disabled = bpIdx === 0;
-  document.getElementById('bpNext').disabled = bpIdx === 9;
-
-  if(!bpRenderer){
-    bpRenderer = new BeamRenderer(canvas, bpIdx);
-    bpRenderer.start();
-  } else {
-    bpRenderer.canvas = canvas;
-    bpRenderer.ctx = canvas.getContext('2d');
-    bpRenderer.switchGrade(bpIdx);
-  }
-}
-function bpNavigate(d){ bpIdx = Math.max(0,Math.min(9,bpIdx+d)); _renderBp(); }
-function closeBeamPreview(){
-  document.getElementById('beamPreview').classList.remove('open');
-  if(bpRenderer){ bpRenderer.stop(); bpRenderer=null; }
+function startMainSpark(canvas, lvIdx, scoreVal){
+  if(mainSpark){ mainSpark.stop(); mainSpark = null; }
+  mainSpark = new SparkRenderer(canvas, lvIdx);
+  const numEl   = document.getElementById('main-lv-num');
+  const nameEl  = document.getElementById('main-lv-name');
+  const rankEl  = document.getElementById('main-lv-rank');
+  const scoreEl = document.getElementById('main-lv-score');
+  applyLvTextStyle(lvIdx, numEl, nameEl, rankEl, scoreEl, scoreVal);
+  // DOM 렌더 후 실행
+  setTimeout(() => mainSpark.start(numEl), 60);
 }
 
 /* ══════════════════════════════════════
    BUILD LEVEL CARD HTML
-   (canvas 배경 + 텍스트 절대위치 중앙)
 ══════════════════════════════════════ */
-function buildLvCardHtml(g, score, topPct){
-  const c = g.color;
-  const ns = g.neon
-    ? `text-shadow:0 0 8px ${c},0 0 20px ${c},0 0 44px ${c}`
-    : `text-shadow:0 0 5px ${c}`;
+function buildLvCardHtml(){
   return `
-  <div class="lv-card-wrap" id="lvCardWrap">
-    <canvas id="mainBeamCanvas" style="display:block;border-radius:14px"></canvas>
+  <div class="lv-spark-wrap" id="lvSparkWrap">
+    <canvas class="lv-spark-canvas" id="mainSparkCanvas"></canvas>
     <div class="lv-text-overlay">
-      <div class="lv-num-big" style="color:${c};${ns}">LV.${g.lv}</div>
-      <div class="lv-name-big" style="color:${c};${ns}">${g.name}</div>
-      <div class="lv-pct-txt" style="color:${c}">상위 ${topPct}%</div>
-      <div class="lv-algo-box" style="border-color:${c}40;color:${c}">
-        알고리즘 점수 ${score}점
-      </div>
+      <div class="lv-num-big" id="main-lv-num">LV.?</div>
+      <div class="lv-name-big" id="main-lv-name">—</div>
+      <div class="lv-pct-txt"  id="main-lv-rank">—</div>
+      <div class="lv-algo-box" id="main-lv-score">—</div>
     </div>
   </div>`;
 }
 
 /* ══════════════════════════════════════
-   GRADE TABLE
+   GRADE TABLE (옆 미니 등급표)
 ══════════════════════════════════════ */
 function buildGradeTable(curLv){
-  const rows = GRADES.map(g=>`
-    <tr class="${g.lv===curLv?'cur-lv':''}" onclick="openBeamPreview(${g.lv-1})" title="효과 미리보기">
-      <td><span class="grade-dot" style="background:${g.color}"></span>LV.${g.lv}</td>
-      <td style="color:${g.color};${g.neon?`text-shadow:0 0 6px ${g.color}`:''}">${g.name}</td>
+  const rows = GRADES.map(g => {
+    const c = g.rainbow ? '#ffd700' : g.color;
+    return `<tr class="${g.lv === curLv ? 'cur-lv' : ''}"
+        onclick="openSparkPreview(${g.lv - 1})"
+        title="LV.${g.lv} 효과 미리보기">
+      <td>
+        <span class="grade-dot" style="background:${c}"></span>
+        <span style="color:${c};font-weight:700">LV.${g.lv}</span>
+      </td>
+      <td style="color:${c}">${g.name}</td>
       <td style="color:var(--text3)">${g.min}–${g.max}</td>
-      <td style="color:var(--text3);font-size:.65rem">👁</td>
-    </tr>`).join('');
+      <td style="color:var(--text3);font-size:.7rem;text-align:center">🔥</td>
+    </tr>`;
+  }).join('');
+
   return `
   <div class="grade-mini-wrap">
-    <div class="grade-mini-title">📋 등급표 <span style="font-size:.62rem;color:var(--text3)">(클릭 → 미리보기)</span></div>
+    <div class="grade-mini-title">
+      📋 등급표
+      <span style="font-size:.62rem;color:var(--text3);margin-left:4px">(행 클릭 → 효과 미리보기)</span>
+    </div>
     <table class="grade-mini-table">
-      <thead><tr><th>레벨</th><th>이름</th><th>점수</th><th></th></tr></thead>
+      <thead>
+        <tr>
+          <th>레벨</th><th>등급명</th><th>점수</th><th></th>
+        </tr>
+      </thead>
       <tbody>${rows}</tbody>
     </table>
   </div>`;
 }
 
 /* ══════════════════════════════════════
-   CHANNEL INFO CARD (구독자·조회수 등)
+   ★ SPARK PREVIEW MODAL
+══════════════════════════════════════ */
+let spRenderer = null, spIdx = 0;
+
+function openSparkPreview(gi){
+  spIdx = Math.max(0, Math.min(9, gi));
+  document.getElementById('sparkPreview').classList.add('open');
+  _buildSpJumpBtns();
+  _renderSpPreview();
+}
+
+function closeSparkPreview(){
+  document.getElementById('sparkPreview').classList.remove('open');
+  if(spRenderer){ spRenderer.stop(); spRenderer = null; }
+}
+
+function spNavigate(d){
+  spIdx = Math.max(0, Math.min(9, spIdx + d));
+  _renderSpPreview();
+  _updateSpJumpBtns();
+}
+
+function _buildSpJumpBtns(){
+  const row = document.getElementById('spJumpRow');
+  row.innerHTML = GRADES.map((g, i) => {
+    const c = g.rainbow ? '#ffd700' : g.color;
+    return `<button class="sp-jump-btn ${i === spIdx ? 'active' : ''}"
+      id="spjb-${i}"
+      style="${i === spIdx
+        ? `background:${c};border-color:${c};color:#000`
+        : `border-color:${c}55;color:${c}`}"
+      onclick="spJump(${i})">L${g.lv}</button>`;
+  }).join('');
+}
+
+function _updateSpJumpBtns(){
+  GRADES.forEach((g, i) => {
+    const btn = document.getElementById(`spjb-${i}`);
+    if(!btn) return;
+    const c = g.rainbow ? '#ffd700' : g.color;
+    btn.className = `sp-jump-btn ${i === spIdx ? 'active' : ''}`;
+    btn.style.cssText = i === spIdx
+      ? `background:${c};border-color:${c};color:#000`
+      : `border-color:${c}55;color:${c}`;
+  });
+}
+
+function spJump(idx){
+  spIdx = idx;
+  _renderSpPreview();
+  _updateSpJumpBtns();
+}
+
+function _renderSpPreview(){
+  const g = GRADES[spIdx];
+  const c = g.rainbow ? '#ffd700' : g.color;
+
+  // 캔버스
+  const canvas = document.getElementById('spCanvas');
+  const stage  = document.getElementById('spStage');
+
+  // 텍스트 오버레이 (행1~4)
+  const sw = (1 + spIdx * 0.22).toFixed(2) + 'px';
+  let numStyle, nameStyle;
+  if(g.rainbow){
+    const rb = 'linear-gradient(90deg,#f00,#f80,#ff0,#0f0,#08f,#80f,#f00)';
+    numStyle  = `background:${rb};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:rainbowShift 2s linear infinite;font-size:2.2rem;font-weight:900;line-height:1;paint-order:stroke fill;`;
+    nameStyle = `background:${rb};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200% auto;animation:rainbowShift 2s linear infinite;font-size:.88rem;font-weight:700;`;
+  } else {
+    numStyle  = `color:white;-webkit-text-stroke:${sw} ${c};font-size:2.2rem;font-weight:900;line-height:1;paint-order:stroke fill;`;
+    nameStyle = `color:${c};font-size:.88rem;font-weight:700;`;
+  }
+
+  document.getElementById('spText').innerHTML = `
+    <div class="sp-lv-num" style="${numStyle}">LV.${g.lv}</div>
+    <div class="sp-lv-name" style="${nameStyle}">${g.name}</div>
+    <div class="sp-lv-range" style="color:rgba(255,255,255,.7)">점수 ${g.min}–${g.max}</div>`;
+
+  // 정보
+  document.getElementById('spInfo').innerHTML =
+    `<span style="color:${c};font-weight:700">${g.name}</span>
+     &nbsp;|&nbsp; 알고리즘 점수 <strong>${g.min}–${g.max}</strong>`;
+
+  // 네비
+  document.getElementById('spIndicator').textContent = `${spIdx+1}/10`;
+  document.getElementById('spPrev').disabled = spIdx === 0;
+  document.getElementById('spNext').disabled = spIdx === 9;
+
+  // 렌더러 교체
+  if(!spRenderer){
+    spRenderer = new SparkRenderer(canvas, spIdx);
+  } else {
+    spRenderer.stop();
+    spRenderer.canvas    = canvas;
+    spRenderer.ctx       = canvas.getContext('2d');
+    spRenderer.switchLevel(spIdx);
+    spRenderer.running   = false;
+  }
+
+  // canvas 크기를 stage에 맞춤
+  spRenderer.canvas.width  = stage.offsetWidth  || 200;
+  spRenderer.canvas.height = stage.offsetHeight || 260;
+
+  const numEl = document.getElementById('spText').querySelector('.sp-lv-num');
+  setTimeout(() => spRenderer.start(numEl), 60);
+}
+
+/* ══════════════════════════════════════
+   CHANNEL ANALYSIS
+══════════════════════════════════════ */
+function hashScore(subs, views, vids){
+  return Math.min(99, Math.max(0,
+    Math.floor(((subs * 1.1 + views * 0.7 + vids * 3.3) % 1000) % 100)
+  ));
+}
+function getLv(sc){ return GRADES.find(g => sc >= g.min && sc <= g.max) || GRADES[0]; }
+function getGradeIdx(g){ return GRADES.indexOf(g); }
+
+async function analyzeChannel(){
+  const raw = document.getElementById('chInput').value.trim();
+  if(!raw){ alert('채널 URL 또는 핸들을 입력하세요'); return; }
+  const box = document.getElementById('chResult');
+  box.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><span>채널 정보 로딩 중…</span></div>';
+  if(mainSpark){ mainSpark.stop(); mainSpark = null; }
+
+  let handle = raw.replace(/^https?:\/\/(www\.)?youtube\.com\//,'')
+                   .replace(/^@/,'').split('/')[0].split('?')[0];
+
+  const doRender = (snippet, stats) => {
+    const subs  = parseInt(stats.subscriberCount || 0);
+    const views = parseInt(stats.viewCount || 0);
+    const vids  = parseInt(stats.videoCount || 0);
+    const score = hashScore(subs, views, vids);
+    const g     = getLv(score);
+    const gi    = getGradeIdx(g);
+
+    box.innerHTML = `
+      <div class="lv-row">
+        ${buildLvCardHtml()}
+        ${buildGradeTable(g.lv)}
+      </div>
+      ${buildChInfoCard(snippet, stats)}
+      ${buildContentAnalysis(snippet, stats)}
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">🔍 강점 · 개선점</div>
+        ${buildProsCons(stats, snippet.description || '')}
+      </div>`;
+
+    requestAnimationFrame(() => {
+      const canvas = document.getElementById('mainSparkCanvas');
+      if(!canvas) return;
+      // 캔버스 크기를 래퍼에 맞춤
+      const wrap = document.getElementById('lvSparkWrap');
+      canvas.width  = wrap.offsetWidth  || 200;
+      canvas.height = wrap.offsetHeight || 260;
+      startMainSpark(canvas, gi, score);
+    });
+    showPopupAd();
+  };
+
+  try{
+    const sr = await fetch(
+      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(handle)}&maxResults=1&key=${getKey()}`
+    );
+    const sd = await sr.json();
+    if(!sd.items?.length) throw new Error('채널을 찾을 수 없습니다');
+    const chId = sd.items[0].id.channelId;
+    const cr = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${chId}&key=${getKey()}`
+    );
+    const cd = await cr.json();
+    if(!cd.items?.length) throw new Error('채널 정보 없음');
+    doRender(cd.items[0].snippet || {}, cd.items[0].statistics || {});
+  } catch(e){
+    box.innerHTML = `<div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.8rem;color:var(--gold)">⚠️ API 오류 — 데모 데이터 표시 (${esc(e.message)})</div>`;
+    const demoSnippet = {
+      title:'데모 크리에이터', customUrl:'demochannel', country:'KR',
+      publishedAt:'2022-03-15T00:00:00Z',
+      description:'#유튜브 #크리에이터 영상 제작 팁을 공유합니다.',
+      thumbnails:{default:{url:''}}
+    };
+    const demoStats = { subscriberCount:'82000', viewCount:'4200000', videoCount:'87' };
+
+    const score = 45, g = getLv(score), gi = getGradeIdx(g);
+    const div = document.createElement('div');
+    box.appendChild(div);
+    div.innerHTML = `
+      <div class="lv-row">
+        ${buildLvCardHtml()}
+        ${buildGradeTable(g.lv)}
+      </div>
+      ${buildChInfoCard(demoSnippet, demoStats)}
+      ${buildContentAnalysis(demoSnippet, demoStats)}
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">🔍 강점 · 개선점</div>
+        ${buildProsCons(demoStats, demoSnippet.description)}
+      </div>`;
+
+    requestAnimationFrame(() => {
+      const canvas = document.getElementById('mainSparkCanvas');
+      if(!canvas) return;
+      const wrap = document.getElementById('lvSparkWrap');
+      canvas.width  = wrap.offsetWidth  || 200;
+      canvas.height = wrap.offsetHeight || 260;
+      startMainSpark(canvas, gi, score);
+    });
+  }
+}
+
+/* ══════════════════════════════════════
+   CHANNEL INFO CARD
 ══════════════════════════════════════ */
 function buildChInfoCard(snippet, stats){
-  const subs  = parseInt(stats.subscriberCount||0);
-  const views = parseInt(stats.viewCount||0);
-  const vids  = parseInt(stats.videoCount||0);
-  const avgV  = vids>0?Math.round(views/vids):0;
-  const thumb = snippet.thumbnails?.default?.url||'';
-  const title = snippet.title||'채널명 없음';
-  const handle= snippet.customUrl||'';
-  const country=snippet.country||'';
-  const joined=(snippet.publishedAt||'').slice(0,10);
+  const subs  = parseInt(stats.subscriberCount || 0);
+  const views = parseInt(stats.viewCount || 0);
+  const vids  = parseInt(stats.videoCount || 0);
+  const avgV  = vids > 0 ? Math.round(views / vids) : 0;
+  const thumb = snippet.thumbnails?.default?.url || '';
+  const title = snippet.title || '채널명 없음';
+  const handle = snippet.customUrl || '';
+  const country = snippet.country || '';
+  const joined = (snippet.publishedAt || '').slice(0, 10);
   return `
   <div class="ch-info-card">
     <div class="ch-info-header">
       <img class="ch-avatar" src="${esc(thumb)}" alt="" onerror="this.style.display='none'">
       <div class="ch-title-wrap">
         <div class="ch-title">${esc(title)}</div>
-        <div class="ch-handle">${handle?'@'+esc(handle):''}${country?' · '+esc(country):''}${joined?' · 개설 '+esc(joined):''}</div>
+        <div class="ch-handle">${handle ? '@' + esc(handle) : ''}${country ? ' · ' + esc(country) : ''}${joined ? ' · 개설 ' + esc(joined) : ''}</div>
       </div>
     </div>
     <div class="ch-stats-grid">
@@ -794,83 +1106,68 @@ function buildChInfoCard(snippet, stats){
 }
 
 /* ══════════════════════════════════════
-   CONTENT ANALYSIS (벤치마킹 대체)
-   제작 형식 / 바이럴 방식 / 콘텐츠 전략 분석
+   CONTENT ANALYSIS
 ══════════════════════════════════════ */
 function buildContentAnalysis(snippet, stats){
-  const subs  = parseInt(stats.subscriberCount||0);
-  const views = parseInt(stats.viewCount||0);
-  const vids  = parseInt(stats.videoCount||0);
-  const desc  = snippet.description||'';
-  const title = snippet.title||'';
+  const subs  = parseInt(stats.subscriberCount || 0);
+  const views = parseInt(stats.viewCount || 0);
+  const vids  = parseInt(stats.videoCount || 0);
+  const desc  = snippet.description || '';
+  const title = snippet.title || '';
 
-  // --- 제작 형식 추론 ---
   const formats = [];
   let formatDesc = '';
   if(vids > 0 && views/vids > 50000){
-    formats.push({icon:'🎬',label:'롱폼 중심'});
+    formats.push({icon:'🎬', label:'롱폼 중심'});
     formatDesc = '평균 조회수가 높고 영상 제작 빈도로 보아 롱폼(5분 이상) 심층 콘텐츠를 주력으로 제작합니다.';
   } else if(vids > 200){
-    formats.push({icon:'⚡',label:'쇼츠 활발'});
+    formats.push({icon:'⚡', label:'쇼츠 활발'});
     formatDesc = '영상 수가 많고 업로드 주기가 짧아 쇼츠 및 클립형 단편 콘텐츠를 활발히 활용합니다.';
   } else {
-    formats.push({icon:'🎯',label:'혼합 포맷'});
+    formats.push({icon:'🎯', label:'혼합 포맷'});
     formatDesc = '롱폼과 쇼츠를 혼합하여 다양한 시청자층을 공략하는 멀티 포맷 전략을 사용합니다.';
   }
-  if(desc.includes('#') || title.includes('#')){
-    formats.push({icon:'#️⃣',label:'해시태그 SEO'});
-  }
-  if(subs > 100000){
-    formats.push({icon:'🤝',label:'협찬·콜라보'});
-  }
+  if(desc.includes('#') || title.includes('#')) formats.push({icon:'#️⃣', label:'해시태그 SEO'});
+  if(subs > 100000) formats.push({icon:'🤝', label:'협찬·콜라보'});
 
-  // --- 바이럴 방식 분석 ---
   const viralScore = Math.min(100, Math.round(
     (subs/100000)*20 + (views/5000000)*30 + (vids>50?20:10) + (views/Math.max(vids,1)/30000)*30
   ));
   let viralMethod = '';
-  if(viralScore >= 70){
-    viralMethod = '알고리즘 추천 + SNS 공유가 주요 바이럴 경로입니다. 높은 클릭률(CTR)과 시청 유지율로 유튜브 홈 피드에 자주 노출되며, 커뮤니티(디씨·트위터·네이버 카페)를 통해 2차 확산이 활발하게 이루어지고 있습니다.';
-  } else if(viralScore >= 40){
-    viralMethod = '주로 구독자 기반 유입과 연관 영상 노출로 성장하고 있습니다. 꾸준한 업로드 주기로 구독자 재방문율을 유지하며, 일부 영상이 외부 커뮤니티에서 화제가 되며 간헐적 급상승 패턴을 보입니다.';
-  } else {
-    viralMethod = '현재 초기 성장 단계로, 검색 트래픽과 추천 알고리즘을 통해 유입이 발생하고 있습니다. 제목·썸네일 최적화와 꾸준한 업로드를 통해 알고리즘 신호를 축적하는 단계입니다.';
-  }
+  if(viralScore >= 70)      viralMethod = '알고리즘 추천 + SNS 공유가 주요 바이럴 경로입니다. 높은 클릭률(CTR)과 시청 유지율로 유튜브 홈 피드에 자주 노출됩니다.';
+  else if(viralScore >= 40) viralMethod = '주로 구독자 기반 유입과 연관 영상 노출로 성장하고 있습니다.';
+  else                       viralMethod = '현재 초기 성장 단계로, 검색 트래픽과 추천 알고리즘을 통해 유입이 발생합니다.';
 
-  // --- 콘텐츠 전략 키워드 ---
   const stratTags = [];
   if(views/Math.max(vids,1) > 100000) stratTags.push({label:'고조회 집중형', cls:'green'});
   if(vids > 100) stratTags.push({label:'양산형 업로드', cls:''});
   if(subs > 0 && views/subs > 20) stratTags.push({label:'높은 구독 효율', cls:'green'});
   if(subs > 500000) stratTags.push({label:'메가 채널', cls:'gold'});
   else if(subs > 100000) stratTags.push({label:'중견 채널', cls:'gold'});
-  else if(subs > 10000) stratTags.push({label:'성장 채널', cls:''});
+  else if(subs > 10000)  stratTags.push({label:'성장 채널', cls:''});
   else stratTags.push({label:'초기 채널', cls:'red'});
   if(desc.length > 200) stratTags.push({label:'정보성 설명', cls:'green'});
 
-  // --- 예상 타깃 시청자 ---
   let audience = '';
-  if(title.match(/게임|게이밍|플레이|리뷰/i)||desc.match(/게임/)) audience='🎮 게이머 / 10–25세 남성 중심';
-  else if(title.match(/요리|먹방|레시피/i)||desc.match(/요리|음식/)) audience='🍳 음식 관심층 / 20–40대 전 연령';
-  else if(title.match(/뷰티|메이크업|화장/i)) audience='💄 뷰티 관심층 / 15–35세 여성 중심';
-  else if(title.match(/IT|테크|기술|코딩/i)||desc.match(/IT|기술/)) audience='💻 IT·테크 관심층 / 20–35세';
-  else if(title.match(/교육|공부|강의|수업/i)) audience='📚 학습 목적 시청자 / 10–30대';
-  else if(subs > 200000) audience='🌐 다양한 연령층 / 폭넓은 관심사';
-  else audience='🔍 분석 중 — 더 많은 영상 데이터 필요';
+  if(title.match(/게임|게이밍|플레이|리뷰/i)||desc.match(/게임/))       audience='🎮 게이머 / 10–25세 남성 중심';
+  else if(title.match(/요리|먹방|레시피/i)||desc.match(/요리|음식/))    audience='🍳 음식 관심층 / 20–40대 전 연령';
+  else if(title.match(/뷰티|메이크업|화장/i))                           audience='💄 뷰티 관심층 / 15–35세 여성 중심';
+  else if(title.match(/IT|테크|기술|코딩/i)||desc.match(/IT|기술/))     audience='💻 IT·테크 관심층 / 20–35세';
+  else if(title.match(/교육|공부|강의|수업/i))                          audience='📚 학습 목적 시청자 / 10–30대';
+  else if(subs > 200000)                                                audience='🌐 다양한 연령층 / 폭넓은 관심사';
+  else                                                                   audience='🔍 분석 중 — 더 많은 영상 데이터 필요';
 
-  const formatChips = formats.map(f=>`<div class="format-chip">${f.icon} ${f.label}</div>`).join('');
-  const stratTagsHtml = stratTags.map(t=>`<span class="ca-tag ${t.cls}">${t.label}</span>`).join('');
+  const formatChips  = formats.map(f => `<div class="format-chip">${f.icon} ${f.label}</div>`).join('');
+  const stratTagsHtml = stratTags.map(t => `<span class="ca-tag ${t.cls}">${t.label}</span>`).join('');
 
   return `
   <div class="content-analysis-card">
     <div class="card-title">🔬 콘텐츠 분석</div>
-
     <div class="ca-section">
       <div class="ca-label">📹 제작 형식</div>
       <div class="ca-value">${formatDesc}</div>
       <div class="format-chips">${formatChips}</div>
     </div>
-
     <div class="ca-section">
       <div class="ca-label">🚀 바이럴 방식</div>
       <div class="ca-value">${viralMethod}</div>
@@ -880,12 +1177,10 @@ function buildContentAnalysis(snippet, stats){
         <div class="viral-index-val">${viralScore}</div>
       </div>
     </div>
-
     <div class="ca-section">
       <div class="ca-label">🎯 예상 타깃 시청자</div>
       <div class="ca-value">${audience}</div>
     </div>
-
     <div class="ca-section">
       <div class="ca-label">📌 채널 전략 키워드</div>
       <div class="ca-tags">${stratTagsHtml}</div>
@@ -897,138 +1192,28 @@ function buildContentAnalysis(snippet, stats){
    PROS / CONS
 ══════════════════════════════════════ */
 function buildProsCons(stats, desc){
-  const subs=parseInt(stats.subscriberCount||0);
-  const views=parseInt(stats.viewCount||0);
-  const vids=parseInt(stats.videoCount||0);
-  const hashtags=(desc.match(/#\w+/g)||[]).length;
-  const pros=[], cons=[];
-  if(subs>=10000) pros.push('구독자 1만명 이상 — 탄탄한 팬층 확보');
-  else cons.push('구독자 1만명 미만 — 홍보·콜라보 전략 필요');
-  if(vids>=50) pros.push('영상 50개 이상 — 풍부한 콘텐츠 라이브러리');
-  else cons.push('영상 수 부족 — 콘텐츠 적립이 필요합니다');
-  const avg=vids>0?views/vids:0;
-  if(avg>=10000) pros.push('영상당 평균 10K+ 조회 — 높은 콘텐츠 파워');
-  else cons.push('영상당 평균 조회 낮음 — 썸네일·제목 최적화 필요');
-  if(desc.length>=100) pros.push('채널 설명 충분 — 검색 노출에 유리');
-  else cons.push('채널 설명 짧음 — 키워드 포함 설명 작성 권장');
-  if(hashtags>=2) pros.push(`해시태그 ${hashtags}개 활용 — 노출 강화`);
-  else cons.push('해시태그 부족 — 영상별 3–5개 추가 권장');
+  const subs  = parseInt(stats.subscriberCount || 0);
+  const views = parseInt(stats.viewCount || 0);
+  const vids  = parseInt(stats.videoCount || 0);
+  const hashtags = (desc.match(/#\w+/g) || []).length;
+  const pros = [], cons = [];
+  if(subs >= 10000)  pros.push('구독자 1만명 이상 — 탄탄한 팬층 확보');
+  else               cons.push('구독자 1만명 미만 — 홍보·콜라보 전략 필요');
+  if(vids >= 50)     pros.push('영상 50개 이상 — 풍부한 콘텐츠 라이브러리');
+  else               cons.push('영상 수 부족 — 콘텐츠 적립이 필요합니다');
+  const avg = vids > 0 ? views/vids : 0;
+  if(avg >= 10000)   pros.push('영상당 평균 10K+ 조회 — 높은 콘텐츠 파워');
+  else               cons.push('영상당 평균 조회 낮음 — 썸네일·제목 최적화 필요');
+  if(desc.length >= 100) pros.push('채널 설명 충분 — 검색 노출에 유리');
+  else                   cons.push('채널 설명 짧음 — 키워드 포함 설명 작성 권장');
+  if(hashtags >= 2)  pros.push(`해시태그 ${hashtags}개 활용 — 노출 강화`);
+  else               cons.push('해시태그 부족 — 영상별 3–5개 추가 권장');
   return `
   <div class="pros-cons-grid">
     <div class="pros-card"><h4>✅ 강점</h4><ul>${pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
     <div class="cons-card"><h4>⚠️ 개선점</h4><ul>${cons.map(c=>`<li>${c}</li>`).join('')}</ul></div>
   </div>`;
 }
-
-/* ══════════════════════════════════════
-   CHANNEL ANALYSIS MAIN
-══════════════════════════════════════ */
-function hashScore(subs,views,vids){
-  return Math.min(99,Math.max(0,Math.floor(((subs*1.1+views*.7+vids*3.3)%1000)%100)));
-}
-function getLv(sc){ return GRADES.find(g=>sc>=g.min&&sc<=g.max)||GRADES[0]; }
-function getGradeIdx(g){ return GRADES.indexOf(g); }
-
-async function analyzeChannel(){
-  const raw = document.getElementById('chInput').value.trim();
-  if(!raw){ alert('채널 URL 또는 핸들을 입력하세요'); return; }
-  const box = document.getElementById('chResult');
-  box.innerHTML='<div class="loading-spinner"><div class="spinner"></div><span>채널 정보 로딩 중…</span></div>';
-  if(mainBeam){ mainBeam.stop(); mainBeam=null; }
-
-  let handle = raw.replace(/^https?:\/\/(www\.)?youtube\.com\//,'').replace(/^@/,'').split('/')[0].split('?')[0];
-
-  const doRender = (snippet, stats) => {
-    const subs=parseInt(stats.subscriberCount||0);
-    const views=parseInt(stats.viewCount||0);
-    const vids=parseInt(stats.videoCount||0);
-    const score=hashScore(subs,views,vids);
-    const g=getLv(score);
-    const gi=getGradeIdx(g);
-    const topPct=100-score;
-
-    box.innerHTML = `
-      <!-- LV ROW: 빛기둥 카드 + 등급표 -->
-      <div class="lv-row">
-        ${buildLvCardHtml(g, score, topPct)}
-        ${buildGradeTable(g.lv)}
-      </div>
-
-      <!-- 채널 정보 (구독자·조회수 등) -->
-      ${buildChInfoCard(snippet, stats)}
-
-      <!-- 콘텐츠 분석 (벤치마킹 대체) -->
-      ${buildContentAnalysis(snippet, stats)}
-
-      <!-- 장단점 -->
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-title">🔍 강점 · 개선점</div>
-        ${buildProsCons(stats, snippet.description||'')}
-      </div>`;
-
-    // Canvas 빛기둥 시작 (DOM 렌더 후)
-    requestAnimationFrame(()=>{
-      const canvas = document.getElementById('mainBeamCanvas');
-      if(!canvas) return;
-      setupBeamCanvas(canvas, gi);
-      startMainBeam(canvas, gi);
-    });
-    showPopupAd();
-  };
-
-  try{
-    const sr = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(handle)}&maxResults=1&key=${getKey()}`);
-    const sd = await sr.json();
-    if(!sd.items?.length) throw new Error('채널을 찾을 수 없습니다');
-    const chId = sd.items[0].id.channelId;
-    const cr = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${chId}&key=${getKey()}`);
-    const cd = await cr.json();
-    if(!cd.items?.length) throw new Error('채널 정보 없음');
-    doRender(cd.items[0].snippet||{}, cd.items[0].statistics||{});
-  } catch(e){
-    // 데모 데이터
-    box.innerHTML=`<div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.8rem;color:var(--gold)">⚠️ API 오류 — 데모 데이터 표시 (${esc(e.message)})</div>`;
-    const demoSnippet={title:'데모 크리에이터',customUrl:'demochannel',country:'KR',publishedAt:'2022-03-15T00:00:00Z',description:'#유튜브 #크리에이터 영상 제작 팁을 공유합니다. 구독과 좋아요 부탁드려요!',thumbnails:{default:{url:''}}};
-    const demoStats={subscriberCount:'82000',viewCount:'4200000',videoCount:'87'};
-    const div=document.createElement('div');
-    box.appendChild(div);
-    const score=45, g=getLv(score), gi=getGradeIdx(g), topPct=100-score;
-    div.innerHTML=`
-      <div class="lv-row">
-        ${buildLvCardHtml(g,score,topPct)}
-        ${buildGradeTable(g.lv)}
-      </div>
-      ${buildChInfoCard(demoSnippet,demoStats)}
-      ${buildContentAnalysis(demoSnippet,demoStats)}
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-title">🔍 강점 · 개선점</div>
-        ${buildProsCons(demoStats,demoSnippet.description)}
-      </div>`;
-    requestAnimationFrame(()=>{
-      const canvas=document.getElementById('mainBeamCanvas');
-      if(!canvas)return;
-      setupBeamCanvas(canvas,gi);
-      startMainBeam(canvas,gi);
-    });
-  }
-}
-
-/* ══════════════════════════════════════
-   UTILITY
-══════════════════════════════════════ */
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmt(n){ if(n>=100000000)return(n/100000000).toFixed(1)+'억'; if(n>=10000)return(n/10000).toFixed(1)+'만'; if(n>=1000)return(n/1000).toFixed(1)+'천'; return String(n); }
-function fmtMoney(n){ return n.toLocaleString('ko-KR')+'원'; }
-function showSection(id){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('sec-'+id).classList.add('active');
-  document.querySelectorAll(`.nav-item[data-sec="${id}"]`).forEach(n=>n.classList.add('active'));
-}
-function doHeaderSearch(){ const v=document.getElementById('headerSearch').value.trim(); if(!v)return; showSection('channel'); document.getElementById('chInput').value=v; analyzeChannel(); }
-function searchCoupang(){ const q=document.getElementById('cpInput').value.trim(); if(!q)return; window.open(`https://www.coupang.com/np/search?q=${encodeURIComponent(q)}&bannerCode=${PC}`,'_blank','noopener'); }
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function decodeHtml(s){ const t=document.createElement('textarea');t.innerHTML=s;return t.value; }
 
 /* ══════════════════════════════════════
    HOT VIDEOS
@@ -1205,18 +1390,6 @@ const IDEAS_DATA=[
   {title:'유명 유튜버 영상 구조 분석',hook:'100만 뷰 영상에는 이런 구조가 있었습니다.',script:'오프닝 훅 3초, 문제 제시, 솔루션, CTA 분석.',thumb:'영상 타임라인 위에 돋보기',tags:['분석','기획','교육']},
   {title:'2025 유튜브 알고리즘 완전 분석',hook:'알고리즘이 바뀌었습니다.',script:'클릭률·시청유지율·재방문율 중심 설명.',thumb:'유튜브 로고 + 톱니바퀴',tags:['알고리즘','트렌드','교육']},
   {title:'쇼츠로 롱폼 구독자 끌어오는 법',hook:'쇼츠와 롱폼을 연결하면 채널이 폭발합니다.',script:'쇼츠 훅→롱폼 예고, CTA 전환 전략.',thumb:'쇼츠 세로 + 롱폼 가로 연결',tags:['쇼츠','전략','성장']},
-  {title:'유튜브 수익 구조 완전 공개',hook:'애드센스 외에도 이렇게 많이 벌 수 있습니다.',script:'애드센스·슈퍼챗·멤버십·협찬·제휴 수익 사례.',thumb:'돈 아이콘들',tags:['수익','정보','현실']},
-  {title:'콜라보로 구독자 빠르게 늘리는 전략',hook:'혼자 성장하는 건 한계가 있습니다.',script:'콜라보 이메일 템플릿, 채널 찾는 법.',thumb:'두 유튜버 악수',tags:['협업','성장','전략']},
-  {title:'내 영상 시청 유지율 올리는 편집 기술',hook:'첫 30초가 전부입니다.',script:'점프컷, 자막 타이밍, BGM 변화, 훅 구성.',thumb:'편집 타임라인',tags:['편집','시청유지율','팁']},
-  {title:'모바일로 4K 유튜브 영상 만들기',hook:'스마트폰으로도 이 정도 퀄리티가 가능합니다.',script:'촬영 설정, 삼각대 추천, CapCut 편집.',thumb:'스마트폰 촬영 모습',tags:['모바일','저예산','팁']},
-  {title:'유튜브 제목 공식: 클릭률 높이는 법',hook:'제목 하나 바꿨더니 클릭률이 2배가 됐습니다.',script:'숫자 활용, 질문형, 비밀 공개형, 감정 자극형.',thumb:'제목 텍스트들',tags:['제목','CTR','팁']},
-  {title:'유튜브 스튜디오 분석 200% 활용법',hook:'이 데이터를 보면 다음 영상에서 뭘 고쳐야 하는지 보입니다.',script:'트래픽 소스, 이탈 구간, 시청자 연령·성별 활용.',thumb:'그래프·차트 화면',tags:['분석','스튜디오','데이터']},
-  {title:'밤새 유행할 챌린지 영상 만드는 공식',hook:'챌린지 영상이 바이럴 되는 데는 공식이 있습니다.',script:'간단한 모방 가능성, 참여 유도 CTA, 해시태그 전략.',thumb:'챌린지 동작 중인 사람들',tags:['바이럴','챌린지','전략']},
-  {title:'1인 크리에이터 하루 루틴 공개',hook:'영상 만들면서 하루를 어떻게 보낼까요?',script:'기획→촬영→편집→업로드→커뮤니티 관리 리얼 하루.',thumb:'크리에이터 데스크 모습',tags:['브이로그','루틴','현실']},
-  {title:'구독자 10만 채널 운영 현실 리뷰',hook:'10만 채널이 되면 모든 게 달라질 거라 생각했습니다.',script:'수익, 협찬, 악플, 번아웃, 다음 목표 솔직 공개.',thumb:'실버 버튼 들고 있는 크리에이터',tags:['리뷰','현실','솔직']},
-  {title:'유튜브 채널 폐쇄 직전에서 살아난 법',hook:'구독자가 줄고 조회수가 바닥을 쳤을 때.',script:'슬럼프 원인 분석, 콘텐츠 피벗, 소통 강화 사례.',thumb:'내리막 그래프가 다시 올라오는 모습',tags:['성장','슬럼프','스토리']},
-  {title:'내 채널에 맞는 콘텐츠 필라 찾기',hook:'아무 영상이나 올리면 알고리즘이 헷갈려 합니다.',script:'콘텐츠 필라 3가지 설정법, 채널 정체성 확립.',thumb:'세 개의 기둥',tags:['채널전략','기획','교육']},
-  {title:'댓글 관리로 구독자 충성도 높이기',hook:'댓글 하나가 구독자 100명을 불러올 수 있습니다.',script:'댓글 답변 타이밍, 커뮤니티 형성, 고정 댓글 활용.',thumb:'댓글 아이콘에 하트',tags:['커뮤니티','소통','전략']},
 ];
 function renderIdeas(){
   document.getElementById('ideasGrid').innerHTML=IDEAS_DATA.map((d,i)=>`
@@ -1250,9 +1423,9 @@ function copyIdea(){
    REVENUE CALCULATOR
 ══════════════════════════════════════ */
 const REV_INPUTS=[
-  {id:'views',label:'월간 조회수',min:1000,max:10000000,step:10000,val:100000,unit:'회'},
-  {id:'rpm',label:'RPM (광고단가)',min:0.5,max:20,step:0.1,val:2.5,unit:'$'},
-  {id:'sponsor',label:'협찬 수입(월)',min:0,max:10000000,step:100000,val:0,unit:'원'},
+  {id:'views', label:'월간 조회수',     min:1000,  max:10000000,step:10000, val:100000,unit:'회'},
+  {id:'rpm',   label:'RPM (광고단가)', min:0.5,   max:20,      step:0.1,  val:2.5,   unit:'$'},
+  {id:'sponsor',label:'협찬 수입(월)', min:0,     max:10000000,step:100000,val:0,     unit:'원'},
 ];
 let revVals={};
 REV_INPUTS.forEach(r=>{ revVals[r.id]=r.val; });
@@ -1335,6 +1508,23 @@ function renderShop(){
 }
 
 /* ══════════════════════════════════════
+   MISC UTILS
+══════════════════════════════════════ */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmt(n){ if(n>=100000000)return(n/100000000).toFixed(1)+'억'; if(n>=10000)return(n/10000).toFixed(1)+'만'; if(n>=1000)return(n/1000).toFixed(1)+'천'; return String(n); }
+function fmtMoney(n){ return n.toLocaleString('ko-KR')+'원'; }
+function decodeHtml(s){ const t=document.createElement('textarea');t.innerHTML=s;return t.value; }
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll(`.nav-item[data-sec="${id}"]`).forEach(n=>n.classList.add('active'));
+}
+function doHeaderSearch(){ const v=document.getElementById('headerSearch').value.trim(); if(!v)return; showSection('channel'); document.getElementById('chInput').value=v; analyzeChannel(); }
+function searchCoupang(){ const q=document.getElementById('cpInput').value.trim(); if(!q)return; window.open(`https://www.coupang.com/np/search?q=${encodeURIComponent(q)}&bannerCode=${PC}`,'_blank','noopener'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+/* ══════════════════════════════════════
    POPUP AD
 ══════════════════════════════════════ */
 let popTimer=null;
@@ -1344,7 +1534,16 @@ function showPopupAd(){
   document.getElementById('popupCountdown').textContent=`${sec}초 후 닫기 가능…`;
   document.getElementById('popupCloseBtn').style.display='none';
   if(popTimer)clearInterval(popTimer);
-  popTimer=setInterval(()=>{ sec--; if(sec<=0){clearInterval(popTimer);document.getElementById('popupCloseBtn').style.display='block';document.getElementById('popupCountdown').textContent='';}else document.getElementById('popupCountdown').textContent=`${sec}초 후 닫기 가능…`; },1000);
+  popTimer=setInterval(()=>{
+    sec--;
+    if(sec<=0){
+      clearInterval(popTimer);
+      document.getElementById('popupCloseBtn').style.display='block';
+      document.getElementById('popupCountdown').textContent='';
+    } else {
+      document.getElementById('popupCountdown').textContent=`${sec}초 후 닫기 가능…`;
+    }
+  },1000);
   try{(adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
 }
 function closePopup(){ document.getElementById('popupAd').classList.remove('open'); }
@@ -1353,8 +1552,17 @@ function closePopup(){ document.getElementById('popupAd').classList.remove('open
    INIT
 ══════════════════════════════════════ */
 (function(){
-  buildCatList(); loadHotVideos(); renderTools(); renderIdeas(); renderShop(); initRevenue();
-  try{ document.querySelectorAll('.adsbygoogle').forEach(()=>{ (adsbygoogle=window.adsbygoogle||[]).push({}); }); }catch(e){}
+  buildCatList();
+  loadHotVideos();
+  renderTools();
+  renderIdeas();
+  renderShop();
+  initRevenue();
+  try{
+    document.querySelectorAll('.adsbygoogle').forEach(()=>{
+      (adsbygoogle=window.adsbygoogle||[]).push({});
+    });
+  }catch(e){}
 })();
 </script>
 </body>
