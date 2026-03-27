@@ -13,7 +13,6 @@
   --acc:#7c5cfc;--acc2:#fc5c7d;--acc3:#5cf8fc;
   --txt:#e8e8f0;--txt2:#a0a0b8;--txt3:#606080;
   --left-w:220px;--right-w:280px;--header-h:64px;
-  --gold:linear-gradient(135deg,#ffe066,#ffb300,#ffe066);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -64,71 +63,91 @@ body{
 #sidebar::-webkit-scrollbar-thumb{background:rgba(124,92,252,.3);border-radius:4px}
 #wrap{flex:1;min-width:0;padding:16px;overflow-x:hidden}
 
-/* RIGHT COL — fixed sidebar */
+/* ══════════════════════════════
+   RIGHT COLUMN — fixed, full height
+══════════════════════════════ */
 #rightCol{
   position:fixed;right:0;top:0;bottom:0;
   width:var(--right-w);z-index:100;
   background:var(--bg1);
   border-left:1px solid rgba(124,92,252,.12);
-  overflow-y:auto;padding:12px 10px;
-  display:flex;flex-direction:column;gap:10px;
+  overflow-y:auto;
+  padding:0;
+  display:flex;flex-direction:column;
 }
 #rightCol::-webkit-scrollbar{width:4px}
 #rightCol::-webkit-scrollbar-thumb{background:rgba(124,92,252,.3);border-radius:4px}
 @media(max-width:1200px){#rightCol{display:none}body{padding-right:0}}
 @media(max-width:860px){#sidebar{display:none}}
 
-.rc-label{
-  font-size:10px;color:var(--txt3);text-align:center;
-  letter-spacing:.08em;padding-bottom:6px;
-  border-bottom:1px solid rgba(124,92,252,.1);
+/* Coupang 카드 — 스크롤과 무관하게 정중앙 고정 */
+#cpCardWrap{
+  position:sticky;
+  top:50%;
+  transform:translateY(-50%);
+  padding:14px;
+  flex-shrink:0;
 }
 
-/* 쿠팡 카드 — 정사각형 오렌지/골드 스타일 */
-.cp-square{
-  background:linear-gradient(145deg,#ff8c00,#ffa500,#ffb300);
+/* border-gradient 래핑 박스 */
+.cp-grad-border{
+  position:relative;
   border-radius:16px;
+  padding:2px; /* border 두께 */
+  background:linear-gradient(135deg,#ff8c00,#ffb300,#ffe066,#ffb300,#ff8c00);
+  box-shadow:0 0 24px rgba(255,165,0,.45),0 0 48px rgba(255,165,0,.2);
+  animation:cpBorderSpin 4s linear infinite;
+  background-size:300% 300%;
+}
+@keyframes cpBorderSpin{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.cp-inner{
+  background:linear-gradient(145deg,#1a1128,#0f1a2e);
+  border-radius:14px;
   padding:16px;
   text-align:center;
-  box-shadow:0 6px 24px rgba(255,165,0,.45),0 2px 8px rgba(0,0,0,.4);
-  position:relative;overflow:hidden;
-  border:2px solid rgba(255,220,80,.6);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  /* 정사각형 비율 */
   aspect-ratio:1/1;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:8px;
+  justify-content:center;
 }
-.cp-square::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 60%);
-  pointer-events:none;border-radius:16px;
+.cp-logo{
+  width:52px;height:52px;border-radius:12px;
+  box-shadow:0 4px 14px rgba(0,0,0,.5);
 }
-.cp-square::after{
-  content:'';position:absolute;
-  bottom:-20px;right:-20px;
-  width:80px;height:80px;
-  background:rgba(255,255,255,.08);
-  border-radius:50%;
-}
-.cp-sq-icon{font-size:32px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3))}
-.cp-sq-title{
+.cp-title{
   font-size:14px;font-weight:900;color:#fff;
-  text-shadow:0 1px 4px rgba(0,0,0,.4);line-height:1.3;
+  line-height:1.35;text-shadow:0 1px 4px rgba(0,0,0,.5);
 }
-.cp-sq-sub{font-size:11px;color:rgba(255,255,255,.85);line-height:1.5}
-.cp-sq-btn{
-  display:block;width:100%;padding:9px;
-  background:rgba(0,0,0,.25);
-  border-radius:10px;color:#fff;font-weight:800;font-size:12px;
-  text-decoration:none;transition:background .2s;
-  border:1px solid rgba(255,255,255,.3);
-  backdrop-filter:blur(4px);
+.cp-desc{
+  font-size:11px;color:rgba(255,255,255,.72);
+  line-height:1.6;
 }
-.cp-sq-btn:hover{background:rgba(0,0,0,.4)}
-.cp-sq-notice{font-size:9px;color:rgba(255,255,255,.6);line-height:1.5;text-align:center}
+.cp-btn{
+  display:block;width:100%;padding:10px;
+  background:linear-gradient(135deg,#ff8c00,#ffb300);
+  border-radius:10px;color:#fff;font-weight:800;font-size:13px;
+  text-decoration:none;
+  box-shadow:0 4px 14px rgba(255,140,0,.45);
+  transition:opacity .2s,transform .15s;
+}
+.cp-btn:hover{opacity:.85;transform:translateY(-1px)}
+.cp-notice{
+  font-size:9px;color:rgba(255,255,255,.45);
+  line-height:1.5;text-align:center;
+}
 
+/* AdSense slots below coupon */
+.rc-ads{
+  flex:1;padding:10px;
+  display:flex;flex-direction:column;gap:8px;
+}
 .rc-ad-slot{
   background:var(--bg2);border-radius:10px;
-  min-height:200px;display:flex;align-items:center;
+  min-height:180px;display:flex;align-items:center;
   justify-content:center;color:var(--txt3);font-size:11px;
   border:1px dashed rgba(124,92,252,.15);
 }
@@ -140,10 +159,7 @@ body{
   border-radius:8px;margin:2px 8px;transition:all .2s;font-size:13px;
 }
 .nav-item:hover{background:rgba(124,92,252,.12);color:var(--txt)}
-.nav-item.active{
-  background:rgba(124,92,252,.18);color:var(--txt);
-  border-left:3px solid var(--acc);padding-left:13px;
-}
+.nav-item.active{background:rgba(124,92,252,.18);color:var(--txt);border-left:3px solid var(--acc);padding-left:13px}
 .nav-icon{font-size:16px;width:20px;text-align:center}
 .nav-ad{padding:8px;margin:4px 8px}
 
@@ -159,33 +175,16 @@ body{
 
 /* TABS */
 .tab-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.tab-btn{
-  background:var(--bg2);border:1px solid rgba(124,92,252,.22);
-  border-radius:20px;padding:6px 14px;color:var(--txt2);
-  font-size:12px;cursor:pointer;transition:all .2s;
-}
+.tab-btn{background:var(--bg2);border:1px solid rgba(124,92,252,.22);border-radius:20px;padding:6px 14px;color:var(--txt2);font-size:12px;cursor:pointer;transition:all .2s}
 .tab-btn:hover{border-color:var(--acc);color:var(--txt)}
-.tab-btn.active{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(124,92,252,.38);
-}
-.type-btn{
-  background:var(--bg2);border:1px solid rgba(124,92,252,.22);
-  border-radius:20px;padding:5px 16px;color:var(--txt2);
-  font-size:12px;cursor:pointer;transition:all .2s;
-}
+.tab-btn.active{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(124,92,252,.38)}
+.type-btn{background:var(--bg2);border:1px solid rgba(124,92,252,.22);border-radius:20px;padding:5px 16px;color:var(--txt2);font-size:12px;cursor:pointer;transition:all .2s}
 .type-btn:hover{border-color:var(--acc);color:var(--txt)}
-.type-btn.active{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(124,92,252,.38);
-}
+.type-btn.active{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-color:transparent;box-shadow:0 2px 10px rgba(124,92,252,.38)}
 
 /* VIDEO CARDS */
 .vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.vid-card{
-  background:var(--bg1);border:1px solid rgba(124,92,252,.13);
-  border-radius:12px;overflow:hidden;cursor:pointer;transition:all .25s;
-}
+.vid-card{background:var(--bg1);border:1px solid rgba(124,92,252,.13);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .25s}
 .vid-card:hover{transform:translateY(-3px);border-color:rgba(124,92,252,.45);box-shadow:0 8px 24px rgba(124,92,252,.18)}
 .vid-thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
 .vid-info{padding:10px}
@@ -201,208 +200,131 @@ body{
 .kw-long{background:linear-gradient(135deg,#4d96ff,#7c5cfc);color:#fff}
 
 /* VIDEO MODAL */
-#vidModal{
-  display:none;position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,.85);overflow-y:auto;padding:20px;
-}
-#vidModalInner{max-width:820px;margin:0 auto;background:var(--bg1);border-radius:16px;overflow:hidden;}
+#vidModal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);overflow-y:auto;padding:20px}
+#vidModalInner{max-width:820px;margin:0 auto;background:var(--bg1);border-radius:16px;overflow:hidden}
 .modal-ad-wrap{padding:8px;background:var(--bg2)}
 #vidModalInner iframe{width:100%;aspect-ratio:16/9;border:none;display:block}
 .modal-body{padding:16px}
 
 /* CHANNEL ANALYSIS */
 #chSearchWrap{display:flex;gap:8px;margin-bottom:22px}
-#chInput{
-  flex:1;background:var(--bg2);border:1px solid rgba(124,92,252,.35);
-  border-radius:22px;padding:11px 18px;color:var(--txt);font-size:14px;outline:none;
-  transition:border-color .2s,box-shadow .2s;
-}
+#chInput{flex:1;background:var(--bg2);border:1px solid rgba(124,92,252,.35);border-radius:22px;padding:11px 18px;color:var(--txt);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
 #chInput:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,252,.18)}
-#chBtn{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;
-  border-radius:22px;padding:11px 26px;color:#fff;font-weight:700;
-  cursor:pointer;font-size:14px;box-shadow:0 4px 14px rgba(124,92,252,.35);
-  transition:opacity .2s;
-}
+#chBtn{background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:22px;padding:11px 26px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;box-shadow:0 4px 14px rgba(124,92,252,.35);transition:opacity .2s}
 #chBtn:hover{opacity:.88}
 #chResult{display:none}
-.ch-card{
-  background:linear-gradient(145deg,var(--bg2),var(--bg1));
-  border-radius:16px;padding:22px;
-  border:1px solid rgba(124,92,252,.18);
-  box-shadow:0 8px 32px rgba(0,0,0,.4);margin-bottom:16px;
-}
+.ch-card{background:linear-gradient(145deg,var(--bg2),var(--bg1));border-radius:16px;padding:22px;border:1px solid rgba(124,92,252,.18);box-shadow:0 8px 32px rgba(0,0,0,.4);margin-bottom:16px}
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:18px}
-.stat-box{
-  background:var(--bg3);border-radius:12px;padding:14px 10px;text-align:center;
-  border:1px solid rgba(124,92,252,.15);position:relative;overflow:hidden;transition:transform .2s;
-}
-.stat-box::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,92,252,.06),transparent);pointer-events:none;}
+.stat-box{background:var(--bg3);border-radius:12px;padding:14px 10px;text-align:center;border:1px solid rgba(124,92,252,.15);position:relative;overflow:hidden;transition:transform .2s}
+.stat-box::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,92,252,.06),transparent);pointer-events:none}
 .stat-box:hover{transform:translateY(-2px)}
-.stat-val{font-size:22px;font-weight:900;line-height:1;margin-bottom:4px;}
+.stat-val{font-size:22px;font-weight:900;line-height:1;margin-bottom:4px}
 .stat-lbl{font-size:11px;color:var(--txt2);font-weight:500}
 .metric-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .metric-label{width:90px;font-size:12px;color:var(--txt2);flex-shrink:0;font-weight:500}
-.metric-bar-bg{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.metric-bar-bg{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
 .metric-bar-fill{height:100%;border-radius:4px;transition:width 1.1s cubic-bezier(.4,0,.2,1)}
 .metric-score{width:34px;text-align:right;font-size:12px;font-weight:700}
 .sub-hdr{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px;display:flex;align-items:center;gap:6px}
 
-/* ══════════════════════════════════════
-   3D GRADE SYSTEM
-══════════════════════════════════════ */
-.grade-3d-wrap{
-  display:flex;flex-direction:column;align-items:center;
-  padding:20px 0 10px;
-}
+/* ══════════════════════════════
+   3D GRADE SYSTEM — 10 unique levels
+══════════════════════════════ */
+.grade-3d-wrap{display:flex;flex-direction:column;align-items:center;padding:16px 0 8px}
 
-/* 3D crystal orb */
 .grade-orb{
-  width:120px;height:120px;border-radius:50%;
+  width:130px;height:130px;border-radius:50%;
   position:relative;cursor:default;
   transform-style:preserve-3d;
-  animation:orbFloat 3s ease-in-out infinite;
-  margin-bottom:12px;
+  animation:orbFloat 3.2s ease-in-out infinite;
+  margin-bottom:14px;
 }
 @keyframes orbFloat{
-  0%,100%{transform:translateY(0) rotateY(0deg)}
-  50%{transform:translateY(-8px) rotateY(15deg)}
+  0%,100%{transform:translateY(0) rotateY(0deg) scale(1)}
+  50%{transform:translateY(-10px) rotateY(18deg) scale(1.03)}
 }
 .grade-orb-inner{
   width:100%;height:100%;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
   position:relative;overflow:hidden;
+  background:var(--orb-bg);
   box-shadow:
     0 0 0 3px var(--orb-color),
-    0 0 20px var(--orb-glow),
-    0 0 50px var(--orb-glow2),
-    inset 0 -15px 30px rgba(0,0,0,.5),
-    inset 0 10px 20px rgba(255,255,255,.15);
-  background:var(--orb-bg);
+    0 0 22px var(--orb-glow),
+    0 0 54px var(--orb-glow2),
+    inset 0 -18px 32px rgba(0,0,0,.55),
+    inset 0 12px 24px rgba(255,255,255,.14);
 }
 .grade-orb-inner::before{
-  content:'';position:absolute;
-  top:10%;left:20%;
-  width:40%;height:30%;
-  background:rgba(255,255,255,.25);
-  border-radius:50%;
-  filter:blur(6px);
-  transform:rotate(-30deg);
+  content:'';position:absolute;top:8%;left:18%;
+  width:42%;height:32%;
+  background:rgba(255,255,255,.22);
+  border-radius:50%;filter:blur(7px);transform:rotate(-28deg);
 }
 .grade-orb-inner::after{
-  content:'';position:absolute;
-  inset:0;border-radius:50%;
+  content:'';position:absolute;inset:0;border-radius:50%;
   background:var(--orb-ring);
-  animation:orbRing 2s ease-in-out infinite;
-  opacity:.6;
+  animation:orbPulse 2.2s ease-in-out infinite;opacity:.55;
 }
-@keyframes orbRing{
-  0%,100%{transform:scale(1);opacity:.6}
-  50%{transform:scale(1.05);opacity:.3}
-}
-.orb-icon{font-size:32px;z-index:2;position:relative;filter:drop-shadow(0 2px 8px rgba(0,0,0,.6))}
-.orb-score{
-  font-size:22px;font-weight:900;z-index:2;position:relative;
-  color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8);line-height:1;
-}
-.orb-label{font-size:10px;color:rgba(255,255,255,.7);z-index:2;position:relative}
+@keyframes orbPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.06);opacity:.28}}
+.orb-icon{font-size:34px;z-index:2;position:relative;filter:drop-shadow(0 2px 8px rgba(0,0,0,.65))}
+.orb-score{font-size:24px;font-weight:900;z-index:2;position:relative;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.85);line-height:1}
+.orb-label{font-size:10px;color:rgba(255,255,255,.65);z-index:2;position:relative}
 
-/* particles around orb */
-.orb-particles{
-  position:absolute;inset:-20px;pointer-events:none;
-}
+/* particles */
+.orb-particles{position:absolute;inset:-22px;pointer-events:none}
 .orb-p{
   position:absolute;border-radius:50%;
   animation:pFloat var(--pd) ease-in-out infinite var(--pd2);
-  background:var(--orb-color);
-  box-shadow:0 0 6px var(--orb-glow);
+  background:var(--orb-color);box-shadow:0 0 6px var(--orb-glow);
 }
 @keyframes pFloat{
-  0%,100%{transform:translate(0,0) scale(1);opacity:.8}
-  33%{transform:translate(var(--px),var(--py)) scale(1.3);opacity:1}
-  66%{transform:translate(calc(var(--px)*-.7),var(--py)) scale(.8);opacity:.5}
+  0%,100%{transform:translate(0,0) scale(1);opacity:.75}
+  40%{transform:translate(var(--px),var(--py)) scale(1.4);opacity:1}
+  70%{transform:translate(calc(var(--px)*-.6),var(--py)) scale(.7);opacity:.4}
 }
 
-/* grade name plate */
+/* nameplate */
 .grade-nameplate{
-  text-align:center;padding:6px 20px;border-radius:20px;
-  font-size:14px;font-weight:900;letter-spacing:.05em;
+  text-align:center;padding:7px 22px;border-radius:22px;
+  font-size:15px;font-weight:900;letter-spacing:.06em;
   background:var(--orb-bg);color:var(--orb-color);
   border:1px solid var(--orb-color);
-  box-shadow:0 0 14px var(--orb-glow2);
+  box-shadow:0 0 16px var(--orb-glow2);
   position:relative;overflow:hidden;
 }
 .grade-nameplate::before{
-  content:'';position:absolute;
-  top:0;left:-100%;width:60%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
-  animation:shimmer 2.5s ease-in-out infinite;
+  content:'';position:absolute;top:0;left:-100%;width:55%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+  animation:shimmer 2.8s ease-in-out infinite;
 }
 @keyframes shimmer{0%{left:-100%}100%{left:200%}}
+.grade-rarity{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--orb-color);opacity:.75;text-transform:uppercase;margin-top:5px;text-align:center}
 
-/* grade rarity label */
-.grade-rarity{
-  font-size:10px;font-weight:700;letter-spacing:.12em;
-  color:var(--orb-color);opacity:.8;
-  text-transform:uppercase;margin-top:4px;text-align:center;
-}
-
-/* XP section below orb */
-.xp-section{width:100%;margin-top:12px}
-.xp-label-row{display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-bottom:4px}
-.xp-track{
-  height:10px;background:rgba(255,255,255,.06);
-  border-radius:5px;overflow:hidden;
-  box-shadow:inset 0 1px 3px rgba(0,0,0,.4);
-}
-.xp-fill{
-  height:100%;border-radius:5px;
-  transition:width 1.3s cubic-bezier(.4,0,.2,1);
-  position:relative;overflow:hidden;
-}
-.xp-fill::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-  animation:xpShimmer 1.8s ease-in-out infinite;
-}
+/* XP bar */
+.xp-section{width:100%;margin-top:14px}
+.xp-label-row{display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-bottom:5px}
+.xp-track{height:11px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.xp-fill{height:100%;border-radius:6px;transition:width 1.4s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.xp-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent);animation:xpShimmer 1.9s ease-in-out infinite}
 @keyframes xpShimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .xp-next{font-size:11px;color:var(--txt2);text-align:center;margin-top:5px}
 
 /* grade 3D table */
-.grade3d-table{width:100%;border-collapse:separate;border-spacing:0 4px;font-size:12px}
-.grade3d-row td{
-  padding:8px 12px;background:var(--bg3);
-  transition:all .2s;cursor:default;
-}
+.grade3d-table{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:12px}
+.grade3d-row td{padding:9px 12px;background:var(--bg3);transition:all .2s;cursor:default}
 .grade3d-row td:first-child{border-radius:10px 0 0 10px}
 .grade3d-row td:last-child{border-radius:0 10px 10px 0}
-.grade3d-row:hover td{background:rgba(124,92,252,.12);transform:translateX(3px)}
-.grade3d-cur td{
-  background:var(--row-bg) !important;
-  box-shadow:0 0 0 1px var(--row-color),0 4px 14px var(--row-glow);
-  animation:rowPulse 2s ease-in-out infinite;
-}
-@keyframes rowPulse{
-  0%,100%{box-shadow:0 0 0 1px var(--row-color),0 4px 14px var(--row-glow)}
-  50%{box-shadow:0 0 0 2px var(--row-color),0 6px 20px var(--row-glow)}
-}
-.grade3d-icon{font-size:18px;text-align:center;width:32px}
-.grade3d-name{font-weight:700;color:var(--row-color,var(--txt))}
-.grade3d-rarity{
-  font-size:10px;font-weight:700;letter-spacing:.08em;
-  padding:2px 8px;border-radius:8px;
-  background:rgba(255,255,255,.07);
-}
-.grade3d-desc{color:var(--txt2);text-align:left}
+.grade3d-row:hover td{background:rgba(124,92,252,.1);transform:translateX(3px)}
+.grade3d-cur td{background:var(--row-bg)!important;box-shadow:0 0 0 1px var(--row-color),0 4px 16px var(--row-glow);animation:rowPulse 2.2s ease-in-out infinite}
+@keyframes rowPulse{0%,100%{box-shadow:0 0 0 1px var(--row-color),0 4px 16px var(--row-glow)}50%{box-shadow:0 0 0 2px var(--row-color),0 7px 22px var(--row-glow)}}
+.grade3d-icon{font-size:18px;text-align:center;width:34px}
+.grade3d-name{font-weight:700}
+.grade3d-range{color:var(--txt3);font-size:11px}
+.grade3d-desc{color:var(--txt2);text-align:left;font-size:11px}
 
-/* bench section */
-.bench-section{
-  background:linear-gradient(145deg,var(--bg2),var(--bg1));
-  border-radius:14px;padding:18px;
-  border:1px solid rgba(92,248,252,.15);
-  box-shadow:0 4px 20px rgba(0,0,0,.3);margin-bottom:16px;
-}
+/* bench */
+.bench-section{background:linear-gradient(145deg,var(--bg2),var(--bg1));border-radius:14px;padding:18px;border:1px solid rgba(92,248,252,.15);box-shadow:0 4px 20px rgba(0,0,0,.3);margin-bottom:16px}
 .bench-title{font-size:15px;font-weight:800;margin-bottom:14px;color:var(--acc3)}
 .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .pros-box,.cons-box{background:var(--bg3);border-radius:10px;padding:12px}
@@ -424,10 +346,7 @@ body{
 
 /* TOOLS */
 .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
-.tool-card{
-  background:var(--bg2);border:1px solid rgba(124,92,252,.2);
-  border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center;
-}
+.tool-card{background:var(--bg2);border:1px solid rgba(124,92,252,.2);border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center}
 .tool-card:hover{transform:translateY(-3px);border-color:var(--acc);box-shadow:0 6px 20px rgba(124,92,252,.28)}
 .tool-logo{width:32px;height:32px;border-radius:8px;margin:0 auto 8px;display:block}
 .tool-name{font-size:13px;font-weight:700;margin-bottom:4px}
@@ -444,27 +363,15 @@ body{
 .idea-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--txt2)}
 
 /* REVENUE */
-.rev-wrap{
-  background:linear-gradient(145deg,var(--bg2),var(--bg1));
-  border-radius:16px;padding:24px;
-  border:1px solid rgba(124,92,252,.18);
-  box-shadow:0 8px 32px rgba(0,0,0,.35);
-}
+.rev-wrap{background:linear-gradient(145deg,var(--bg2),var(--bg1));border-radius:16px;padding:24px;border:1px solid rgba(124,92,252,.18);box-shadow:0 8px 32px rgba(0,0,0,.35)}
 .rev-inputs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:24px}
 .rev-field{display:flex;flex-direction:column;gap:6px}
 .rev-field label{font-size:11px;color:var(--txt2);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-.rev-field input{
-  background:rgba(255,255,255,.04);border:1px solid rgba(124,92,252,.3);
-  border-radius:10px;padding:11px 14px;color:var(--txt);font-size:15px;font-weight:700;outline:none;
-  transition:border-color .2s,box-shadow .2s,background .2s;
-}
+.rev-field input{background:rgba(255,255,255,.04);border:1px solid rgba(124,92,252,.3);border-radius:10px;padding:11px 14px;color:var(--txt);font-size:15px;font-weight:700;outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
 .rev-field input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,252,.15);background:rgba(124,92,252,.06)}
 .rev-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(124,92,252,.3),transparent);margin-bottom:22px}
 .rev-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:14px}
-.rev-box{
-  background:var(--bg3);border-radius:14px;padding:18px 14px;text-align:center;
-  border:1px solid rgba(124,92,252,.15);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;
-}
+.rev-box{background:var(--bg3);border-radius:14px;padding:18px 14px;text-align:center;border:1px solid rgba(124,92,252,.15);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
 .rev-box:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,92,252,.22)}
 .rev-box::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,92,252,.07),transparent 60%);pointer-events:none}
 .rev-box-icon{font-size:22px;margin-bottom:6px}
@@ -523,12 +430,12 @@ body{
 
 <div id="layout">
   <nav id="sidebar">
-    <div class="nav-item active" data-sec="hot"     onclick="showSec(this,'hot')"><span class="nav-icon">🔥</span>인기영상</div>
-    <div class="nav-item" data-sec="channel"        onclick="showSec(this,'channel')"><span class="nav-icon">📊</span>채널분석</div>
-    <div class="nav-item" data-sec="tools"          onclick="showSec(this,'tools')"><span class="nav-icon">🛠</span>편집도구</div>
-    <div class="nav-item" data-sec="ai"             onclick="showSec(this,'ai')"><span class="nav-icon">🤖</span>AI 아이디어</div>
-    <div class="nav-item" data-sec="revenue"        onclick="showSec(this,'revenue')"><span class="nav-icon">💰</span>수익계산기</div>
-    <div class="nav-item" data-sec="shop"           onclick="showSec(this,'shop')"><span class="nav-icon">🛒</span>제휴쇼핑</div>
+    <div class="nav-item active" data-sec="hot"    onclick="showSec(this,'hot')"><span class="nav-icon">🔥</span>인기영상</div>
+    <div class="nav-item" data-sec="channel"       onclick="showSec(this,'channel')"><span class="nav-icon">📊</span>채널분석</div>
+    <div class="nav-item" data-sec="tools"         onclick="showSec(this,'tools')"><span class="nav-icon">🛠</span>편집도구</div>
+    <div class="nav-item" data-sec="ai"            onclick="showSec(this,'ai')"><span class="nav-icon">🤖</span>AI 아이디어</div>
+    <div class="nav-item" data-sec="revenue"       onclick="showSec(this,'revenue')"><span class="nav-icon">💰</span>수익계산기</div>
+    <div class="nav-item" data-sec="shop"          onclick="showSec(this,'shop')"><span class="nav-icon">🛒</span>제휴쇼핑</div>
     <div class="nav-ad">
       <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111" data-ad-format="auto"></ins>
     </div>
@@ -622,21 +529,28 @@ body{
   </main>
 </div>
 
-<!-- RIGHT COL -->
+<!-- RIGHT COLUMN -->
 <div id="rightCol">
-  <div class="rc-label">SPONSORED · AD</div>
-  <div class="cp-square">
-    <div class="cp-sq-icon">🛒</div>
-    <div class="cp-sq-title">유튜버 필수장비<br>최저가 모음</div>
-    <div class="cp-sq-sub">카메라 · 마이크 · 조명<br>촬영 장비 한번에!</div>
-    <a class="cp-sq-btn" href="https://link.coupang.com/a/youtube?partnerCode=AF8853448" target="_blank" rel="noopener sponsored">쿠팡에서 보기 →</a>
-    <div class="cp-sq-notice">쿠팡 파트너스 활동을 통해<br>수수료를 제공받습니다.</div>
+  <!-- 쿠팡 카드 — 정중앙 sticky -->
+  <div id="cpCardWrap">
+    <div class="cp-grad-border">
+      <div class="cp-inner">
+        <img class="cp-logo" src="https://www.google.com/s2/favicons?domain=coupang.com&sz=64" alt="쿠팡">
+        <div class="cp-title">🎬 유튜버 필수장비<br>최저가 모음</div>
+        <div class="cp-desc">카메라 · 마이크 · 조명<br>유튜브 촬영 인기 장비<br>쿠팡 최저가 확인!</div>
+        <a class="cp-btn" href="https://link.coupang.com/a/youtube?partnerCode=AF8853448" target="_blank" rel="noopener sponsored">쿠팡에서 보기 →</a>
+        <div class="cp-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다.</div>
+      </div>
+    </div>
   </div>
-  <div class="rc-ad-slot">
-    <ins class="adsbygoogle" style="display:block;width:100%;min-height:200px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333" data-ad-format="auto"></ins>
-  </div>
-  <div class="rc-ad-slot">
-    <ins class="adsbygoogle" style="display:block;width:100%;min-height:200px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666" data-ad-format="auto"></ins>
+  <!-- AdSense -->
+  <div class="rc-ads">
+    <div class="rc-ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:180px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333" data-ad-format="auto"></ins>
+    </div>
+    <div class="rc-ad-slot">
+      <ins class="adsbygoogle" style="display:block;width:100%;min-height:180px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666" data-ad-format="auto"></ins>
+    </div>
   </div>
 </div>
 
@@ -668,7 +582,7 @@ body{
 
 <script>
 /* ═══════ CONFIG ═══════ */
-const API_KEYS=['AIzaSyAM4hoxMB5XH84T59Ytv5l7DiC5RsJ0UcU','YOUR_API_KEY_2'];
+const API_KEYS=['YOUR_API_KEY_1','YOUR_API_KEY_2'];
 const PC='AF8853448';
 let keyIdx=0;
 async function apiFetch(url){
@@ -696,7 +610,7 @@ function showSec(navEl,id){
   if(id==='ai')genAI();
 }
 
-/* ═══════ CATEGORY MAP — 여행·교육 삭제 ═══════ */
+/* ═══════ CATEGORY MAP ═══════ */
 const CAT_MAP={
   '전체':'','음악':'10','게임':'20','엔터테인먼트':'24',
   '뉴스':'25','스포츠':'17','과학·기술':'28',
@@ -792,8 +706,16 @@ function renderKwGrid(){
   document.getElementById('kwGrid').innerHTML=f.length?f.map(vidCardHTML).join(''):'<div class="error-msg">결과 없음</div>';
   document.getElementById('kwMoreWrap').style.display=kwNextToken?'block':'none';
 }
-async function loadKwMore(){if(!kwNextToken)return;document.querySelector('#kwMoreWrap button').textContent='불러오는 중...';await fetchKw(kwQuery,kwNextToken);}
-function setKwType(el,tf){kwTypeFilt=tf;document.querySelectorAll('#kwTypeFilterRow .type-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderKwGrid();}
+async function loadKwMore(){
+  if(!kwNextToken)return;
+  document.querySelector('#kwMoreWrap button').textContent='불러오는 중...';
+  await fetchKw(kwQuery,kwNextToken);
+}
+function setKwType(el,tf){
+  kwTypeFilt=tf;
+  document.querySelectorAll('#kwTypeFilterRow .type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');renderKwGrid();
+}
 
 /* ═══════ VIDEO UTILS ═══════ */
 function isShorts(item){const s=parseDurSec(item.contentDetails?.duration||'');return s>0&&s<=60;}
@@ -835,121 +757,121 @@ function openVidModal(id,title){
 }
 function closeVidModal(){document.getElementById('vidModal').style.display='none';document.getElementById('vidFrame').src='';}
 
-/* ═══════ GRADE SYSTEM — 일반/희귀/레어 등급제 ═══════ */
+/* ═══════════════════════════════════════════
+   10 UNIQUE GRADES — 각각 고유한 이름 & 색상
+═══════════════════════════════════════════ */
 const GRADES=[
-  /* ── 일반 (Normal) ── */
   {
-    id:'n1',name:'일반 Ⅰ',rarity:'NORMAL',icon:'⚪',
-    min:0,max:12,
-    color:'#9e9e9e',glow:'rgba(158,158,158,.5)',glow2:'rgba(158,158,158,.2)',
-    orbBg:'linear-gradient(145deg,#2a2a2a,#3a3a3a)',
-    orbRing:'radial-gradient(circle,rgba(158,158,158,.3) 0%,transparent 70%)',
-    rowBg:'rgba(158,158,158,.1)',rowGlow:'rgba(158,158,158,.3)',
-    xpGrad:'linear-gradient(90deg,#9e9e9e,#bdbdbd)',
-    desc:'채널 시작 단계'
+    id:'g01',name:'견습 크리에이터',icon:'🌱',
+    min:0,max:10,
+    color:'#78909c',glow:'rgba(120,144,156,.6)',glow2:'rgba(120,144,156,.25)',
+    orbBg:'linear-gradient(145deg,#1c2a30,#263540)',
+    orbRing:'radial-gradient(circle,rgba(120,144,156,.35) 0%,transparent 70%)',
+    rowBg:'rgba(120,144,156,.12)',rowGlow:'rgba(120,144,156,.32)',
+    xpGrad:'linear-gradient(90deg,#78909c,#b0bec5)',
+    rarity:'NORMAL',desc:'채널 시작 단계'
   },
   {
-    id:'n2',name:'일반 Ⅱ',rarity:'NORMAL',icon:'⚪',
-    min:12,max:24,
-    color:'#b0b0b0',glow:'rgba(176,176,176,.55)',glow2:'rgba(176,176,176,.22)',
-    orbBg:'linear-gradient(145deg,#2e2e2e,#3e3e3e)',
-    orbRing:'radial-gradient(circle,rgba(176,176,176,.3) 0%,transparent 70%)',
-    rowBg:'rgba(176,176,176,.12)',rowGlow:'rgba(176,176,176,.3)',
-    xpGrad:'linear-gradient(90deg,#b0b0b0,#cecece)',
-    desc:'기반 구축 중'
+    id:'g02',name:'새싹 유튜버',icon:'🌿',
+    min:10,max:22,
+    color:'#66bb6a',glow:'rgba(102,187,106,.65)',glow2:'rgba(102,187,106,.28)',
+    orbBg:'linear-gradient(145deg,#0d2614,#1a4020)',
+    orbRing:'radial-gradient(circle,rgba(102,187,106,.4) 0%,transparent 70%)',
+    rowBg:'rgba(102,187,106,.14)',rowGlow:'rgba(102,187,106,.36)',
+    xpGrad:'linear-gradient(90deg,#66bb6a,#a5d6a7)',
+    rarity:'NORMAL',desc:'기초 콘텐츠 구축 중'
   },
   {
-    id:'n3',name:'일반 Ⅲ',rarity:'NORMAL',icon:'⚪',
-    min:24,max:36,
-    color:'#c8c8c8',glow:'rgba(200,200,200,.6)',glow2:'rgba(200,200,200,.25)',
-    orbBg:'linear-gradient(145deg,#323232,#424242)',
-    orbRing:'radial-gradient(circle,rgba(200,200,200,.32) 0%,transparent 70%)',
-    rowBg:'rgba(200,200,200,.13)',rowGlow:'rgba(200,200,200,.32)',
-    xpGrad:'linear-gradient(90deg,#c8c8c8,#e0e0e0)',
-    desc:'꾸준한 시청자 확보'
-  },
-  /* ── 희귀 (Rare) ── */
-  {
-    id:'r1',name:'희귀 Ⅰ',rarity:'RARE',icon:'🔵',
-    min:36,max:50,
-    color:'#4d96ff',glow:'rgba(77,150,255,.6)',glow2:'rgba(77,150,255,.28)',
-    orbBg:'linear-gradient(145deg,#0d1f3c,#1a3a6e)',
-    orbRing:'radial-gradient(circle,rgba(77,150,255,.4) 0%,transparent 70%)',
-    rowBg:'rgba(77,150,255,.14)',rowGlow:'rgba(77,150,255,.35)',
-    xpGrad:'linear-gradient(90deg,#4d96ff,#7bb8ff)',
-    desc:'안정적 운영 채널'
+    id:'g03',name:'성장하는 채널',icon:'📈',
+    min:22,max:35,
+    color:'#29b6f6',glow:'rgba(41,182,246,.68)',glow2:'rgba(41,182,246,.3)',
+    orbBg:'linear-gradient(145deg,#062030,#0d3a50)',
+    orbRing:'radial-gradient(circle,rgba(41,182,246,.42) 0%,transparent 70%)',
+    rowBg:'rgba(41,182,246,.14)',rowGlow:'rgba(41,182,246,.38)',
+    xpGrad:'linear-gradient(90deg,#29b6f6,#81d4fa)',
+    rarity:'UNCOMMON',desc:'꾸준한 시청자 확보'
   },
   {
-    id:'r2',name:'희귀 Ⅱ',rarity:'RARE',icon:'🔵',
-    min:50,max:62,
-    color:'#5ba8ff',glow:'rgba(91,168,255,.65)',glow2:'rgba(91,168,255,.3)',
-    orbBg:'linear-gradient(145deg,#102240,#1d4a80)',
-    orbRing:'radial-gradient(circle,rgba(91,168,255,.45) 0%,transparent 70%)',
-    rowBg:'rgba(91,168,255,.16)',rowGlow:'rgba(91,168,255,.38)',
-    xpGrad:'linear-gradient(90deg,#5ba8ff,#88c4ff)',
-    desc:'중간 규모 성장'
+    id:'g04',name:'실버 크리에이터',icon:'🥈',
+    min:35,max:48,
+    color:'#b0bec5',glow:'rgba(176,190,197,.7)',glow2:'rgba(176,190,197,.32)',
+    orbBg:'linear-gradient(145deg,#1e2830,#2e3c48)',
+    orbRing:'radial-gradient(circle,rgba(176,190,197,.46) 0%,transparent 70%)',
+    rowBg:'rgba(176,190,197,.15)',rowGlow:'rgba(176,190,197,.4)',
+    xpGrad:'linear-gradient(90deg,#b0bec5,#eceff1)',
+    rarity:'UNCOMMON',desc:'안정적 운영 채널'
   },
   {
-    id:'r3',name:'희귀 Ⅲ',rarity:'RARE',icon:'🔵',
-    min:62,max:72,
-    color:'#70baff',glow:'rgba(112,186,255,.7)',glow2:'rgba(112,186,255,.32)',
-    orbBg:'linear-gradient(145deg,#142848,#215890)',
-    orbRing:'radial-gradient(circle,rgba(112,186,255,.5) 0%,transparent 70%)',
-    rowBg:'rgba(112,186,255,.18)',rowGlow:'rgba(112,186,255,.42)',
-    xpGrad:'linear-gradient(90deg,#70baff,#99d0ff)',
-    desc:'상위 20% 채널'
+    id:'g05',name:'골드 인플루언서',icon:'🏆',
+    min:48,max:60,
+    color:'#ffd700',glow:'rgba(255,215,0,.75)',glow2:'rgba(255,215,0,.35)',
+    orbBg:'linear-gradient(145deg,#2e1e00,#5a3c00)',
+    orbRing:'radial-gradient(circle,rgba(255,215,0,.5) 0%,transparent 70%)',
+    rowBg:'rgba(255,215,0,.15)',rowGlow:'rgba(255,215,0,.44)',
+    xpGrad:'linear-gradient(90deg,#ffd700,#fff176)',
+    rarity:'RARE',desc:'인기 유튜버 진입'
   },
-  /* ── 레어 (Epic) ── */
   {
-    id:'e1',name:'레어 Ⅰ',rarity:'EPIC',icon:'🟣',
+    id:'g06',name:'다이아몬드 채널',icon:'💎',
+    min:60,max:72,
+    color:'#40c4ff',glow:'rgba(64,196,255,.78)',glow2:'rgba(64,196,255,.38)',
+    orbBg:'linear-gradient(145deg,#001830,#003060)',
+    orbRing:'radial-gradient(circle,rgba(64,196,255,.54) 0%,transparent 70%)',
+    rowBg:'rgba(64,196,255,.16)',rowGlow:'rgba(64,196,255,.46)',
+    xpGrad:'linear-gradient(90deg,#40c4ff,#80d8ff)',
+    rarity:'RARE',desc:'탄탄한 팬덤 보유'
+  },
+  {
+    id:'g07',name:'퍼플 마스터',icon:'🔮',
     min:72,max:82,
-    color:'#c77dff',glow:'rgba(199,125,255,.7)',glow2:'rgba(199,125,255,.35)',
-    orbBg:'linear-gradient(145deg,#1f0d40,#3d1a7a)',
-    orbRing:'radial-gradient(circle,rgba(199,125,255,.5) 0%,transparent 70%)',
-    rowBg:'rgba(199,125,255,.16)',rowGlow:'rgba(199,125,255,.42)',
-    xpGrad:'linear-gradient(90deg,#c77dff,#e0a8ff)',
-    desc:'인기 유튜버 진입'
+    color:'#ce93d8',glow:'rgba(206,147,216,.8)',glow2:'rgba(206,147,216,.4)',
+    orbBg:'linear-gradient(145deg,#1a0830,#380060)',
+    orbRing:'radial-gradient(circle,rgba(206,147,216,.56) 0%,transparent 70%)',
+    rowBg:'rgba(206,147,216,.17)',rowGlow:'rgba(206,147,216,.48)',
+    xpGrad:'linear-gradient(90deg,#ce93d8,#f3e5f5)',
+    rarity:'EPIC',desc:'상위 10% 채널'
   },
   {
-    id:'e2',name:'레어 Ⅱ',rarity:'EPIC',icon:'🟣',
+    id:'g08',name:'레드 챔피언',icon:'🔴',
     min:82,max:90,
-    color:'#d68fff',glow:'rgba(214,143,255,.75)',glow2:'rgba(214,143,255,.38)',
-    orbBg:'linear-gradient(145deg,#26104e,#4a2090)',
-    orbRing:'radial-gradient(circle,rgba(214,143,255,.55) 0%,transparent 70%)',
-    rowBg:'rgba(214,143,255,.18)',rowGlow:'rgba(214,143,255,.46)',
-    xpGrad:'linear-gradient(90deg,#d68fff,#eabcff)',
-    desc:'탄탄한 팬덤 보유'
+    color:'#ff5252',glow:'rgba(255,82,82,.82)',glow2:'rgba(255,82,82,.42)',
+    orbBg:'linear-gradient(145deg,#2a0000,#560000)',
+    orbRing:'radial-gradient(circle,rgba(255,82,82,.58) 0%,transparent 70%)',
+    rowBg:'rgba(255,82,82,.16)',rowGlow:'rgba(255,82,82,.5)',
+    xpGrad:'linear-gradient(90deg,#ff5252,#ff8a80)',
+    rarity:'EPIC',desc:'상위 5% 채널'
   },
   {
-    id:'e3',name:'레어 Ⅲ',rarity:'EPIC',icon:'🟣',
+    id:'g09',name:'플래티넘 엘리트',icon:'⚡',
     min:90,max:96,
-    color:'#e8a8ff',glow:'rgba(232,168,255,.8)',glow2:'rgba(232,168,255,.42)',
-    orbBg:'linear-gradient(145deg,#2e1460,#5828a8)',
-    orbRing:'radial-gradient(circle,rgba(232,168,255,.6) 0%,transparent 70%)',
-    rowBg:'rgba(232,168,255,.2)',rowGlow:'rgba(232,168,255,.52)',
-    xpGrad:'linear-gradient(90deg,#e8a8ff,#f5d0ff)',
-    desc:'상위 5% 채널'
+    color:'#00e5ff',glow:'rgba(0,229,255,.85)',glow2:'rgba(0,229,255,.45)',
+    orbBg:'linear-gradient(145deg,#001a20,#003040)',
+    orbRing:'radial-gradient(circle,rgba(0,229,255,.62) 0%,transparent 70%)',
+    rowBg:'rgba(0,229,255,.16)',rowGlow:'rgba(0,229,255,.52)',
+    xpGrad:'linear-gradient(90deg,#00e5ff,#84ffff)',
+    rarity:'LEGENDARY',desc:'국내 탑 크리에이터'
   },
-  /* ── 레전드 (Legendary) ── */
   {
-    id:'l1',name:'레전드',rarity:'LEGENDARY',icon:'👑',
+    id:'g10',name:'갓 레전드',icon:'👑',
     min:96,max:101,
-    color:'#ffe066',glow:'rgba(255,224,102,.9)',glow2:'rgba(255,165,0,.5)',
-    orbBg:'linear-gradient(145deg,#3a2000,#7a4a00,#3a2000)',
-    orbRing:'radial-gradient(circle,rgba(255,200,50,.7) 0%,transparent 70%)',
-    rowBg:'rgba(255,224,102,.2)',rowGlow:'rgba(255,165,0,.55)',
-    xpGrad:'linear-gradient(90deg,#ffe066,#ffb300,#ffe066)',
-    desc:'레전드 채널'
+    color:'#ff9100',glow:'rgba(255,145,0,.9)',glow2:'rgba(255,200,0,.55)',
+    orbBg:'linear-gradient(145deg,#2a1400,#5c2e00,#2a1400)',
+    orbRing:'radial-gradient(circle,rgba(255,165,0,.7) 0%,transparent 70%)',
+    rowBg:'rgba(255,145,0,.18)',rowGlow:'rgba(255,145,0,.56)',
+    xpGrad:'linear-gradient(90deg,#ff9100,#ffea00,#ff9100)',
+    rarity:'LEGENDARY',desc:'레전드 채널'
   },
 ];
-function getGrade(score){return GRADES.find(g=>score>=g.min&&score<g.max)||GRADES[0];}
 
-const RARITY_STYLE={
-  NORMAL: {label:'일반',color:'#b0b0b0',bg:'rgba(176,176,176,.12)'},
-  RARE:   {label:'희귀',color:'#4d96ff',bg:'rgba(77,150,255,.15)'},
-  EPIC:   {label:'레어',color:'#c77dff',bg:'rgba(199,125,255,.15)'},
-  LEGENDARY:{label:'레전드',color:'#ffe066',bg:'rgba(255,224,102,.2)'},
+const RARITY_LABEL={
+  NORMAL:  {label:'일반',   color:'#9e9e9e',bg:'rgba(158,158,158,.1)'},
+  UNCOMMON:{label:'고급',   color:'#66bb6a',bg:'rgba(102,187,106,.12)'},
+  RARE:    {label:'희귀',   color:'#ffd700',bg:'rgba(255,215,0,.12)'},
+  EPIC:    {label:'레어',   color:'#ce93d8',bg:'rgba(206,147,216,.13)'},
+  LEGENDARY:{label:'레전드',color:'#ff9100',bg:'rgba(255,145,0,.14)'},
 };
+
+function getGrade(score){return GRADES.find(g=>score>=g.min&&score<g.max)||GRADES[0];}
 
 const STAT_COLORS=[
   {val:'linear-gradient(135deg,#ffe066,#ffb300)',border:'rgba(255,224,102,.3)'},
@@ -1004,7 +926,6 @@ function renderChannel(ch,vids,cid){
   const views=parseInt(st.viewCount||0);
   const vidCnt=parseInt(st.videoCount||0);
   const avgV=vidCnt>0?Math.round(views/vidCnt):0;
-
   const subSc=Math.min(100,Math.log10(subs+1)*18);
   const vwSc=Math.min(100,Math.log10(views+1)*14);
   const engSc=calcEngagement(vids);
@@ -1012,9 +933,10 @@ function renderChannel(ch,vids,cid){
   const effSc=Math.min(100,avgV>0?Math.log10(avgV+1)*22:0);
   const total=Math.round(subSc*0.25+vwSc*0.2+engSc*0.25+conSc*0.15+effSc*0.15);
   const grade=getGrade(total);
-  const xpPct=Math.round((total-grade.min)/(grade.max-grade.min)*100);
-  const nextG=GRADES[GRADES.indexOf(grade)+1];
-  const rs=RARITY_STYLE[grade.rarity];
+  const xpPct=Math.round((total-grade.min)/Math.max(grade.max-grade.min,1)*100);
+  const gIdx=GRADES.indexOf(grade);
+  const nextG=GRADES[gIdx+1];
+  const rl=RARITY_LABEL[grade.rarity];
 
   const desc=sn.description||'';
   const dLines=desc.split('\n').filter(l=>l.trim()).length;
@@ -1033,10 +955,8 @@ function renderChannel(ch,vids,cid){
   if(subs>=100000)pros.push('구독자 10만+ 인플루언서');
   else if(subs>=1000)pros.push('구독자 1천명+ 활성 채널');
   else cons.push('구독자 1천명 미만 초기 단계');
-  if(engSc>=70)pros.push('높은 시청자 참여율');
-  else if(engSc<35)cons.push('시청자 참여율 개선 필요');
-  if(conSc>=65)pros.push('꾸준한 업로드 일정');
-  else if(conSc<30)cons.push('업로드 주기 불규칙');
+  if(engSc>=70)pros.push('높은 시청자 참여율');else if(engSc<35)cons.push('시청자 참여율 개선 필요');
+  if(conSc>=65)pros.push('꾸준한 업로드 일정');else if(conSc<30)cons.push('업로드 주기 불규칙');
   if(dLen>500)pros.push('채널 설명 상세 작성');else cons.push('채널 설명 부족');
   if(dTags>0)pros.push('해시태그 적극 활용');else cons.push('해시태그 활용 부족');
   if(dLinks>0)pros.push('외부 링크 연결 완료');else cons.push('SNS/외부 링크 미등록');
@@ -1050,7 +970,6 @@ function renderChannel(ch,vids,cid){
     if(/브이로그|vlog|먹방|리뷰|이야기/i.test(t))s+=5;
     return{title:t,score:Math.min(100,s)};
   });
-
   const actions=[];
   if(cons.find(c=>c.includes('설명')))actions.push('채널 설명에 주요 키워드 3개 이상 추가');
   if(cons.find(c=>c.includes('해시태그')))actions.push('영상 설명 하단에 #키워드 5-10개 추가');
@@ -1062,39 +981,33 @@ function renderChannel(ch,vids,cid){
 
   const thumb=sn.thumbnails?.high?.url||sn.thumbnails?.medium?.url||'';
 
-  /* particle positions */
-  const particles=Array.from({length:6},(_,i)=>{
-    const angle=(i/6)*360;
-    const r=68+Math.random()*14;
-    const px=Math.round(r*Math.cos(angle*Math.PI/180));
-    const py=Math.round(r*Math.sin(angle*Math.PI/180));
-    const size=3+Math.round(Math.random()*3);
-    const dur=(2+Math.random()*1.5).toFixed(1);
-    const del=(Math.random()*1.5).toFixed(1);
-    return `<div class="orb-p" style="width:${size}px;height:${size}px;top:calc(50% + ${py}px);left:calc(50% + ${px}px);--px:${Math.round((Math.random()-.5)*16)}px;--py:${Math.round((Math.random()-.5)*16)}px;--pd:${dur}s;--pd2:${del}s;"></div>`;
+  /* orb particles */
+  const ptcls=Array.from({length:7},(_,i)=>{
+    const angle=(i/7)*360;
+    const r=64+Math.round(Math.random()*16);
+    const px2=Math.round(r*Math.cos(angle*Math.PI/180));
+    const py2=Math.round(r*Math.sin(angle*Math.PI/180));
+    const sz=3+Math.round(Math.random()*3);
+    const dur=(2+Math.random()*1.6).toFixed(1);
+    const del=(Math.random()*1.8).toFixed(1);
+    return `<div class="orb-p" style="width:${sz}px;height:${sz}px;top:calc(50% + ${py2}px);left:calc(50% + ${px2}px);--px:${Math.round((Math.random()-.5)*18)}px;--py:${Math.round((Math.random()-.5)*18)}px;--pd:${dur}s;--pd2:${del}s;--orb-color:${grade.color};--orb-glow:${grade.glow}"></div>`;
   }).join('');
 
   document.getElementById('chResult').innerHTML=`
   <!-- 채널 헤더 -->
   <div class="ch-card">
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap">
-      ${thumb?`<div style="position:relative;flex-shrink:0">
-        <img src="${thumb}" style="width:72px;height:72px;border-radius:50%;display:block;
-          border:3px solid ${grade.color};box-shadow:0 0 0 4px ${grade.rowBg},0 0 20px ${grade.glow}" alt="">
-      </div>`:''}
+      ${thumb?`<img src="${thumb}" style="width:72px;height:72px;border-radius:50%;display:block;border:3px solid ${grade.color};box-shadow:0 0 0 4px ${grade.rowBg},0 0 22px ${grade.glow}" alt="">`:''}
       <div style="flex:1;min-width:0">
         <div style="font-size:20px;font-weight:900;background:linear-gradient(135deg,#ffe066,#ff6fd8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${sn.title||''}</div>
         <div style="font-size:12px;color:var(--txt2);margin-top:2px">${sn.customUrl||cid}</div>
       </div>
-      <!-- 알고리즘 점수 -->
-      <div style="text-align:center;flex-shrink:0;background:var(--bg3);border-radius:12px;padding:12px 18px;border:1px solid rgba(124,92,252,.2)">
+      <div style="text-align:center;flex-shrink:0;background:var(--bg3);border-radius:12px;padding:12px 18px;border:1px solid ${grade.color}44">
         <div style="font-size:11px;color:var(--txt2);margin-bottom:2px">알고리즘 점수</div>
-        <div style="font-size:40px;font-weight:900;line-height:1;background:linear-gradient(135deg,${grade.color},${grade.glow});-webkit-background-clip:text;-webkit-text-fill-color:transparent">${total}</div>
+        <div style="font-size:42px;font-weight:900;line-height:1;background:linear-gradient(135deg,${grade.color},${grade.glow});-webkit-background-clip:text;-webkit-text-fill-color:transparent">${total}</div>
         <div style="font-size:10px;color:var(--txt3)">/ 100</div>
       </div>
     </div>
-
-    <!-- 4 stat boxes -->
     <div class="stat-grid">
       ${[{v:fmtNum(subs),l:'구독자',i:0},{v:fmtNum(views),l:'총 조회수',i:1},{v:fmtNum(vidCnt),l:'영상 수',i:2},{v:fmtNum(avgV),l:'평균 조회',i:3}].map(si=>`
       <div class="stat-box" style="border-color:${STAT_COLORS[si.i].border}">
@@ -1102,45 +1015,38 @@ function renderChannel(ch,vids,cid){
         <div class="stat-lbl">${si.l}</div>
       </div>`).join('')}
     </div>
-
-    <!-- metrics -->
     <div class="sub-hdr">📈 세부 지표</div>
     ${[['구독자 파워',subSc],['조회수 파워',vwSc],['참여 지수',engSc],['꾸준함',conSc],['영상 효율',effSc]].map(([l,s],i)=>mkBar(l,s,METRIC_COLORS[i])).join('')}
   </div>
 
   <!-- 3D GRADE CARD -->
-  <div class="ch-card" style="border-color:${grade.color}33;box-shadow:0 8px 32px ${grade.glow2}">
+  <div class="ch-card" style="border-color:${grade.color}44;box-shadow:0 8px 32px ${grade.glow2}">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
-      <!-- LEFT: 3D orb + xp -->
+
+      <!-- LEFT: 3D orb + XP (한 컬럼에 함께) -->
       <div>
         <div class="grade-3d-wrap">
-          <!-- 3D orb -->
           <div class="grade-orb" style="--orb-color:${grade.color};--orb-glow:${grade.glow};--orb-glow2:${grade.glow2};--orb-bg:${grade.orbBg};--orb-ring:${grade.orbRing}">
-            <div class="orb-particles">${particles}</div>
+            <div class="orb-particles">${ptcls}</div>
             <div class="grade-orb-inner">
               <div class="orb-icon">${grade.icon}</div>
               <div class="orb-score">${total}</div>
               <div class="orb-label">pts</div>
             </div>
           </div>
-          <!-- nameplate -->
-          <div class="grade-nameplate" style="--orb-color:${grade.color};--orb-glow2:${grade.glow2};--orb-bg:${grade.rowBg}">
-            ${grade.name}
-          </div>
-          <div class="grade-rarity" style="--orb-color:${grade.color}">
-            ✦ ${rs.label} ✦
-          </div>
-          <!-- XP bar -->
+          <div class="grade-nameplate" style="--orb-color:${grade.color};--orb-glow2:${grade.glow2};--orb-bg:${grade.rowBg}">${grade.name}</div>
+          <div class="grade-rarity" style="--orb-color:${grade.color}">✦ ${rl.label} ✦</div>
+          <!-- XP bar — orb 바로 아래 -->
           <div class="xp-section">
             <div class="xp-label-row">
-              <span>${grade.name}</span>
+              <span style="color:${grade.color};font-weight:700">${grade.name}</span>
               <span style="color:${grade.color};font-weight:700">${xpPct}%</span>
-              <span>${nextG?nextG.name:'MAX'}</span>
+              <span>${nextG?nextG.name:'MAX ✦'}</span>
             </div>
             <div class="xp-track">
               <div class="xp-fill" style="width:${xpPct}%;background:${grade.xpGrad}"></div>
             </div>
-            <div class="xp-next">${nextG?`다음 등급까지 <span style="color:${grade.color};font-weight:700">${grade.max-total}</span>점 남음`:'<span style="color:#ffe066;font-weight:700">최고 등급 달성!</span>'}</div>
+            <div class="xp-next">${nextG?`다음 <span style="color:${grade.color};font-weight:700">${grade.max-total}</span>점 남음`:'<span style="color:#ff9100;font-weight:700">👑 최고 등급!</span>'}</div>
           </div>
         </div>
       </div>
@@ -1148,19 +1054,21 @@ function renderChannel(ch,vids,cid){
       <!-- RIGHT: grade table -->
       <div>
         <div class="sub-hdr">📋 등급표</div>
+        <div style="overflow-y:auto;max-height:480px">
         <table class="grade3d-table">
           ${GRADES.map(g=>{
             const cur=g.id===grade.id;
-            const rs2=RARITY_STYLE[g.rarity];
+            const rl2=RARITY_LABEL[g.rarity];
             return `<tr class="grade3d-row${cur?' grade3d-cur':''}"
               style="${cur?`--row-color:${g.color};--row-bg:${g.rowBg};--row-glow:${g.rowGlow};`:''}">
               <td class="grade3d-icon">${g.icon}</td>
-              <td class="grade3d-name" style="--row-color:${cur?g.color:'var(--txt2)'};color:${cur?g.color:'var(--txt2)'}">${g.name}</td>
-              <td><span class="grade3d-rarity" style="color:${rs2.color};background:${rs2.bg}">${rs2.label}</span></td>
-              <td class="grade3d-desc" style="font-size:11px">${g.desc}</td>
+              <td class="grade3d-name" style="color:${cur?g.color:'var(--txt2)'};white-space:nowrap">${cur?'▶ ':''}${g.name}</td>
+              <td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:7px;color:${rl2.color};background:${rl2.bg}">${rl2.label}</span></td>
+              <td class="grade3d-desc">${g.min}–${g.max}</td>
             </tr>`;
           }).join('')}
         </table>
+        </div>
       </div>
     </div>
   </div>
