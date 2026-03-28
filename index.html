@@ -1,1 +1,622 @@
-undefined
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YTAnalytics - Level Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070f;
+  --card-bg: #12121e;
+  --border: #22223a;
+  --text: #e8e8f0;
+  --sub: #7777aa;
+  --accent: #6c63ff;
+  --r: 20px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #6c63ff, #ff6cd8, #63e2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.subtitle {
+  text-align: center;
+  color: var(--sub);
+  margin-bottom: 40px;
+  font-size: 0.9rem;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 70px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ── 카드 씬 ── */
+.card-scene {
+  position: relative;
+  width: 210px;
+  height: 300px;
+  margin: 0 auto;
+  perspective: 900px;
+}
+
+/* ── LV1, LV2: 안개 효과 없음 ── */
+
+/* ── LV3~5: 6,7,8에 적용되던 절반 글로우 적용 ── */
+.card-scene[data-lv="3"]::before,
+.card-scene[data-lv="4"]::before,
+.card-scene[data-lv="5"]::before {
+  content: '';
+  position: absolute;
+  inset: -35px;
+  border-radius: var(--r);
+  background: radial-gradient(ellipse at center, var(--glow-color) 0%, transparent 70%);
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(20px);
+  animation: fogPulse 3s ease-in-out infinite;
+}
+
+/* ── LV6~10: 9레벨에 적용되던 강한 글로우 적용 ── */
+.card-scene[data-lv="6"]::before,
+.card-scene[data-lv="7"]::before,
+.card-scene[data-lv="8"]::before,
+.card-scene[data-lv="9"]::before,
+.card-scene[data-lv="10"]::before {
+  content: '';
+  position: absolute;
+  inset: -55px;
+  border-radius: var(--r);
+  background: radial-gradient(ellipse at center, var(--glow-color) 0%, transparent 65%);
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(28px);
+  animation: fogPulseStrong 3s ease-in-out infinite;
+}
+
+/* LV10 추가 내부 안개 레이어 */
+.card-scene[data-lv="10"]::after {
+  content: '';
+  position: absolute;
+  inset: -30px;
+  border-radius: var(--r);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(18px);
+  opacity: 0.55;
+  animation: fogPulse 2.5s ease-in-out infinite;
+  background: radial-gradient(ellipse at center, var(--glow-color) 0%, transparent 70%);
+}
+
+@keyframes fogPulse {
+  0%,100% { opacity: 0.42; transform: scale(1); }
+  50%      { opacity: 0.72; transform: scale(1.06); }
+}
+@keyframes fogPulseStrong {
+  0%,100% { opacity: 0.58; transform: scale(1); }
+  50%      { opacity: 0.88; transform: scale(1.08); }
+}
+
+/* LV10 안개는 JS가 색상 직접 제어 */
+.card-scene[data-lv="10"]::before,
+.card-scene[data-lv="10"]::after {
+  display: none; /* JS용 div로 대체 */
+}
+.lv10-fog-ring {
+  position: absolute;
+  inset: -55px;
+  border-radius: var(--r);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(32px);
+  opacity: 0.72;
+  animation: fogPulseStrong 3s ease-in-out infinite;
+}
+.lv10-fog-inner {
+  position: absolute;
+  inset: -30px;
+  border-radius: var(--r);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(18px);
+  opacity: 0.55;
+  animation: fogPulse 2.5s ease-in-out infinite;
+}
+
+/* ── 틸트 래퍼 ── */
+.card-tilt {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease;
+  z-index: 1;
+}
+
+/* ── 얇은 테두리 프레임 ── */
+.card-frame {
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--r) + 3px);
+  z-index: 1;
+  pointer-events: none;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+              var(--frame-bg) border-box;
+}
+
+/* ── 빔 컨테이너 ── */
+.beam-container {
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--r) + 3px);
+  overflow: hidden;
+  z-index: 2;
+  pointer-events: none;
+}
+.beam-ring {
+  position: absolute;
+  width: 400%;
+  height: 400%;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) rotate(0deg);
+  border-radius: 40%;
+  animation: beamRingSpin var(--beam-speed,3s) linear infinite;
+  opacity: 0.9;
+}
+.beam-ring.b1   { background: conic-gradient(transparent 75%, var(--cb) 100%); }
+.beam-ring.b2-1 { background: conic-gradient(transparent 0%,transparent 37%,var(--cb) 50%,transparent 51%,transparent 87%,var(--cb) 100%); }
+.beam-ring.b2-2 { background: conic-gradient(transparent 0%,transparent 37%,var(--cb) 50%,transparent 51%,transparent 87%,var(--cb) 100%);
+  animation-delay: calc(var(--beam-speed,3s) / -2); }
+.beam-ring.b3-1 { background: conic-gradient(transparent 0%,transparent 30%,var(--cb) 33%,transparent 34%,transparent 63%,var(--cb) 66%,transparent 67%,transparent 97%,var(--cb) 100%); }
+.beam-ring.b3-2 { background: conic-gradient(transparent 0%,transparent 30%,var(--cb) 33%,transparent 34%,transparent 63%,var(--cb) 66%,transparent 67%,transparent 97%,var(--cb) 100%);
+  animation-delay: calc(var(--beam-speed,3s) / -3); }
+.beam-ring.b3-3 { background: conic-gradient(transparent 0%,transparent 30%,var(--cb) 33%,transparent 34%,transparent 63%,var(--cb) 66%,transparent 67%,transparent 97%,var(--cb) 100%);
+  animation-delay: calc(var(--beam-speed,3s) * -2 / 3); }
+.beam-ring.rb {
+  opacity: 0.95;
+  filter: brightness(1.9) saturate(1.6);
+}
+@keyframes beamRingSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* ── 카드 바디 ── */
+.card-body {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  overflow: hidden;
+  z-index: 3;
+  background: var(--card-bg);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  transition: box-shadow 0.3s;
+}
+
+/* LV3~5 바디 글로우 */
+.card-scene[data-lv="3"]  .card-body { box-shadow: 0 0 18px 4px rgba(255,200,0,0.2),   0 8px 32px rgba(0,0,0,0.6); }
+.card-scene[data-lv="4"]  .card-body { box-shadow: 0 0 20px 5px rgba(255,100,50,0.22),  0 8px 32px rgba(0,0,0,0.6); }
+.card-scene[data-lv="5"]  .card-body { box-shadow: 0 0 22px 6px rgba(100,200,100,0.25), 0 8px 32px rgba(0,0,0,0.6); }
+
+/* LV6~9 강한 바디 글로우 */
+.card-scene[data-lv="6"]  .card-body { box-shadow: 0 0 40px 12px rgba(200,0,255,0.4),   0 8px 32px rgba(0,0,0,0.6); }
+.card-scene[data-lv="7"]  .card-body { box-shadow: 0 0 50px 15px rgba(255,0,180,0.45),  0 8px 32px rgba(0,0,0,0.6); }
+.card-scene[data-lv="8"]  .card-body { box-shadow: 0 0 55px 18px rgba(255,100,0,0.48),  0 8px 32px rgba(0,0,0,0.6); }
+.card-scene[data-lv="9"]  .card-body { box-shadow: 0 0 65px 22px rgba(255,220,0,0.52),  0 8px 32px rgba(0,0,0,0.6); }
+
+/* ── 카드 페이스 ── */
+.card-face {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.07) 0%, transparent 60%),
+    linear-gradient(160deg, rgba(255,255,255,0.04) 0%, transparent 50%),
+    var(--card-bg);
+  border-radius: var(--r);
+}
+
+/* ── 광택 ── */
+.card-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 50%),
+    linear-gradient(315deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ── 보케 ── */
+.card-bokeh { position:absolute;inset:0;border-radius:var(--r);overflow:hidden;pointer-events:none;z-index:4; }
+.bokeh-dot {
+  position:absolute;border-radius:50%;
+  animation: bokehFloat var(--bd,4s) ease-in-out infinite alternate;
+  opacity:var(--bo,0.4);
+  filter:blur(var(--bb,6px));
+  background:radial-gradient(circle,var(--cb) 0%,transparent 70%);
+  width:var(--bs,40px);height:var(--bs,40px);
+  left:var(--bx,50%);top:var(--by,50%);
+}
+@keyframes bokehFloat {
+  from{transform:translateY(0) scale(1);}
+  to  {transform:translateY(-12px) scale(1.1);}
+}
+
+/* ── 스파클 ── */
+.card-sparkles{position:absolute;inset:0;border-radius:var(--r);overflow:hidden;pointer-events:none;z-index:5;}
+.sparkle{
+  position:absolute;font-size:var(--ss,12px);
+  left:var(--sx,50%);top:var(--sy,50%);
+  opacity:0;color:var(--cb);
+  animation:sparklePop var(--sd,2s) ease-in-out infinite;
+  animation-delay:var(--sdelay,0s);
+  text-shadow:0 0 6px var(--cb);
+}
+@keyframes sparklePop{
+  0%,100%{opacity:0;transform:scale(0.5);}
+  50%    {opacity:1;transform:scale(1.2);}
+}
+
+/* ── 헤더 ── */
+.card-header{
+  position:relative;z-index:6;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 12px 6px;
+}
+.card-stars{display:flex;gap:2px;}
+.star{font-size:10px;opacity:0.9;color:var(--cb);filter:drop-shadow(0 0 3px var(--cb));}
+.card-badge{
+  font-size:9px;font-weight:900;
+  padding:2px 7px;border-radius:20px;
+  background:linear-gradient(135deg,var(--ca),var(--cb));
+  color:#fff;letter-spacing:1px;
+  box-shadow:0 0 8px var(--cb);
+}
+
+/* ── 아이콘 ── */
+.card-icon-area{
+  position:relative;z-index:6;
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 0 4px;
+}
+.card-icon{
+  font-size:62px;line-height:1;
+  filter:drop-shadow(0 0 12px var(--cb)) drop-shadow(0 0 4px var(--ca));
+  animation:iconFloat 3s ease-in-out infinite;
+}
+@keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.card-name{
+  font-size:13px;font-weight:900;margin-top:6px;
+  color:var(--cb);
+  text-shadow:0 0 10px var(--cb),0 0 20px var(--ca);
+  letter-spacing:1px;
+}
+
+/* ── 밴드 ── */
+.card-top-band{
+  position:absolute;top:0;left:0;right:0;height:4px;
+  border-radius:var(--r) var(--r) 0 0;
+  background:linear-gradient(90deg,var(--ca),var(--cb),var(--cc),var(--cb),var(--ca));
+  opacity:var(--band-op,0.8);z-index:7;
+}
+.card-bot-band{
+  position:absolute;bottom:0;left:0;right:0;height:4px;
+  border-radius:0 0 var(--r) var(--r);
+  background:linear-gradient(90deg,var(--ca),var(--cb),var(--cc),var(--cb),var(--ca));
+  opacity:var(--band-op,0.8);z-index:7;
+}
+
+/* ── 비네트 ── */
+.card-vignette{
+  position:absolute;inset:0;border-radius:var(--r);
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.55) 100%);
+  pointer-events:none;z-index:8;
+}
+
+/* ── 푸터 ── */
+.card-footer{position:absolute;bottom:14px;left:0;right:0;z-index:9;text-align:center;}
+.footer-subs{font-size:11px;color:var(--cb);font-weight:700;opacity:0.9;text-shadow:0 0 8px var(--cb);}
+.footer-rank{font-size:9px;color:var(--sub);margin-top:2px;}
+</style>
+</head>
+<body>
+<h1>✨ YTAnalytics 레벨 카드</h1>
+<p class="subtitle">레벨별 등급 카드 미리보기 — 마우스를 올려 3D 효과를 확인하세요</p>
+<div class="cards-grid" id="cards-grid"></div>
+
+<script>
+/* ── 무지개 색상 계산 ── */
+function hueToRgb(h) {
+  h = ((h % 360) + 360) % 360;
+  const s=1, l=0.60;
+  const c=(1-Math.abs(2*l-1))*s;
+  const x=c*(1-Math.abs((h/60)%2-1));
+  const m=l-c/2;
+  let r=0,g=0,b=0;
+  if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}
+  else if(h<180){g=c;b=x;}else if(h<240){g=x;b=c;}
+  else if(h<300){r=x;b=c;}else{r=c;b=x;}
+  return `rgb(${Math.round((r+m)*255)},${Math.round((g+m)*255)},${Math.round((b+m)*255)})`;
+}
+function hueToRgba(h,a){
+  return hueToRgb(h).replace('rgb(','rgba(').replace(')',`,${a})`);
+}
+
+let lv10Hue = 0;
+const HUE_SPEED = 0.8;
+
+/* ── GRADES ── */
+const GRADES = [
+  {lv:1,name:'새싹',icon:'🌱',badge:'SEED',
+   ca:'#78909c',cb:'#b0bec5',cc:'#eceff1',
+   subs:'0 ~ 100명',rank:'브론즈 V',beamSpeed:'4s',bandOp:0.5,stars:1,beamCount:1,
+   bokeh:[{s:'30px',x:'15%',y:'20%',b:'8px',o:0.3,d:'3.5s'},{s:'20px',x:'75%',y:'60%',b:'6px',o:0.25,d:'4s'}],
+   sparkles:[{sz:'10px',x:'20%',y:'70%',d:'2.5s',dl:'0s'},{sz:'8px',x:'80%',y:'25%',d:'3s',dl:'1s'}]},
+
+  {lv:2,name:'새내기',icon:'🎵',badge:'ROOKIE',
+   ca:'#42a5f5',cb:'#90caf9',cc:'#e3f2fd',
+   subs:'100 ~ 1,000명',rank:'실버 IV',beamSpeed:'3.8s',bandOp:0.55,stars:1,beamCount:1,
+   bokeh:[{s:'35px',x:'10%',y:'15%',b:'9px',o:0.3,d:'3.8s'},{s:'25px',x:'80%',y:'55%',b:'7px',o:0.28,d:'4.2s'}],
+   sparkles:[{sz:'11px',x:'25%',y:'65%',d:'2.8s',dl:'0.2s'},{sz:'9px',x:'75%',y:'30%',d:'3.2s',dl:'1.2s'}]},
+
+  {lv:3,name:'성장중',icon:'⭐',badge:'GROW',
+   ca:'#ffca28',cb:'#ffe082',cc:'#fff8e1',
+   subs:'1,000 ~ 5,000명',rank:'골드 III',beamSpeed:'3.5s',bandOp:0.6,stars:2,beamCount:2,
+   bokeh:[{s:'40px',x:'12%',y:'18%',b:'10px',o:0.32,d:'3.6s'},{s:'28px',x:'78%',y:'52%',b:'8px',o:0.28,d:'4.4s'},{s:'20px',x:'50%',y:'75%',b:'6px',o:0.22,d:'3.2s'}],
+   sparkles:[{sz:'12px',x:'18%',y:'60%',d:'2.6s',dl:'0.3s'},{sz:'10px',x:'72%',y:'28%',d:'3s',dl:'1.3s'},{sz:'9px',x:'40%',y:'80%',d:'2.2s',dl:'0.7s'}]},
+
+  {lv:4,name:'인기상승',icon:'🔥',badge:'RISING',
+   ca:'#ff7043',cb:'#ff8a65',cc:'#fbe9e7',
+   subs:'5,000 ~ 1만명',rank:'플래티넘 II',beamSpeed:'3.2s',bandOp:0.65,stars:2,beamCount:2,
+   bokeh:[{s:'45px',x:'10%',y:'15%',b:'12px',o:0.35,d:'3.4s'},{s:'30px',x:'80%',y:'50%',b:'9px',o:0.3,d:'4.6s'},{s:'22px',x:'55%',y:'78%',b:'7px',o:0.25,d:'3s'}],
+   sparkles:[{sz:'13px',x:'15%',y:'55%',d:'2.4s',dl:'0.4s'},{sz:'11px',x:'70%',y:'25%',d:'2.8s',dl:'1.4s'},{sz:'10px',x:'45%',y:'78%',d:'2s',dl:'0.8s'}]},
+
+  {lv:5,name:'실력자',icon:'💎',badge:'PRO',
+   ca:'#66bb6a',cb:'#81c784',cc:'#e8f5e9',
+   subs:'1만 ~ 5만명',rank:'다이아 I',beamSpeed:'3s',bandOp:0.7,stars:3,beamCount:2,
+   bokeh:[{s:'50px',x:'8%',y:'12%',b:'14px',o:0.38,d:'3.2s'},{s:'35px',x:'82%',y:'48%',b:'10px',o:0.32,d:'4.8s'},{s:'25px',x:'60%',y:'80%',b:'8px',o:0.28,d:'2.8s'},{s:'18px',x:'30%',y:'40%',b:'5px',o:0.2,d:'5s'}],
+   sparkles:[{sz:'14px',x:'12%',y:'50%',d:'2.2s',dl:'0.5s'},{sz:'12px',x:'68%',y:'22%',d:'2.6s',dl:'1.5s'},{sz:'11px',x:'50%',y:'75%',d:'1.8s',dl:'0.9s'},{sz:'9px',x:'85%',y:'65%',d:'3s',dl:'0.3s'}]},
+
+  {lv:6,name:'크리에이터',icon:'🚀',badge:'CREATOR',
+   ca:'#ab47bc',cb:'#ce93d8',cc:'#f3e5f5',
+   subs:'5만 ~ 10만명',rank:'마스터',beamSpeed:'2.8s',bandOp:0.75,stars:3,beamCount:3,
+   bokeh:[{s:'55px',x:'6%',y:'10%',b:'16px',o:0.4,d:'3s'},{s:'38px',x:'84%',y:'45%',b:'11px',o:0.35,d:'5s'},{s:'28px',x:'65%',y:'82%',b:'9px',o:0.3,d:'2.6s'},{s:'20px',x:'35%',y:'35%',b:'6px',o:0.22,d:'5.2s'}],
+   sparkles:[{sz:'15px',x:'10%',y:'45%',d:'2s',dl:'0.6s'},{sz:'13px',x:'65%',y:'18%',d:'2.4s',dl:'1.6s'},{sz:'12px',x:'55%',y:'70%',d:'1.6s',dl:'1s'},{sz:'10px',x:'88%',y:'60%',d:'2.8s',dl:'0.2s'}]},
+
+  {lv:7,name:'인플루언서',icon:'👑',badge:'INFLUENCER',
+   ca:'#ec407a',cb:'#f48fb1',cc:'#fce4ec',
+   subs:'10만 ~ 50만명',rank:'그랜드마스터',beamSpeed:'2.5s',bandOp:0.8,stars:4,beamCount:3,
+   bokeh:[{s:'60px',x:'5%',y:'8%',b:'18px',o:0.42,d:'2.8s'},{s:'42px',x:'85%',y:'42%',b:'12px',o:0.37,d:'5.2s'},{s:'32px',x:'70%',y:'84%',b:'10px',o:0.32,d:'2.4s'},{s:'22px',x:'40%',y:'30%',b:'7px',o:0.25,d:'5.4s'},{s:'15px',x:'20%',y:'65%',b:'4px',o:0.18,d:'3.6s'}],
+   sparkles:[{sz:'16px',x:'8%',y:'40%',d:'1.8s',dl:'0.7s'},{sz:'14px',x:'62%',y:'15%',d:'2.2s',dl:'1.7s'},{sz:'13px',x:'60%',y:'65%',d:'1.4s',dl:'1.1s'},{sz:'11px',x:'90%',y:'55%',d:'2.6s',dl:'0.1s'},{sz:'10px',x:'30%',y:'88%',d:'2s',dl:'0.5s'}]},
+
+  {lv:8,name:'스타',icon:'🌟',badge:'STAR',
+   ca:'#ff6f00',cb:'#ffa726',cc:'#fff3e0',
+   subs:'50만 ~ 100만명',rank:'챌린저',beamSpeed:'2.5s',bandOp:0.85,stars:4,beamCount:3,
+   bokeh:[{s:'65px',x:'4%',y:'6%',b:'20px',o:0.44,d:'2.6s'},{s:'45px',x:'86%',y:'40%',b:'13px',o:0.39,d:'5.4s'},{s:'35px',x:'72%',y:'85%',b:'11px',o:0.34,d:'2.2s'},{s:'24px',x:'42%',y:'28%',b:'8px',o:0.27,d:'5.6s'},{s:'16px',x:'22%',y:'62%',b:'5px',o:0.2,d:'3.8s'}],
+   sparkles:[{sz:'17px',x:'6%',y:'35%',d:'1.6s',dl:'0.8s'},{sz:'15px',x:'60%',y:'12%',d:'2s',dl:'1.8s'},{sz:'14px',x:'58%',y:'62%',d:'1.2s',dl:'1.2s'},{sz:'12px',x:'92%',y:'50%',d:'2.4s',dl:'0s'},{sz:'11px',x:'32%',y:'85%',d:'1.8s',dl:'0.6s'}]},
+
+  {lv:9,name:'레전드',icon:'⚡',badge:'LEGEND',
+   ca:'#d32f2f',cb:'#ef9a9a',cc:'#ffebee',
+   subs:'100만 ~ 500만명',rank:'불멸',beamSpeed:'2.5s',bandOp:0.9,stars:5,beamCount:3,
+   bokeh:[{s:'70px',x:'3%',y:'5%',b:'22px',o:0.46,d:'2.4s'},{s:'48px',x:'87%',y:'38%',b:'14px',o:0.41,d:'5.6s'},{s:'38px',x:'74%',y:'86%',b:'12px',o:0.36,d:'2s'},{s:'26px',x:'44%',y:'26%',b:'9px',o:0.29,d:'5.8s'},{s:'18px',x:'24%',y:'60%',b:'6px',o:0.22,d:'4s'},{s:'12px',x:'55%',y:'48%',b:'3px',o:0.15,d:'3s'}],
+   sparkles:[{sz:'18px',x:'4%',y:'30%',d:'1.4s',dl:'0.9s'},{sz:'16px',x:'58%',y:'10%',d:'1.8s',dl:'1.9s'},{sz:'15px',x:'56%',y:'58%',d:'1s',dl:'1.3s'},{sz:'13px',x:'94%',y:'45%',d:'2.2s',dl:'0.1s'},{sz:'12px',x:'34%',y:'82%',d:'1.6s',dl:'0.7s'},{sz:'10px',x:'70%',y:'30%',d:'2s',dl:'0.4s'}]},
+
+  {lv:10,name:'신화',icon:'🌈',badge:'MYTH',
+   ca:'#ff0055',cb:'#ff88cc',cc:'#ffddff',
+   subs:'500만명+',rank:'신화',beamSpeed:'2.5s',bandOp:0.95,stars:5,beamCount:4,
+   bokeh:[{s:'75px',x:'2%',y:'4%',b:'24px',o:0.5,d:'2.2s'},{s:'52px',x:'88%',y:'36%',b:'15px',o:0.43,d:'5.8s'},{s:'42px',x:'76%',y:'87%',b:'13px',o:0.38,d:'1.8s'},{s:'28px',x:'46%',y:'24%',b:'10px',o:0.31,d:'6s'},{s:'20px',x:'26%',y:'58%',b:'7px',o:0.24,d:'4.2s'},{s:'14px',x:'60%',y:'46%',b:'4px',o:0.18,d:'3.2s'},{s:'10px',x:'14%',y:'82%',b:'2px',o:0.14,d:'2.6s'}],
+   sparkles:[{sz:'20px',x:'3%',y:'25%',d:'1.2s',dl:'1s'},{sz:'18px',x:'56%',y:'8%',d:'1.6s',dl:'2s'},{sz:'16px',x:'54%',y:'55%',d:'0.9s',dl:'1.4s'},{sz:'14px',x:'96%',y:'40%',d:'2s',dl:'0.2s'},{sz:'13px',x:'36%',y:'80%',d:'1.4s',dl:'0.8s'},{sz:'11px',x:'72%',y:'28%',d:'1.8s',dl:'0.5s'},{sz:'9px',x:'18%',y:'48%',d:'2.2s',dl:'1.6s'}]}
+];
+
+/* ── 빔 HTML ── */
+function buildBeams(g) {
+  const spd = g.beamSpeed;
+  if(g.lv===10) return `<div class="beam-container">
+    <div class="beam-ring rb" style="--beam-speed:${spd}"></div>
+    <div class="beam-ring rb" style="--beam-speed:${spd};animation-delay:calc(${spd} / -4)"></div>
+    <div class="beam-ring rb" style="--beam-speed:${spd};animation-delay:calc(${spd} / -2)"></div>
+    <div class="beam-ring rb" style="--beam-speed:${spd};animation-delay:calc(${spd} * -3 / 4)"></div>
+  </div>`;
+  if(g.beamCount===1) return `<div class="beam-container"><div class="beam-ring b1" style="--beam-speed:${spd}"></div></div>`;
+  if(g.beamCount===2) return `<div class="beam-container">
+    <div class="beam-ring b2-1" style="--beam-speed:${spd}"></div>
+    <div class="beam-ring b2-2" style="--beam-speed:${spd}"></div>
+  </div>`;
+  return `<div class="beam-container">
+    <div class="beam-ring b3-1" style="--beam-speed:${spd}"></div>
+    <div class="beam-ring b3-2" style="--beam-speed:${spd}"></div>
+    <div class="beam-ring b3-3" style="--beam-speed:${spd}"></div>
+  </div>`;
+}
+
+/* ── 카드 HTML ── */
+function buildCardHTML(g) {
+  const isRb = g.lv === 10;
+  const frameBg = isRb
+    ? `linear-gradient(135deg,#ff0000,#ff6600,#ffcc00,#00ff66,#00ccff,#6600ff,#ff00cc,#ff0000)`
+    : `linear-gradient(135deg,${g.ca},${g.cb},${g.cc})`;
+
+  const stars = Array.from({length:g.stars},(_,i)=>
+    `<span class="star" style="animation-delay:${i*0.15}s">★</span>`).join('');
+  const bokeh = g.bokeh.map(b=>
+    `<div class="bokeh-dot" style="--bs:${b.s};--bx:${b.x};--by:${b.y};--bb:${b.b};--bo:${b.o};--bd:${b.d}"></div>`).join('');
+  const sparkles = g.sparkles.map(s=>
+    `<span class="sparkle" style="--ss:${s.sz};--sx:${s.x};--sy:${s.y};--sd:${s.d};--sdelay:${s.dl}">✦</span>`).join('');
+
+  const fogHtml = isRb
+    ? `<div class="lv10-fog-ring"></div><div class="lv10-fog-inner"></div>`
+    : '';
+
+  return `
+  <div class="card-scene" data-lv="${g.lv}"
+    style="--ca:${g.ca};--cb:${g.cb};--cc:${g.cc};
+           --beam-speed:${g.beamSpeed};--band-op:${g.bandOp};
+           --frame-bg:${frameBg};--glow-color:${g.cb};">
+    ${fogHtml}
+    <div class="card-tilt" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
+      <div class="card-frame"></div>
+      ${buildBeams(g)}
+      <div class="card-body">
+        <div class="card-face"></div>
+        <div class="card-shine"></div>
+        <div class="card-bokeh">${bokeh}</div>
+        <div class="card-sparkles">${sparkles}</div>
+        <div class="card-top-band"></div>
+        <div class="card-bot-band"></div>
+        <div class="card-header">
+          <div class="card-stars">${stars}</div>
+          <div class="card-badge">${g.badge}</div>
+        </div>
+        <div class="card-icon-area">
+          <div class="card-icon">${g.icon}</div>
+          <div class="card-name">${g.name}</div>
+        </div>
+        <div class="card-vignette"></div>
+        <div class="card-footer">
+          <div class="footer-subs">${g.subs}</div>
+          <div class="footer-rank">${g.rank}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── 3D 틸트 ── */
+function card3D(e,el){
+  const rect=el.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  const dx=(e.clientX-cx)/(rect.width/2), dy=(e.clientY-cy)/(rect.height/2);
+  el.style.transform=`rotateX(${-dy*16}deg) rotateY(${dx*16}deg)`;
+  const mx=((e.clientX-rect.left)/rect.width)*100;
+  const my=((e.clientY-rect.top)/rect.height)*100;
+  const shine=el.querySelector('.card-shine');
+  if(shine) shine.style.background=`
+    radial-gradient(circle at ${mx}% ${my}%,rgba(255,255,255,0.28) 0%,transparent 55%),
+    linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 50%),
+    linear-gradient(315deg,rgba(255,255,255,0.08) 0%,transparent 50%)`;
+  const face=el.querySelector('.card-face');
+  if(face) face.style.background=`
+    radial-gradient(ellipse at ${mx}% ${my}%,rgba(255,255,255,0.1) 0%,transparent 60%),
+    radial-gradient(ellipse at 30% 30%,rgba(255,255,255,0.07) 0%,transparent 60%),
+    linear-gradient(160deg,rgba(255,255,255,0.04) 0%,transparent 50%),
+    var(--card-bg)`;
+}
+function cardReset(el){
+  el.style.transform='rotateX(0deg) rotateY(0deg)';
+  const shine=el.querySelector('.card-shine');
+  if(shine) shine.style.background=`
+    linear-gradient(135deg,rgba(255,255,255,0.18) 0%,transparent 50%),
+    linear-gradient(315deg,rgba(255,255,255,0.08) 0%,transparent 50%)`;
+  const face=el.querySelector('.card-face');
+  if(face) face.style.background=`
+    radial-gradient(ellipse at 30% 30%,rgba(255,255,255,0.07) 0%,transparent 60%),
+    linear-gradient(160deg,rgba(255,255,255,0.04) 0%,transparent 50%),
+    var(--card-bg)`;
+}
+
+/* ── LV10 무지개 동기화 루프 ── */
+function updateLv10(){
+  const scene=document.querySelector('.card-scene[data-lv="10"]');
+  if(!scene){lv10Hue=(lv10Hue+HUE_SPEED)%360;requestAnimationFrame(updateLv10);return;}
+
+  const h=lv10Hue;
+  const h2=(h+90)%360, h3=(h+180)%360, h4=(h+270)%360;
+  const c0=hueToRgb(h), c1=hueToRgb(h2), c2=hueToRgb(h3), c3=hueToRgb(h4);
+  const g0=hueToRgba(h,0.8), g1=hueToRgba(h2,0.55), g2=hueToRgba(h3,0.3);
+
+  /* 안개 */
+  const fogRing=scene.querySelector('.lv10-fog-ring');
+  const fogInner=scene.querySelector('.lv10-fog-inner');
+  if(fogRing)  fogRing.style.background=`radial-gradient(ellipse at center,${g0} 0%,${g1} 40%,transparent 70%)`;
+  if(fogInner) fogInner.style.background=`radial-gradient(ellipse at center,${hueToRgba(h2,0.65)} 0%,${hueToRgba(h3,0.4)} 45%,transparent 75%)`;
+
+  /* body 글로우 */
+  const body=scene.querySelector('.card-body');
+  if(body) body.style.boxShadow=`0 0 75px 25px ${hueToRgba(h,0.78)},0 8px 32px rgba(0,0,0,0.6)`;
+
+  /* 프레임 */
+  const frame=scene.querySelector('.card-frame');
+  if(frame) frame.style.background=`linear-gradient(var(--card-bg),var(--card-bg)) padding-box,
+    linear-gradient(${h}deg,${c0},${c1},${c2},${c3}) border-box`;
+
+  /* 빔 */
+  scene.querySelectorAll('.beam-ring.rb').forEach((br,i)=>{
+    const o=i*90;
+    br.style.background=`conic-gradient(
+      transparent 0%,
+      ${hueToRgb((h+o)%360)} 18%,${hueToRgb((h+90+o)%360)} 38%,
+      ${hueToRgb((h+180+o)%360)} 58%,${hueToRgb((h+270+o)%360)} 78%,
+      transparent 82%,transparent 100%)`;
+  });
+
+  /* 밴드 */
+  const bandGrad=`linear-gradient(90deg,${c0},${c1},${c2},${c3},${c0})`;
+  const tb=scene.querySelector('.card-top-band');
+  const bb=scene.querySelector('.card-bot-band');
+  if(tb) tb.style.background=bandGrad;
+  if(bb) bb.style.background=bandGrad;
+
+  /* 이름 */
+  const name=scene.querySelector('.card-name');
+  if(name){name.style.color=c0;name.style.textShadow=`0 0 12px ${c0},0 0 24px ${c1}`;name.style.webkitTextFillColor=c0;}
+
+  /* 배지 */
+  const badge=scene.querySelector('.card-badge');
+  if(badge){badge.style.background=`linear-gradient(135deg,${c0},${c1},${c2})`;badge.style.boxShadow=`0 0 10px ${c0},0 0 20px ${c1}`;}
+
+  /* 별 */
+  scene.querySelectorAll('.star').forEach((s,i)=>{
+    const sh=(h+i*30)%360;
+    s.style.color=hueToRgb(sh);s.style.filter=`drop-shadow(0 0 4px ${hueToRgb(sh)})`;
+  });
+
+  /* 아이콘 */
+  const icon=scene.querySelector('.card-icon');
+  if(icon) icon.style.filter=`drop-shadow(0 0 14px ${c0}) drop-shadow(0 0 6px ${c1})`;
+
+  /* 보케 */
+  scene.querySelectorAll('.bokeh-dot').forEach((dot,i)=>{
+    const dh=(h+i*40)%360;
+    dot.style.background=`radial-gradient(circle,${hueToRgb(dh)} 0%,transparent 70%)`;
+  });
+
+  /* 스파클 */
+  scene.querySelectorAll('.sparkle').forEach((sp,i)=>{
+    const sc=hueToRgb((h+i*50)%360);
+    sp.style.color=sc;sp.style.textShadow=`0 0 8px ${sc}`;
+  });
+
+  /* 푸터 */
+  const subs=scene.querySelector('.footer-subs');
+  if(subs){subs.style.color=c0;subs.style.textShadow=`0 0 8px ${c0}`;subs.style.webkitTextFillColor=c0;}
+
+  lv10Hue=(lv10Hue+HUE_SPEED)%360;
+  requestAnimationFrame(updateLv10);
+}
+
+/* ── 초기화 ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('cards-grid').innerHTML=GRADES.map(g=>buildCardHTML(g)).join('');
+  requestAnimationFrame(updateLv10);
+});
+</script>
+</body>
+</html>
