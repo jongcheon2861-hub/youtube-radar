@@ -6,7 +6,7 @@
 <title>3D 레벨 카드 미리보기</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#07070f;--card-bg:#12121e;--border:#22223a;--text:#e8e8f0;--sub:#7777aa;--accent:#6c63ff;}
+:root{--bg:#07070f;--text:#e8e8f0;--sub:#7777aa;--accent:#6c63ff;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   background:var(--bg);color:var(--text);
@@ -29,7 +29,7 @@ body{
 }
 
 /* ══════════════════════════════════════
-   CARD SCENE
+   SCENE – perspective만 담당
 ══════════════════════════════════════ */
 .card-scene{
   width:220px;height:308px;
@@ -38,11 +38,25 @@ body{
   cursor:pointer;
 }
 
+/* ══════════════════════════════════════
+   TILT-ROOT – 틸트 변환의 단일 루트
+   빔·프레임·카드 모두 이 안에 있어서
+   함께 기울어짐
+══════════════════════════════════════ */
+.card-tilt{
+  position:absolute;inset:0;
+  transform-style:preserve-3d;
+  transform:rotateX(0deg) rotateY(0deg);
+  transition:transform .1s ease;
+  will-change:transform;
+}
+
 /* ── 테두리 프레임 띠 ── */
 .card-frame{
   position:absolute;inset:-3px;
   border-radius:21px;
   z-index:1;pointer-events:none;
+  /* 일반 레벨: JS에서 인라인으로 배경 주입 */
 }
 .card-frame::after{
   content:'';position:absolute;inset:2px;
@@ -73,197 +87,65 @@ body{
 }
 @keyframes beamRingSpin{from{rotate:0deg;}to{rotate:360deg;}}
 
-/* ══════════════════════════════════════
-   LV10 전용 무지개 요소들
-══════════════════════════════════════ */
-
-/* LV10 빔 – hue 회전으로 무지개 */
-.beam-ring.rb{
-  background:conic-gradient(
-    from 0deg,
-    transparent 0%,
-    #ff0000 3%,rgba(255,255,255,.95) 5%,#ff0000 7%,
-    transparent 10%,transparent 100%
-  );
-  animation:beamRingSpin var(--beam-speed,1.2s) linear infinite,
-            rbHue 3s linear infinite;
-  filter:saturate(1.4);
-}
-@keyframes rbHue{
-  0%  {filter:hue-rotate(0deg)   saturate(1.4);}
-  100%{filter:hue-rotate(360deg) saturate(1.4);}
-}
-
-/* LV10 프레임 띠 – 무지개 */
-.card-scene[data-lv="10"] .card-frame{
-  background:linear-gradient(135deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
-  background-size:300% 300%;
-  animation:rbFrame 2s linear infinite;
-}
-@keyframes rbFrame{
-  0%  {background-position:0% 50%;}
-  50% {background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-
-/* LV10 상단 밴드 – 무지개 */
-.card-scene[data-lv="10"] .card-top-band{
-  background:linear-gradient(180deg,
-    rgba(255,0,0,.35) 0%,
-    transparent 100%
-  );
-  animation:rbTopBand 3s linear infinite;
-}
-@keyframes rbTopBand{
-  0%  {filter:hue-rotate(0deg);}
-  100%{filter:hue-rotate(360deg);}
-}
-
-/* LV10 하단 밴드 – 무지개 */
-.card-scene[data-lv="10"] .card-bot-band{
-  background:linear-gradient(0deg,
-    rgba(255,0,0,.35) 0%,
-    transparent 100%
-  );
-  animation:rbBotBand 3s linear infinite;
-  animation-delay:-.5s;
-}
-@keyframes rbBotBand{
-  0%  {filter:hue-rotate(0deg);}
-  100%{filter:hue-rotate(360deg);}
-}
-
-/* LV10 푸터 – 무지개 */
-.card-scene[data-lv="10"] .card-footer{
-  background:linear-gradient(135deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00) !important;
-  background-size:300% 300% !important;
-  animation:rbFrame 2s linear infinite;
-  border-top:1px solid rgba(255,255,255,.3) !important;
-}
-.card-scene[data-lv="10"] .footer-lv{
-  color:#fff !important;
-  border-color:rgba(255,255,255,.4) !important;
-  background:rgba(0,0,0,.3) !important;
-  -webkit-text-fill-color:#fff !important;
-}
-.card-scene[data-lv="10"] .footer-name{
-  color:#fff !important;
-  -webkit-text-fill-color:#fff !important;
-  text-shadow:0 0 10px rgba(255,255,255,.8),0 2px 5px rgba(0,0,0,.5) !important;
-}
-.card-scene[data-lv="10"] .footer-subs{
-  color:rgba(255,255,255,.75) !important;
-}
-
-/* LV10 배지 – 무지개 */
-.card-scene[data-lv="10"] .card-badge{
-  background:linear-gradient(135deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00) !important;
-  background-size:300% 300% !important;
-  animation:rbFrame 2s linear infinite;
-  border-color:rgba(255,255,255,.3) !important;
-}
-
-/* LV10 별 – 무지개 */
-.card-scene[data-lv="10"] .card-star{
-  animation:starTwinkle 2s ease-in-out infinite,rbStar 3s linear infinite;
-}
-@keyframes rbStar{
-  0%  {filter:hue-rotate(0deg)   drop-shadow(0 0 4px currentColor);}
-  100%{filter:hue-rotate(360deg) drop-shadow(0 0 8px currentColor);}
-}
-
-/* LV10 글로우 – 무지개 */
-.card-scene[data-lv="10"] .card-body{
-  animation:rbGlow 3s linear infinite;
-}
-@keyframes rbGlow{
-  0%  {box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(255,0,0,.5),  0 0 130px rgba(255,0,0,.3),  0 0 0 1px rgba(255,0,0,.3);}
-  17% {box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(255,165,0,.5),0 0 130px rgba(255,165,0,.3),0 0 0 1px rgba(255,165,0,.3);}
-  33% {box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(255,255,0,.5),0 0 130px rgba(255,255,0,.3),0 0 0 1px rgba(255,255,0,.3);}
-  50% {box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(0,255,128,.5),0 0 130px rgba(0,255,128,.3),0 0 0 1px rgba(0,255,128,.3);}
-  67% {box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(0,200,255,.5),0 0 130px rgba(0,200,255,.3),0 0 0 1px rgba(0,200,255,.3);}
-  83% {box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(120,0,255,.5),0 0 130px rgba(120,0,255,.3),0 0 0 1px rgba(120,0,255,.3);}
-  100%{box-shadow:0 38px 95px rgba(0,0,0,.82),0 0 80px rgba(255,0,0,.5),  0 0 130px rgba(255,0,0,.3),  0 0 0 1px rgba(255,0,0,.3);}
-}
-
-/* LV10 이름 – 무지개 슬라이드 */
-.card-scene[data-lv="10"] .card-main-name{
-  background:linear-gradient(90deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
-  background-size:200%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:rainbowSlide 1.8s linear infinite;
-}
-
-/* LV10 아이콘 – hue 무지개 */
-.card-scene[data-lv="10"] .card-main-icon{
-  animation:iconHover 3.5s ease-in-out infinite,iconRb 2s linear infinite;
-}
-@keyframes iconRb{
-  0%  {filter:drop-shadow(0 0 14px #f00) drop-shadow(0 0 30px #f00) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-  17% {filter:drop-shadow(0 0 14px #f80) drop-shadow(0 0 30px #f80) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-  33% {filter:drop-shadow(0 0 14px #ff0) drop-shadow(0 0 30px #ff0) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-  50% {filter:drop-shadow(0 0 14px #0f8) drop-shadow(0 0 30px #0f8) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-  67% {filter:drop-shadow(0 0 14px #0cf) drop-shadow(0 0 30px #0cf) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-  83% {filter:drop-shadow(0 0 14px #80f) drop-shadow(0 0 30px #80f) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-  100%{filter:drop-shadow(0 0 14px #f00) drop-shadow(0 0 30px #f00) drop-shadow(0 5px 18px rgba(0,0,0,.55));}
-}
-
-/* LV10 카드 내부 배경 – hue 무지개 */
-.card-scene[data-lv="10"] .card-face{
-  animation:rbFace 3s linear infinite;
-}
-@keyframes rbFace{
-  0%  {filter:hue-rotate(0deg);}
-  100%{filter:hue-rotate(360deg);}
-}
-
-/* LV10 보케 – hue 무지개 */
-.card-scene[data-lv="10"] .card-bokeh{
-  animation:rbHue 3s linear infinite;
-}
-
-@keyframes rainbowSlide{to{background-position:200% center;}}
-
-/* ══════════════════════════════════════
-   공통 카드 스타일
-══════════════════════════════════════ */
+/* ── 카드 본체 ── */
 .card-body{
   position:absolute;inset:0;
   border-radius:18px;z-index:3;
-  transform-style:preserve-3d;
-  transform:rotateX(0deg) rotateY(0deg);
-  transition:transform .1s ease;
-  will-change:transform;
-  box-shadow:0 20px 55px rgba(0,0,0,.65),0 0 0 1px color-mix(in srgb,var(--cb,#fff) 25%,transparent);
+  box-shadow:
+    0 20px 55px rgba(0,0,0,.65),
+    0 0 0 1px color-mix(in srgb,var(--cb,#fff) 25%,transparent);
+  transition:box-shadow .3s ease;
 }
+
+/* ── 카드 표면 ── */
 .card-face{
-  position:absolute;inset:0;border-radius:18px;overflow:hidden;backface-visibility:hidden;
+  position:absolute;inset:0;border-radius:18px;overflow:hidden;
   background:
-    radial-gradient(ellipse 80% 55% at 50% 40%,color-mix(in srgb,var(--cb,#6c63ff) 16%,transparent) 0%,transparent 70%),
-    linear-gradient(160deg,color-mix(in srgb,var(--ca,#333) 28%,#0d0d1a) 0%,#0d0d1a 55%,color-mix(in srgb,var(--ca,#333) 14%,#07070f) 100%);
+    radial-gradient(ellipse 80% 55% at 50% 40%,
+      color-mix(in srgb,var(--cb,#6c63ff) 16%,transparent) 0%,transparent 70%),
+    linear-gradient(160deg,
+      color-mix(in srgb,var(--ca,#333) 28%,#0d0d1a) 0%,
+      #0d0d1a 55%,
+      color-mix(in srgb,var(--ca,#333) 14%,#07070f) 100%);
+  transition:background .08s ease;
 }
 .card-face::before{
   content:'';position:absolute;inset:0;border-radius:18px;
-  background:repeating-linear-gradient(-45deg,transparent 0px,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);
+  background:repeating-linear-gradient(
+    -45deg,transparent 0px,transparent 3px,
+    rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);
   pointer-events:none;z-index:1;
 }
+
+/* ── 광택 ── */
 .card-shine{
   position:absolute;inset:0;border-radius:18px;
   background:
     linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
     linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%);
-  pointer-events:none;z-index:5;mix-blend-mode:screen;transition:background .08s ease;
+  pointer-events:none;z-index:5;mix-blend-mode:screen;
+  transition:background .08s ease;
 }
+
+/* ── 상단 밴드 ── */
 .card-top-band{
   position:absolute;top:0;left:0;right:0;height:44%;
   border-radius:18px 18px 0 0;z-index:2;pointer-events:none;
-  background:linear-gradient(180deg,color-mix(in srgb,var(--cb,#fff) var(--band-op,20%),transparent) 0%,transparent 100%);
+  background:linear-gradient(180deg,
+    color-mix(in srgb,var(--cb,#fff) var(--band-op,20%),transparent) 0%,
+    transparent 100%);
 }
+
+/* ── 하단 밴드 ── */
 .card-bot-band{
   position:absolute;bottom:0;left:0;right:0;height:40%;
   border-radius:0 0 18px 18px;z-index:2;pointer-events:none;
-  background:linear-gradient(0deg,color-mix(in srgb,var(--cb,#fff) var(--band-op,20%),transparent) 0%,transparent 100%);
+  background:linear-gradient(0deg,
+    color-mix(in srgb,var(--cb,#fff) var(--band-op,20%),transparent) 0%,
+    transparent 100%);
 }
+
+/* ── 헤더 ── */
 .card-header{
   position:absolute;top:0;left:0;right:0;
   padding:13px 14px 0;
@@ -284,6 +166,8 @@ body{
   background:linear-gradient(135deg,var(--ca,#555) 0%,var(--cb,#888) 100%);
   border:1px solid rgba(255,255,255,.13);
 }
+
+/* ── 보케 ── */
 .card-bokeh{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:18px;}
 .bokeh-dot{
   position:absolute;border-radius:50%;
@@ -291,56 +175,226 @@ body{
   filter:blur(var(--bblur,5px));opacity:var(--bop,.35);
   animation:bokehDrift var(--bdur,7s) ease-in-out infinite;animation-delay:var(--bdel,0s);
 }
-@keyframes bokehDrift{0%,100%{transform:translate(0,0) scale(1);}25%{transform:translate(7px,-9px) scale(1.12);}50%{transform:translate(-6px,7px) scale(.91);}75%{transform:translate(9px,4px) scale(1.06);}}
+@keyframes bokehDrift{
+  0%,100%{transform:translate(0,0) scale(1);}
+  25%{transform:translate(7px,-9px) scale(1.12);}
+  50%{transform:translate(-6px,7px) scale(.91);}
+  75%{transform:translate(9px,4px) scale(1.06);}
+}
+
+/* ── 스파클 ── */
 .card-sparkles{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;border-radius:18px;}
 .sparkle-dot{
   position:absolute;color:#ffd700;font-size:var(--ssz,11px);
   text-shadow:0 0 6px rgba(255,215,0,.9),0 0 16px rgba(255,215,0,.5);
   animation:sparklePop var(--sdur,2.2s) ease-in-out infinite;animation-delay:var(--sdel,0s);
 }
-@keyframes sparklePop{0%,100%{opacity:.08;transform:scale(.45) rotate(-12deg);}40%{opacity:1;transform:scale(1.25) rotate(12deg);}65%{opacity:.75;transform:scale(1.05) rotate(5deg);}}
+@keyframes sparklePop{
+  0%,100%{opacity:.08;transform:scale(.45) rotate(-12deg);}
+  40%{opacity:1;transform:scale(1.25) rotate(12deg);}
+  65%{opacity:.75;transform:scale(1.05) rotate(5deg);}
+}
+
+/* ── 아이콘 ── */
 .card-icon-wrap{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);
-  z-index:8;display:flex;flex-direction:column;align-items:center;gap:9px;
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-54%);z-index:8;
+  display:flex;flex-direction:column;align-items:center;gap:9px;
 }
 .card-main-icon{
   font-size:3.5rem;
-  filter:drop-shadow(0 0 14px var(--cb,#fff)) drop-shadow(0 0 30px color-mix(in srgb,var(--cb,#fff) 55%,transparent)) drop-shadow(0 5px 18px rgba(0,0,0,.55));
+  filter:
+    drop-shadow(0 0 14px var(--cb,#fff))
+    drop-shadow(0 0 30px color-mix(in srgb,var(--cb,#fff) 55%,transparent))
+    drop-shadow(0 5px 18px rgba(0,0,0,.55));
   animation:iconHover 3.5s ease-in-out infinite;
 }
-@keyframes iconHover{0%,100%{transform:translateY(0) rotateY(0deg);}30%{transform:translateY(-7px) rotateY(9deg);}70%{transform:translateY(-3px) rotateY(-6deg);}}
+@keyframes iconHover{
+  0%,100%{transform:translateY(0) rotateY(0deg);}
+  30%{transform:translateY(-7px) rotateY(9deg);}
+  70%{transform:translateY(-3px) rotateY(-6deg);}
+}
 .card-main-name{
   font-size:1.06rem;font-weight:900;color:var(--cb,#fff);
   text-shadow:0 0 14px var(--cb,#fff),0 0 32px color-mix(in srgb,var(--cb,#fff) 58%,transparent),0 2px 8px rgba(0,0,0,.65);
   letter-spacing:.06em;
 }
-.card-vignette{position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);}
+
+/* ── 비네트 ── */
+.card-vignette{
+  position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;
+  background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);
+}
+
+/* ── 푸터 ── */
 .card-footer{
   position:absolute;bottom:0;left:0;right:0;padding:11px 14px;
   display:flex;justify-content:space-between;align-items:center;
   z-index:10;border-radius:0 0 18px 18px;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--ca,#222) 88%,#000) 0%,color-mix(in srgb,var(--ca,#222) 65%,#000) 100%);
+  background:linear-gradient(135deg,
+    color-mix(in srgb,var(--ca,#222) 88%,#000) 0%,
+    color-mix(in srgb,var(--ca,#222) 65%,#000) 100%);
   border-top:1px solid color-mix(in srgb,var(--cb,#fff) 22%,transparent);
 }
-.footer-lv{color:var(--cb,#fff);font-size:10px;font-weight:900;background:rgba(0,0,0,.32);padding:3px 9px;border-radius:6px;letter-spacing:.07em;border:1px solid color-mix(in srgb,var(--cb,#fff) 35%,transparent);}
+.footer-lv{
+  color:var(--cb,#fff);font-size:10px;font-weight:900;
+  background:rgba(0,0,0,.32);padding:3px 9px;border-radius:6px;
+  letter-spacing:.07em;border:1px solid color-mix(in srgb,var(--cb,#fff) 35%,transparent);
+}
 .footer-name{color:var(--cb,#fff);font-size:13px;font-weight:800;text-shadow:0 0 10px var(--cb,#fff),0 2px 5px rgba(0,0,0,.5);}
 .footer-subs{color:color-mix(in srgb,var(--cb,#fff) 60%,transparent);font-size:10px;}
 
-/* 일반 레벨 글로우 */
-.card-scene[data-lv="5"] .card-body{box-shadow:0 20px 55px rgba(0,0,0,.6),0 0 22px color-mix(in srgb,var(--cb) 22%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 28%,transparent);}
-.card-scene[data-lv="6"] .card-body{box-shadow:0 24px 62px rgba(0,0,0,.65),0 0 32px color-mix(in srgb,var(--cb) 30%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 32%,transparent);}
-.card-scene[data-lv="7"] .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 44px color-mix(in srgb,var(--cb) 38%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 36%,transparent);}
-.card-scene[data-lv="8"] .card-body{box-shadow:0 30px 75px rgba(0,0,0,.72),0 0 58px color-mix(in srgb,var(--cb) 48%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 42%,transparent);}
-.card-scene[data-lv="9"] .card-body{box-shadow:0 34px 85px rgba(0,0,0,.76),0 0 74px color-mix(in srgb,var(--cb) 60%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 52%,transparent);}
+/* ── 일반 레벨 글로우 ── */
+.card-scene[data-lv="5"]  .card-body{box-shadow:0 20px 55px rgba(0,0,0,.6), 0 0 22px color-mix(in srgb,var(--cb) 22%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 28%,transparent);}
+.card-scene[data-lv="6"]  .card-body{box-shadow:0 24px 62px rgba(0,0,0,.65),0 0 32px color-mix(in srgb,var(--cb) 30%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 32%,transparent);}
+.card-scene[data-lv="7"]  .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 44px color-mix(in srgb,var(--cb) 38%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 36%,transparent);}
+.card-scene[data-lv="8"]  .card-body{box-shadow:0 30px 75px rgba(0,0,0,.72),0 0 58px color-mix(in srgb,var(--cb) 48%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 42%,transparent);}
+.card-scene[data-lv="9"]  .card-body{box-shadow:0 34px 85px rgba(0,0,0,.76),0 0 74px color-mix(in srgb,var(--cb) 60%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 52%,transparent);}
+.card-scene[data-lv="9"]  .card-main-name{animation:namePulse9 2s ease-in-out infinite alternate;}
+@keyframes namePulse9{
+  from{text-shadow:0 0 12px var(--cb),0 0 24px var(--cb);}
+  to  {text-shadow:0 0 22px var(--cb),0 0 55px var(--cb),0 0 90px color-mix(in srgb,var(--cb) 50%,transparent);}
+}
 
-.card-scene[data-lv="9"] .card-main-name{animation:namePulse9 2s ease-in-out infinite alternate;}
-@keyframes namePulse9{from{text-shadow:0 0 12px var(--cb),0 0 24px var(--cb);}to{text-shadow:0 0 22px var(--cb),0 0 55px var(--cb),0 0 90px color-mix(in srgb,var(--cb) 50%,transparent);}}
+/* ══════════════════════════════════════
+   LV10 무지개 – 밝은 계열 hue 순환
+══════════════════════════════════════ */
+
+/* 빔 – hue 순환 */
+.beam-ring.rb{
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,
+    #ff9de2 3%,rgba(255,255,255,1) 5%,#ff9de2 7%,
+    transparent 10%,transparent 100%
+  );
+  animation:beamRingSpin var(--beam-speed,1.2s) linear infinite,
+            rbHueShift 3s linear infinite;
+}
+@keyframes rbHueShift{
+  0%  {filter:hue-rotate(0deg)   brightness(1.3) saturate(1.2);}
+  100%{filter:hue-rotate(360deg) brightness(1.3) saturate(1.2);}
+}
+
+/* 프레임 */
+.card-scene[data-lv="10"] .card-frame{
+  background:linear-gradient(135deg,#ffb3de,#b3d4ff,#b3ffda,#fffab3,#ffccb3,#ddb3ff,#ffb3de);
+  background-size:400% 400%;
+  animation:rbFrameShift 2.5s linear infinite;
+}
+@keyframes rbFrameShift{
+  0%  {background-position:0% 50%;  filter:brightness(1.4);}
+  50% {background-position:100% 50%;filter:brightness(1.6);}
+  100%{background-position:0% 50%;  filter:brightness(1.4);}
+}
+
+/* 상단 밴드 */
+.card-scene[data-lv="10"] .card-top-band{
+  background:linear-gradient(180deg,rgba(255,180,230,.55) 0%,transparent 100%);
+  animation:rbBandHue 3s linear infinite;
+}
+/* 하단 밴드 */
+.card-scene[data-lv="10"] .card-bot-band{
+  background:linear-gradient(0deg,rgba(255,180,230,.55) 0%,transparent 100%);
+  animation:rbBandHue 3s linear infinite;animation-delay:-.8s;
+}
+@keyframes rbBandHue{
+  0%  {filter:hue-rotate(0deg)   brightness(1.5);}
+  100%{filter:hue-rotate(360deg) brightness(1.5);}
+}
+
+/* 카드 내부 face */
+.card-scene[data-lv="10"] .card-face{
+  animation:rbFaceHue 3s linear infinite;
+}
+@keyframes rbFaceHue{
+  0%  {filter:hue-rotate(0deg)   brightness(1.1);}
+  100%{filter:hue-rotate(360deg) brightness(1.1);}
+}
+
+/* 보케 */
+.card-scene[data-lv="10"] .card-bokeh{
+  animation:rbHueShift 3s linear infinite;
+}
+
+/* 배지 */
+.card-scene[data-lv="10"] .card-badge{
+  background:linear-gradient(135deg,#ffb3de,#b3d4ff,#b3ffda,#fffab3,#ffccb3,#ddb3ff) !important;
+  background-size:300% 300% !important;
+  animation:rbFrameShift 2s linear infinite;
+  color:#000 !important;font-weight:900 !important;
+  border-color:rgba(255,255,255,.5) !important;
+}
+
+/* 별 */
+.card-scene[data-lv="10"] .card-star{
+  animation:starTwinkle 2s ease-in-out infinite, rbStarHue 3s linear infinite;
+}
+@keyframes rbStarHue{
+  0%  {filter:hue-rotate(0deg)   brightness(1.5);}
+  100%{filter:hue-rotate(360deg) brightness(1.5);}
+}
+
+/* 이름 */
+.card-scene[data-lv="10"] .card-main-name{
+  background:linear-gradient(90deg,
+    #ff9de2,#ffb3a7,#ffe0a3,#b3ffda,#a3d4ff,#c4b3ff,#ff9de2);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:rbNameSlide 2s linear infinite;
+  filter:brightness(1.2);
+}
+@keyframes rbNameSlide{to{background-position:200% center;}}
+
+/* 아이콘 글로우 */
+.card-scene[data-lv="10"] .card-main-icon{
+  animation:iconHover 3.5s ease-in-out infinite, rbIconGlow 3s linear infinite;
+}
+@keyframes rbIconGlow{
+  0%  {filter:drop-shadow(0 0 16px #ff9de2) drop-shadow(0 0 32px #ff9de2) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+  17% {filter:drop-shadow(0 0 16px #ffd4a3) drop-shadow(0 0 32px #ffd4a3) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+  33% {filter:drop-shadow(0 0 16px #ffffaa) drop-shadow(0 0 32px #ffffaa) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+  50% {filter:drop-shadow(0 0 16px #aaffcc) drop-shadow(0 0 32px #aaffcc) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+  67% {filter:drop-shadow(0 0 16px #aaddff) drop-shadow(0 0 32px #aaddff) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+  83% {filter:drop-shadow(0 0 16px #ddaaff) drop-shadow(0 0 32px #ddaaff) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+  100%{filter:drop-shadow(0 0 16px #ff9de2) drop-shadow(0 0 32px #ff9de2) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+}
+
+/* 글로우 box-shadow */
+.card-scene[data-lv="10"] .card-body{
+  animation:rbGlow10 3s linear infinite;
+}
+@keyframes rbGlow10{
+  0%  {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(255,157,226,.6),0 0 140px rgba(255,157,226,.35),0 0 0 1px rgba(255,157,226,.4);}
+  17% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(255,210,160,.6),0 0 140px rgba(255,210,160,.35),0 0 0 1px rgba(255,210,160,.4);}
+  33% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(255,255,170,.6),0 0 140px rgba(255,255,170,.35),0 0 0 1px rgba(255,255,170,.4);}
+  50% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(170,255,204,.6),0 0 140px rgba(170,255,204,.35),0 0 0 1px rgba(170,255,204,.4);}
+  67% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(170,221,255,.6),0 0 140px rgba(170,221,255,.35),0 0 0 1px rgba(170,221,255,.4);}
+  83% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(221,170,255,.6),0 0 140px rgba(221,170,255,.35),0 0 0 1px rgba(221,170,255,.4);}
+  100%{box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 80px rgba(255,157,226,.6),0 0 140px rgba(255,157,226,.35),0 0 0 1px rgba(255,157,226,.4);}
+}
+
+/* 푸터 */
+.card-scene[data-lv="10"] .card-footer{
+  background:linear-gradient(135deg,#c060a0 0%,#7040c0 100%) !important;
+  animation:rbFooterHue 3s linear infinite;
+  border-top:1px solid rgba(255,255,255,.35) !important;
+}
+@keyframes rbFooterHue{
+  0%  {filter:hue-rotate(0deg)   brightness(1.3);}
+  100%{filter:hue-rotate(360deg) brightness(1.3);}
+}
+.card-scene[data-lv="10"] .footer-lv,
+.card-scene[data-lv="10"] .footer-name{
+  color:#fff !important;-webkit-text-fill-color:#fff !important;
+}
+.card-scene[data-lv="10"] .footer-subs{color:rgba(255,255,255,.8) !important;}
 </style>
 </head>
 <body>
 
 <div class="page-title">▶ 3D 레벨 카드 미리보기</div>
-<div class="page-sub">마우스를 카드 위에 올리면 3D 틸트 효과가 적용됩니다</div>
+<div class="page-sub">마우스를 카드 위에 올리면 빔·테두리·카드가 함께 3D 틸트됩니다</div>
 <div class="cards-grid" id="cards-grid"></div>
 
 <script>
@@ -399,9 +453,8 @@ const GRADES=[
    bokeh:[{w:63,h:63,l:0,t:0,blur:18,op:.57},{w:37,h:37,l:68,t:6,blur:10,op:.49},{w:28,h:28,l:14,t:14,blur:8,op:.41},{w:20,h:20,l:54,t:33,blur:6,op:.33},{w:13,h:13,l:38,t:49,blur:4,op:.24}],
    sparkles:[{l:5,t:14,sd:'1.3s',sl:'0s'},{l:40,t:1,sd:'1.7s',sl:'.06s'},{l:89,t:22,sd:'1.5s',sl:'.3s'},{l:28,t:38,sd:'1.9s',sl:'.55s'},{l:74,t:46,sd:'1.6s',sl:'.8s'},{l:16,t:52,sd:'1.8s',sl:'1.05s'},{l:61,t:59,sd:'1.4s',sl:'1.3s'},{l:44,t:67,sd:'2s',sl:'1.55s'},{l:23,t:73,sd:'1.7s',sl:'1.8s'}]},
 
-  /* LV10 – cb는 JS에서만 사용, CSS hue-rotate로 무지개 처리 */
   {lv:10,name:'신화',            icon:'🌈',badge:'MYTH',
-   ca:'#1a0033',cb:'#ff0055',cc:'#ff88cc',subs:'10M+',
+   ca:'#2a004a',cb:'#ff9de2',cc:'#ffe0f5',subs:'10M+',
    beamSpeed:'1.2s',bandOp:90,stars:5,beamCount:4,
    bokeh:[{w:68,h:68,l:0,t:0,blur:20,op:.6},{w:39,h:39,l:69,t:5,blur:12,op:.53},{w:30,h:30,l:12,t:12,blur:9,op:.45},{w:22,h:22,l:56,t:31,blur:7,op:.36},{w:15,h:15,l:40,t:47,blur:5,op:.28},{w:9,h:9,l:26,t:62,blur:3,op:.2}],
    sparkles:[{l:4,t:12,sd:'1.1s',sl:'0s'},{l:38,t:0,sd:'1.5s',sl:'.04s'},{l:87,t:20,sd:'1.3s',sl:'.25s'},{l:26,t:36,sd:'1.7s',sl:'.48s'},{l:76,t:44,sd:'1.4s',sl:'.72s'},{l:14,t:50,sd:'1.6s',sl:'.96s'},{l:63,t:57,sd:'1.2s',sl:'1.2s'},{l:47,t:65,sd:'1.8s',sl:'1.44s'},{l:21,t:71,sd:'1.5s',sl:'1.68s'},{l:55,t:76,sd:'1.3s',sl:'1.9s'}]}
@@ -438,9 +491,13 @@ function buildCardHTML(g){
     `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${9+Math.min(g.lv,5)}px;--sdur:${s.sd};--sdel:${s.sl};">✦</span>`
   ).join('');
 
-  const frameBg=isRb
-    ? 'background:linear-gradient(135deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00);background-size:300% 300%;animation:rbFrame 2s linear infinite;'
-    : `background:linear-gradient(135deg,color-mix(in srgb,${g.cb} 80%,#fff) 0%,color-mix(in srgb,${g.cb} 40%,transparent) 40%,color-mix(in srgb,${g.cb} 70%,#fff) 60%,color-mix(in srgb,${g.cb} 30%,transparent) 100%);`;
+  /* 프레임 배경 */
+  const frameBg=isRb ? '' :
+    `background:linear-gradient(135deg,
+      color-mix(in srgb,${g.cb} 80%,#fff) 0%,
+      color-mix(in srgb,${g.cb} 40%,transparent) 40%,
+      color-mix(in srgb,${g.cb} 70%,#fff) 60%,
+      color-mix(in srgb,${g.cb} 30%,transparent) 100%);`;
 
   return `
 <div class="card-scene" data-lv="${g.lv}"
@@ -448,63 +505,88 @@ function buildCardHTML(g){
   onmousemove="card3D(event,this)"
   onmouseleave="cardReset(this)">
 
-  <div class="card-frame" style="${frameBg}"></div>
-  ${buildBeams(g)}
+  <!-- 틸트 루트: 빔·프레임·카드 모두 포함 → 함께 기울어짐 -->
+  <div class="card-tilt">
 
-  <div class="card-body">
-    <div class="card-face">
-      <div class="card-bokeh">${bokeh}</div>
-      <div class="card-sparkles">${sparkles}</div>
-      <div class="card-header">
-        <div class="card-stars">${stars}</div>
-        <div class="card-badge">${g.badge}</div>
-      </div>
-      <div class="card-icon-wrap">
-        <div class="card-main-icon">${g.icon}</div>
-        <div class="card-main-name">${g.name}</div>
-      </div>
-      <div class="card-top-band"></div>
-      <div class="card-bot-band"></div>
-      <div class="card-vignette"></div>
-      <div class="card-shine"></div>
-      <div class="card-footer">
-        <div class="footer-lv">LV.${g.lv}</div>
-        <div class="footer-name">${g.name}</div>
-        <div class="footer-subs">${g.subs}</div>
+    <!-- 테두리 프레임 -->
+    <div class="card-frame" style="${frameBg}"></div>
+
+    <!-- 회전 빔 -->
+    ${buildBeams(g)}
+
+    <!-- 카드 본체 -->
+    <div class="card-body">
+      <div class="card-face">
+        <div class="card-bokeh">${bokeh}</div>
+        <div class="card-sparkles">${sparkles}</div>
+        <div class="card-header">
+          <div class="card-stars">${stars}</div>
+          <div class="card-badge">${g.badge}</div>
+        </div>
+        <div class="card-icon-wrap">
+          <div class="card-main-icon">${g.icon}</div>
+          <div class="card-main-name">${g.name}</div>
+        </div>
+        <div class="card-top-band"></div>
+        <div class="card-bot-band"></div>
+        <div class="card-vignette"></div>
+        <div class="card-shine"></div>
+        <div class="card-footer">
+          <div class="footer-lv">LV.${g.lv}</div>
+          <div class="footer-name">${g.name}</div>
+          <div class="footer-subs">${g.subs}</div>
+        </div>
       </div>
     </div>
-  </div>
+
+  </div><!-- /card-tilt -->
 </div>`;
 }
 
-/* ── 3D 틸트 ── */
+/* ── 3D 틸트: card-tilt 을 회전 ── */
 function card3D(e,el){
   const r=el.getBoundingClientRect();
-  const x=e.clientX-r.left,y=e.clientY-r.top;
-  const cx=r.width/2,cy=r.height/2,MAX=20;
-  const ry=((x-cx)/cx)*MAX,rx=-((y-cy)/cy)*MAX;
+  const x=e.clientX-r.left, y=e.clientY-r.top;
+  const cx=r.width/2, cy=r.height/2, MAX=20;
+  const ry= ((x-cx)/cx)*MAX;
+  const rx=-((y-cy)/cy)*MAX;
   const mx=(x/r.width*100).toFixed(1)+'%';
   const my=(y/r.height*100).toFixed(1)+'%';
 
-  el.querySelector('.card-body').style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
-  el.querySelector('.card-shine').style.background=`
+  /* 빔·프레임·카드 전체를 감싼 tilt 루트를 회전 */
+  const tilt=el.querySelector('.card-tilt');
+  tilt.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
+
+  /* 광택 마우스 반응 */
+  const shine=el.querySelector('.card-shine');
+  shine.style.background=`
     linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
     linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),
-    radial-gradient(ellipse 55% 45% at ${mx} ${my},rgba(255,255,255,.2) 0%,rgba(255,255,255,.05) 50%,transparent 75%)
+    radial-gradient(ellipse 55% 45% at ${mx} ${my},
+      rgba(255,255,255,.22) 0%,rgba(255,255,255,.05) 50%,transparent 75%)
   `;
-  el.querySelector('.card-face').style.background=`
-    radial-gradient(ellipse 78% 58% at ${mx} ${my},color-mix(in srgb,var(--cb) 24%,transparent) 0%,transparent 68%),
-    linear-gradient(160deg,color-mix(in srgb,var(--ca) 30%,#0d0d1a) 0%,#0d0d1a 55%,color-mix(in srgb,var(--ca) 14%,#07070f) 100%)
+
+  /* face 내부 광원 */
+  const face=el.querySelector('.card-face');
+  face.style.background=`
+    radial-gradient(ellipse 78% 58% at ${mx} ${my},
+      color-mix(in srgb,var(--cb) 24%,transparent) 0%,transparent 68%),
+    linear-gradient(160deg,
+      color-mix(in srgb,var(--ca) 30%,#0d0d1a) 0%,
+      #0d0d1a 55%,
+      color-mix(in srgb,var(--ca) 14%,#07070f) 100%)
   `;
 }
 
 function cardReset(el){
-  el.querySelector('.card-body').style.transform='rotateX(0deg) rotateY(0deg) scale(1)';
-  el.querySelector('.card-face').style.background='';
+  const tilt=el.querySelector('.card-tilt');
+  tilt.style.transform='rotateX(0deg) rotateY(0deg) scale(1)';
+
   el.querySelector('.card-shine').style.background=`
     linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
     linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)
   `;
+  el.querySelector('.card-face').style.background='';
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
