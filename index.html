@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D 레벨 카드 미리보기</title>
+<title>MAX 카드 샘플 5종</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#07070f;--text:#e8e8f0;--sub:#7777aa;--accent:#6c63ff;}
+:root{--bg:#07070f;--text:#e8e8f0;--sub:#7777aa;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   background:var(--bg);color:var(--text);
@@ -14,30 +14,29 @@ body{
   min-height:100vh;padding:48px 24px 80px;
 }
 .page-title{
-  text-align:center;font-size:2rem;font-weight:900;
-  background:linear-gradient(90deg,#6c63ff,#a78bfa,#6c63ff);
-  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:titleSlide 3s linear infinite;margin-bottom:8px;
+  text-align:center;font-size:1.8rem;font-weight:900;
+  color:#e8e8f0;margin-bottom:8px;letter-spacing:.04em;
 }
-@keyframes titleSlide{to{background-position:200% center;}}
-.page-sub{text-align:center;color:var(--sub);font-size:.88rem;margin-bottom:48px;}
-.cards-grid{
+.page-sub{text-align:center;color:var(--sub);font-size:.88rem;margin-bottom:60px;}
+.samples-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:70px 40px;padding:40px 20px 60px;
-  max-width:1400px;margin:0 auto;
+  gap:80px 40px;padding:40px 20px 60px;
+  max-width:1300px;margin:0 auto;
+}
+.sample-label{
+  text-align:center;margin-top:16px;
+  font-size:.78rem;font-weight:700;letter-spacing:.08em;
+  color:var(--sub);
 }
 
 /* ══════════════════════════════════════
-   SCENE
+   공통 카드 구조
 ══════════════════════════════════════ */
 .card-scene{
   width:220px;height:308px;
-  perspective:900px;
-  position:relative;
-  cursor:pointer;
+  perspective:900px;position:relative;cursor:pointer;
 }
-
 .card-tilt{
   position:absolute;inset:0;
   transform-style:preserve-3d;
@@ -45,79 +44,31 @@ body{
   transition:transform .1s ease;
   will-change:transform;
 }
-
-/* ── 테두리 프레임 ── */
 .card-frame{
-  position:absolute;inset:-3px;
-  border-radius:21px;
+  position:absolute;inset:-3px;border-radius:21px;
   z-index:1;pointer-events:none;
 }
 .card-frame::after{
   content:'';position:absolute;inset:2px;
   border-radius:19px;background:var(--bg);
 }
-
-/* ── 빔 컨테이너 ── */
 .beam-container{
-  position:absolute;inset:-3px;
-  border-radius:21px;overflow:hidden;
-  z-index:2;pointer-events:none;
+  position:absolute;inset:-3px;border-radius:21px;
+  overflow:hidden;z-index:2;pointer-events:none;
 }
 .beam-ring{
-  position:absolute;
-  width:400%;height:400%;
-  top:50%;left:50%;
-  margin-top:-200%;margin-left:-200%;
-  background:conic-gradient(
-    from 0deg,
-    transparent 0%,
-    color-mix(in srgb,var(--cb,#fff) 90%,#fff) 3%,
-    rgba(255,255,255,1) 5%,
-    color-mix(in srgb,var(--cb,#fff) 70%,#fff) 7%,
-    transparent 10%,transparent 100%
-  );
+  position:absolute;width:400%;height:400%;
+  top:50%;left:50%;margin-top:-200%;margin-left:-200%;
   animation:beamRingSpin var(--beam-speed,3s) linear infinite;
   transform-origin:center center;
 }
 @keyframes beamRingSpin{from{rotate:0deg;}to{rotate:360deg;}}
-
-/* LV10 빔 */
-.beam-ring.rb{
-  background:conic-gradient(
-    from 0deg,
-    transparent 0%,
-    #ff0000 2%,#ff6600 3.5%,#ffcc00 5%,#00ff66 6.5%,
-    #00ccff 8%,#6600ff 9.5%,#ff00cc 11%,
-    transparent 13%,transparent 100%
-  );
-  animation:beamRingSpin var(--beam-speed,2.5s) linear infinite,
-            rbBeamHue 2s linear infinite;
-}
-@keyframes rbBeamHue{
-  0%  {filter:hue-rotate(0deg)   brightness(1.8) saturate(1.5);}
-  100%{filter:hue-rotate(360deg) brightness(1.8) saturate(1.5);}
-}
-
-/* ── 카드 본체 ── */
 .card-body{
-  position:absolute;inset:0;
-  border-radius:18px;z-index:3;
-  box-shadow:0 20px 55px rgba(0,0,0,.65),
-             0 0 0 1px color-mix(in srgb,var(--cb,#fff) 25%,transparent);
+  position:absolute;inset:0;border-radius:18px;z-index:3;
   transition:box-shadow .3s ease;
 }
-
-/* ── 카드 표면 ── */
 .card-face{
   position:absolute;inset:0;border-radius:18px;overflow:hidden;
-  background:
-    radial-gradient(ellipse 80% 55% at 50% 40%,
-      color-mix(in srgb,var(--cb,#6c63ff) 16%,transparent) 0%,transparent 70%),
-    linear-gradient(160deg,
-      color-mix(in srgb,var(--ca,#333) 28%,#0d0d1a) 0%,
-      #0d0d1a 55%,
-      color-mix(in srgb,var(--ca,#333) 14%,#07070f) 100%);
-  transition:background .08s ease;
 }
 .card-face::before{
   content:'';position:absolute;inset:0;border-radius:18px;
@@ -126,60 +77,34 @@ body{
     rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);
   pointer-events:none;z-index:1;
 }
-
-/* ── 광택 ── */
 .card-shine{
   position:absolute;inset:0;border-radius:18px;
-  background:
-    linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
-    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%);
   pointer-events:none;z-index:5;mix-blend-mode:screen;
-  transition:background .08s ease;
 }
-
-/* ── 상단/하단 밴드 ── */
 .card-top-band{
   position:absolute;top:0;left:0;right:0;height:44%;
   border-radius:18px 18px 0 0;z-index:2;pointer-events:none;
-  background:linear-gradient(180deg,
-    color-mix(in srgb,var(--cb,#fff) var(--band-op,20%),transparent) 0%,
-    transparent 100%);
 }
 .card-bot-band{
   position:absolute;bottom:0;left:0;right:0;height:40%;
   border-radius:0 0 18px 18px;z-index:2;pointer-events:none;
-  background:linear-gradient(0deg,
-    color-mix(in srgb,var(--cb,#fff) var(--band-op,20%),transparent) 0%,
-    transparent 100%);
 }
-
-/* ── 헤더 ── */
 .card-header{
-  position:absolute;top:0;left:0;right:0;
-  padding:13px 14px 0;
+  position:absolute;top:0;left:0;right:0;padding:13px 14px 0;
   display:flex;justify-content:space-between;align-items:flex-start;z-index:10;
 }
 .card-stars{display:flex;gap:2px;}
-.card-star{
-  color:#ffd700;font-size:13px;
-  text-shadow:0 0 5px rgba(255,215,0,.85),0 0 14px rgba(255,215,0,.45);
-  animation:starTwinkle var(--st-dur,3s) ease-in-out infinite;
-  animation-delay:var(--st-del,0s);
-}
+.card-star{font-size:13px;animation:starTwinkle var(--st-dur,3s) ease-in-out infinite;animation-delay:var(--st-del,0s);}
 @keyframes starTwinkle{0%,100%{opacity:.55;transform:scale(.88);}50%{opacity:1;transform:scale(1.15);}}
 .card-badge{
   color:#fff;padding:4px 11px;border-radius:8px;
   font-size:10px;font-weight:900;letter-spacing:.09em;
   box-shadow:0 2px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18);
-  background:linear-gradient(135deg,var(--ca,#555) 0%,var(--cb,#888) 100%);
-  border:1px solid rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.2);
 }
-
-/* ── 보케 ── */
 .card-bokeh{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:18px;}
 .bokeh-dot{
   position:absolute;border-radius:50%;
-  background:radial-gradient(circle,color-mix(in srgb,var(--cb,#fff) 65%,#fff) 0%,transparent 70%);
   filter:blur(var(--bblur,5px));opacity:var(--bop,.35);
   animation:bokehDrift var(--bdur,7s) ease-in-out infinite;
   animation-delay:var(--bdel,0s);
@@ -190,12 +115,9 @@ body{
   50%{transform:translate(-6px,7px) scale(.91);}
   75%{transform:translate(9px,4px) scale(1.06);}
 }
-
-/* ── 스파클 ── */
 .card-sparkles{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;border-radius:18px;}
 .sparkle-dot{
-  position:absolute;color:#ffd700;font-size:var(--ssz,11px);
-  text-shadow:0 0 6px rgba(255,215,0,.9),0 0 16px rgba(255,215,0,.5);
+  position:absolute;font-size:var(--ssz,11px);
   animation:sparklePop var(--sdur,2.2s) ease-in-out infinite;
   animation-delay:var(--sdel,0s);
 }
@@ -204,8 +126,6 @@ body{
   40%{opacity:1;transform:scale(1.25) rotate(12deg);}
   65%{opacity:.75;transform:scale(1.05) rotate(5deg);}
 }
-
-/* ── 아이콘 ── */
 .card-icon-wrap{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-54%);z-index:8;
@@ -213,10 +133,6 @@ body{
 }
 .card-main-icon{
   font-size:3.5rem;
-  filter:
-    drop-shadow(0 0 14px var(--cb,#fff))
-    drop-shadow(0 0 30px color-mix(in srgb,var(--cb,#fff) 55%,transparent))
-    drop-shadow(0 5px 18px rgba(0,0,0,.55));
   animation:iconHover 3.5s ease-in-out infinite;
 }
 @keyframes iconHover{
@@ -225,348 +141,562 @@ body{
   70%{transform:translateY(-3px) rotateY(-6deg);}
 }
 .card-main-name{
-  font-size:1.06rem;font-weight:900;color:var(--cb,#fff);
-  text-shadow:0 0 14px var(--cb,#fff),
-              0 0 32px color-mix(in srgb,var(--cb,#fff) 58%,transparent),
-              0 2px 8px rgba(0,0,0,.65);
+  font-size:1.06rem;font-weight:900;
   letter-spacing:.06em;
 }
-
-/* ── 비네트 ── */
 .card-vignette{
   position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;
   background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);
 }
-
-/* ── 푸터 ── */
 .card-footer{
   position:absolute;bottom:0;left:0;right:0;padding:11px 14px;
   display:flex;justify-content:space-between;align-items:center;
   z-index:10;border-radius:0 0 18px 18px;
-  background:linear-gradient(135deg,
-    color-mix(in srgb,var(--ca,#222) 88%,#000) 0%,
-    color-mix(in srgb,var(--ca,#222) 65%,#000) 100%);
-  border-top:1px solid color-mix(in srgb,var(--cb,#fff) 22%,transparent);
 }
 .footer-lv{
-  color:var(--cb,#fff);font-size:10px;font-weight:900;
+  font-size:10px;font-weight:900;
   background:rgba(0,0,0,.32);padding:3px 9px;border-radius:6px;
-  letter-spacing:.07em;border:1px solid color-mix(in srgb,var(--cb,#fff) 35%,transparent);
+  letter-spacing:.07em;
 }
-.footer-name{
-  color:var(--cb,#fff);font-size:13px;font-weight:800;
-  text-shadow:0 0 10px var(--cb,#fff),0 2px 5px rgba(0,0,0,.5);
-}
-.footer-subs{
-  color:color-mix(in srgb,var(--cb,#fff) 60%,transparent);
-  font-size:10px;
-}
-
-/* ── 레벨별 글로우 ── */
-.card-scene[data-lv="5"] .card-body{box-shadow:0 20px 55px rgba(0,0,0,.6),0 0 22px color-mix(in srgb,var(--cb) 22%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 28%,transparent);}
-.card-scene[data-lv="6"] .card-body{box-shadow:0 24px 62px rgba(0,0,0,.65),0 0 32px color-mix(in srgb,var(--cb) 30%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 32%,transparent);}
-.card-scene[data-lv="7"] .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 44px color-mix(in srgb,var(--cb) 38%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 36%,transparent);}
-.card-scene[data-lv="8"] .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 44px color-mix(in srgb,var(--cb) 38%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 36%,transparent);}
-.card-scene[data-lv="9"] .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 44px color-mix(in srgb,var(--cb) 38%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 36%,transparent);}
-
-/* LV9 이름 펄스 */
-.card-scene[data-lv="9"] .card-main-name{animation:namePulse9 2s ease-in-out infinite alternate;}
-@keyframes namePulse9{
-  from{text-shadow:0 0 12px var(--cb),0 0 24px var(--cb);}
-  to  {text-shadow:0 0 22px var(--cb),0 0 55px var(--cb),0 0 90px color-mix(in srgb,var(--cb) 50%,transparent);}
-}
+.footer-name{font-size:13px;font-weight:800;}
+.footer-subs{font-size:10px;opacity:.7;}
 
 /* ══════════════════════════════════════
-   LV10 무지개
+   A. 골드/샴페인 — 황금빛 왕관
 ══════════════════════════════════════ */
-.card-scene[data-lv="10"] .card-frame{
-  background:linear-gradient(135deg,#ff0000,#ff6600,#ffcc00,#00ff66,#00ccff,#6600ff,#ff00cc,#ff0000);
-  background-size:400% 400%;
-  animation:rbFrameShift 2s linear infinite;
+.card-A .card-frame{
+  background:linear-gradient(135deg,
+    #b8860b,#ffd700,#fffacd,#ffd700,#b8860b,#8b6914);
+  background-size:300% 300%;
+  animation:goldShift 3s ease-in-out infinite;
 }
-@keyframes rbFrameShift{
-  0%  {background-position:0% 50%;  filter:brightness(1.6) saturate(1.5);}
-  50% {background-position:100% 50%;filter:brightness(2.0) saturate(1.8);}
-  100%{background-position:0% 50%;  filter:brightness(1.6) saturate(1.5);}
+@keyframes goldShift{
+  0%  {background-position:0% 50%;  filter:brightness(1.4) saturate(1.3);}
+  50% {background-position:100% 50%;filter:brightness(1.8) saturate(1.5);}
+  100%{background-position:0% 50%;  filter:brightness(1.4) saturate(1.3);}
 }
-.card-scene[data-lv="10"] .card-top-band{
-  background:linear-gradient(180deg,rgba(255,50,50,.7) 0%,transparent 100%);
-  animation:rbBandHue 2s linear infinite;
+.card-A .beam-ring{
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,#8b6914 2%,#ffd700 4%,#fffacd 5.5%,#ffd700 7%,#8b6914 9%,
+    transparent 11%,transparent 100%);
+  animation:beamRingSpin 3s linear infinite, goldBeam 2s ease-in-out infinite;
 }
-.card-scene[data-lv="10"] .card-bot-band{
-  background:linear-gradient(0deg,rgba(255,50,50,.7) 0%,transparent 100%);
-  animation:rbBandHue 2s linear infinite;animation-delay:-0.6s;
+@keyframes goldBeam{
+  0%,100%{filter:brightness(1.5) saturate(1.4);}
+  50%    {filter:brightness(2.2) saturate(1.8);}
 }
-@keyframes rbBandHue{
-  0%  {filter:hue-rotate(0deg)   brightness(1.8) saturate(1.6);}
-  100%{filter:hue-rotate(360deg) brightness(1.8) saturate(1.6);}
+.card-A .card-body{
+  box-shadow:
+    0 25px 65px rgba(0,0,0,.75),
+    0 0 55px rgba(255,200,0,.45),
+    0 0 100px rgba(255,160,0,.25),
+    0 0 0 1px rgba(255,215,0,.4);
+  animation:goldGlow 2.5s ease-in-out infinite;
 }
-.card-scene[data-lv="10"] .card-face{
+@keyframes goldGlow{
+  0%,100%{box-shadow:0 25px 65px rgba(0,0,0,.75),0 0 45px rgba(255,200,0,.4),0 0 80px rgba(255,160,0,.2),0 0 0 1px rgba(255,215,0,.35);}
+  50%    {box-shadow:0 25px 65px rgba(0,0,0,.75),0 0 70px rgba(255,215,0,.6),0 0 130px rgba(255,180,0,.35),0 0 0 1px rgba(255,215,0,.55);}
+}
+.card-A .card-face{
   background:
-    linear-gradient(135deg,
-      rgba(255,0,80,.3) 0%,rgba(255,140,0,.25) 16%,rgba(255,220,0,.25) 33%,
-      rgba(0,255,120,.25) 50%,rgba(0,180,255,.25) 66%,rgba(120,0,255,.25) 83%,
-      rgba(255,0,150,.3) 100%),
-    linear-gradient(160deg,#1a0033 0%,#0d0018 55%,#1a0033 100%) !important;
-  background-size:200% 200%,100% 100% !important;
-  animation:rbFaceMove 3s linear infinite !important;
+    radial-gradient(ellipse 75% 60% at 50% 40%,rgba(255,200,50,.18) 0%,transparent 70%),
+    linear-gradient(160deg,#1a1200 0%,#0d0900 50%,#1a1000 100%);
 }
-@keyframes rbFaceMove{
-  0%  {background-position:0% 50%,0 0;}
-  50% {background-position:100% 50%,0 0;}
-  100%{background-position:0% 50%,0 0;}
-}
-.card-scene[data-lv="10"] .card-bokeh{
-  animation:rbBeamHue 2s linear infinite;
-  filter:brightness(1.5) saturate(1.4);
-}
-.card-scene[data-lv="10"] .card-badge{
-  background:linear-gradient(135deg,#ff0000,#ff6600,#ffcc00,#00ff66,#00ccff,#6600ff,#ff00cc) !important;
-  background-size:300% 300% !important;
-  animation:rbFrameShift 1.5s linear infinite;
-  color:#fff !important;
-  text-shadow:0 1px 3px rgba(0,0,0,.5) !important;
-  border-color:rgba(255,255,255,.4) !important;
-}
-.card-scene[data-lv="10"] .card-star{
-  animation:starTwinkle 2s ease-in-out infinite,rbStarHue 2s linear infinite;
-}
-@keyframes rbStarHue{
-  0%  {filter:hue-rotate(0deg)   brightness(1.5);}
-  100%{filter:hue-rotate(360deg) brightness(1.5);}
-}
-.card-scene[data-lv="10"] .card-main-name{
-  background:linear-gradient(90deg,#ff0000,#ff6600,#ffcc00,#00ff66,#00ccff,#6600ff,#ff00cc,#ff0000);
-  background-size:200%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:rbNameSlide 1.5s linear infinite;
+.card-A .card-top-band{background:linear-gradient(180deg,rgba(255,215,0,.35) 0%,transparent 100%);}
+.card-A .card-bot-band{background:linear-gradient(0deg,rgba(255,180,0,.3) 0%,transparent 100%);}
+.card-A .card-badge{background:linear-gradient(135deg,#8b6914,#ffd700,#8b6914);color:#1a0f00;}
+.card-A .card-star{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,1),0 0 20px rgba(255,180,0,.7);}
+.card-A .bokeh-dot{background:radial-gradient(circle,rgba(255,215,0,.8) 0%,transparent 70%);}
+.card-A .sparkle-dot{color:#ffd700;text-shadow:0 0 8px #ffd700,0 0 20px rgba(255,180,0,.8);}
+.card-A .card-main-icon{filter:drop-shadow(0 0 16px #ffd700) drop-shadow(0 0 36px rgba(255,180,0,.7)) drop-shadow(0 5px 18px rgba(0,0,0,.6));}
+.card-A .card-main-name{
+  background:linear-gradient(90deg,#8b6914,#ffd700,#fffacd,#ffd700,#8b6914);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:goldNameSlide 2s linear infinite;
   filter:brightness(1.3);
 }
-@keyframes rbNameSlide{to{background-position:200% center;}}
-.card-scene[data-lv="10"] .card-main-icon{
-  animation:iconHover 3.5s ease-in-out infinite,rbIconGlow 2s linear infinite;
+@keyframes goldNameSlide{to{background-position:200% center;}}
+.card-A .card-shine{
+  background:linear-gradient(135deg,rgba(255,215,0,.15) 0%,rgba(255,215,0,.05) 35%,transparent 60%),
+             linear-gradient(225deg,rgba(255,240,180,.1) 0%,transparent 50%);
 }
-@keyframes rbIconGlow{
-  0%  {filter:drop-shadow(0 0 18px #ff0050) drop-shadow(0 0 38px #ff0050) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
-  17% {filter:drop-shadow(0 0 18px #ff8800) drop-shadow(0 0 38px #ff8800) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
-  33% {filter:drop-shadow(0 0 18px #ffdd00) drop-shadow(0 0 38px #ffdd00) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
-  50% {filter:drop-shadow(0 0 18px #00ff88) drop-shadow(0 0 38px #00ff88) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
-  67% {filter:drop-shadow(0 0 18px #00bbff) drop-shadow(0 0 38px #00bbff) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
-  83% {filter:drop-shadow(0 0 18px #8800ff) drop-shadow(0 0 38px #8800ff) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
-  100%{filter:drop-shadow(0 0 18px #ff0050) drop-shadow(0 0 38px #ff0050) drop-shadow(0 5px 18px rgba(0,0,0,.4));}
+.card-A .card-footer{
+  background:linear-gradient(135deg,#1a1200 0%,#2d1f00 100%);
+  border-top:1px solid rgba(255,215,0,.3);
 }
-.card-scene[data-lv="10"] .card-body{
-  animation:rbGlow10 2s linear infinite;
+.card-A .footer-lv{color:#ffd700;border:1px solid rgba(255,215,0,.4);}
+.card-A .footer-name{color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.7);}
+.card-A .footer-subs{color:rgba(255,215,0,.55);}
+
+/* ══════════════════════════════════════
+   B. 다크 플래티넘 — 냉철한 은빛
+══════════════════════════════════════ */
+.card-B .card-frame{
+  background:linear-gradient(135deg,
+    #2a2a2a,#aaa,#fff,#ccc,#555,#aaa);
+  background-size:300% 300%;
+  animation:platShift 3s ease-in-out infinite;
 }
-@keyframes rbGlow10{
-  0%  {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(255,0,80,.7),  0 0 160px rgba(255,0,80,.4),  0 0 0 1px rgba(255,0,80,.5);}
-  17% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(255,140,0,.7), 0 0 160px rgba(255,140,0,.4), 0 0 0 1px rgba(255,140,0,.5);}
-  33% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(255,220,0,.7), 0 0 160px rgba(255,220,0,.4), 0 0 0 1px rgba(255,220,0,.5);}
-  50% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(0,255,120,.7), 0 0 160px rgba(0,255,120,.4), 0 0 0 1px rgba(0,255,120,.5);}
-  67% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(0,180,255,.7), 0 0 160px rgba(0,180,255,.4), 0 0 0 1px rgba(0,180,255,.5);}
-  83% {box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(120,0,255,.7), 0 0 160px rgba(120,0,255,.4), 0 0 0 1px rgba(120,0,255,.5);}
-  100%{box-shadow:0 38px 95px rgba(0,0,0,.8),0 0 90px rgba(255,0,80,.7),  0 0 160px rgba(255,0,80,.4),  0 0 0 1px rgba(255,0,80,.5);}
+@keyframes platShift{
+  0%  {background-position:0% 50%;  filter:brightness(1.3);}
+  50% {background-position:100% 50%;filter:brightness(1.8);}
+  100%{background-position:0% 50%;  filter:brightness(1.3);}
 }
-.card-scene[data-lv="10"] .card-footer{
-  background:linear-gradient(135deg,#c060a0 0%,#7040c0 100%) !important;
-  animation:rbFooterHue 2s linear infinite;
-  border-top:1px solid rgba(255,255,255,.35) !important;
+.card-B .beam-ring{
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,#444 2%,#aaa 4%,#fff 5.5%,#aaa 7%,#444 9%,
+    transparent 11%,transparent 100%);
+  animation:beamRingSpin 2.8s linear infinite;filter:brightness(1.6);
 }
-@keyframes rbFooterHue{
-  0%  {filter:hue-rotate(0deg)   brightness(1.3);}
-  100%{filter:hue-rotate(360deg) brightness(1.3);}
+.card-B .card-body{
+  box-shadow:
+    0 25px 65px rgba(0,0,0,.8),
+    0 0 50px rgba(180,180,220,.3),
+    0 0 90px rgba(150,150,200,.15),
+    0 0 0 1px rgba(200,200,255,.25);
+  animation:platGlow 3s ease-in-out infinite;
 }
-.card-scene[data-lv="10"] .footer-lv,
-.card-scene[data-lv="10"] .footer-name{color:#fff !important;-webkit-text-fill-color:#fff !important;}
-.card-scene[data-lv="10"] .footer-subs{color:rgba(255,255,255,.8) !important;}
+@keyframes platGlow{
+  0%,100%{box-shadow:0 25px 65px rgba(0,0,0,.8),0 0 40px rgba(180,180,220,.28),0 0 0 1px rgba(200,200,255,.22);}
+  50%    {box-shadow:0 25px 65px rgba(0,0,0,.8),0 0 65px rgba(200,200,255,.42),0 0 0 1px rgba(220,220,255,.38);}
+}
+.card-B .card-face{
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 40%,rgba(200,210,255,.12) 0%,transparent 70%),
+    linear-gradient(160deg,#0e0e14 0%,#080810 50%,#0e0e14 100%);
+}
+.card-B .card-top-band{background:linear-gradient(180deg,rgba(200,210,255,.22) 0%,transparent 100%);}
+.card-B .card-bot-band{background:linear-gradient(0deg,rgba(180,190,240,.18) 0%,transparent 100%);}
+.card-B .card-badge{background:linear-gradient(135deg,#1a1a2e,#4a4a6a,#8888aa);color:#dde;}
+.card-B .card-star{color:#c8d0ff;text-shadow:0 0 6px rgba(180,190,255,.9),0 0 16px rgba(160,170,240,.6);}
+.card-B .bokeh-dot{background:radial-gradient(circle,rgba(200,210,255,.75) 0%,transparent 70%);}
+.card-B .sparkle-dot{color:#c8d0ff;text-shadow:0 0 8px #c8d0ff,0 0 20px rgba(180,190,255,.7);}
+.card-B .card-main-icon{filter:drop-shadow(0 0 14px #c8d0ff) drop-shadow(0 0 32px rgba(180,190,255,.6)) drop-shadow(0 5px 18px rgba(0,0,0,.6));}
+.card-B .card-main-name{
+  background:linear-gradient(90deg,#666,#bbb,#fff,#bbb,#666);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:platNameSlide 2.5s linear infinite;
+}
+@keyframes platNameSlide{to{background-position:200% center;}}
+.card-B .card-shine{
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,rgba(200,210,255,.06) 35%,transparent 60%),
+             linear-gradient(225deg,rgba(255,255,255,.09) 0%,transparent 50%);
+}
+.card-B .card-footer{
+  background:linear-gradient(135deg,#0a0a14 0%,#14142a 100%);
+  border-top:1px solid rgba(180,190,255,.2);
+}
+.card-B .footer-lv{color:#c8d0ff;border:1px solid rgba(180,190,255,.3);}
+.card-B .footer-name{color:#dde4ff;text-shadow:0 0 10px rgba(180,190,255,.6);}
+.card-B .footer-subs{color:rgba(180,190,255,.5);}
+
+/* ══════════════════════════════════════
+   C. 딥 퍼플 + 골드 — 왕족의 위엄
+══════════════════════════════════════ */
+.card-C .card-frame{
+  background:linear-gradient(135deg,
+    #1a0030,#7b2fff,#c084fc,#ffd700,#c084fc,#7b2fff,#1a0030);
+  background-size:300% 300%;
+  animation:royalShift 2.5s ease-in-out infinite;
+}
+@keyframes royalShift{
+  0%  {background-position:0% 50%;  filter:brightness(1.4) saturate(1.4);}
+  50% {background-position:100% 50%;filter:brightness(1.9) saturate(1.7);}
+  100%{background-position:0% 50%;  filter:brightness(1.4) saturate(1.4);}
+}
+.card-C .beam-ring{
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,#3d007a 2%,#9b40ff 4%,#ffd700 5.5%,#9b40ff 7%,#3d007a 9%,
+    transparent 11%,transparent 100%);
+  animation:beamRingSpin 2.5s linear infinite;filter:brightness(1.7) saturate(1.5);
+}
+.card-C .card-body{
+  box-shadow:
+    0 25px 65px rgba(0,0,0,.8),
+    0 0 60px rgba(123,47,255,.5),
+    0 0 110px rgba(123,47,255,.25),
+    0 0 0 1px rgba(192,132,252,.4);
+  animation:royalGlow 2.5s ease-in-out infinite;
+}
+@keyframes royalGlow{
+  0%,100%{box-shadow:0 25px 65px rgba(0,0,0,.8),0 0 50px rgba(123,47,255,.4),0 0 90px rgba(123,47,255,.2),0 0 0 1px rgba(192,132,252,.35);}
+  50%    {box-shadow:0 25px 65px rgba(0,0,0,.8),0 0 80px rgba(150,80,255,.6),0 0 140px rgba(123,47,255,.35),0 0 0 1px rgba(220,160,255,.55);}
+}
+.card-C .card-face{
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 38%,rgba(140,60,255,.22) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 30% at 50% 38%,rgba(255,215,0,.08) 0%,transparent 60%),
+    linear-gradient(160deg,#0d0018 0%,#060010 50%,#0d0018 100%);
+}
+.card-C .card-top-band{background:linear-gradient(180deg,rgba(155,64,255,.4) 0%,transparent 100%);}
+.card-C .card-bot-band{background:linear-gradient(0deg,rgba(123,47,255,.35) 0%,transparent 100%);}
+.card-C .card-badge{
+  background:linear-gradient(135deg,#3d007a,#9b40ff,#ffd700);
+  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.card-C .card-star{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,1),0 0 20px rgba(200,100,255,.7);}
+.card-C .bokeh-dot{background:radial-gradient(circle,rgba(180,100,255,.8) 0%,transparent 70%);}
+.card-C .sparkle-dot{color:#ffd700;text-shadow:0 0 8px #ffd700,0 0 20px rgba(180,100,255,.9);}
+.card-C .card-main-icon{filter:drop-shadow(0 0 16px #9b40ff) drop-shadow(0 0 36px rgba(123,47,255,.7)) drop-shadow(0 0 8px #ffd700) drop-shadow(0 5px 18px rgba(0,0,0,.6));}
+.card-C .card-main-name{
+  background:linear-gradient(90deg,#c084fc,#ffd700,#fff,#ffd700,#c084fc);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:royalNameSlide 2s linear infinite;filter:brightness(1.2);
+}
+@keyframes royalNameSlide{to{background-position:200% center;}}
+.card-C .card-shine{
+  background:linear-gradient(135deg,rgba(200,150,255,.14) 0%,rgba(255,215,0,.06) 35%,transparent 60%),
+             linear-gradient(225deg,rgba(180,100,255,.09) 0%,transparent 50%);
+}
+.card-C .card-footer{
+  background:linear-gradient(135deg,#0d0018 0%,#1a0035 100%);
+  border-top:1px solid rgba(180,100,255,.3);
+}
+.card-C .footer-lv{color:#c084fc;border:1px solid rgba(180,100,255,.4);}
+.card-C .footer-name{color:#e0b0ff;text-shadow:0 0 10px rgba(180,100,255,.7);}
+.card-C .footer-subs{color:rgba(192,132,252,.55);}
+
+/* ══════════════════════════════════════
+   D. 블랙 + 시안 — 사이버 엘리트
+══════════════════════════════════════ */
+.card-D .card-frame{
+  background:linear-gradient(135deg,
+    #001a1a,#00ffff,#00cccc,#fff,#00cccc,#00ffff,#001a1a);
+  background-size:300% 300%;
+  animation:cyanShift 2.5s ease-in-out infinite;
+}
+@keyframes cyanShift{
+  0%  {background-position:0% 50%;  filter:brightness(1.3) saturate(1.4);}
+  50% {background-position:100% 50%;filter:brightness(1.9) saturate(1.7);}
+  100%{background-position:0% 50%;  filter:brightness(1.3) saturate(1.4);}
+}
+.card-D .beam-ring{
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,#003333 2%,#00aaaa 4%,#00ffff 5.5%,#ffffff 6.5%,#00aaaa 8%,
+    transparent 10%,transparent 100%);
+  animation:beamRingSpin 2.2s linear infinite;filter:brightness(1.8) saturate(1.5);
+}
+.card-D .card-body{
+  box-shadow:
+    0 25px 65px rgba(0,0,0,.85),
+    0 0 55px rgba(0,255,255,.4),
+    0 0 100px rgba(0,200,200,.2),
+    0 0 0 1px rgba(0,255,255,.35);
+  animation:cyanGlow 2.2s ease-in-out infinite;
+}
+@keyframes cyanGlow{
+  0%,100%{box-shadow:0 25px 65px rgba(0,0,0,.85),0 0 45px rgba(0,220,220,.35),0 0 80px rgba(0,180,180,.18),0 0 0 1px rgba(0,255,255,.3);}
+  50%    {box-shadow:0 25px 65px rgba(0,0,0,.85),0 0 75px rgba(0,255,255,.55),0 0 130px rgba(0,200,200,.3),0 0 0 1px rgba(0,255,255,.5);}
+}
+.card-D .card-face{
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 40%,rgba(0,255,255,.14) 0%,transparent 70%),
+    linear-gradient(160deg,#001212 0%,#000a0a 50%,#001212 100%);
+}
+.card-D .card-top-band{background:linear-gradient(180deg,rgba(0,255,255,.3) 0%,transparent 100%);}
+.card-D .card-bot-band{background:linear-gradient(0deg,rgba(0,200,200,.25) 0%,transparent 100%);}
+.card-D .card-badge{background:linear-gradient(135deg,#001a1a,#006666,#00cccc);color:#00ffff;}
+.card-D .card-star{color:#00ffff;text-shadow:0 0 8px rgba(0,255,255,1),0 0 20px rgba(0,200,200,.7);}
+.card-D .bokeh-dot{background:radial-gradient(circle,rgba(0,255,255,.75) 0%,transparent 70%);}
+.card-D .sparkle-dot{color:#00ffff;text-shadow:0 0 8px #00ffff,0 0 20px rgba(0,200,200,.9);}
+.card-D .card-main-icon{filter:drop-shadow(0 0 16px #00ffff) drop-shadow(0 0 36px rgba(0,200,200,.7)) drop-shadow(0 5px 18px rgba(0,0,0,.6));}
+.card-D .card-main-name{
+  background:linear-gradient(90deg,#006666,#00cccc,#fff,#00cccc,#006666);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:cyanNameSlide 2s linear infinite;
+}
+@keyframes cyanNameSlide{to{background-position:200% center;}}
+.card-D .card-shine{
+  background:linear-gradient(135deg,rgba(0,255,255,.12) 0%,rgba(0,200,200,.05) 35%,transparent 60%),
+             linear-gradient(225deg,rgba(0,255,255,.08) 0%,transparent 50%);
+}
+.card-D .card-footer{
+  background:linear-gradient(135deg,#001212 0%,#002222 100%);
+  border-top:1px solid rgba(0,255,255,.25);
+}
+.card-D .footer-lv{color:#00ffff;border:1px solid rgba(0,255,255,.35);}
+.card-D .footer-name{color:#00ffff;text-shadow:0 0 10px rgba(0,200,200,.7);}
+.card-D .footer-subs{color:rgba(0,200,200,.5);}
+
+/* ══════════════════════════════════════
+   E. 딥 네이비 + 골드 — 클래식 프리미엄
+══════════════════════════════════════ */
+.card-E .card-frame{
+  background:linear-gradient(135deg,
+    #0a0a2e,#1a237e,#ffd700,#fffacd,#ffd700,#1a237e,#0a0a2e);
+  background-size:300% 300%;
+  animation:navyShift 3s ease-in-out infinite;
+}
+@keyframes navyShift{
+  0%  {background-position:0% 50%;  filter:brightness(1.3) saturate(1.3);}
+  50% {background-position:100% 50%;filter:brightness(1.8) saturate(1.6);}
+  100%{background-position:0% 50%;  filter:brightness(1.3) saturate(1.3);}
+}
+.card-E .beam-ring{
+  background:conic-gradient(
+    from 0deg,
+    transparent 0%,#0a0a2e 2%,#3949ab 4%,#ffd700 5.5%,#fffacd 6.5%,#3949ab 8%,
+    transparent 10%,transparent 100%);
+  animation:beamRingSpin 2.8s linear infinite;filter:brightness(1.7) saturate(1.4);
+}
+.card-E .card-body{
+  box-shadow:
+    0 25px 65px rgba(0,0,0,.8),
+    0 0 55px rgba(26,35,126,.6),
+    0 0 100px rgba(57,73,171,.3),
+    0 0 0 1px rgba(255,215,0,.35);
+  animation:navyGlow 3s ease-in-out infinite;
+}
+@keyframes navyGlow{
+  0%,100%{box-shadow:0 25px 65px rgba(0,0,0,.8),0 0 45px rgba(26,35,126,.5),0 0 80px rgba(57,73,171,.25),0 0 0 1px rgba(255,215,0,.3);}
+  50%    {box-shadow:0 25px 65px rgba(0,0,0,.8),0 0 75px rgba(57,73,171,.65),0 0 130px rgba(26,35,126,.4),0 0 0 1px rgba(255,215,0,.5);}
+}
+.card-E .card-face{
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 38%,rgba(57,73,171,.25) 0%,transparent 70%),
+    radial-gradient(ellipse 35% 25% at 50% 38%,rgba(255,215,0,.08) 0%,transparent 60%),
+    linear-gradient(160deg,#050518 0%,#020210 50%,#050518 100%);
+}
+.card-E .card-top-band{background:linear-gradient(180deg,rgba(57,73,171,.4) 0%,transparent 100%);}
+.card-E .card-bot-band{background:linear-gradient(0deg,rgba(26,35,126,.38) 0%,transparent 100%);}
+.card-E .card-badge{
+  background:linear-gradient(135deg,#0a0a2e,#1a237e,#ffd700);
+  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6);
+}
+.card-E .card-star{color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,1),0 0 20px rgba(100,120,255,.6);}
+.card-E .bokeh-dot{background:radial-gradient(circle,rgba(100,120,255,.75) 0%,transparent 70%);}
+.card-E .sparkle-dot{color:#ffd700;text-shadow:0 0 8px #ffd700,0 0 20px rgba(100,120,255,.8);}
+.card-E .card-main-icon{filter:drop-shadow(0 0 14px #3949ab) drop-shadow(0 0 32px rgba(26,35,126,.8)) drop-shadow(0 0 10px #ffd700) drop-shadow(0 5px 18px rgba(0,0,0,.6));}
+.card-E .card-main-name{
+  background:linear-gradient(90deg,#7986cb,#ffd700,#fff,#ffd700,#7986cb);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:navyNameSlide 2.5s linear infinite;filter:brightness(1.2);
+}
+@keyframes navyNameSlide{to{background-position:200% center;}}
+.card-E .card-shine{
+  background:linear-gradient(135deg,rgba(100,130,255,.13) 0%,rgba(255,215,0,.06) 35%,transparent 60%),
+             linear-gradient(225deg,rgba(80,100,220,.09) 0%,transparent 50%);
+}
+.card-E .card-footer{
+  background:linear-gradient(135deg,#050518 0%,#0d0d38 100%);
+  border-top:1px solid rgba(255,215,0,.28);
+}
+.card-E .footer-lv{color:#ffd700;border:1px solid rgba(255,215,0,.38);}
+.card-E .footer-name{color:#c5cae9;text-shadow:0 0 10px rgba(100,120,255,.6);}
+.card-E .footer-subs{color:rgba(197,202,233,.5);}
 </style>
 </head>
 <body>
 
-<div class="page-title">▶ 3D 레벨 카드 미리보기</div>
-<div class="page-sub">마우스를 카드 위에 올리면 빔·테두리·카드가 함께 3D 틸트됩니다</div>
-<div class="cards-grid" id="cards-grid"></div>
+<div class="page-title">✦ MAX 카드 샘플 5종</div>
+<div class="page-sub">마음에 드는 스타일을 골라주세요 — 마우스를 올리면 3D 틸트됩니다</div>
+
+<div class="samples-grid" id="samples-grid"></div>
 
 <script>
-const GRADES=[
-  {lv:1, name:'씨앗',            icon:'🌱',badge:'Seed',
-   ca:'#546e7a',cb:'#b0bec5',cc:'#eceff1',subs:'0 ~ 100',
-   beamSpeed:'4.2s',bandOp:13,stars:1,beamCount:1,
-   bokeh:[{w:34,h:34,l:8,t:7,blur:6,op:.28},{w:18,h:18,l:62,t:18,blur:4,op:.22}],
-   sparkles:[{l:22,t:34,sd:'2.3s',sl:'0s'},{l:55,t:14,sd:'2.9s',sl:'.4s'},{l:76,t:42,sd:'2.6s',sl:'.8s'}]},
-
-  {lv:2, name:'새싹',            icon:'🌿',badge:'Sprout',
-   ca:'#0277bd',cb:'#4fc3f7',cc:'#e1f5fe',subs:'100 ~ 1K',
-   beamSpeed:'3.8s',bandOp:17,stars:2,beamCount:1,
-   bokeh:[{w:38,h:38,l:7,t:5,blur:7,op:.32},{w:22,h:22,l:58,t:17,blur:4,op:.26},{w:14,h:14,l:32,t:30,blur:3,op:.2}],
-   sparkles:[{l:18,t:30,sd:'2s',sl:'0s'},{l:58,t:11,sd:'2.5s',sl:'.3s'},{l:80,t:40,sd:'2.2s',sl:'.7s'}]},
-
-  {lv:3, name:'나무',            icon:'🌳',badge:'Tree',
-   ca:'#f57f17',cb:'#fff176',cc:'#fffde7',subs:'1K ~ 10K',
-   beamSpeed:'3.5s',bandOp:22,stars:2,beamCount:2,
-   bokeh:[{w:40,h:40,l:6,t:4,blur:8,op:.36},{w:24,h:24,l:60,t:14,blur:5,op:.3},{w:16,h:16,l:28,t:26,blur:4,op:.23}],
-   sparkles:[{l:15,t:27,sd:'1.9s',sl:'0s'},{l:52,t:9,sd:'2.4s',sl:'.25s'},{l:82,t:36,sd:'2.1s',sl:'.6s'},{l:40,t:52,sd:'2.7s',sl:'1s'}]},
-
-  {lv:4, name:'스타터',          icon:'⭐',badge:'Starter',
-   ca:'#e64a19',cb:'#ffb74d',cc:'#fff3e0',subs:'10K ~ 50K',
-   beamSpeed:'3.2s',bandOp:26,stars:3,beamCount:2,
-   bokeh:[{w:44,h:44,l:5,t:3,blur:9,op:.39},{w:27,h:27,l:62,t:13,blur:6,op:.33},{w:18,h:18,l:25,t:24,blur:4,op:.26}],
-   sparkles:[{l:14,t:25,sd:'1.8s',sl:'0s'},{l:50,t:7,sd:'2.2s',sl:'.2s'},{l:84,t:33,sd:'2s',sl:'.55s'},{l:38,t:49,sd:'2.5s',sl:'.9s'}]},
-
-  {lv:5, name:'인플루언서',      icon:'💫',badge:'Influencer',
-   ca:'#1b5e20',cb:'#66bb6a',cc:'#e8f5e9',subs:'50K ~ 100K',
-   beamSpeed:'3s',bandOp:30,stars:3,beamCount:2,
-   bokeh:[{w:47,h:47,l:4,t:3,blur:10,op:.42},{w:29,h:29,l:63,t:11,blur:6,op:.36},{w:20,h:20,l:22,t:22,blur:5,op:.28}],
-   sparkles:[{l:12,t:22,sd:'1.7s',sl:'0s'},{l:48,t:5,sd:'2.1s',sl:'.15s'},{l:86,t:31,sd:'1.9s',sl:'.5s'},{l:36,t:47,sd:'2.3s',sl:'.8s'},{l:66,t:57,sd:'2s',sl:'1.1s'}]},
-
-  {lv:6, name:'파워 크리에이터', icon:'🔥',badge:'Power',
-   ca:'#4a148c',cb:'#ab47bc',cc:'#f3e5f5',subs:'100K ~ 500K',
-   beamSpeed:'2.8s',bandOp:37,stars:4,beamCount:3,
-   bokeh:[{w:51,h:51,l:3,t:2,blur:12,op:.45},{w:31,h:31,l:65,t:9,blur:7,op:.39},{w:22,h:22,l:20,t:20,blur:6,op:.31},{w:14,h:14,l:48,t:40,blur:4,op:.23}],
-   sparkles:[{l:10,t:20,sd:'1.6s',sl:'0s'},{l:46,t:4,sd:'2s',sl:'.12s'},{l:88,t:28,sd:'1.8s',sl:'.45s'},{l:34,t:44,sd:'2.2s',sl:'.75s'},{l:68,t:54,sd:'1.9s',sl:'1s'},{l:22,t:60,sd:'2.1s',sl:'1.3s'}]},
-
-  {lv:7, name:'메가 크리에이터', icon:'💎',badge:'Mega',
-   ca:'#880e4f',cb:'#f06292',cc:'#fce4ec',subs:'500K ~ 1M',
-   beamSpeed:'2.5s',bandOp:49,stars:4,beamCount:3,
-   bokeh:[{w:54,h:54,l:2,t:2,blur:13,op:.49},{w:33,h:33,l:66,t:8,blur:8,op:.42},{w:24,h:24,l:18,t:18,blur:6,op:.34},{w:16,h:16,l:50,t:37,blur:5,op:.27}],
-   sparkles:[{l:8,t:18,sd:'1.5s',sl:'0s'},{l:44,t:3,sd:'1.9s',sl:'.1s'},{l:90,t:26,sd:'1.7s',sl:'.4s'},{l:32,t:42,sd:'2.1s',sl:'.7s'},{l:70,t:51,sd:'1.8s',sl:'.95s'},{l:20,t:57,sd:'2s',sl:'1.25s'},{l:57,t:64,sd:'1.6s',sl:'1.5s'}]},
-
-  {lv:8, name:'탑 크리에이터',   icon:'🏆',badge:'Top',
-   ca:'#7f0000',cb:'#ef5350',cc:'#ffebee',subs:'1M ~ 5M',
-   beamSpeed:'2.5s',bandOp:63,stars:5,beamCount:3,
-   bokeh:[{w:58,h:58,l:1,t:1,blur:15,op:.53},{w:35,h:35,l:67,t:7,blur:9,op:.45},{w:26,h:26,l:16,t:16,blur:7,op:.37},{w:18,h:18,l:52,t:35,blur:5,op:.28},{w:11,h:11,l:36,t:52,blur:3,op:.2}],
-   sparkles:[{l:6,t:16,sd:'1.4s',sl:'0s'},{l:42,t:2,sd:'1.8s',sl:'.08s'},{l:91,t:24,sd:'1.6s',sl:'.35s'},{l:30,t:40,sd:'2s',sl:'.62s'},{l:72,t:49,sd:'1.7s',sl:'.88s'},{l:18,t:55,sd:'1.9s',sl:'1.15s'},{l:59,t:61,sd:'1.5s',sl:'1.4s'},{l:45,t:69,sd:'2.1s',sl:'1.6s'}]},
-
-  {lv:9, name:'레전드',          icon:'👑',badge:'Legend',
-   ca:'#bf360c',cb:'#ff6d00',cc:'#fbe9e7',subs:'5M ~ 10M',
-   beamSpeed:'2.5s',bandOp:79,stars:5,beamCount:3,
-   bokeh:[{w:63,h:63,l:0,t:0,blur:18,op:.57},{w:37,h:37,l:68,t:6,blur:10,op:.49},{w:28,h:28,l:14,t:14,blur:8,op:.41},{w:20,h:20,l:54,t:33,blur:6,op:.33},{w:13,h:13,l:38,t:49,blur:4,op:.24}],
-   sparkles:[{l:5,t:14,sd:'1.3s',sl:'0s'},{l:40,t:1,sd:'1.7s',sl:'.06s'},{l:89,t:22,sd:'1.5s',sl:'.3s'},{l:28,t:38,sd:'1.9s',sl:'.55s'},{l:74,t:46,sd:'1.6s',sl:'.8s'},{l:16,t:52,sd:'1.8s',sl:'1.05s'},{l:61,t:59,sd:'1.4s',sl:'1.3s'},{l:44,t:67,sd:'2s',sl:'1.55s'},{l:23,t:73,sd:'1.7s',sl:'1.8s'}]},
-
-  {lv:10,name:'신화',            icon:'🌈',badge:'MYTH',
-   ca:'#0d0018',cb:'#ff0055',cc:'#ff88cc',subs:'10M+',
-   beamSpeed:'2.5s',bandOp:90,stars:5,beamCount:4,
-   bokeh:[{w:68,h:68,l:0,t:0,blur:20,op:.6},{w:39,h:39,l:69,t:5,blur:12,op:.53},{w:30,h:30,l:12,t:12,blur:9,op:.45},{w:22,h:22,l:56,t:31,blur:7,op:.36},{w:15,h:15,l:40,t:47,blur:5,op:.28},{w:9,h:9,l:26,t:62,blur:3,op:.2}],
-   sparkles:[{l:4,t:12,sd:'1.1s',sl:'0s'},{l:38,t:0,sd:'1.5s',sl:'.04s'},{l:87,t:20,sd:'1.3s',sl:'.25s'},{l:26,t:36,sd:'1.7s',sl:'.48s'},{l:76,t:44,sd:'1.4s',sl:'.72s'},{l:14,t:50,sd:'1.6s',sl:'.96s'},{l:63,t:57,sd:'1.2s',sl:'1.2s'},{l:47,t:65,sd:'1.8s',sl:'1.44s'},{l:21,t:71,sd:'1.5s',sl:'1.68s'},{l:55,t:76,sd:'1.3s',sl:'1.9s'}]}
+const SAMPLES=[
+  {
+    cls:'card-A', label:'A. 골드/샴페인 — 황금빛 왕관',
+    icon:'👁️', name:'MAX', badge:'MAX',
+    lv:'MAX', subs:'10M+',
+    bokeh:[
+      {w:60,h:60,l:2,t:2,blur:16,op:.55,dur:6,del:0},
+      {w:36,h:36,l:65,t:8,blur:10,op:.45,dur:8,del:.8},
+      {w:24,h:24,l:18,t:20,blur:7,op:.38,dur:7,del:1.6},
+      {w:16,h:16,l:52,t:38,blur:5,op:.28,dur:9,del:2.4},
+      {w:10,h:10,l:38,t:55,blur:3,op:.2,dur:6.5,del:3.2},
+    ],
+    sparkles:[
+      {l:8,t:18,sz:13,dur:'1.4s',del:'0s'},
+      {l:44,t:4,sz:12,dur:'1.8s',del:'.1s'},
+      {l:88,t:26,sz:11,dur:'1.6s',del:'.35s'},
+      {l:30,t:44,sz:10,dur:'2s',del:'.6s'},
+      {l:70,t:52,sz:12,dur:'1.7s',del:'.85s'},
+      {l:18,t:58,sz:10,dur:'1.9s',del:'1.1s'},
+      {l:60,t:64,sz:11,dur:'1.5s',del:'1.35s'},
+      {l:46,t:72,sz:10,dur:'2.1s',del:'1.6s'},
+    ]
+  },
+  {
+    cls:'card-B', label:'B. 다크 플래티넘 — 냉철한 은빛',
+    icon:'💠', name:'MAX', badge:'MAX',
+    lv:'MAX', subs:'10M+',
+    bokeh:[
+      {w:60,h:60,l:2,t:2,blur:16,op:.5,dur:6.5,del:0},
+      {w:36,h:36,l:65,t:8,blur:10,op:.42,dur:8.5,del:.9},
+      {w:24,h:24,l:18,t:20,blur:7,op:.34,dur:7.5,del:1.8},
+      {w:16,h:16,l:52,t:38,blur:5,op:.26,dur:9.5,del:2.7},
+      {w:10,h:10,l:38,t:55,blur:3,op:.18,dur:7,del:3.6},
+    ],
+    sparkles:[
+      {l:8,t:18,sz:13,dur:'1.5s',del:'0s'},
+      {l:44,t:4,sz:12,dur:'1.9s',del:'.1s'},
+      {l:88,t:26,sz:11,dur:'1.7s',del:'.38s'},
+      {l:30,t:44,sz:10,dur:'2.1s',del:'.62s'},
+      {l:70,t:52,sz:12,dur:'1.8s',del:'.88s'},
+      {l:18,t:58,sz:10,dur:'2s',del:'1.12s'},
+      {l:60,t:64,sz:11,dur:'1.6s',del:'1.38s'},
+      {l:46,t:72,sz:10,dur:'2.2s',del:'1.62s'},
+    ]
+  },
+  {
+    cls:'card-C', label:'C. 딥 퍼플 + 골드 — 왕족의 위엄',
+    icon:'⚜️', name:'MAX', badge:'MAX',
+    lv:'MAX', subs:'10M+',
+    bokeh:[
+      {w:62,h:62,l:1,t:1,blur:18,op:.58,dur:6,del:0},
+      {w:38,h:38,l:66,t:7,blur:11,op:.48,dur:8,del:.8},
+      {w:26,h:26,l:16,t:18,blur:8,op:.40,dur:7,del:1.6},
+      {w:18,h:18,l:54,t:36,blur:6,op:.30,dur:9,del:2.4},
+      {w:12,h:12,l:40,t:52,blur:4,op:.22,dur:6.5,del:3.2},
+      {w:8,h:8,l:28,t:66,blur:2,op:.16,dur:8.5,del:4},
+    ],
+    sparkles:[
+      {l:7,t:16,sz:14,dur:'1.3s',del:'0s'},
+      {l:42,t:3,sz:12,dur:'1.7s',del:'.08s'},
+      {l:90,t:24,sz:12,dur:'1.5s',del:'.3s'},
+      {l:28,t:42,sz:11,dur:'1.9s',del:'.55s'},
+      {l:72,t:50,sz:13,dur:'1.6s',del:'.8s'},
+      {l:16,t:56,sz:11,dur:'1.8s',del:'1.05s'},
+      {l:62,t:62,sz:12,dur:'1.4s',del:'1.3s'},
+      {l:46,t:70,sz:10,dur:'2s',del:'1.55s'},
+    ]
+  },
+  {
+    cls:'card-D', label:'D. 블랙 + 시안 — 사이버 엘리트',
+    icon:'🔱', name:'MAX', badge:'MAX',
+    lv:'MAX', subs:'10M+',
+    bokeh:[
+      {w:60,h:60,l:2,t:2,blur:16,op:.55,dur:5.8,del:0},
+      {w:36,h:36,l:66,t:8,blur:10,op:.46,dur:7.8,del:.7},
+      {w:24,h:24,l:18,t:20,blur:7,op:.38,dur:6.8,del:1.4},
+      {w:16,h:16,l:53,t:37,blur:5,op:.28,dur:8.8,del:2.1},
+      {w:10,h:10,l:38,t:54,blur:3,op:.2,dur:6.3,del:2.8},
+    ],
+    sparkles:[
+      {l:8,t:18,sz:13,dur:'1.2s',del:'0s'},
+      {l:44,t:3,sz:12,dur:'1.6s',del:'.07s'},
+      {l:88,t:24,sz:11,dur:'1.4s',del:'.28s'},
+      {l:30,t:42,sz:10,dur:'1.8s',del:'.5s'},
+      {l:71,t:50,sz:12,dur:'1.5s',del:'.75s'},
+      {l:17,t:56,sz:10,dur:'1.7s',del:'1s'},
+      {l:61,t:62,sz:11,dur:'1.3s',del:'1.25s'},
+      {l:45,t:70,sz:10,dur:'1.9s',del:'1.5s'},
+    ]
+  },
+  {
+    cls:'card-E', label:'E. 딥 네이비 + 골드 — 클래식 프리미엄',
+    icon:'🌑', name:'MAX', badge:'MAX',
+    lv:'MAX', subs:'10M+',
+    bokeh:[
+      {w:61,h:61,l:2,t:2,blur:17,op:.56,dur:6.2,del:0},
+      {w:37,h:37,l:66,t:8,blur:11,op:.47,dur:8.2,del:.85},
+      {w:25,h:25,l:17,t:19,blur:8,op:.38,dur:7.2,del:1.7},
+      {w:17,h:17,l:53,t:37,blur:6,op:.29,dur:9.2,del:2.55},
+      {w:11,h:11,l:39,t:53,blur:4,op:.21,dur:6.7,del:3.4},
+      {w:7,h:7,l:27,t:65,blur:2,op:.15,dur:8.7,del:4.25},
+    ],
+    sparkles:[
+      {l:7,t:17,sz:13,dur:'1.4s',del:'0s'},
+      {l:43,t:3,sz:12,dur:'1.8s',del:'.09s'},
+      {l:89,t:25,sz:11,dur:'1.6s',del:'.32s'},
+      {l:29,t:43,sz:10,dur:'2s',del:'.58s'},
+      {l:71,t:51,sz:12,dur:'1.7s',del:'.84s'},
+      {l:17,t:57,sz:10,dur:'1.9s',del:'1.08s'},
+      {l:61,t:63,sz:11,dur:'1.5s',del:'1.32s'},
+      {l:45,t:71,sz:10,dur:'2.1s',del:'1.58s'},
+    ]
+  }
 ];
 
-/* ── 빔 생성 ── */
-function buildBeams(g){
-  const n=g.beamCount, spd=parseFloat(g.beamSpeed);
-  const isRb=g.lv===10;
-  let html='';
-  for(let i=0;i<n;i++){
-    const delay='-'+((spd/n)*i).toFixed(3)+'s';
-    const cls=isRb?'beam-ring rb':'beam-ring';
-    html+=`<div class="beam-container" style="--cb:${g.cb};">
-      <div class="${cls}" style="animation-duration:${g.beamSpeed};animation-delay:${delay};"></div>
-    </div>`;
-  }
-  return html;
-}
-
-/* ── 카드 HTML ── */
-function buildCardHTML(g){
-  const isRb=g.lv===10;
-
-  const stars=Array.from({length:5},(_,i)=>
-    `<span class="card-star" style="opacity:${i<g.stars?1:.16};--st-dur:${2+i*.45}s;--st-del:${i*.22}s">&starf;</span>`
+function buildSampleCard(s){
+  const stars = Array.from({length:5},(_,i)=>
+    `<span class="card-star" style="--st-dur:${2+i*.4}s;--st-del:${i*.2}s;">★</span>`
   ).join('');
 
-  const bokeh=g.bokeh.map((b,i)=>
-    `<div class="bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${5.5+i*1.4}s;--bdel:${i*.65}s;"></div>`
+  const bokeh = s.bokeh.map((b,i)=>
+    `<div class="bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${b.dur}s;--bdel:${b.del}s;"></div>`
   ).join('');
 
-  const sparkles=g.sparkles.map(s=>
-    `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${9+Math.min(g.lv,5)}px;--sdur:${s.sd};--sdel:${s.sl};">✦</span>`
+  const sparkles = s.sparkles.map(sp=>
+    `<span class="sparkle-dot" style="left:${sp.l}%;top:${sp.t}%;--ssz:${sp.sz}px;--sdur:${sp.dur};--sdel:${sp.del};">✦</span>`
   ).join('');
-
-  const frameBg=isRb ? '' :
-    `background:linear-gradient(135deg,
-      color-mix(in srgb,${g.cb} 80%,#fff) 0%,
-      color-mix(in srgb,${g.cb} 40%,transparent) 40%,
-      color-mix(in srgb,${g.cb} 70%,#fff) 60%,
-      color-mix(in srgb,${g.cb} 30%,transparent) 100%);`;
 
   return `
-<div class="card-scene" data-lv="${g.lv}"
-  style="--ca:${g.ca};--cb:${g.cb};--cc:${g.cc};--band-op:${g.bandOp}%;"
-  onmousemove="card3D(event,this)"
-  onmouseleave="cardReset(this)">
-  <div class="card-tilt">
-    <div class="card-frame" style="${frameBg}"></div>
-    ${buildBeams(g)}
-    <div class="card-body">
-      <div class="card-face">
-        <div class="card-bokeh">${bokeh}</div>
-        <div class="card-sparkles">${sparkles}</div>
-        <div class="card-header">
-          <div class="card-stars">${stars}</div>
-          <div class="card-badge">${g.badge}</div>
-        </div>
-        <div class="card-icon-wrap">
-          <div class="card-main-icon">${g.icon}</div>
-          <div class="card-main-name">${g.name}</div>
-        </div>
-        <div class="card-top-band"></div>
-        <div class="card-bot-band"></div>
-        <div class="card-vignette"></div>
-        <div class="card-shine"></div>
-        <div class="card-footer">
-          <div class="footer-lv">LV.${g.lv}</div>
-          <div class="footer-name">${g.name}</div>
-          <div class="footer-subs">${g.subs}</div>
+<div style="display:flex;flex-direction:column;align-items:center;">
+  <div class="card-scene ${s.cls}"
+    onmousemove="card3D(event,this)"
+    onmouseleave="cardReset(this)">
+    <div class="card-tilt">
+      <div class="card-frame"></div>
+      <div class="beam-container">
+        <div class="beam-ring" style="animation-duration:2.5s;"></div>
+      </div>
+      <div class="beam-container">
+        <div class="beam-ring" style="animation-duration:2.5s;animation-delay:-0.625s;"></div>
+      </div>
+      <div class="beam-container">
+        <div class="beam-ring" style="animation-duration:2.5s;animation-delay:-1.25s;"></div>
+      </div>
+      <div class="beam-container">
+        <div class="beam-ring" style="animation-duration:2.5s;animation-delay:-1.875s;"></div>
+      </div>
+      <div class="card-body">
+        <div class="card-face">
+          <div class="card-bokeh">${bokeh}</div>
+          <div class="card-sparkles">${sparkles}</div>
+          <div class="card-header">
+            <div class="card-stars">${stars}</div>
+            <div class="card-badge">${s.badge}</div>
+          </div>
+          <div class="card-icon-wrap">
+            <div class="card-main-icon">${s.icon}</div>
+            <div class="card-main-name">${s.name}</div>
+          </div>
+          <div class="card-top-band"></div>
+          <div class="card-bot-band"></div>
+          <div class="card-vignette"></div>
+          <div class="card-shine"></div>
+          <div class="card-footer">
+            <div class="footer-lv">LV.${s.lv}</div>
+            <div class="footer-name">${s.name}</div>
+            <div class="footer-subs">${s.subs}</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="sample-label">${s.label}</div>
 </div>`;
 }
 
-/* ── 3D 틸트 ── */
 function card3D(e,el){
   const r=el.getBoundingClientRect();
   const x=e.clientX-r.left, y=e.clientY-r.top;
-  const cx=r.width/2, cy=r.height/2, MAX=20;
-  const ry=((x-cx)/cx)*MAX, rx=-((y-cy)/cy)*MAX;
+  const ry=((x-r.width/2)/(r.width/2))*20;
+  const rx=-((y-r.height/2)/(r.height/2))*20;
   const mx=(x/r.width*100).toFixed(1)+'%';
   const my=(y/r.height*100).toFixed(1)+'%';
-
-  el.querySelector('.card-tilt').style.transform=
-    `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
-
+  el.querySelector('.card-tilt').style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
   el.querySelector('.card-shine').style.background=`
     linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
     linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),
-    radial-gradient(ellipse 55% 45% at ${mx} ${my},
-      rgba(255,255,255,.22) 0%,rgba(255,255,255,.05) 50%,transparent 75%)
-  `;
-
-  el.querySelector('.card-face').style.background=
-    el.dataset.lv==='10' ? '' : `
-    radial-gradient(ellipse 78% 58% at ${mx} ${my},
-      color-mix(in srgb,var(--cb) 24%,transparent) 0%,transparent 68%),
-    linear-gradient(160deg,
-      color-mix(in srgb,var(--ca) 30%,#0d0d1a) 0%,
-      #0d0d1a 55%,
-      color-mix(in srgb,var(--ca) 14%,#07070f) 100%)
-  `;
+    radial-gradient(ellipse 55% 45% at ${mx} ${my},rgba(255,255,255,.22) 0%,rgba(255,255,255,.05) 50%,transparent 75%)`;
 }
-
 function cardReset(el){
-  el.querySelector('.card-tilt').style.transform=
-    'rotateX(0deg) rotateY(0deg) scale(1)';
+  el.querySelector('.card-tilt').style.transform='rotateX(0deg) rotateY(0deg) scale(1)';
   el.querySelector('.card-shine').style.background=`
     linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
-    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)
-  `;
-  if(el.dataset.lv!=='10')
-    el.querySelector('.card-face').style.background='';
+    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)`;
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('cards-grid').innerHTML=
-    GRADES.map(g=>buildCardHTML(g)).join('');
+  document.getElementById('samples-grid').innerHTML=
+    SAMPLES.map(s=>buildSampleCard(s)).join('');
 });
 </script>
 </body>
