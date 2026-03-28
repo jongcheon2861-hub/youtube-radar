@@ -7,416 +7,406 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-
 <style>
 @property --beam-angle {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
-
 :root {
-  --bg: #0a0a14;
-  --bg2: #10101e;
-  --card-bg: #12121f;
-  --border: #2a2a3e;
-  --text: #e0e0f0;
-  --text2: #9090b0;
-  --accent: #6c63ff;
-  --r: 16px;
-  --ad-w: 200px;
+  --bg:#0a0a14; --bg2:#10101e; --card-bg:#12121f;
+  --border:#2a2a3e; --text:#e0e0f0; --text2:#9090b0;
+  --accent:#6c63ff; --r:16px; --ad-w:200px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* ══ KEYFRAMES ══ */
+@keyframes beamSpin    {to{--beam-angle:360deg;}}
+@keyframes glowPulse   {0%,100%{opacity:1;}50%{opacity:.45;}}
+@keyframes rainbowText {0%{color:#ff0040;}16%{color:#ff8c00;}33%{color:#ffe600;}50%{color:#00ff88;}66%{color:#00cfff;}83%{color:#bf00ff;}100%{color:#ff0040;}}
+@keyframes float3d     {0%,100%{transform:translateY(0) rotateX(0);}50%{transform:translateY(-6px) rotateX(2deg);}}
+@keyframes fadeIn      {from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes shimmer     {0%{background-position:-200% center;}100%{background-position:200% center;}}
+
+/* 뒷빛 펄스 — 강도별 */
+@keyframes auraPulse1  {0%,100%{opacity:.55;transform:scale(1);}   50%{opacity:.80;transform:scale(1.06);}}
+@keyframes auraPulse2  {0%,100%{opacity:.65;transform:scale(1);}   50%{opacity:.90;transform:scale(1.10);}}
+@keyframes auraPulse3  {0%,100%{opacity:.75;transform:scale(1);}   50%{opacity:1.0;transform:scale(1.14);}}
+@keyframes auraPulse9  {0%,100%{opacity:.80;transform:scale(1);}   50%{opacity:1.0;transform:scale(1.18);}}
+@keyframes aura10pulse {
+  0%  {opacity:.90;transform:scale(1);   filter:hue-rotate(0deg)  blur(var(--blur));}
+  33% {opacity:1.0;transform:scale(1.12);filter:hue-rotate(120deg)blur(calc(var(--blur)*1.2));}
+  66% {opacity:.95;transform:scale(1.2); filter:hue-rotate(240deg)blur(calc(var(--blur)*1.4));}
+  100%{opacity:.90;transform:scale(1);   filter:hue-rotate(360deg)blur(var(--blur));}
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-/* ═══ KEYFRAMES ═══ */
-@keyframes beamSpin    { to { --beam-angle: 360deg; } }
-@keyframes glowPulse   { 0%,100%{opacity:1;}50%{opacity:.45;} }
-@keyframes rainbowText { 0%{color:#ff0040;}16%{color:#ff8c00;}33%{color:#ffe600;}50%{color:#00ff88;}66%{color:#00cfff;}83%{color:#bf00ff;}100%{color:#ff0040;} }
-@keyframes float3d     { 0%,100%{transform:translateY(0) rotateX(0);}50%{transform:translateY(-6px) rotateX(2deg);} }
-@keyframes fadeIn      { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }
-@keyframes shimmer     { 0%{background-position:-200% center;}100%{background-position:200% center;} }
-
-/* 뒷빛 — 일반 레벨 */
-@keyframes backGlow1 {
-  0%,100% { opacity:.7;  transform:translateY(14px) scaleX(.8) scaleY(.55) translateZ(-1px); }
-  50%     { opacity:1;   transform:translateY(18px) scaleX(.9) scaleY(.65) translateZ(-1px); }
-}
-/* 뒷빛 — 중간 레벨 (LV4~7) */
-@keyframes backGlow2 {
-  0%,100% { opacity:.8;  transform:translateY(18px) scaleX(.88) scaleY(.62) translateZ(-1px); }
-  50%     { opacity:1;   transform:translateY(24px) scaleX(1)   scaleY(.75) translateZ(-1px); }
-}
-/* 뒷빛 — 고레벨 (LV8~9) */
-@keyframes backGlow3 {
-  0%,100% { opacity:.9;  transform:translateY(22px) scaleX(.95) scaleY(.72) translateZ(-1px); }
-  50%     { opacity:1;   transform:translateY(30px) scaleX(1.1) scaleY(.88) translateZ(-1px); }
-}
-/* 뒷빛 — LV10 외부 확산 */
-@keyframes backGlow10outer {
-  0%   { opacity:.9;  transform:translateY(28px) scaleX(1.1) scaleY(.9)  translateZ(-1px); filter:blur(28px) hue-rotate(0deg); }
-  33%  { opacity:1;   transform:translateY(38px) scaleX(1.3) scaleY(1.1) translateZ(-1px); filter:blur(38px) hue-rotate(120deg); }
-  66%  { opacity:.95; transform:translateY(42px) scaleX(1.4) scaleY(1.2) translateZ(-1px); filter:blur(44px) hue-rotate(240deg); }
-  100% { opacity:.9;  transform:translateY(28px) scaleX(1.1) scaleY(.9)  translateZ(-1px); filter:blur(28px) hue-rotate(360deg); }
-}
-/* LV10 내부 코어 빛 */
-@keyframes backGlow10core {
-  0%   { opacity:1;   transform:translateY(10px) scaleX(.7) scaleY(.45) translateZ(-1px); filter:blur(16px) hue-rotate(0deg); }
-  50%  { opacity:1;   transform:translateY(16px) scaleX(.85) scaleY(.6) translateZ(-1px); filter:blur(22px) hue-rotate(180deg); }
-  100% { opacity:1;   transform:translateY(10px) scaleX(.7) scaleY(.45) translateZ(-1px); filter:blur(16px) hue-rotate(360deg); }
-}
-/* LV10 측면 광채 */
-@keyframes sideGlow10 {
-  0%,100% { opacity:.6; transform:scaleY(.8); filter:blur(20px) hue-rotate(0deg); }
-  50%     { opacity:.9; transform:scaleY(1.1); filter:blur(28px) hue-rotate(180deg); }
-}
-/* LV9 무지개 뒷빛 */
-@keyframes backGlow9 {
-  0%   { opacity:.85; filter:blur(24px) hue-rotate(0deg);   transform:translateY(24px) scaleX(1.05) scaleY(.78) translateZ(-1px); }
-  50%  { opacity:1;   filter:blur(32px) hue-rotate(180deg); transform:translateY(34px) scaleX(1.2)  scaleY(.95) translateZ(-1px); }
-  100% { opacity:.85; filter:blur(24px) hue-rotate(360deg); transform:translateY(24px) scaleX(1.05) scaleY(.78) translateZ(-1px); }
-}
-/* LV10 전체 화면 오라 */
-@keyframes lv10Aura {
-  0%   { opacity:.12; transform:scale(1);    filter:hue-rotate(0deg); }
-  33%  { opacity:.22; transform:scale(1.04); filter:hue-rotate(120deg); }
-  66%  { opacity:.18; transform:scale(1.08); filter:hue-rotate(240deg); }
-  100% { opacity:.12; transform:scale(1);    filter:hue-rotate(360deg); }
-}
-
-/* ═══ LAYOUT ═══ */
-.app-wrap { display:flex; flex-direction:column; min-height:100vh; }
-header {
-  display:flex; align-items:center; gap:12px; padding:0 20px; height:56px;
+/* ══ LAYOUT ══ */
+.app-wrap{display:flex;flex-direction:column;min-height:100vh;}
+header{
+  display:flex;align-items:center;gap:12px;padding:0 20px;height:56px;
   background:linear-gradient(135deg,#0f0f20,#1a1a30);
-  border-bottom:1px solid var(--border); position:sticky; top:0; z-index:100;
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
 }
-.logo {
-  font-size:1.3rem; font-weight:900; white-space:nowrap;
+.logo{
+  font-size:1.3rem;font-weight:900;white-space:nowrap;
   background:linear-gradient(90deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.search-bar { flex:1; max-width:480px; display:flex; gap:8px; }
-.search-bar input { flex:1; padding:8px 14px; background:#1a1a2e; border:1px solid var(--border); border-radius:24px; color:var(--text); font-size:.9rem; }
-.search-bar input:focus { outline:none; border-color:var(--accent); }
-.btn { padding:8px 18px; border:none; border-radius:20px; cursor:pointer; font-size:.85rem; font-weight:700; transition:all .2s; }
-.btn-primary { background:linear-gradient(135deg,#6c63ff,#a855f7); color:#fff; }
-.btn-primary:hover { transform:scale(1.04); filter:brightness(1.15); }
+.search-bar{flex:1;max-width:480px;display:flex;gap:8px;}
+.search-bar input{flex:1;padding:8px 14px;background:#1a1a2e;border:1px solid var(--border);border-radius:24px;color:var(--text);font-size:.9rem;}
+.search-bar input:focus{outline:none;border-color:var(--accent);}
+.btn{padding:8px 18px;border:none;border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:700;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;}
+.btn-primary:hover{transform:scale(1.04);filter:brightness(1.15);}
+.body-row{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:200px;min-width:200px;background:var(--bg2);border-right:1px solid var(--border);padding:12px 8px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:500;color:var(--text2);transition:all .2s;}
+.sidebar-item:hover,.sidebar-item.active{background:#1e1e35;color:var(--text);}
+.sidebar-item .ic{font-size:1.1rem;}
+.main-area{flex:1;overflow-y:auto;padding:20px;min-width:0;}
+.ad-zone{width:var(--ad-w);min-width:var(--ad-w);flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);padding:12px 8px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.ad-slot{background:#1a1a2e;border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text2);text-align:center;flex:1;min-height:180px;}
+.section{display:none;animation:fadeIn .4s ease;}
+.section.active{display:block;}
 
-.body-row { display:flex; flex:1; overflow:hidden; }
-.sidebar {
-  width:200px; min-width:200px; background:var(--bg2);
-  border-right:1px solid var(--border);
-  padding:12px 8px; display:flex; flex-direction:column; gap:4px; overflow-y:auto;
+/* ═══════════════════════════════════════════════
+   ★ CARD SYSTEM
+   구조:
+   .card-scene
+     ├ .aura-back    (뒤 — 아래로 퍼짐)
+     ├ .aura-bottom  (아래 — 바닥 그림자)
+     ├ .aura-left    (좌측)
+     ├ .aura-right   (우측)
+     └ .lv-card-wrap
+         ├ ::before   빔 라인
+         ├ ::after    빔 글로우
+         └ .lv-card-face
+═══════════════════════════════════════════════ */
+.card-scene{
+  position:relative;
+  /* 오라가 넘칠 공간 */
+  padding:50px 40px 70px;
+  display:inline-block; /* 카드 크기에 맞게 */
+  width:100%;
 }
-.sidebar-item { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:10px; cursor:pointer; font-size:.85rem; font-weight:500; color:var(--text2); transition:all .2s; }
-.sidebar-item:hover,.sidebar-item.active { background:#1e1e35; color:var(--text); }
-.sidebar-item .ic { font-size:1.1rem; }
 
-.main-area { flex:1; overflow-y:auto; padding:20px; min-width:0; }
-.ad-zone { width:var(--ad-w); min-width:var(--ad-w); flex-shrink:0; background:var(--bg2); border-left:1px solid var(--border); padding:12px 8px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; }
-.ad-slot { background:#1a1a2e; border:1px dashed var(--border); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:.7rem; color:var(--text2); text-align:center; flex:1; min-height:180px; }
-.section { display:none; animation:fadeIn .4s ease; }
-.section.active { display:block; }
-
-/* ══════════════════════════════════════════
-   ★ CARD + 뒷면 빛 시스템
-══════════════════════════════════════════ */
-.card-scene {
-  perspective: 900px;
-  padding-bottom: 48px;   /* 뒷빛 공간 */
-  position: relative;
-}
-
-/* LV10 전체 오라 — card-scene 뒤에 */
-.card-scene.lv10-scene::before {
-  content:'';
+/* ── 공통 오라 베이스 ── */
+.aura-back,
+.aura-bottom,
+.aura-left,
+.aura-right {
   position:absolute;
-  inset:-40px;
   border-radius:50%;
-  background: conic-gradient(#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040);
-  filter:blur(50px);
-  z-index:0;
-  animation: lv10Aura 3s linear infinite;
   pointer-events:none;
+  opacity:0;
+  transition:opacity .5s ease;
 }
 
-.lv-card-wrap {
-  position: relative;
-  border-radius: calc(var(--r) + 4px);
-  padding: 2px;
-  background: var(--card-bg);
-  cursor: pointer;
-  animation: float3d 4s ease-in-out infinite;
-  transition: transform .35s cubic-bezier(.23,1,.32,1), filter .3s;
-  overflow: visible;
-  transform-style: preserve-3d;
-  z-index: 2;
+/* 뒤(위쪽 뒷면) — 세로로 납작한 타원, 카드 중앙 뒤편 */
+.aura-back {
+  width:75%;  height:40%;
+  top:10%;    left:12.5%;
+  filter:blur(var(--blur-back, 28px));
+  transform:translateZ(-2px);
 }
-.lv-card-wrap:hover {
-  transform: scale(1.05) translateY(-8px) rotateX(6deg);
-  filter: brightness(1.12);
-  animation-play-state: paused;
+
+/* 아래 — 바닥에 깔리는 넓은 타원 */
+.aura-bottom {
+  width:90%;  height:30%;
+  bottom:4%;  left:5%;
+  filter:blur(var(--blur-bottom, 32px));
+}
+
+/* 좌측 — 세로로 긴 타원 */
+.aura-left {
+  width:22%;  height:60%;
+  top:20%;    left:2%;
+  filter:blur(var(--blur-side, 24px));
+}
+
+/* 우측 — 세로로 긴 타원 */
+.aura-right {
+  width:22%;  height:60%;
+  top:20%;    right:2%;
+  filter:blur(var(--blur-side, 24px));
+}
+
+/* hover 또는 .always 클래스일 때 켜기 */
+.lv-card-wrap:hover ~ .aura-back,
+.lv-card-wrap:hover ~ .aura-bottom,
+.lv-card-wrap:hover ~ .aura-left,
+.lv-card-wrap:hover ~ .aura-right,
+.aura-back.always,
+.aura-bottom.always,
+.aura-left.always,
+.aura-right.always { opacity:1; }
+
+/* ── 카드 래퍼 ── */
+.lv-card-wrap{
+  position:relative;
+  border-radius:calc(var(--r)+4px);
+  padding:2px;
+  background:var(--card-bg);
+  cursor:pointer;
+  animation:float3d 4s ease-in-out infinite;
+  transition:transform .35s cubic-bezier(.23,1,.32,1),filter .3s;
+  overflow:visible;
+  transform-style:preserve-3d;
+  z-index:2;
+}
+.lv-card-wrap:hover{
+  transform:scale(1.05) translateY(-8px) rotateX(6deg);
+  filter:brightness(1.12);
+  animation-play-state:paused;
 }
 
 /* 빔 라인 */
-.lv-card-wrap::before {
-  content:''; position:absolute; inset:-3px;
+.lv-card-wrap::before{
+  content:'';position:absolute;inset:-3px;
   border-radius:calc(var(--r)+7px);
-  animation: beamSpin var(--bd,2.4s) linear infinite;
+  animation:beamSpin var(--bd,2.4s) linear infinite;
   z-index:2;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  padding: 3px;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  padding:3px;
 }
 /* 빔 글로우 */
-.lv-card-wrap::after {
-  content:''; position:absolute; inset:-8px;
+.lv-card-wrap::after{
+  content:'';position:absolute;inset:-8px;
   border-radius:calc(var(--r)+12px);
-  animation: beamSpin var(--bd,2.4s) linear infinite;
-  filter: blur(10px); opacity:.75; z-index:1;
+  animation:beamSpin var(--bd,2.4s) linear infinite;
+  filter:blur(10px);opacity:.75;z-index:1;
 }
-
-/* ── 뒷빛 레이어들 ── */
-/* 메인 뒷빛 (모든 레벨) */
-.card-backlight-main {
-  position: absolute;
-  inset: 6px;
-  border-radius: var(--r);
-  z-index: 1;
-  pointer-events: none;
-  transform: translateY(16px) scaleX(.82) scaleY(.58) translateZ(-1px);
-  opacity: 0;
-  transition: opacity .5s;
-}
-/* 확산 뒷빛 (LV5+) */
-.card-backlight-spread {
-  position: absolute;
-  inset: 0px;
-  border-radius: var(--r);
-  z-index: 0;
-  pointer-events: none;
-  transform: translateY(22px) scaleX(1.05) scaleY(.72) translateZ(-1px);
-  opacity: 0;
-  transition: opacity .5s;
-  filter: blur(28px);
-}
-/* LV10 전용 — 측면 광채 */
-.card-backlight-side {
-  display:none;
-  position: absolute;
-  top: 10%; bottom: 10%;
-  left: -30px; right: -30px;
-  border-radius: 50%;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .5s;
-  filter: blur(22px);
-}
-/* LV10 코어 */
-.card-backlight-core {
-  display:none;
-  position: absolute;
-  inset: 15px;
-  border-radius: var(--r);
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .5s;
-  filter: blur(14px);
-}
-
-/* hover 또는 .always → 켜기 */
-.lv-card-wrap:hover .card-backlight-main,
-.card-backlight-main.always  { opacity: 1; }
-.lv-card-wrap:hover .card-backlight-spread,
-.card-backlight-spread.always { opacity: 1; }
-.lv-card-wrap:hover .card-backlight-side,
-.card-backlight-side.always   { opacity: 1; display:block; }
-.lv-card-wrap:hover .card-backlight-core,
-.card-backlight-core.always   { opacity: 1; display:block; }
 
 /* 카드 내용 */
-.lv-card-face {
-  position: relative; z-index: 3;
-  background: var(--card-bg);
-  border-radius: calc(var(--r) + 1px);
-  padding: 20px 16px; text-align: center; overflow: hidden;
+.lv-card-face{
+  position:relative;z-index:3;
+  background:var(--card-bg);
+  border-radius:calc(var(--r)+1px);
+  padding:20px 16px;text-align:center;overflow:hidden;
 }
-.lv-card-face::before {
-  content:''; position:absolute; inset:0;
+.lv-card-face::before{
+  content:'';position:absolute;inset:0;
   background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.035) 50%,transparent 60%);
-  background-size:200% 100%; animation:shimmer 3s infinite; pointer-events:none;
+  background-size:200% 100%;animation:shimmer 3s infinite;pointer-events:none;
+}
+.lv-num  {font-size:3rem;font-weight:900;line-height:1;margin-bottom:4px;letter-spacing:-1px;}
+.lv-name {font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.lv-sub-range{font-size:.76rem;color:var(--text2);margin-bottom:6px;}
+.lv-rank {display:inline-block;padding:2px 10px;border-radius:20px;font-size:.7rem;font-weight:700;margin-bottom:8px;}
+.lv-desc {font-size:.73rem;color:var(--text2);line-height:1.5;}
+.lv-score-range{font-size:.68rem;margin-top:6px;font-weight:600;opacity:.8;}
+.glow-text   {animation:glowPulse 2s ease-in-out infinite;}
+.rainbow-text{animation:rainbowText 2s linear infinite;}
+
+/* ════════════════════════════════
+   레벨별 빔 + 오라 색상 & 강도
+   오라 강도: opacity × blur × animation-duration
+════════════════════════════════ */
+
+/* ── LV1 흰색 (약함) ── */
+.beam1::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#bbb 84%,#fff 90%,#bbb 95%,transparent 100%);}
+.beam1::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#fff5 88%,#fffc 92%,#fff5 96%,transparent 100%);}
+.lv1 .aura-back  {background:radial-gradient(ellipse,#ffffff 0%,#cccccc 50%,transparent 100%);--blur-back:20px;animation:auraPulse1 3.5s ease-in-out infinite;}
+.lv1 .aura-bottom{background:radial-gradient(ellipse,#ffffff 0%,#aaaaaa 50%,transparent 100%);--blur-bottom:26px;animation:auraPulse1 3.5s ease-in-out infinite .5s;}
+.lv1 .aura-left  {background:radial-gradient(ellipse,#dddddd 0%,#999999 50%,transparent 100%);--blur-side:18px;animation:auraPulse1 3.5s ease-in-out infinite .2s;}
+.lv1 .aura-right {background:radial-gradient(ellipse,#dddddd 0%,#999999 50%,transparent 100%);--blur-side:18px;animation:auraPulse1 3.5s ease-in-out infinite .8s;}
+
+/* ── LV2 파랑 ── */
+.beam2::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#0288d1 84%,#4fc3f7 90%,#0288d1 95%,transparent 100%);}
+.beam2::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#4fc3f755 88%,#4fc3f7bb 92%,#4fc3f755 96%,transparent 100%);}
+.lv2 .aura-back  {background:radial-gradient(ellipse,#4fc3f7 0%,#0288d1 50%,transparent 100%);--blur-back:22px;animation:auraPulse1 3.2s ease-in-out infinite;}
+.lv2 .aura-bottom{background:radial-gradient(ellipse,#4fc3f7 0%,#01579b 50%,transparent 100%);--blur-bottom:28px;animation:auraPulse1 3.2s ease-in-out infinite .4s;}
+.lv2 .aura-left  {background:radial-gradient(ellipse,#29b6f6 0%,#0277bd 50%,transparent 100%);--blur-side:20px;animation:auraPulse1 3.2s ease-in-out infinite .2s;}
+.lv2 .aura-right {background:radial-gradient(ellipse,#29b6f6 0%,#0277bd 50%,transparent 100%);--blur-side:20px;animation:auraPulse1 3.2s ease-in-out infinite .7s;}
+
+/* ── LV3 노랑 ── */
+.beam3::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#f9a825 84%,#fff176 90%,#f9a825 95%,transparent 100%);}
+.beam3::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#fff17655 88%,#fff176bb 92%,#fff17655 96%,transparent 100%);}
+.lv3 .aura-back  {background:radial-gradient(ellipse,#fff176 0%,#f9a825 50%,transparent 100%);--blur-back:24px;animation:auraPulse1 3s ease-in-out infinite;}
+.lv3 .aura-bottom{background:radial-gradient(ellipse,#fff176 0%,#e65100 50%,transparent 100%);--blur-bottom:30px;animation:auraPulse1 3s ease-in-out infinite .4s;}
+.lv3 .aura-left  {background:radial-gradient(ellipse,#ffee58 0%,#f57f17 50%,transparent 100%);--blur-side:22px;animation:auraPulse1 3s ease-in-out infinite .2s;}
+.lv3 .aura-right {background:radial-gradient(ellipse,#ffee58 0%,#f57f17 50%,transparent 100%);--blur-side:22px;animation:auraPulse1 3s ease-in-out infinite .7s;}
+
+/* ── LV4 오렌지 ── */
+.beam4::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#e65100 84%,#ffb74d 90%,#e65100 95%,transparent 100%);}
+.beam4::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#ffb74d66 88%,#ffb74dcc 92%,#ffb74d66 96%,transparent 100%);}
+.lv4 .aura-back  {background:radial-gradient(ellipse,#ffb74d 0%,#e65100 48%,transparent 100%);--blur-back:26px;animation:auraPulse2 2.8s ease-in-out infinite;}
+.lv4 .aura-bottom{background:radial-gradient(ellipse,#ffcc80 0%,#bf360c 48%,transparent 100%);--blur-bottom:34px;animation:auraPulse2 2.8s ease-in-out infinite .4s;}
+.lv4 .aura-left  {background:radial-gradient(ellipse,#ffa726 0%,#d84315 48%,transparent 100%);--blur-side:24px;animation:auraPulse2 2.8s ease-in-out infinite .2s;}
+.lv4 .aura-right {background:radial-gradient(ellipse,#ffa726 0%,#d84315 48%,transparent 100%);--blur-side:24px;animation:auraPulse2 2.8s ease-in-out infinite .7s;}
+
+/* ── LV5 초록 ── */
+.beam5::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#1b5e20 84%,#66bb6a 90%,#1b5e20 95%,transparent 100%);}
+.beam5::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#66bb6a66 88%,#66bb6acc 92%,#66bb6a66 96%,transparent 100%);}
+.lv5 .aura-back  {background:radial-gradient(ellipse,#66bb6a 0%,#1b5e20 46%,transparent 100%);--blur-back:28px;animation:auraPulse2 2.6s ease-in-out infinite;}
+.lv5 .aura-bottom{background:radial-gradient(ellipse,#81c784 0%,#1a4020 46%,transparent 100%);--blur-bottom:36px;animation:auraPulse2 2.6s ease-in-out infinite .4s;}
+.lv5 .aura-left  {background:radial-gradient(ellipse,#4caf50 0%,#2e7d32 46%,transparent 100%);--blur-side:26px;animation:auraPulse2 2.6s ease-in-out infinite .2s;}
+.lv5 .aura-right {background:radial-gradient(ellipse,#4caf50 0%,#2e7d32 46%,transparent 100%);--blur-side:26px;animation:auraPulse2 2.6s ease-in-out infinite .7s;}
+
+/* ── LV6 보라 ── */
+.beam6::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#6a1b9a 84%,#ce93d8 90%,#6a1b9a 95%,transparent 100%);}
+.beam6::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#ce93d877 88%,#ce93d8cc 92%,#ce93d877 96%,transparent 100%);filter:blur(12px);}
+.lv6 .aura-back  {background:radial-gradient(ellipse,#ce93d8 0%,#6a1b9a 44%,transparent 100%);--blur-back:30px;animation:auraPulse2 2.4s ease-in-out infinite;}
+.lv6 .aura-bottom{background:radial-gradient(ellipse,#e040fb 0%,#4a148c 44%,transparent 100%);--blur-bottom:38px;animation:auraPulse2 2.4s ease-in-out infinite .4s;}
+.lv6 .aura-left  {background:radial-gradient(ellipse,#ba68c8 0%,#7b1fa2 44%,transparent 100%);--blur-side:28px;animation:auraPulse2 2.4s ease-in-out infinite .2s;}
+.lv6 .aura-right {background:radial-gradient(ellipse,#ba68c8 0%,#7b1fa2 44%,transparent 100%);--blur-side:28px;animation:auraPulse2 2.4s ease-in-out infinite .7s;}
+
+/* ── LV7 분홍 ── */
+.beam7::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#880e4f 84%,#f48fb1 90%,#880e4f 95%,transparent 100%);}
+.beam7::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#f48fb177 88%,#f48fb1cc 92%,#f48fb177 96%,transparent 100%);filter:blur(12px);}
+.lv7 .aura-back  {background:radial-gradient(ellipse,#f48fb1 0%,#880e4f 42%,transparent 100%);--blur-back:32px;animation:auraPulse3 2.2s ease-in-out infinite;}
+.lv7 .aura-bottom{background:radial-gradient(ellipse,#f06292 0%,#6d0030 42%,transparent 100%);--blur-bottom:42px;animation:auraPulse3 2.2s ease-in-out infinite .4s;}
+.lv7 .aura-left  {background:radial-gradient(ellipse,#ec407a 0%,#880e4f 42%,transparent 100%);--blur-side:30px;animation:auraPulse3 2.2s ease-in-out infinite .2s;}
+.lv7 .aura-right {background:radial-gradient(ellipse,#ec407a 0%,#880e4f 42%,transparent 100%);--blur-side:30px;animation:auraPulse3 2.2s ease-in-out infinite .7s;}
+
+/* ── LV8 빨강 ── */
+.beam8::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#b71c1c 84%,#ef5350 90%,#b71c1c 95%,transparent 100%);}
+.beam8::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#ef535077 88%,#ef5350cc 92%,#ef535077 96%,transparent 100%);filter:blur(13px);}
+.lv8 .aura-back  {background:radial-gradient(ellipse,#ef5350 0%,#b71c1c 40%,transparent 100%);--blur-back:35px;animation:auraPulse3 2s ease-in-out infinite;}
+.lv8 .aura-bottom{background:radial-gradient(ellipse,#ff5252 0%,#7f0000 40%,transparent 100%);--blur-bottom:46px;animation:auraPulse3 2s ease-in-out infinite .4s;}
+.lv8 .aura-left  {background:radial-gradient(ellipse,#e53935 0%,#b71c1c 40%,transparent 100%);--blur-side:34px;animation:auraPulse3 2s ease-in-out infinite .2s;}
+.lv8 .aura-right {background:radial-gradient(ellipse,#e53935 0%,#b71c1c 40%,transparent 100%);--blur-side:34px;animation:auraPulse3 2s ease-in-out infinite .7s;}
+
+/* ── LV9 다색 ── */
+.beam9{--bd:1.8s;}
+.beam9::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 60%,#4d96ff 70%,#6bcb77 76%,#ffd93d 82%,#ff6b6b 88%,#4d96ff 93%,transparent 100%);}
+.beam9::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 63%,#4d96ff88 72%,#6bcb7788 78%,#ffd93d88 84%,#ff6b6b88 90%,transparent 100%);filter:blur(14px);}
+.lv9 .aura-back  {background:conic-gradient(from 0deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#ff6b6b);border-radius:50%;--blur-back:38px;filter:blur(38px);animation:auraPulse9 1.9s ease-in-out infinite;}
+.lv9 .aura-bottom{background:conic-gradient(from 90deg,#ffd93d,#6bcb77,#4d96ff,#ff6b6b,#ffd93d);border-radius:50%;--blur-bottom:50px;filter:blur(50px);animation:auraPulse9 1.9s ease-in-out infinite .3s;}
+.lv9 .aura-left  {background:conic-gradient(from 180deg,#6bcb77,#4d96ff,#ff6b6b,#ffd93d,#6bcb77);border-radius:50%;--blur-side:36px;filter:blur(36px);animation:auraPulse9 1.9s ease-in-out infinite .5s;}
+.lv9 .aura-right {background:conic-gradient(from 270deg,#4d96ff,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);border-radius:50%;--blur-side:36px;filter:blur(36px);animation:auraPulse9 1.9s ease-in-out infinite .8s;}
+
+/* ── LV10 무지개 (압도적) ── */
+.beam10{--bd:1.2s;}
+.beam10::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 55%,#bf00ff 65%,#ff0040 71%,#ff8c00 76%,#ffe600 81%,#00ff88 86%,#00cfff 92%,#bf00ff 97%,transparent 100%);}
+.beam10::after {background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 58%,#bf00ffaa 67%,#ff0040aa 73%,#ff8c00aa 78%,#ffe600aa 83%,#00ff88aa 88%,#00cfffaa 94%,transparent 100%);filter:blur(16px);}
+
+/* LV10 오라 — 4방향 각각 다른 무지개 축 + 강렬한 blur */
+.lv10 .aura-back {
+  background:conic-gradient(from 0deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040);
+  --blur:42px; filter:blur(42px);
+  animation:aura10pulse 2.5s linear infinite;
+}
+.lv10 .aura-bottom {
+  width:96%; height:35%; bottom:2%; left:2%;
+  background:conic-gradient(from 60deg,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040,#ff8c00);
+  --blur:56px; filter:blur(56px);
+  animation:aura10pulse 2.5s linear infinite .5s;
+}
+.lv10 .aura-left {
+  width:28%; height:70%; top:15%; left:-2%;
+  background:conic-gradient(from 120deg,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040,#ff8c00,#ffe600);
+  --blur:40px; filter:blur(40px);
+  animation:aura10pulse 2.5s linear infinite 1s;
+}
+.lv10 .aura-right {
+  width:28%; height:70%; top:15%; right:-2%;
+  background:conic-gradient(from 240deg,#00cfff,#bf00ff,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff);
+  --blur:40px; filter:blur(40px);
+  animation:aura10pulse 2.5s linear infinite 1.5s;
 }
 
-.lv-num   { font-size:3rem; font-weight:900; line-height:1; margin-bottom:4px; letter-spacing:-1px; }
-.lv-name  { font-size:1.05rem; font-weight:700; margin-bottom:10px; }
-.lv-sub-range { font-size:.76rem; color:var(--text2); margin-bottom:6px; }
-.lv-rank  { display:inline-block; padding:2px 10px; border-radius:20px; font-size:.7rem; font-weight:700; margin-bottom:8px; }
-.lv-desc  { font-size:.73rem; color:var(--text2); line-height:1.5; }
-.lv-score-range { font-size:.68rem; margin-top:6px; font-weight:600; opacity:.8; }
-.glow-text    { animation:glowPulse 2s ease-in-out infinite; }
-.rainbow-text { animation:rainbowText 2s linear infinite; }
+/* ══ GRADE TABLE ══ */
+.grade-table-wrap{background:var(--card-bg);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
+.grade-table{width:100%;border-collapse:collapse;font-size:.83rem;}
+.grade-table th{background:#1a1a30;padding:10px 12px;font-size:.75rem;color:var(--text2);font-weight:600;text-align:left;}
+.grade-table td{padding:9px 12px;border-top:1px solid var(--border);}
+.grade-table tr.cur-row td{background:rgba(108,99,255,.1);}
+.lv-chip{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;font-weight:900;font-size:.85rem;cursor:pointer;transition:all .2s;border:2px solid transparent;}
+.lv-chip:hover{transform:scale(1.2);filter:brightness(1.3);}
+.star-badge{color:#ffd700;font-size:.9rem;margin-left:3px;}
 
-/* ══ 레벨별 빔 색 ══ */
-.beam1::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#bbb 84%,#fff 90%,#bbb 95%,transparent 100%); }
-.beam1::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#fff6 88%,#fffc 92%,#fff6 96%,transparent 100%); }
-.beam1 .card-backlight-main   { background:radial-gradient(ellipse at center,#fff 0%,#aaa 45%,transparent 72%); filter:blur(22px); animation:backGlow1 3s ease-in-out infinite; }
-.beam1 .card-backlight-spread { background:radial-gradient(ellipse at center,#fff 0%,#888 40%,transparent 70%); }
+/* ══ ANALYZE ══ */
+.analyze-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px;}
+.analyze-box h3{font-size:1rem;margin-bottom:14px;color:var(--text2);}
+.input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;}
+.field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px;}
+.field label{font-size:.75rem;color:var(--text2);}
+.field input,.field select{padding:9px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.87rem;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
 
-.beam2::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#0288d1 84%,#4fc3f7 90%,#0288d1 95%,transparent 100%); }
-.beam2::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#4fc3f766 88%,#4fc3f7cc 92%,#4fc3f766 96%,transparent 100%); }
-.beam2 .card-backlight-main   { background:radial-gradient(ellipse at center,#4fc3f7 0%,#0288d1 45%,transparent 72%); filter:blur(24px); animation:backGlow1 3s ease-in-out infinite; }
-.beam2 .card-backlight-spread { background:radial-gradient(ellipse at center,#4fc3f7 0%,#0077aa 40%,transparent 70%); }
+.result-wrap{animation:fadeIn .5s ease;}
+.result-hero{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
+.result-card-col{flex:0 0 240px;}
+.result-info-col{flex:1;min-width:260px;}
 
-.beam3::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#f9a825 84%,#fff176 90%,#f9a825 95%,transparent 100%); }
-.beam3::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#fff17666 88%,#fff176cc 92%,#fff17666 96%,transparent 100%); }
-.beam3 .card-backlight-main   { background:radial-gradient(ellipse at center,#fff176 0%,#f9a825 45%,transparent 72%); filter:blur(24px); animation:backGlow1 3s ease-in-out infinite; }
-.beam3 .card-backlight-spread { background:radial-gradient(ellipse at center,#fff176 0%,#e69020 40%,transparent 70%); }
+.decision-row{display:flex;gap:10px;flex-wrap:wrap;background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px;}
+.dec-item{flex:1;min-width:100px;text-align:center;}
+.dec-label{font-size:.68rem;color:var(--text2);margin-bottom:4px;}
+.dec-val{font-size:1.05rem;font-weight:900;}
+.dec-arrow{display:flex;align-items:center;font-size:1.2rem;color:var(--text2);}
 
-.beam4::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#e65100 84%,#ffb74d 90%,#e65100 95%,transparent 100%); }
-.beam4::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#ffb74d66 88%,#ffb74dcc 92%,#ffb74d66 96%,transparent 100%); }
-.beam4 .card-backlight-main   { background:radial-gradient(ellipse at center,#ffb74d 0%,#e65100 45%,transparent 72%); filter:blur(26px); animation:backGlow2 2.8s ease-in-out infinite; }
-.beam4 .card-backlight-spread { background:radial-gradient(ellipse at center,#ffb74d 0%,#bf4000 38%,transparent 68%); }
-
-.beam5::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#1b5e20 84%,#66bb6a 90%,#1b5e20 95%,transparent 100%); }
-.beam5::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#66bb6a66 88%,#66bb6acc 92%,#66bb6a66 96%,transparent 100%); }
-.beam5 .card-backlight-main   { background:radial-gradient(ellipse at center,#66bb6a 0%,#1b5e20 45%,transparent 72%); filter:blur(28px); animation:backGlow2 2.6s ease-in-out infinite; }
-.beam5 .card-backlight-spread { background:radial-gradient(ellipse at center,#66bb6a 0%,#104010 38%,transparent 66%); }
-
-.beam6::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#6a1b9a 84%,#ce93d8 90%,#6a1b9a 95%,transparent 100%); }
-.beam6::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#ce93d866 88%,#ce93d8cc 92%,#ce93d866 96%,transparent 100%); filter:blur(12px); }
-.beam6 .card-backlight-main   { background:radial-gradient(ellipse at center,#ce93d8 0%,#6a1b9a 42%,transparent 70%); filter:blur(30px); animation:backGlow2 2.5s ease-in-out infinite; }
-.beam6 .card-backlight-spread { background:radial-gradient(ellipse at center,#ce93d8 0%,#4a0070 36%,transparent 65%); }
-
-.beam7::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#880e4f 84%,#f48fb1 90%,#880e4f 95%,transparent 100%); }
-.beam7::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#f48fb166 88%,#f48fb1cc 92%,#f48fb166 96%,transparent 100%); filter:blur(12px); }
-.beam7 .card-backlight-main   { background:radial-gradient(ellipse at center,#f48fb1 0%,#880e4f 42%,transparent 70%); filter:blur(32px); animation:backGlow3 2.2s ease-in-out infinite; }
-.beam7 .card-backlight-spread { background:radial-gradient(ellipse at center,#f48fb1 0%,#600030 36%,transparent 64%); }
-
-.beam8::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#b71c1c 84%,#ef5350 90%,#b71c1c 95%,transparent 100%); }
-.beam8::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 78%,#ef535066 88%,#ef5350cc 92%,#ef535066 96%,transparent 100%); filter:blur(12px); }
-.beam8 .card-backlight-main   { background:radial-gradient(ellipse at center,#ef5350 0%,#b71c1c 40%,transparent 68%); filter:blur(34px); animation:backGlow3 2s ease-in-out infinite; }
-.beam8 .card-backlight-spread { background:radial-gradient(ellipse at center,#ff6060 0%,#7f0000 34%,transparent 62%); }
-
-/* LV9 */
-.beam9 { --bd:1.8s; }
-.beam9::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 60%,#4d96ff 70%,#6bcb77 76%,#ffd93d 82%,#ff6b6b 88%,#4d96ff 93%,transparent 100%); }
-.beam9::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 63%,#4d96ff88 72%,#6bcb7788 78%,#ffd93d88 84%,#ff6b6b88 90%,#4d96ff88 95%,transparent 100%); filter:blur(14px); }
-.beam9 .card-backlight-main   { background:conic-gradient(from 0deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#ff6b6b); animation:backGlow9 2.2s ease-in-out infinite; filter:blur(28px); }
-.beam9 .card-backlight-spread { background:conic-gradient(from 90deg,#ffd93d,#6bcb77,#4d96ff,#ff6b6b,#ffd93d); filter:blur(42px); }
-
-/* LV10 */
-.beam10 { --bd:1.2s; }
-.beam10::before { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 55%,#bf00ff 65%,#ff0040 71%,#ff8c00 76%,#ffe600 81%,#00ff88 86%,#00cfff 92%,#bf00ff 97%,transparent 100%); }
-.beam10::after  { background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 58%,#bf00ffaa 67%,#ff0040aa 73%,#ff8c00aa 78%,#ffe600aa 83%,#00ff88aa 88%,#00cfffaa 94%,transparent 100%); filter:blur(16px); }
-.beam10 .card-backlight-main   { background:conic-gradient(from 0deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040); animation:backGlow10outer 3s linear infinite; filter:blur(32px); }
-.beam10 .card-backlight-spread { background:conic-gradient(from 60deg,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040,#ff8c00); filter:blur(55px); animation:backGlow10outer 3s linear infinite reverse; }
-.beam10 .card-backlight-side   { background:conic-gradient(from 120deg,#00cfff,#bf00ff,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff); animation:sideGlow10 2.5s ease-in-out infinite; }
-.beam10 .card-backlight-core   { background:radial-gradient(ellipse at center,#ffffff 0%,#ffeeee 20%,#ff88cc 40%,transparent 70%); animation:backGlow10core 2s ease-in-out infinite; }
-
-/* ═══ GRADE TABLE ═══ */
-.grade-table-wrap { background:var(--card-bg); border-radius:var(--r); overflow:hidden; border:1px solid var(--border); }
-.grade-table { width:100%; border-collapse:collapse; font-size:.83rem; }
-.grade-table th { background:#1a1a30; padding:10px 12px; font-size:.75rem; color:var(--text2); font-weight:600; text-align:left; }
-.grade-table td { padding:9px 12px; border-top:1px solid var(--border); }
-.grade-table tr.cur-row td { background:rgba(108,99,255,.1); }
-.lv-chip { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:9px; font-weight:900; font-size:.85rem; cursor:pointer; transition:all .2s; border:2px solid transparent; }
-.lv-chip:hover { transform:scale(1.2); filter:brightness(1.3); }
-.star-badge { color:#ffd700; font-size:.9rem; margin-left:3px; }
-
-/* ═══ ANALYZE ═══ */
-.analyze-box { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r); padding:20px; margin-bottom:20px; }
-.analyze-box h3 { font-size:1rem; margin-bottom:14px; color:var(--text2); }
-.input-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px; }
-.field { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
-.field label { font-size:.75rem; color:var(--text2); }
-.field input,.field select { padding:9px 12px; background:#1a1a2e; border:1px solid var(--border); border-radius:10px; color:var(--text); font-size:.87rem; }
-.field input:focus,.field select:focus { outline:none; border-color:var(--accent); }
-
-.result-wrap { animation:fadeIn .5s ease; }
-.result-hero { display:flex; gap:20px; flex-wrap:wrap; margin-bottom:20px; }
-.result-card-col { flex:0 0 220px; }
-.result-info-col { flex:1; min-width:260px; }
-
-.decision-row { display:flex; gap:10px; flex-wrap:wrap; background:#1a1a2e; border-radius:12px; padding:14px; margin-bottom:16px; }
-.dec-item { flex:1; min-width:100px; text-align:center; }
-.dec-label { font-size:.68rem; color:var(--text2); margin-bottom:4px; }
-.dec-val { font-size:1.05rem; font-weight:900; }
-.dec-arrow { display:flex; align-items:center; font-size:1.2rem; color:var(--text2); }
-
-.factor-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:16px; }
-.factor-card { background:#1a1a2e; border-radius:12px; padding:12px 14px; border-left:3px solid; transition:transform .2s; }
-.factor-card:hover { transform:translateY(-2px); }
-.fc-label { font-size:.68rem; color:var(--text2); margin-bottom:4px; }
-.fc-value { font-size:1.15rem; font-weight:900; margin-bottom:4px; }
-.fc-bar-wrap { height:4px; background:rgba(255,255,255,.08); border-radius:2px; }
-.fc-bar { height:4px; border-radius:2px; }
-.fc-badge { display:inline-block; font-size:.6rem; font-weight:700; padding:1px 7px; border-radius:10px; margin-top:5px; }
+.factor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+.factor-card{background:#1a1a2e;border-radius:12px;padding:12px 14px;border-left:3px solid;transition:transform .2s;}
+.factor-card:hover{transform:translateY(-2px);}
+.fc-label{font-size:.68rem;color:var(--text2);margin-bottom:4px;}
+.fc-value{font-size:1.15rem;font-weight:900;margin-bottom:4px;}
+.fc-bar-wrap{height:4px;background:rgba(255,255,255,.08);border-radius:2px;}
+.fc-bar{height:4px;border-radius:2px;}
+.fc-badge{display:inline-block;font-size:.6rem;font-weight:700;padding:1px 7px;border-radius:10px;margin-top:5px;}
 .fq-best{background:rgba(102,187,106,.2);color:#66bb6a;}
 .fq-good{background:rgba(79,195,247,.2);color:#4fc3f7;}
 .fq-mid {background:rgba(255,183,77,.2);color:#ffb74d;}
 .fq-low {background:rgba(239,83,80,.2);color:#ef5350;}
 
-.score-breakdown { background:#1a1a2e; border-radius:12px; padding:14px; margin-bottom:16px; }
-.score-breakdown h4 { font-size:.85rem; margin-bottom:10px; color:var(--text2); }
-.sb-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-.sb-label { font-size:.73rem; color:var(--text2); width:110px; flex-shrink:0; }
-.sb-bar-wrap { flex:1; height:6px; background:rgba(255,255,255,.08); border-radius:3px; }
-.sb-bar { height:6px; border-radius:3px; }
-.sb-val { font-size:.73rem; font-weight:700; width:58px; text-align:right; }
+.score-breakdown{background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px;}
+.score-breakdown h4{font-size:.85rem;margin-bottom:10px;color:var(--text2);}
+.sb-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sb-label{font-size:.73rem;color:var(--text2);width:110px;flex-shrink:0;}
+.sb-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;}
+.sb-bar{height:6px;border-radius:3px;}
+.sb-val{font-size:.73rem;font-weight:700;width:58px;text-align:right;}
 
-.bonus-log { background:#1a1a2e; border-radius:12px; padding:12px 14px; margin-bottom:16px; }
-.bonus-log h4 { font-size:.8rem; margin-bottom:8px; color:#66bb6a; }
-.bonus-item { font-size:.73rem; color:#66bb6a; padding:2px 0; }
-.inline-grade-table-wrap { margin-top:16px; background:var(--card-bg); border-radius:var(--r); overflow:hidden; border:1px solid var(--border); }
+.bonus-log{background:#1a1a2e;border-radius:12px;padding:12px 14px;margin-bottom:16px;}
+.bonus-log h4{font-size:.8rem;margin-bottom:8px;color:#66bb6a;}
+.bonus-item{font-size:.73rem;color:#66bb6a;padding:2px 0;}
+.inline-grade-table-wrap{margin-top:16px;background:var(--card-bg);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
 
-/* ═══ REVENUE ═══ */
-.rev-box { background:var(--card-bg); border:1px solid var(--border); border-radius:var(--r); padding:20px; }
-.rev-box h3 { margin-bottom:14px; }
-.rev-inputs { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; margin-bottom:14px; }
-.rev-result { background:#1a1a2e; border-radius:12px; padding:16px; text-align:center; }
-.rev-amount { font-size:2rem; font-weight:900; color:#66bb6a; }
-.rev-note { font-size:.73rem; color:var(--text2); margin-top:4px; }
+/* ══ REVENUE ══ */
+.rev-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.rev-box h3{margin-bottom:14px;}
+.rev-inputs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:14px;}
+.rev-result{background:#1a1a2e;border-radius:12px;padding:16px;text-align:center;}
+.rev-amount{font-size:2rem;font-weight:900;color:#66bb6a;}
+.rev-note{font-size:.73rem;color:var(--text2);margin-top:4px;}
 
-/* ═══ HOT ═══ */
-.hot-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
-.hot-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:transform .2s; }
-.hot-card:hover { transform:translateY(-3px); }
-.hot-thumb { width:100%; aspect-ratio:16/9; object-fit:cover; }
-.hot-info { padding:8px 10px; }
-.hot-title { font-size:.76rem; font-weight:600; margin-bottom:3px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.hot-meta { font-size:.67rem; color:var(--text2); }
+/* ══ HOT ══ */
+.hot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.hot-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s;}
+.hot-card:hover{transform:translateY(-3px);}
+.hot-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;}
+.hot-info{padding:8px 10px;}
+.hot-title{font-size:.76rem;font-weight:600;margin-bottom:3px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hot-meta{font-size:.67rem;color:var(--text2);}
 
-/* ═══ EXTRAS ═══ */
-.extra-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:12px; }
-.extra-card { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; cursor:pointer; transition:all .2s; text-decoration:none; display:block; color:var(--text); }
-.extra-card:hover { transform:translateY(-3px); border-color:var(--accent); }
-.ex-icon { font-size:1.7rem; margin-bottom:6px; }
-.ex-name { font-size:.8rem; font-weight:700; margin-bottom:3px; }
-.ex-desc { font-size:.68rem; color:var(--text2); }
+/* ══ EXTRAS ══ */
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
+.extra-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;display:block;color:var(--text);}
+.extra-card:hover{transform:translateY(-3px);border-color:var(--accent);}
+.ex-icon{font-size:1.7rem;margin-bottom:6px;}
+.ex-name{font-size:.8rem;font-weight:700;margin-bottom:3px;}
+.ex-desc{font-size:.68rem;color:var(--text2);}
 
-/* ═══ MODAL ═══ */
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:1000; align-items:center; justify-content:center; }
-.modal-overlay.open { display:flex; animation:fadeIn .3s ease; }
-.modal-box { background:var(--card-bg); border-radius:20px; padding:28px; width:420px; max-width:95vw; text-align:center; position:relative; overflow:visible; }
-.modal-close { position:absolute; top:12px; right:16px; background:none; border:none; color:var(--text2); font-size:1.4rem; cursor:pointer; }
-.modal-nav { display:flex; justify-content:center; gap:5px; flex-wrap:wrap; margin-bottom:16px; }
-.modal-nav-btn { padding:4px 10px; border-radius:8px; border:none; cursor:pointer; font-size:.73rem; font-weight:700; background:#1a1a2e; color:var(--text2); transition:all .2s; }
-.modal-nav-btn:hover { transform:scale(1.08); }
+/* ══ MODAL ══ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;animation:fadeIn .3s ease;}
+.modal-box{background:var(--card-bg);border-radius:20px;padding:28px;width:440px;max-width:95vw;text-align:center;position:relative;overflow:visible;}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text2);font-size:1.4rem;cursor:pointer;}
+.modal-nav{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-bottom:16px;}
+.modal-nav-btn{padding:4px 10px;border-radius:8px;border:none;cursor:pointer;font-size:.73rem;font-weight:700;background:#1a1a2e;color:var(--text2);transition:all .2s;}
+.modal-nav-btn:hover{transform:scale(1.08);}
 
-.sec-head { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-.sec-head h2 { font-size:1.15rem; font-weight:800; }
-.sec-badge { padding:2px 10px; background:var(--accent); border-radius:20px; font-size:.72rem; font-weight:700; }
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-head h2{font-size:1.15rem;font-weight:800;}
+.sec-badge{padding:2px 10px;background:var(--accent);border-radius:20px;font-size:.72rem;font-weight:700;}
 </style>
 </head>
 <body>
 <div class="app-wrap">
-
 <header>
   <div class="logo">📊 YTAnalytics Pro</div>
   <div class="search-bar">
@@ -425,9 +415,8 @@ header {
   </div>
   <button class="btn btn-primary" onclick="showSection('analyze')">🔍 채널 분석</button>
 </header>
-
 <div class="body-row">
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar">
   <div class="sidebar-item active" onclick="showSection('analyze');setActive(this)"><span class="ic">🔍</span>채널 분석</div>
   <div class="sidebar-item" onclick="showSection('hot');setActive(this)"><span class="ic">🔥</span>인기 영상</div>
   <div class="sidebar-item" onclick="showSection('revenue');setActive(this)"><span class="ic">💰</span>수익 계산</div>
@@ -435,8 +424,7 @@ header {
   <div class="sidebar-item" onclick="showSection('ideas');setActive(this)"><span class="ic">💡</span>아이디어</div>
   <div class="sidebar-item" onclick="showSection('shop');setActive(this)"><span class="ic">🛒</span>추천 장비</div>
 </aside>
-
-<main class="main-area" id="mainArea">
+<main class="main-area">
   <div id="sec-analyze" class="section active">
     <div class="sec-head"><h2>🔍 채널 분석</h2><span class="sec-badge">Algorithm Score</span></div>
     <div class="analyze-box">
@@ -456,7 +444,6 @@ header {
     </div>
     <div id="resultArea"></div>
   </div>
-
   <div id="sec-hot" class="section"><div class="sec-head"><h2>🔥 인기 영상 트렌드</h2></div><div class="hot-grid" id="hotGrid"></div></div>
   <div id="sec-revenue" class="section">
     <div class="sec-head"><h2>💰 수익 계산기</h2></div>
@@ -482,11 +469,10 @@ header {
   <div id="sec-ideas" class="section"><div class="sec-head"><h2>💡 콘텐츠 아이디어</h2></div><div class="extra-grid" id="ideasGrid"></div></div>
   <div id="sec-shop" class="section"><div class="sec-head"><h2>🛒 추천 장비 & 서비스</h2></div><div class="extra-grid" id="shopGrid"></div></div>
 </main>
-
 <aside class="ad-zone">
-  <div class="ad-slot"><div>📢<br>광고 영역<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111" data-ad-format="auto"></ins></div></div>
-  <div class="ad-slot"><div>📢<br>광고 영역<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="2222222222" data-ad-format="auto"></ins></div></div>
-  <div class="ad-slot"><div>📢<br>광고 영역<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333" data-ad-format="auto"></ins></div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역</div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역</div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역</div></div>
 </aside>
 </div>
 </div>
@@ -500,44 +486,43 @@ header {
 </div>
 
 <script>
-const GRADES = [
-  { lv:1,  name:'씨앗',      color:'#e8e8e8', subMin:0,        subMax:100,      rankPct:'하위 37%',      score:[0,499],           desc:'채널을 막 시작한 단계. 첫 콘텐츠 업로드 후 방향성을 잡는 시기',                     nextGoal:'구독자 100명 달성 후 커뮤니티 탭 활성화', perks:['채널 아트 최적화','키워드 리서치 시작','첫 10개 영상 업로드'] },
-  { lv:2,  name:'새싹',      color:'#4fc3f7', subMin:100,      subMax:1000,     rankPct:'하위 57%',      score:[500,1999],        desc:'초기 팬층이 생기기 시작. 수익화를 위한 기반을 다지는 단계',                          nextGoal:'구독자 1,000명 & 시청 4,000시간 → 수익화', perks:['쇼츠 활용 급성장','끝화면·카드 설정','댓글 소통 강화'] },
-  { lv:3,  name:'새내기',    color:'#fff176', subMin:1000,     subMax:10000,    rankPct:'상위 36%',      score:[2000,7999],       desc:'YouTube 파트너 프로그램 수익화 달성. 광고 수익이 시작되는 구간',                   nextGoal:'월 4회 이상 업로드로 알고리즘 신뢰 확보',   perks:['YPP 수익화 시작','커뮤니티 탭 활성화','Super Thanks 활성화'] },
-  { lv:4,  name:'성장주',    color:'#ffb74d', subMin:10000,    subMax:50000,    rankPct:'상위 18%',      score:[8000,24999],      desc:'알고리즘이 채널을 인식하기 시작. 바이럴 잠재력이 높아지는 구간',                   nextGoal:'시리즈물 기획으로 재방문율 높이기',         perks:['채널 멤버십 개설','Super Chat 활성화','브랜드 딜 시작'] },
-  { lv:5,  name:'인플루언서',color:'#66bb6a', subMin:50000,    subMax:100000,   rankPct:'상위 8%',       score:[25000,59999],     desc:'MCN 협업 및 스폰서십이 활발한 구간. 전업 크리에이터 진입 가능',                    nextGoal:'실버 버튼(10만) 달성 목표',                 perks:['실버 버튼 목전','MCN 계약 가능','쇼핑 기능 활성화'] },
-  { lv:6,  name:'실버급',    color:'#ce93d8', subMin:100000,   subMax:500000,   rankPct:'상위 3%',       score:[60000,149999],    desc:'실버 플레이 버튼 보유. 안정적 수익과 팬덤이 형성된 구간',                         nextGoal:'골드 버튼(100만) 도전 시작',                perks:['실버 버튼 보유','브랜드 협찬 정기화','해외 시청자 유입'] },
-  { lv:7,  name:'골드급',    color:'#f48fb1', subMin:500000,   subMax:1000000,  rankPct:'상위 0.8%',     score:[150000,349999],   desc:'골드 플레이 버튼 목전. 국내외 광고주가 주목하는 프리미엄 구간',                    nextGoal:'골드 버튼(100만) 달성',                     perks:['초대형 브랜드 딜','해외 진출 가속','오프라인 이벤트 가능'] },
-  { lv:8,  name:'다이아급',  color:'#ef5350', subMin:1000000,  subMax:10000000, rankPct:'상위 0.1%',     score:[350000,699999],   desc:'골드 버튼 보유. 국내 메이저 크리에이터. 미디어·기업 협업 다수',                   nextGoal:'다이아몬드 버튼(1000만) 도전',              perks:['골드 버튼 보유','TV·미디어 출연','글로벌 캠페인 참여'] },
-  { lv:9,  name:'레전드',    color:'#ffd93d', subMin:10000000, subMax:50000000, rankPct:'상위 0.003%',   score:[700000,999999],   desc:'다이아몬드 버튼 보유. 글로벌 탑티어 크리에이터. 세계적 인지도',                   nextGoal:'레드 다이아몬드(5000만) 또는 자체 IP 구축', perks:['다이아몬드 버튼 보유','글로벌 투어','영화·드라마 참여'] },
-  { lv:10, name:'신화',      color:'#ff0040', subMin:50000000, subMax:Infinity, rankPct:'상위 0.00005%', score:[1000000,Infinity], desc:'레드 다이아몬드 보유. YouTube 역사상 극소수만 달성한 글로벌 아이콘',               nextGoal:'유튜브를 넘어 글로벌 미디어 제국 건설',     perks:['레드 다이아몬드 보유','자체 기업 운영','글로벌 아이콘'] }
+const GRADES=[
+  {lv:1, name:'씨앗',      color:'#e8e8e8',subMin:0,       subMax:100,      rankPct:'하위 37%',      score:[0,499],           desc:'채널을 막 시작한 단계. 첫 콘텐츠 업로드 후 방향성을 잡는 시기',                   nextGoal:'구독자 100명 달성 후 커뮤니티 탭 활성화', perks:['채널 아트 최적화','키워드 리서치 시작','첫 10개 영상 업로드']},
+  {lv:2, name:'새싹',      color:'#4fc3f7',subMin:100,     subMax:1000,     rankPct:'하위 57%',      score:[500,1999],        desc:'초기 팬층이 생기기 시작. 수익화를 위한 기반을 다지는 단계',                        nextGoal:'구독자 1,000명 & 시청 4,000시간 → 수익화', perks:['쇼츠 활용 급성장','끝화면·카드 설정','댓글 소통 강화']},
+  {lv:3, name:'새내기',    color:'#fff176',subMin:1000,    subMax:10000,    rankPct:'상위 36%',      score:[2000,7999],       desc:'YouTube 파트너 프로그램 수익화 달성. 광고 수익이 시작되는 구간',                 nextGoal:'월 4회 이상 업로드로 알고리즘 신뢰 확보', perks:['YPP 수익화 시작','커뮤니티 탭 활성화','Super Thanks 활성화']},
+  {lv:4, name:'성장주',    color:'#ffb74d',subMin:10000,   subMax:50000,    rankPct:'상위 18%',      score:[8000,24999],      desc:'알고리즘이 채널을 인식하기 시작. 바이럴 잠재력이 높아지는 구간',                 nextGoal:'시리즈물 기획으로 재방문율 높이기',        perks:['채널 멤버십 개설','Super Chat 활성화','브랜드 딜 시작']},
+  {lv:5, name:'인플루언서',color:'#66bb6a',subMin:50000,   subMax:100000,   rankPct:'상위 8%',       score:[25000,59999],     desc:'MCN 협업 및 스폰서십이 활발한 구간. 전업 크리에이터 진입 가능',                  nextGoal:'실버 버튼(10만) 달성 목표',               perks:['실버 버튼 목전','MCN 계약 가능','쇼핑 기능 활성화']},
+  {lv:6, name:'실버급',    color:'#ce93d8',subMin:100000,  subMax:500000,   rankPct:'상위 3%',       score:[60000,149999],    desc:'실버 플레이 버튼 보유. 안정적 수익과 팬덤이 형성된 구간',                       nextGoal:'골드 버튼(100만) 도전 시작',              perks:['실버 버튼 보유','브랜드 협찬 정기화','해외 시청자 유입']},
+  {lv:7, name:'골드급',    color:'#f48fb1',subMin:500000,  subMax:1000000,  rankPct:'상위 0.8%',     score:[150000,349999],   desc:'골드 플레이 버튼 목전. 국내외 광고주가 주목하는 프리미엄 구간',                  nextGoal:'골드 버튼(100만) 달성',                   perks:['초대형 브랜드 딜','해외 진출 가속','오프라인 이벤트 가능']},
+  {lv:8, name:'다이아급',  color:'#ef5350',subMin:1000000, subMax:10000000, rankPct:'상위 0.1%',     score:[350000,699999],   desc:'골드 버튼 보유. 국내 메이저 크리에이터. 미디어·기업 협업 다수',                 nextGoal:'다이아몬드 버튼(1000만) 도전',            perks:['골드 버튼 보유','TV·미디어 출연','글로벌 캠페인 참여']},
+  {lv:9, name:'레전드',    color:'#ffd93d',subMin:10000000,subMax:50000000, rankPct:'상위 0.003%',   score:[700000,999999],   desc:'다이아몬드 버튼 보유. 글로벌 탑티어 크리에이터. 세계적 인지도',                 nextGoal:'레드 다이아몬드(5000만) 또는 자체 IP 구축',perks:['다이아몬드 버튼 보유','글로벌 투어','영화·드라마 참여']},
+  {lv:10,name:'신화',      color:'#ff0040',subMin:50000000,subMax:Infinity, rankPct:'상위 0.00005%', score:[1000000,Infinity], desc:'레드 다이아몬드 보유. YouTube 역사상 극소수만 달성한 글로벌 아이콘',             nextGoal:'유튜브를 넘어 글로벌 미디어 제국 건설',   perks:['레드 다이아몬드 보유','자체 기업 운영','글로벌 아이콘']}
 ];
-const API_KEYS = ['YOUR_API_KEY_1','YOUR_API_KEY_2'];
+const API_KEYS=['YOUR_API_KEY_1','YOUR_API_KEY_2'];
 
-function fmt(n){ n=parseFloat(n)||0; if(n>=1e8)return(n/1e8).toFixed(1)+'억'; if(n>=1e4)return(n/1e4).toFixed(1)+'만'; if(n>=1e3)return(n/1e3).toFixed(1)+'천'; return n.toLocaleString(); }
-function fmtMoney(usd){ return `$${usd.toFixed(2)} (₩${Math.round(usd*1350).toLocaleString()})`; }
-function qual(v,good,great){ if(v>=great)return{cls:'fq-best',label:'최상'}; if(v>=good)return{cls:'fq-good',label:'양호'}; if(v>=good*.5)return{cls:'fq-mid',label:'보통'}; return{cls:'fq-low',label:'부족'}; }
-function lvFromScore(s){ for(let i=9;i>=0;i--){ if(s>=GRADES[i].score[0])return GRADES[i].lv; } return 1; }
-function lvFromSubs(s){  for(let i=9;i>=0;i--){ if(s>=GRADES[i].subMin)  return GRADES[i].lv; } return 1; }
+function fmt(n){n=parseFloat(n)||0;if(n>=1e8)return(n/1e8).toFixed(1)+'억';if(n>=1e4)return(n/1e4).toFixed(1)+'만';if(n>=1e3)return(n/1e3).toFixed(1)+'천';return n.toLocaleString();}
+function fmtMoney(u){return`$${u.toFixed(2)} (₩${Math.round(u*1350).toLocaleString()})`;}
+function qual(v,g,gr){if(v>=gr)return{cls:'fq-best',label:'최상'};if(v>=g)return{cls:'fq-good',label:'양호'};if(v>=g*.5)return{cls:'fq-mid',label:'보통'};return{cls:'fq-low',label:'부족'};}
+function lvFS(s){for(let i=9;i>=0;i--)if(s>=GRADES[i].score[0])return GRADES[i].lv;return 1;}
+function lvFSb(s){for(let i=9;i>=0;i--)if(s>=GRADES[i].subMin)return GRADES[i].lv;return 1;}
 
-/* ── 카드 HTML — always=항상 뒷빛 켜짐 ── */
+/* ── 카드 HTML 빌더 ── */
 function buildCardHTML(g, always=false){
   const lv=g.lv, isHigh=lv>=6, is10=lv===10;
-  const al = always ? ' always' : '';
-  let ns=`color:${g.color};`, nms=`color:${g.color};`;
-  if(isHigh&&!is10){ ns+=`text-shadow:0 0 14px ${g.color},0 0 28px ${g.color}66;`; nms+=`text-shadow:0 0 10px ${g.color}66;`; }
-  const nc  = is10?'lv-num rainbow-text' :(isHigh?'lv-num glow-text' :'lv-num');
-  const nmc = is10?'lv-name rainbow-text':(isHigh?'lv-name glow-text':'lv-name');
-  const smx = g.subMax===Infinity?'∞':fmt(g.subMax);
-  const scmx= g.score[1]===Infinity?'∞':fmt(g.score[1]);
-  const sceneClass = is10 ? 'card-scene lv10-scene' : 'card-scene';
+  const al=always?' always':'';
+  let ns=`color:${g.color};`;
+  let nms=`color:${g.color};`;
+  if(isHigh&&!is10){
+    ns+=`text-shadow:0 0 14px ${g.color},0 0 28px ${g.color}66;`;
+    nms+=`text-shadow:0 0 10px ${g.color}66;`;
+  }
+  const nc =is10?'lv-num rainbow-text' :(isHigh?'lv-num glow-text' :'lv-num');
+  const nmc=is10?'lv-name rainbow-text':(isHigh?'lv-name glow-text':'lv-name');
+  const smx=g.subMax===Infinity?'∞':fmt(g.subMax);
+  const scmx=g.score[1]===Infinity?'∞':fmt(g.score[1]);
   return `
-<div class="${sceneClass}">
+<div class="card-scene lv${lv}">
   <div class="lv-card-wrap beam${lv}" onclick="openModal(${lv})">
-    <div class="card-backlight-main${al}"></div>
-    <div class="card-backlight-spread${al}"></div>
-    <div class="card-backlight-side${al}"></div>
-    <div class="card-backlight-core${al}"></div>
     <div class="lv-card-face">
       <div class="${nc}" style="${ns}">LV.${lv}</div>
       <div class="${nmc}" style="${nms}">${g.name}</div>
@@ -547,20 +532,42 @@ function buildCardHTML(g, always=false){
       <div class="lv-score-range" style="color:${g.color}">점수 ${fmt(g.score[0])} ~ ${scmx}</div>
     </div>
   </div>
+  <div class="aura-back${al}"></div>
+  <div class="aura-bottom${al}"></div>
+  <div class="aura-left${al}"></div>
+  <div class="aura-right${al}"></div>
 </div>`;
 }
 
+/* 오라 hover 트리거 — 형제 선택자로 작동 안 할 경우 JS 보완 */
+document.addEventListener('mouseover', e=>{
+  const wrap=e.target.closest('.lv-card-wrap');
+  if(!wrap) return;
+  const scene=wrap.closest('.card-scene');
+  if(!scene) return;
+  scene.querySelectorAll('.aura-back,.aura-bottom,.aura-left,.aura-right')
+    .forEach(a=>a.style.opacity='1');
+});
+document.addEventListener('mouseout', e=>{
+  const wrap=e.target.closest('.lv-card-wrap');
+  if(!wrap) return;
+  const scene=wrap.closest('.card-scene');
+  if(!scene) return;
+  scene.querySelectorAll('.aura-back,.aura-bottom,.aura-left,.aura-right')
+    .forEach(a=>{ if(!a.classList.contains('always')) a.style.opacity='0'; });
+});
+
 /* ── 점수 계산 ── */
 function computeScore(subs,views,vids,eng,freq){
-  subs=parseFloat(subs)||0; views=parseFloat(views)||0;
-  vids=Math.max(parseInt(vids)||1,1); eng=parseFloat(eng)||0; freq=parseFloat(freq)||0;
-  const avgV=views/vids, vsr=views/Math.max(subs,1);
+  subs=parseFloat(subs)||0;views=parseFloat(views)||0;
+  vids=Math.max(parseInt(vids)||1,1);eng=parseFloat(eng)||0;freq=parseFloat(freq)||0;
+  const avgV=views/vids,vsr=views/Math.max(subs,1);
   const ss=Math.min(Math.log10(Math.max(subs,1))*80000,400000);
   const sv=Math.min(Math.log10(Math.max(views,1))*50000,250000);
   const se=Math.min(eng*30000,150000);
   const sf=Math.min(freq*8000,80000);
   const sa=Math.min(Math.log10(Math.max(avgV,1))*25000,120000);
-  let base=ss+sv+se+sf+sa, bonus=0, log=[];
+  let base=ss+sv+se+sf+sa,bonus=0,log=[];
   if(subs>=1e6){bonus+=base*.15;log.push('구독자 100만+ 보너스 +15%');}
   else if(subs>=1e5){bonus+=base*.07;log.push('구독자 10만+ 보너스 +7%');}
   if(vsr>=5){bonus+=base*.12;log.push('조회/구독 비율 5배+ 보너스 +12%');}
@@ -569,9 +576,9 @@ function computeScore(subs,views,vids,eng,freq){
   else if(eng>=6){bonus+=base*.05;log.push('참여율 6%+ 보너스 +5%');}
   if(freq>=15){bonus+=base*.08;log.push('업로드 주 3회+ 보너스 +8%');}
   else if(freq>=8){bonus+=base*.04;log.push('업로드 주 2회+ 보너스 +4%');}
-  return{ total:Math.round(base+bonus), base:Math.round(base), bonus:Math.round(bonus), log,
+  return{total:Math.round(base+bonus),base:Math.round(base),bonus:Math.round(bonus),log,
     bd:{subs:Math.round(ss),views:Math.round(sv),eng:Math.round(se),freq:Math.round(sf),avg:Math.round(sa)},
-    f:{subs,views,vids,eng,freq,avgV,vsr} };
+    f:{subs,views,vids,eng,freq,avgV,vsr}};
 }
 
 /* ── 채널 분석 ── */
@@ -579,23 +586,24 @@ function analyzeChannel(isDemo){
   let subs,views,vids,eng,freq,name,avatar;
   if(isDemo){
     subs=460000000;views=70000000000;vids=800;eng=8.5;freq=4;
-    name='@MrBeast';avatar='https://yt3.googleusercontent.com/ytc/APkrFKa6XiLa13mMVPzkmmTBcgNPjjqCGPrY86mT0OfS=s88-c-k-c0x00ffffff-no-rj';
+    name='@MrBeast';
+    avatar='https://yt3.googleusercontent.com/ytc/APkrFKa6XiLa13mMVPzkmmTBcgNPjjqCGPrY86mT0OfS=s88-c-k-c0x00ffffff-no-rj';
   } else {
     subs=parseFloat(document.getElementById('inSubs').value)||0;
     views=parseFloat(document.getElementById('inViews').value)||0;
     vids=parseInt(document.getElementById('inVids').value)||1;
     eng=parseFloat(document.getElementById('inEng').value)||0;
     freq=parseFloat(document.getElementById('inFreq').value)||0;
-    name=document.getElementById('chanInput').value||'분석 채널'; avatar='';
+    name=document.getElementById('chanInput').value||'분석 채널';avatar='';
   }
   const sc=computeScore(subs,views,vids,eng,freq);
-  const sLv=lvFromSubs(subs), scLv=lvFromScore(sc.total);
+  const sLv=lvFSb(subs),scLv=lvFS(sc.total);
   const fLv=Math.min(10,Math.max(1,Math.round(sLv*.4+scLv*.6)));
-  const fG=GRADES[fLv-1], sG=GRADES[sLv-1], scG=GRADES[scLv-1];
-  const mx=1000000, f=sc.f;
-  const qS=qual(subs,10000,100000), qV=qual(f.views,1e6,1e10);
-  const qA=qual(f.avgV,10000,100000), qE=qual(f.eng,3,7);
-  const qF=qual(f.freq,4,12), qSc=qual(sc.total,10000,100000);
+  const fG=GRADES[fLv-1],sG=GRADES[sLv-1],scG=GRADES[scLv-1];
+  const mx=1000000,f=sc.f;
+  const qS=qual(subs,10000,100000),qV=qual(f.views,1e6,1e10);
+  const qA=qual(f.avgV,10000,100000),qE=qual(f.eng,3,7);
+  const qF=qual(f.freq,4,12),qSc=qual(sc.total,10000,100000);
 
   document.getElementById('resultArea').innerHTML=`
 <div class="result-wrap">
@@ -684,8 +692,8 @@ function sbr(label,val,max,color){
 
 /* ── 모달 ── */
 let modalLv=1;
-function openModal(lv){ modalLv=lv; document.getElementById('modalOverlay').classList.add('open'); buildModalNav(); renderModal(lv); }
-function closeModal(e){ if(!e||e.target===document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('open'); }
+function openModal(lv){modalLv=lv;document.getElementById('modalOverlay').classList.add('open');buildModalNav();renderModal(lv);}
+function closeModal(e){if(!e||e.target===document.getElementById('modalOverlay'))document.getElementById('modalOverlay').classList.remove('open');}
 function buildModalNav(){
   document.getElementById('modalNav').innerHTML=GRADES.map(g=>{
     const act=g.lv===modalLv;
@@ -693,31 +701,16 @@ function buildModalNav(){
   }).join('');
 }
 function renderModal(lv){
-  modalLv=lv; const g=GRADES[lv-1]; buildModalNav();
-  const isHigh=lv>=6, is10=lv===10;
+  modalLv=lv;const g=GRADES[lv-1];buildModalNav();
+  const isHigh=lv>=6,is10=lv===10;
   let ns=`color:${g.color};font-size:2.8rem;font-weight:900;display:block;margin-bottom:4px;`;
   let nms=`color:${g.color};font-size:1.1rem;font-weight:700;display:block;margin-bottom:10px;`;
-  if(isHigh&&!is10){ ns+=`text-shadow:0 0 16px ${g.color};`; nms+=`text-shadow:0 0 10px ${g.color}88;`; }
+  if(isHigh&&!is10){ns+=`text-shadow:0 0 16px ${g.color};`;nms+=`text-shadow:0 0 10px ${g.color}88;`;}
   const nc=is10?'rainbow-text':(isHigh?'glow-text':'');
   const nmc=is10?'rainbow-text':(isHigh?'glow-text':'');
-  const sceneClass = is10?'card-scene lv10-scene':'card-scene';
   document.getElementById('modalContent').innerHTML=`
-    <div class="${sceneClass}" style="padding-bottom:60px">
-      <div class="lv-card-wrap beam${lv}" style="margin:0 auto;max-width:280px">
-        <div class="card-backlight-main always"></div>
-        <div class="card-backlight-spread always"></div>
-        <div class="card-backlight-side always"></div>
-        <div class="card-backlight-core always"></div>
-        <div class="lv-card-face">
-          <span class="${nc}" style="${ns}">LV.${lv}</span>
-          <span class="${nmc}" style="${nms}">${g.name}</span>
-          <div style="font-size:.76rem;color:var(--text2);margin-bottom:8px">${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)} 구독자</div>
-          <div class="lv-rank" style="background:${g.color}33;color:${g.color};margin-bottom:8px">${g.rankPct}</div>
-          <div style="font-size:.72rem;color:var(--text2);line-height:1.5">${g.desc}</div>
-        </div>
-      </div>
-    </div>
-    <div style="background:#1a1a2e;border-radius:10px;padding:12px;text-align:left;font-size:.78rem">
+    ${buildCardHTML(g,true).replace('onclick="openModal('+lv+')"','')}
+    <div style="background:#1a1a2e;border-radius:10px;padding:12px;text-align:left;font-size:.78rem;margin-top:8px;">
       <div style="margin-bottom:8px;font-weight:700;color:${g.color}">🎯 다음 목표</div>
       <div style="color:var(--text2);margin-bottom:10px">${g.nextGoal}</div>
       <div style="font-weight:700;margin-bottom:6px">✨ 특권</div>
@@ -725,7 +718,6 @@ function renderModal(lv){
     </div>`;
 }
 
-/* ── 인기 영상 ── */
 const HOT=[
   {id:'dQw4w9WgXcQ',title:'알고리즘 마스터하는 7가지 전략',views:'2.4M',ch:'크리에이터 아카데미'},
   {id:'jNQXAC9IVRw',title:'유튜브 쇼츠로 10만 달성한 방법',views:'1.8M',ch:'숏폼연구소'},
@@ -741,19 +733,17 @@ function loadHotVideos(){
       <div class="hot-info"><div class="hot-title">${v.title}</div><div class="hot-meta">${v.ch} · ${v.views} 조회</div></div>
     </div>`).join('');
 }
-
 function calcRevenue(){
   const v=parseFloat(document.getElementById('rViews').value)||0;
   const c=parseFloat(document.getElementById('rCpm').value)||0;
   const t=parseFloat(document.getElementById('rVtr').value)||0;
   const m=parseFloat(document.getElementById('rCountry').value)||1;
-  const mv=v*(t/100), gross=(mv/1000)*c*m, net=gross*.55;
+  const mv=v*(t/100),gross=(mv/1000)*c*m,net=gross*.55;
   document.getElementById('revResult').innerHTML=`
     <div style="font-size:.78rem;color:var(--text2);margin-bottom:6px">예상 월 수익 (YouTube 55% 지급)</div>
     <div class="rev-amount">${fmtMoney(net)}</div>
     <div class="rev-note">수익화 조회수 ${fmt(mv)} · 총 예상 ${fmtMoney(gross)} → YouTube 수수료 45% 제외</div>`;
 }
-
 const TOOLS=[
   {icon:'🔍',name:'KeywordTool',desc:'유튜브 키워드 리서치',url:'https://keywordtool.io/youtube'},
   {icon:'🎨',name:'Canva',desc:'섬네일 디자인',url:'https://canva.com'},
@@ -783,20 +773,13 @@ const SHOP=[
   {icon:'🎬',name:'어도비 프리미어',desc:'전문 영상 편집',url:'https://adobe.com/products/premiere'},
 ];
 function buildExtras(){
-  const g=(data,id)=>{
-    document.getElementById(id).innerHTML=data.map(d=>`
-      <a class="extra-card" href="${d.url}" target="_blank" rel="noopener">
-        <div class="ex-icon">${d.icon}</div><div class="ex-name">${d.name}</div><div class="ex-desc">${d.desc}</div>
-      </a>`).join('');
-  };
-  g(TOOLS,'toolsGrid'); g(IDEAS,'ideasGrid'); g(SHOP,'shopGrid');
+  const g=(data,id)=>{ document.getElementById(id).innerHTML=data.map(d=>`<a class="extra-card" href="${d.url}" target="_blank" rel="noopener"><div class="ex-icon">${d.icon}</div><div class="ex-name">${d.name}</div><div class="ex-desc">${d.desc}</div></a>`).join(''); };
+  g(TOOLS,'toolsGrid');g(IDEAS,'ideasGrid');g(SHOP,'shopGrid');
 }
-
-function showSection(id){ document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); const el=document.getElementById('sec-'+id); if(el)el.classList.add('active'); }
-function setActive(el){ document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active')); el.classList.add('active'); }
-function handleGlobalSearch(){ const q=document.getElementById('globalSearch').value.trim(); if(!q)return; document.getElementById('chanInput').value=q; showSection('analyze'); setActive(document.querySelector('.sidebar-item')); }
-
-document.addEventListener('DOMContentLoaded',()=>{ loadHotVideos(); buildExtras(); calcRevenue(); analyzeChannel(true); });
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));const el=document.getElementById('sec-'+id);if(el)el.classList.add('active');}
+function setActive(el){document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));el.classList.add('active');}
+function handleGlobalSearch(){const q=document.getElementById('globalSearch').value.trim();if(!q)return;document.getElementById('chanInput').value=q;showSection('analyze');setActive(document.querySelector('.sidebar-item'));}
+document.addEventListener('DOMContentLoaded',()=>{loadHotVideos();buildExtras();calcRevenue();analyzeChannel(true);});
 </script>
 </body>
 </html>
