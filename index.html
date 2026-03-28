@@ -42,13 +42,15 @@ h1 {
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 70px 32px;
+  gap: 80px 32px;
   max-width: 1400px;
   margin: 0 auto;
   padding: 40px 20px 80px;
 }
 
-/* ── 카드 씬 ── */
+/* ══════════════════════════════════
+   카드 씬
+══════════════════════════════════ */
 .card-scene {
   position: relative;
   width: 210px;
@@ -57,9 +59,9 @@ h1 {
   perspective: 900px;
 }
 
-/* ── LV1, LV2: 안개 효과 없음 ── */
+/* ── LV1,2: 안개 없음 ── */
 
-/* ── LV3~5: 6,7,8에 적용되던 절반 글로우 적용 ── */
+/* ── LV3~5: 중간 안개 (이전 LV6~8 수준) ── */
 .card-scene[data-lv="3"]::before,
 .card-scene[data-lv="4"]::before,
 .card-scene[data-lv="5"]::before {
@@ -75,12 +77,11 @@ h1 {
   animation: fogPulse 3s ease-in-out infinite;
 }
 
-/* ── LV6~10: 9레벨에 적용되던 강한 글로우 적용 ── */
+/* ── LV6~9: 강한 안개 (이전 LV9 수준) ── */
 .card-scene[data-lv="6"]::before,
 .card-scene[data-lv="7"]::before,
 .card-scene[data-lv="8"]::before,
-.card-scene[data-lv="9"]::before,
-.card-scene[data-lv="10"]::before {
+.card-scene[data-lv="9"]::before {
   content: '';
   position: absolute;
   inset: -55px;
@@ -93,20 +94,6 @@ h1 {
   animation: fogPulseStrong 3s ease-in-out infinite;
 }
 
-/* LV10 추가 내부 안개 레이어 */
-.card-scene[data-lv="10"]::after {
-  content: '';
-  position: absolute;
-  inset: -30px;
-  border-radius: var(--r);
-  pointer-events: none;
-  z-index: 0;
-  filter: blur(18px);
-  opacity: 0.55;
-  animation: fogPulse 2.5s ease-in-out infinite;
-  background: radial-gradient(ellipse at center, var(--glow-color) 0%, transparent 70%);
-}
-
 @keyframes fogPulse {
   0%,100% { opacity: 0.42; transform: scale(1); }
   50%      { opacity: 0.72; transform: scale(1.06); }
@@ -116,11 +103,7 @@ h1 {
   50%      { opacity: 0.88; transform: scale(1.08); }
 }
 
-/* LV10 안개는 JS가 색상 직접 제어 */
-.card-scene[data-lv="10"]::before,
-.card-scene[data-lv="10"]::after {
-  display: none; /* JS용 div로 대체 */
-}
+/* ── LV10: JS 제어 안개 div ── */
 .lv10-fog-ring {
   position: absolute;
   inset: -55px;
@@ -142,7 +125,84 @@ h1 {
   animation: fogPulse 2.5s ease-in-out infinite;
 }
 
-/* ── 틸트 래퍼 ── */
+/* ══════════════════════════════════
+   상단/하단 광채 빔 (카드 위아래 방사)
+══════════════════════════════════ */
+.card-glow-top,
+.card-glow-bot {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160%;
+  height: 80px;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(18px);
+  animation: glowBeamPulse 2.5s ease-in-out infinite;
+}
+.card-glow-top {
+  top: -50px;
+  background: radial-gradient(ellipse at center bottom,
+    var(--glow-color) 0%,
+    transparent 70%);
+}
+.card-glow-bot {
+  bottom: -50px;
+  background: radial-gradient(ellipse at center top,
+    var(--glow-color) 0%,
+    transparent 70%);
+}
+@keyframes glowBeamPulse {
+  0%,100% { opacity: 0.55; transform: translateX(-50%) scaleX(1); }
+  50%      { opacity: 0.90; transform: translateX(-50%) scaleX(1.12); }
+}
+
+/* LV1,2 광채 없음 */
+.card-scene[data-lv="1"] .card-glow-top,
+.card-scene[data-lv="1"] .card-glow-bot,
+.card-scene[data-lv="2"] .card-glow-top,
+.card-scene[data-lv="2"] .card-glow-bot {
+  display: none;
+}
+/* LV3~5 광채 약하게 */
+.card-scene[data-lv="3"] .card-glow-top,
+.card-scene[data-lv="3"] .card-glow-bot,
+.card-scene[data-lv="4"] .card-glow-top,
+.card-scene[data-lv="4"] .card-glow-bot,
+.card-scene[data-lv="5"] .card-glow-top,
+.card-scene[data-lv="5"] .card-glow-bot {
+  opacity: 0.45;
+  width: 130%;
+  height: 60px;
+  filter: blur(14px);
+}
+/* LV6~9 광채 강하게 */
+.card-scene[data-lv="6"] .card-glow-top,
+.card-scene[data-lv="6"] .card-glow-bot,
+.card-scene[data-lv="7"] .card-glow-top,
+.card-scene[data-lv="7"] .card-glow-bot,
+.card-scene[data-lv="8"] .card-glow-top,
+.card-scene[data-lv="8"] .card-glow-bot,
+.card-scene[data-lv="9"] .card-glow-top,
+.card-scene[data-lv="9"] .card-glow-bot {
+  opacity: 0.75;
+  width: 180%;
+  height: 90px;
+  filter: blur(22px);
+}
+/* LV10 광채 — JS가 색상 제어 */
+.card-scene[data-lv="10"] .card-glow-top,
+.card-scene[data-lv="10"] .card-glow-bot {
+  opacity: 0.85;
+  width: 200%;
+  height: 100px;
+  filter: blur(26px);
+}
+
+/* ══════════════════════════════════
+   틸트 래퍼
+══════════════════════════════════ */
 .card-tilt {
   position: relative;
   width: 100%;
@@ -209,13 +269,9 @@ h1 {
   box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   transition: box-shadow 0.3s;
 }
-
-/* LV3~5 바디 글로우 */
 .card-scene[data-lv="3"]  .card-body { box-shadow: 0 0 18px 4px rgba(255,200,0,0.2),   0 8px 32px rgba(0,0,0,0.6); }
 .card-scene[data-lv="4"]  .card-body { box-shadow: 0 0 20px 5px rgba(255,100,50,0.22),  0 8px 32px rgba(0,0,0,0.6); }
 .card-scene[data-lv="5"]  .card-body { box-shadow: 0 0 22px 6px rgba(100,200,100,0.25), 0 8px 32px rgba(0,0,0,0.6); }
-
-/* LV6~9 강한 바디 글로우 */
 .card-scene[data-lv="6"]  .card-body { box-shadow: 0 0 40px 12px rgba(200,0,255,0.4),   0 8px 32px rgba(0,0,0,0.6); }
 .card-scene[data-lv="7"]  .card-body { box-shadow: 0 0 50px 15px rgba(255,0,180,0.45),  0 8px 32px rgba(0,0,0,0.6); }
 .card-scene[data-lv="8"]  .card-body { box-shadow: 0 0 55px 18px rgba(255,100,0,0.48),  0 8px 32px rgba(0,0,0,0.6); }
@@ -310,7 +366,7 @@ h1 {
   letter-spacing:1px;
 }
 
-/* ── 밴드 ── */
+/* ── 밴드 (위아래 얇은 컬러 띠) ── */
 .card-top-band{
   position:absolute;top:0;left:0;right:0;height:4px;
   border-radius:var(--r) var(--r) 0 0;
@@ -331,10 +387,37 @@ h1 {
   pointer-events:none;z-index:8;
 }
 
-/* ── 푸터 ── */
-.card-footer{position:absolute;bottom:14px;left:0;right:0;z-index:9;text-align:center;}
-.footer-subs{font-size:11px;color:var(--cb);font-weight:700;opacity:0.9;text-shadow:0 0 8px var(--cb);}
-.footer-rank{font-size:9px;color:var(--sub);margin-top:2px;}
+/* ══════════════════════════════════
+   하단 정보바 — 레벨 색상 고정 유지
+══════════════════════════════════ */
+.card-footer{
+  position:absolute;
+  bottom:0; left:0; right:0;
+  z-index:9;
+  padding:10px 12px 12px;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.82) 0%,
+    rgba(0,0,0,0.55) 60%,
+    transparent 100%);
+  border-radius: 0 0 var(--r) var(--r);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.footer-subs{
+  font-size:11px;
+  font-weight:700;
+  color: var(--cb);           /* 레벨 색상 고정 */
+  text-shadow: 0 0 10px var(--cb), 0 0 20px var(--ca);
+  opacity:1;
+}
+.footer-rank{
+  font-size:9px;
+  color: var(--cc);           /* 레벨 밝은 색상 */
+  opacity: 0.85;
+  text-shadow: 0 0 6px var(--cb);
+}
 </style>
 </head>
 <body>
@@ -343,28 +426,23 @@ h1 {
 <div class="cards-grid" id="cards-grid"></div>
 
 <script>
-/* ── 무지개 색상 계산 ── */
-function hueToRgb(h) {
-  h = ((h % 360) + 360) % 360;
-  const s=1, l=0.60;
-  const c=(1-Math.abs(2*l-1))*s;
-  const x=c*(1-Math.abs((h/60)%2-1));
-  const m=l-c/2;
+/* ── 무지개 색상 ── */
+function hueToRgb(h){
+  h=((h%360)+360)%360;
+  const s=1,l=0.60,c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;
   let r=0,g=0,b=0;
   if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}
   else if(h<180){g=c;b=x;}else if(h<240){g=x;b=c;}
   else if(h<300){r=x;b=c;}else{r=c;b=x;}
   return `rgb(${Math.round((r+m)*255)},${Math.round((g+m)*255)},${Math.round((b+m)*255)})`;
 }
-function hueToRgba(h,a){
-  return hueToRgb(h).replace('rgb(','rgba(').replace(')',`,${a})`);
-}
+function hueToRgba(h,a){return hueToRgb(h).replace('rgb(','rgba(').replace(')',`,${a})`);}
 
-let lv10Hue = 0;
-const HUE_SPEED = 0.8;
+let lv10Hue=0;
+const HUE_SPEED=0.8;
 
 /* ── GRADES ── */
-const GRADES = [
+const GRADES=[
   {lv:1,name:'새싹',icon:'🌱',badge:'SEED',
    ca:'#78909c',cb:'#b0bec5',cc:'#eceff1',
    subs:'0 ~ 100명',rank:'브론즈 V',beamSpeed:'4s',bandOp:0.5,stars:1,beamCount:1,
@@ -427,8 +505,8 @@ const GRADES = [
 ];
 
 /* ── 빔 HTML ── */
-function buildBeams(g) {
-  const spd = g.beamSpeed;
+function buildBeams(g){
+  const spd=g.beamSpeed;
   if(g.lv===10) return `<div class="beam-container">
     <div class="beam-ring rb" style="--beam-speed:${spd}"></div>
     <div class="beam-ring rb" style="--beam-speed:${spd};animation-delay:calc(${spd} / -4)"></div>
@@ -448,22 +526,27 @@ function buildBeams(g) {
 }
 
 /* ── 카드 HTML ── */
-function buildCardHTML(g) {
-  const isRb = g.lv === 10;
-  const frameBg = isRb
-    ? `linear-gradient(135deg,#ff0000,#ff6600,#ffcc00,#00ff66,#00ccff,#6600ff,#ff00cc,#ff0000)`
-    : `linear-gradient(135deg,${g.ca},${g.cb},${g.cc})`;
+function buildCardHTML(g){
+  const isRb=g.lv===10;
+  const frameBg=isRb
+    ?`linear-gradient(135deg,#ff0000,#ff6600,#ffcc00,#00ff66,#00ccff,#6600ff,#ff00cc,#ff0000)`
+    :`linear-gradient(135deg,${g.ca},${g.cb},${g.cc})`;
 
-  const stars = Array.from({length:g.stars},(_,i)=>
+  const stars=Array.from({length:g.stars},(_,i)=>
     `<span class="star" style="animation-delay:${i*0.15}s">★</span>`).join('');
-  const bokeh = g.bokeh.map(b=>
+  const bokeh=g.bokeh.map(b=>
     `<div class="bokeh-dot" style="--bs:${b.s};--bx:${b.x};--by:${b.y};--bb:${b.b};--bo:${b.o};--bd:${b.d}"></div>`).join('');
-  const sparkles = g.sparkles.map(s=>
+  const sparkles=g.sparkles.map(s=>
     `<span class="sparkle" style="--ss:${s.sz};--sx:${s.x};--sy:${s.y};--sd:${s.d};--sdelay:${s.dl}">✦</span>`).join('');
 
-  const fogHtml = isRb
-    ? `<div class="lv10-fog-ring"></div><div class="lv10-fog-inner"></div>`
+  /* 상단/하단 광채 — LV1,2 제외 */
+  const glowHtml = g.lv>=3
+    ? `<div class="card-glow-top"></div><div class="card-glow-bot"></div>`
     : '';
+
+  const fogHtml=isRb
+    ?`<div class="lv10-fog-ring"></div><div class="lv10-fog-inner"></div>`
+    :'';
 
   return `
   <div class="card-scene" data-lv="${g.lv}"
@@ -471,6 +554,7 @@ function buildCardHTML(g) {
            --beam-speed:${g.beamSpeed};--band-op:${g.bandOp};
            --frame-bg:${frameBg};--glow-color:${g.cb};">
     ${fogHtml}
+    ${glowHtml}
     <div class="card-tilt" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
       <div class="card-frame"></div>
       ${buildBeams(g)}
@@ -502,8 +586,8 @@ function buildCardHTML(g) {
 /* ── 3D 틸트 ── */
 function card3D(e,el){
   const rect=el.getBoundingClientRect();
-  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-  const dx=(e.clientX-cx)/(rect.width/2), dy=(e.clientY-cy)/(rect.height/2);
+  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  const dx=(e.clientX-cx)/(rect.width/2),dy=(e.clientY-cy)/(rect.height/2);
   el.style.transform=`rotateX(${-dy*16}deg) rotateY(${dx*16}deg)`;
   const mx=((e.clientX-rect.left)/rect.width)*100;
   const my=((e.clientY-rect.top)/rect.height)*100;
@@ -532,21 +616,26 @@ function cardReset(el){
     var(--card-bg)`;
 }
 
-/* ── LV10 무지개 동기화 루프 ── */
+/* ── LV10 무지개 루프 ── */
 function updateLv10(){
   const scene=document.querySelector('.card-scene[data-lv="10"]');
   if(!scene){lv10Hue=(lv10Hue+HUE_SPEED)%360;requestAnimationFrame(updateLv10);return;}
 
   const h=lv10Hue;
-  const h2=(h+90)%360, h3=(h+180)%360, h4=(h+270)%360;
-  const c0=hueToRgb(h), c1=hueToRgb(h2), c2=hueToRgb(h3), c3=hueToRgb(h4);
-  const g0=hueToRgba(h,0.8), g1=hueToRgba(h2,0.55), g2=hueToRgba(h3,0.3);
+  const h2=(h+90)%360,h3=(h+180)%360,h4=(h+270)%360;
+  const c0=hueToRgb(h),c1=hueToRgb(h2),c2=hueToRgb(h3),c3=hueToRgb(h4);
 
   /* 안개 */
   const fogRing=scene.querySelector('.lv10-fog-ring');
   const fogInner=scene.querySelector('.lv10-fog-inner');
-  if(fogRing)  fogRing.style.background=`radial-gradient(ellipse at center,${g0} 0%,${g1} 40%,transparent 70%)`;
+  if(fogRing)  fogRing.style.background=`radial-gradient(ellipse at center,${hueToRgba(h,0.8)} 0%,${hueToRgba(h2,0.5)} 40%,transparent 70%)`;
   if(fogInner) fogInner.style.background=`radial-gradient(ellipse at center,${hueToRgba(h2,0.65)} 0%,${hueToRgba(h3,0.4)} 45%,transparent 75%)`;
+
+  /* 위아래 광채 */
+  const glowTop=scene.querySelector('.card-glow-top');
+  const glowBot=scene.querySelector('.card-glow-bot');
+  if(glowTop) glowTop.style.background=`radial-gradient(ellipse at center bottom,${hueToRgba(h,0.9)} 0%,${hueToRgba(h2,0.4)} 50%,transparent 75%)`;
+  if(glowBot) glowBot.style.background=`radial-gradient(ellipse at center top,${hueToRgba(h,0.9)} 0%,${hueToRgba(h2,0.4)} 50%,transparent 75%)`;
 
   /* body 글로우 */
   const body=scene.querySelector('.card-body');
@@ -570,9 +659,9 @@ function updateLv10(){
   /* 밴드 */
   const bandGrad=`linear-gradient(90deg,${c0},${c1},${c2},${c3},${c0})`;
   const tb=scene.querySelector('.card-top-band');
-  const bb=scene.querySelector('.card-bot-band');
+  const bb2=scene.querySelector('.card-bot-band');
   if(tb) tb.style.background=bandGrad;
-  if(bb) bb.style.background=bandGrad;
+  if(bb2) bb2.style.background=bandGrad;
 
   /* 이름 */
   const name=scene.querySelector('.card-name');
@@ -604,9 +693,11 @@ function updateLv10(){
     sp.style.color=sc;sp.style.textShadow=`0 0 8px ${sc}`;
   });
 
-  /* 푸터 */
+  /* 푸터 — LV10도 색상 순환 */
   const subs=scene.querySelector('.footer-subs');
-  if(subs){subs.style.color=c0;subs.style.textShadow=`0 0 8px ${c0}`;subs.style.webkitTextFillColor=c0;}
+  if(subs){subs.style.color=c0;subs.style.textShadow=`0 0 10px ${c0},0 0 20px ${c1}`;subs.style.webkitTextFillColor=c0;}
+  const rankEl=scene.querySelector('.footer-rank');
+  if(rankEl){rankEl.style.color=c2;rankEl.style.textShadow=`0 0 6px ${c1}`;}
 
   lv10Hue=(lv10Hue+HUE_SPEED)%360;
   requestAnimationFrame(updateLv10);
