@@ -38,48 +38,32 @@ body{
   cursor:pointer;
 }
 
-/* ── 테두리 띠 (고급 프레임) ── */
-/* 바깥 프레임: 레벨 색상 얇은 띠 */
+/* ── 테두리 프레임 띠 ── */
 .card-frame{
   position:absolute;inset:-3px;
   border-radius:21px;
-  background:linear-gradient(135deg,
-    color-mix(in srgb,var(--cb,#fff) 80%,#fff) 0%,
-    color-mix(in srgb,var(--cb,#fff) 40%,transparent) 40%,
-    color-mix(in srgb,var(--cb,#fff) 60%,#fff) 60%,
-    color-mix(in srgb,var(--cb,#fff) 30%,transparent) 100%
-  );
-  z-index:1;
-  pointer-events:none;
+  z-index:1;pointer-events:none;
 }
-/* 프레임 안쪽 채움 (카드 배경색으로 마스크) */
 .card-frame::after{
-  content:'';
-  position:absolute;inset:2px;
-  border-radius:19px;
-  background:var(--bg);
+  content:'';position:absolute;inset:2px;
+  border-radius:19px;background:var(--bg);
 }
 
-/* ── 빔 컨테이너 (테두리를 따라 도는 라인) ── */
-/* overflow hidden 으로 카드 모양 밖으로 안 나가게 */
+/* ── 빔 컨테이너 ── */
 .beam-container{
   position:absolute;inset:-3px;
   border-radius:21px;
   overflow:hidden;
-  z-index:2;
-  pointer-events:none;
+  z-index:2;pointer-events:none;
 }
-/* 빔 회전체: 카드 중심에서 conic-gradient 회전 */
 .beam-ring{
   position:absolute;
-  /* 카드보다 훨씬 크게 – 중심 기준으로 회전 */
   width:400%;height:400%;
   top:50%;left:50%;
   margin-top:-200%;margin-left:-200%;
   background:conic-gradient(
     from 0deg,
     transparent 0%,
-    color-mix(in srgb,var(--cb,#fff) 0%,transparent) 0%,
     color-mix(in srgb,var(--cb,#fff) 90%,#fff) 3%,
     rgba(255,255,255,1) 5%,
     color-mix(in srgb,var(--cb,#fff) 70%,#fff) 7%,
@@ -89,13 +73,6 @@ body{
   animation:beamRingSpin var(--beam-speed,3s) linear infinite;
   transform-origin:center center;
 }
-/* 빔2 – 위상 오프셋 */
-.beam-ring-2{animation-delay:calc(var(--beam-speed,3s) / -2);}
-/* 빔3 – 위상 오프셋 */
-.beam-ring-3{animation-delay:calc(var(--beam-speed,3s) / -3);}
-/* 빔4 – 위상 오프셋 */
-.beam-ring-4{animation-delay:calc(var(--beam-speed,3s) / -4);}
-
 @keyframes beamRingSpin{from{rotate:0deg;}to{rotate:360deg;}}
 
 /* LV10 무지개 빔 */
@@ -103,8 +80,8 @@ body{
   background:conic-gradient(
     from 0deg,
     transparent 0%,
-    #f00 3%,#f80 5%,#ff0 7%,#0f0 9%,
-    #0ff 11%,#00f 13%,#f0f 15%,
+    #ff44cc 3%,#cc44ff 5%,#4466ff 7%,#44ffee 9%,
+    #44ff88 11%,#ffee44 13%,#ff6644 15%,
     transparent 18%,transparent 100%
   ) !important;
 }
@@ -112,13 +89,11 @@ body{
 /* ── 카드 본체 ── */
 .card-body{
   position:absolute;inset:0;
-  border-radius:18px;
-  z-index:3;
+  border-radius:18px;z-index:3;
   transform-style:preserve-3d;
   transform:rotateX(0deg) rotateY(0deg);
   transition:transform .1s ease;
   will-change:transform;
-  /* 레벨 색 그림자 */
   box-shadow:
     0 20px 55px rgba(0,0,0,.65),
     0 0 0 1px color-mix(in srgb,var(--cb,#fff) 25%,transparent);
@@ -140,13 +115,10 @@ body{
       color-mix(in srgb,var(--ca,#333) 14%,#07070f) 100%
     );
 }
-
-/* 홀로그램 줄무늬 */
 .card-face::before{
   content:'';position:absolute;inset:0;border-radius:18px;
   background:repeating-linear-gradient(
-    -45deg,
-    transparent 0px,transparent 3px,
+    -45deg,transparent 0px,transparent 3px,
     rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px
   );
   pointer-events:none;z-index:1;
@@ -155,15 +127,14 @@ body{
 /* ── 광택 (항상 표시) ── */
 .card-shine{
   position:absolute;inset:0;border-radius:18px;
-  /* 기본 항상 보이는 광택 */
   background:
     linear-gradient(135deg,
-      rgba(255,255,255,.12) 0%,
+      rgba(255,255,255,.13) 0%,
       rgba(255,255,255,.04) 30%,
       transparent 60%
     ),
     linear-gradient(225deg,
-      rgba(255,255,255,.07) 0%,
+      rgba(255,255,255,.08) 0%,
       transparent 50%
     );
   pointer-events:none;z-index:5;
@@ -309,17 +280,19 @@ body{
 .footer-subs{color:color-mix(in srgb,var(--cb,#fff) 60%,transparent);font-size:10px;}
 
 /* ── 레벨별 글로우 ── */
-.card-scene[data-lv="5"]  .card-body{box-shadow:0 20px 55px rgba(0,0,0,.6),0 0 20px color-mix(in srgb,var(--cb) 20%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 25%,transparent);}
-.card-scene[data-lv="6"]  .card-body{box-shadow:0 24px 62px rgba(0,0,0,.65),0 0 30px color-mix(in srgb,var(--cb) 28%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 30%,transparent);}
-.card-scene[data-lv="7"]  .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 42px color-mix(in srgb,var(--cb) 36%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 35%,transparent);}
-.card-scene[data-lv="8"]  .card-body{box-shadow:0 30px 75px rgba(0,0,0,.72),0 0 56px color-mix(in srgb,var(--cb) 46%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 40%,transparent);}
-.card-scene[data-lv="9"]  .card-body{box-shadow:0 34px 85px rgba(0,0,0,.76),0 0 72px color-mix(in srgb,var(--cb) 58%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 50%,transparent);}
+.card-scene[data-lv="5"]  .card-body{box-shadow:0 20px 55px rgba(0,0,0,.6), 0 0 22px color-mix(in srgb,var(--cb) 22%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 28%,transparent);}
+.card-scene[data-lv="6"]  .card-body{box-shadow:0 24px 62px rgba(0,0,0,.65),0 0 32px color-mix(in srgb,var(--cb) 30%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 32%,transparent);}
+.card-scene[data-lv="7"]  .card-body{box-shadow:0 27px 68px rgba(0,0,0,.68),0 0 44px color-mix(in srgb,var(--cb) 38%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 36%,transparent);}
+.card-scene[data-lv="8"]  .card-body{box-shadow:0 30px 75px rgba(0,0,0,.72),0 0 58px color-mix(in srgb,var(--cb) 48%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 42%,transparent);}
+.card-scene[data-lv="9"]  .card-body{box-shadow:0 34px 85px rgba(0,0,0,.76),0 0 74px color-mix(in srgb,var(--cb) 60%,transparent),0 0 0 1px color-mix(in srgb,var(--cb) 52%,transparent);}
+
+/* LV10 – cb:#ff44cc 핑크 기반 글로우 */
 .card-scene[data-lv="10"] .card-body{
   box-shadow:
     0 38px 95px rgba(0,0,0,.82),
-    0 0 80px rgba(255,80,180,.5),
-    0 0 130px rgba(80,200,255,.35),
-    0 0 0 1px rgba(255,255,255,.2);
+    0 0 80px rgba(255,68,204,.55),
+    0 0 130px rgba(160,68,255,.4),
+    0 0 0 1px rgba(255,100,220,.32);
 }
 
 /* LV9 이름 펄스 */
@@ -329,18 +302,20 @@ body{
   to  {text-shadow:0 0 22px var(--cb),0 0 55px var(--cb),0 0 90px color-mix(in srgb,var(--cb) 50%,transparent);}
 }
 
-/* LV10 무지개 이름 */
+/* LV10 무지개 이름 – 핑크/보라 계열 */
 .card-scene[data-lv="10"] .card-main-name{
-  background:linear-gradient(90deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+  background:linear-gradient(90deg,#ff44cc,#cc44ff,#4466ff,#44ffee,#44ff88,#ffee44,#ff6644,#ff44cc);
   background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
   animation:rainbowSlide 1.8s linear infinite;
 }
+
+/* LV10 아이콘 글로우 – 핑크/보라 계열 */
 .card-scene[data-lv="10"] .card-main-icon{
   animation:iconHover 3.5s ease-in-out infinite,iconGlow10 1.6s ease-in-out infinite alternate;
 }
 @keyframes iconGlow10{
-  from{filter:drop-shadow(0 0 14px #ff0080) drop-shadow(0 0 30px #00ffff);}
-  to  {filter:drop-shadow(0 0 28px #ffff00) drop-shadow(0 0 58px #ff0080) drop-shadow(0 0 85px #00ffff);}
+  from{filter:drop-shadow(0 0 14px #ff44cc) drop-shadow(0 0 30px #cc44ff);}
+  to  {filter:drop-shadow(0 0 28px #cc44ff) drop-shadow(0 0 58px #ff44cc) drop-shadow(0 0 85px #4466ff);}
 }
 @keyframes rainbowSlide{to{background-position:200% center;}}
 </style>
@@ -353,80 +328,79 @@ body{
 
 <script>
 const GRADES=[
-  {lv:1, name:'씨앗',           icon:'🌱',badge:'Seed',
+  {lv:1, name:'씨앗',            icon:'🌱',badge:'Seed',
    ca:'#546e7a',cb:'#b0bec5',cc:'#eceff1',
-   subs:'0 ~ 100',     beamSpeed:'4.2s',bandOp:13,stars:1,beamCount:1,
-   bokeh:[{w:34,h:34,l:8, t:7, blur:6,op:.28},{w:18,h:18,l:62,t:18,blur:4,op:.22}],
+   subs:'0 ~ 100',      beamSpeed:'4.2s',bandOp:13,stars:1,beamCount:1,
+   bokeh:[{w:34,h:34,l:8,t:7,blur:6,op:.28},{w:18,h:18,l:62,t:18,blur:4,op:.22}],
    sparkles:[{l:22,t:34,sd:'2.3s',sl:'0s'},{l:55,t:14,sd:'2.9s',sl:'.4s'},{l:76,t:42,sd:'2.6s',sl:'.8s'}]},
 
-  {lv:2, name:'새싹',           icon:'🌿',badge:'Sprout',
+  {lv:2, name:'새싹',            icon:'🌿',badge:'Sprout',
    ca:'#0277bd',cb:'#4fc3f7',cc:'#e1f5fe',
-   subs:'100 ~ 1K',   beamSpeed:'3.8s',bandOp:17,stars:2,beamCount:1,
-   bokeh:[{w:38,h:38,l:7, t:5, blur:7,op:.32},{w:22,h:22,l:58,t:17,blur:4,op:.26},{w:14,h:14,l:32,t:30,blur:3,op:.2}],
+   subs:'100 ~ 1K',    beamSpeed:'3.8s',bandOp:17,stars:2,beamCount:1,
+   bokeh:[{w:38,h:38,l:7,t:5,blur:7,op:.32},{w:22,h:22,l:58,t:17,blur:4,op:.26},{w:14,h:14,l:32,t:30,blur:3,op:.2}],
    sparkles:[{l:18,t:30,sd:'2s',sl:'0s'},{l:58,t:11,sd:'2.5s',sl:'.3s'},{l:80,t:40,sd:'2.2s',sl:'.7s'}]},
 
-  {lv:3, name:'나무',           icon:'🌳',badge:'Tree',
+  {lv:3, name:'나무',            icon:'🌳',badge:'Tree',
    ca:'#f57f17',cb:'#fff176',cc:'#fffde7',
-   subs:'1K ~ 10K',   beamSpeed:'3.5s',bandOp:22,stars:2,beamCount:2,
-   bokeh:[{w:40,h:40,l:6, t:4, blur:8,op:.36},{w:24,h:24,l:60,t:14,blur:5,op:.3},{w:16,h:16,l:28,t:26,blur:4,op:.23}],
+   subs:'1K ~ 10K',    beamSpeed:'3.5s',bandOp:22,stars:2,beamCount:2,
+   bokeh:[{w:40,h:40,l:6,t:4,blur:8,op:.36},{w:24,h:24,l:60,t:14,blur:5,op:.3},{w:16,h:16,l:28,t:26,blur:4,op:.23}],
    sparkles:[{l:15,t:27,sd:'1.9s',sl:'0s'},{l:52,t:9,sd:'2.4s',sl:'.25s'},{l:82,t:36,sd:'2.1s',sl:'.6s'},{l:40,t:52,sd:'2.7s',sl:'1s'}]},
 
-  {lv:4, name:'스타터',         icon:'⭐',badge:'Starter',
+  {lv:4, name:'스타터',          icon:'⭐',badge:'Starter',
    ca:'#e64a19',cb:'#ffb74d',cc:'#fff3e0',
-   subs:'10K ~ 50K',  beamSpeed:'3.2s',bandOp:26,stars:3,beamCount:2,
-   bokeh:[{w:44,h:44,l:5, t:3, blur:9,op:.39},{w:27,h:27,l:62,t:13,blur:6,op:.33},{w:18,h:18,l:25,t:24,blur:4,op:.26}],
+   subs:'10K ~ 50K',   beamSpeed:'3.2s',bandOp:26,stars:3,beamCount:2,
+   bokeh:[{w:44,h:44,l:5,t:3,blur:9,op:.39},{w:27,h:27,l:62,t:13,blur:6,op:.33},{w:18,h:18,l:25,t:24,blur:4,op:.26}],
    sparkles:[{l:14,t:25,sd:'1.8s',sl:'0s'},{l:50,t:7,sd:'2.2s',sl:'.2s'},{l:84,t:33,sd:'2s',sl:'.55s'},{l:38,t:49,sd:'2.5s',sl:'.9s'}]},
 
-  {lv:5, name:'인플루언서',     icon:'💫',badge:'Influencer',
+  {lv:5, name:'인플루언서',      icon:'💫',badge:'Influencer',
    ca:'#1b5e20',cb:'#66bb6a',cc:'#e8f5e9',
-   subs:'50K ~ 100K', beamSpeed:'3s',  bandOp:30,stars:3,beamCount:2,
-   bokeh:[{w:47,h:47,l:4, t:3, blur:10,op:.42},{w:29,h:29,l:63,t:11,blur:6,op:.36},{w:20,h:20,l:22,t:22,blur:5,op:.28}],
+   subs:'50K ~ 100K',  beamSpeed:'3s',  bandOp:30,stars:3,beamCount:2,
+   bokeh:[{w:47,h:47,l:4,t:3,blur:10,op:.42},{w:29,h:29,l:63,t:11,blur:6,op:.36},{w:20,h:20,l:22,t:22,blur:5,op:.28}],
    sparkles:[{l:12,t:22,sd:'1.7s',sl:'0s'},{l:48,t:5,sd:'2.1s',sl:'.15s'},{l:86,t:31,sd:'1.9s',sl:'.5s'},{l:36,t:47,sd:'2.3s',sl:'.8s'},{l:66,t:57,sd:'2s',sl:'1.1s'}]},
 
-  {lv:6, name:'파워 크리에이터',icon:'🔥',badge:'Power',
+  {lv:6, name:'파워 크리에이터', icon:'🔥',badge:'Power',
    ca:'#4a148c',cb:'#ab47bc',cc:'#f3e5f5',
-   subs:'100K ~ 500K',beamSpeed:'2.8s',bandOp:37,stars:4,beamCount:3,
-   bokeh:[{w:51,h:51,l:3, t:2, blur:12,op:.45},{w:31,h:31,l:65,t:9,blur:7,op:.39},{w:22,h:22,l:20,t:20,blur:6,op:.31},{w:14,h:14,l:48,t:40,blur:4,op:.23}],
+   subs:'100K ~ 500K', beamSpeed:'2.8s',bandOp:37,stars:4,beamCount:3,
+   bokeh:[{w:51,h:51,l:3,t:2,blur:12,op:.45},{w:31,h:31,l:65,t:9,blur:7,op:.39},{w:22,h:22,l:20,t:20,blur:6,op:.31},{w:14,h:14,l:48,t:40,blur:4,op:.23}],
    sparkles:[{l:10,t:20,sd:'1.6s',sl:'0s'},{l:46,t:4,sd:'2s',sl:'.12s'},{l:88,t:28,sd:'1.8s',sl:'.45s'},{l:34,t:44,sd:'2.2s',sl:'.75s'},{l:68,t:54,sd:'1.9s',sl:'1s'},{l:22,t:60,sd:'2.1s',sl:'1.3s'}]},
 
-  {lv:7, name:'메가 크리에이터',icon:'💎',badge:'Mega',
+  {lv:7, name:'메가 크리에이터', icon:'💎',badge:'Mega',
    ca:'#880e4f',cb:'#f06292',cc:'#fce4ec',
-   subs:'500K ~ 1M',  beamSpeed:'2.5s',bandOp:49,stars:4,beamCount:3,
-   bokeh:[{w:54,h:54,l:2, t:2, blur:13,op:.49},{w:33,h:33,l:66,t:8,blur:8,op:.42},{w:24,h:24,l:18,t:18,blur:6,op:.34},{w:16,h:16,l:50,t:37,blur:5,op:.27}],
+   subs:'500K ~ 1M',   beamSpeed:'2.5s',bandOp:49,stars:4,beamCount:3,
+   bokeh:[{w:54,h:54,l:2,t:2,blur:13,op:.49},{w:33,h:33,l:66,t:8,blur:8,op:.42},{w:24,h:24,l:18,t:18,blur:6,op:.34},{w:16,h:16,l:50,t:37,blur:5,op:.27}],
    sparkles:[{l:8,t:18,sd:'1.5s',sl:'0s'},{l:44,t:3,sd:'1.9s',sl:'.1s'},{l:90,t:26,sd:'1.7s',sl:'.4s'},{l:32,t:42,sd:'2.1s',sl:'.7s'},{l:70,t:51,sd:'1.8s',sl:'.95s'},{l:20,t:57,sd:'2s',sl:'1.25s'},{l:57,t:64,sd:'1.6s',sl:'1.5s'}]},
 
-  {lv:8, name:'탑 크리에이터',  icon:'🏆',badge:'Top',
+  {lv:8, name:'탑 크리에이터',   icon:'🏆',badge:'Top',
    ca:'#7f0000',cb:'#ef5350',cc:'#ffebee',
-   subs:'1M ~ 5M',    beamSpeed:'2.2s',bandOp:63,stars:5,beamCount:3,
-   bokeh:[{w:58,h:58,l:1, t:1, blur:15,op:.53},{w:35,h:35,l:67,t:7,blur:9,op:.45},{w:26,h:26,l:16,t:16,blur:7,op:.37},{w:18,h:18,l:52,t:35,blur:5,op:.28},{w:11,h:11,l:36,t:52,blur:3,op:.2}],
+   subs:'1M ~ 5M',     beamSpeed:'2.2s',bandOp:63,stars:5,beamCount:3,
+   bokeh:[{w:58,h:58,l:1,t:1,blur:15,op:.53},{w:35,h:35,l:67,t:7,blur:9,op:.45},{w:26,h:26,l:16,t:16,blur:7,op:.37},{w:18,h:18,l:52,t:35,blur:5,op:.28},{w:11,h:11,l:36,t:52,blur:3,op:.2}],
    sparkles:[{l:6,t:16,sd:'1.4s',sl:'0s'},{l:42,t:2,sd:'1.8s',sl:'.08s'},{l:91,t:24,sd:'1.6s',sl:'.35s'},{l:30,t:40,sd:'2s',sl:'.62s'},{l:72,t:49,sd:'1.7s',sl:'.88s'},{l:18,t:55,sd:'1.9s',sl:'1.15s'},{l:59,t:61,sd:'1.5s',sl:'1.4s'},{l:45,t:69,sd:'2.1s',sl:'1.6s'}]},
 
-  {lv:9, name:'레전드',         icon:'👑',badge:'Legend',
+  {lv:9, name:'레전드',          icon:'👑',badge:'Legend',
    ca:'#bf360c',cb:'#ff6d00',cc:'#fbe9e7',
-   subs:'5M ~ 10M',   beamSpeed:'1.8s',bandOp:79,stars:5,beamCount:3,
-   bokeh:[{w:63,h:63,l:0, t:0, blur:18,op:.57},{w:37,h:37,l:68,t:6,blur:10,op:.49},{w:28,h:28,l:14,t:14,blur:8,op:.41},{w:20,h:20,l:54,t:33,blur:6,op:.33},{w:13,h:13,l:38,t:49,blur:4,op:.24}],
+   subs:'5M ~ 10M',    beamSpeed:'1.8s',bandOp:79,stars:5,beamCount:3,
+   bokeh:[{w:63,h:63,l:0,t:0,blur:18,op:.57},{w:37,h:37,l:68,t:6,blur:10,op:.49},{w:28,h:28,l:14,t:14,blur:8,op:.41},{w:20,h:20,l:54,t:33,blur:6,op:.33},{w:13,h:13,l:38,t:49,blur:4,op:.24}],
    sparkles:[{l:5,t:14,sd:'1.3s',sl:'0s'},{l:40,t:1,sd:'1.7s',sl:'.06s'},{l:89,t:22,sd:'1.5s',sl:'.3s'},{l:28,t:38,sd:'1.9s',sl:'.55s'},{l:74,t:46,sd:'1.6s',sl:'.8s'},{l:16,t:52,sd:'1.8s',sl:'1.05s'},{l:61,t:59,sd:'1.4s',sl:'1.3s'},{l:44,t:67,sd:'2s',sl:'1.55s'},{l:23,t:73,sd:'1.7s',sl:'1.8s'}]},
 
-  {lv:10,name:'신화',           icon:'🌈',badge:'MYTH',
-   ca:'#7b0050',cb:'#ffffff',cc:'#fff',
-   subs:'10M+',       beamSpeed:'1.2s',bandOp:100,stars:5,beamCount:4,
-   bokeh:[{w:68,h:68,l:0, t:0, blur:20,op:.6},{w:39,h:39,l:69,t:5,blur:12,op:.53},{w:30,h:30,l:12,t:12,blur:9,op:.45},{w:22,h:22,l:56,t:31,blur:7,op:.36},{w:15,h:15,l:40,t:47,blur:5,op:.28},{w:9,h:9,l:26,t:62,blur:3,op:.2}],
+  /* ★ LV10 – 흰색 제거, 핑크/보라 계열로 통일 */
+  {lv:10,name:'신화',            icon:'🌈',badge:'MYTH',
+   ca:'#6600cc',cb:'#ff44cc',cc:'#ffaaff',
+   subs:'10M+',        beamSpeed:'1.2s',bandOp:100,stars:5,beamCount:4,
+   bokeh:[{w:68,h:68,l:0,t:0,blur:20,op:.6},{w:39,h:39,l:69,t:5,blur:12,op:.53},{w:30,h:30,l:12,t:12,blur:9,op:.45},{w:22,h:22,l:56,t:31,blur:7,op:.36},{w:15,h:15,l:40,t:47,blur:5,op:.28},{w:9,h:9,l:26,t:62,blur:3,op:.2}],
    sparkles:[{l:4,t:12,sd:'1.1s',sl:'0s'},{l:38,t:0,sd:'1.5s',sl:'.04s'},{l:87,t:20,sd:'1.3s',sl:'.25s'},{l:26,t:36,sd:'1.7s',sl:'.48s'},{l:76,t:44,sd:'1.4s',sl:'.72s'},{l:14,t:50,sd:'1.6s',sl:'.96s'},{l:63,t:57,sd:'1.2s',sl:'1.2s'},{l:47,t:65,sd:'1.8s',sl:'1.44s'},{l:21,t:71,sd:'1.5s',sl:'1.68s'},{l:55,t:76,sd:'1.3s',sl:'1.9s'}]}
 ];
 
-/* ── 빔 HTML 생성 ── */
+/* ── 빔 생성 ── */
 function buildBeams(g){
-  const n     = g.beamCount;
-  const spd   = parseFloat(g.beamSpeed);
-  const isRb  = g.lv === 10;
-  let html = '';
+  const n   = g.beamCount;
+  const spd = parseFloat(g.beamSpeed);
+  const isRb= g.lv===10;
+  let html='';
   for(let i=0;i<n;i++){
-    const delay = -((spd/n)*i).toFixed(3)+'s';
-    const cls   = isRb ? 'beam-ring rainbow' : 'beam-ring';
-    /* i번째 추가 클래스로 위상 구분 */
-    const extraCls = i===1?'beam-ring-2':i===2?'beam-ring-3':i===3?'beam-ring-4':'';
-    html+=`<div class="beam-container" style="--beam-speed:${g.beamSpeed};">
-      <div class="${cls} ${extraCls}" style="animation-duration:${g.beamSpeed};animation-delay:${delay};"></div>
+    const delay='-'+(( spd/n)*i).toFixed(3)+'s';
+    const cls = isRb?'beam-ring rainbow':'beam-ring';
+    html+=`<div class="beam-container" style="--cb:${g.cb};">
+      <div class="${cls}" style="animation-duration:${g.beamSpeed};animation-delay:${delay};"></div>
     </div>`;
   }
   return html;
@@ -434,24 +408,33 @@ function buildBeams(g){
 
 /* ── 카드 HTML ── */
 function buildCardHTML(g){
-  const stars = Array.from({length:5},(_,i)=>
+  const stars=Array.from({length:5},(_,i)=>
     `<span class="card-star" style="opacity:${i<g.stars?1:.16};--st-dur:${2+i*.45}s;--st-del:${i*.22}s">&starf;</span>`
   ).join('');
 
-  const bokeh = g.bokeh.map((b,i)=>
+  const bokeh=g.bokeh.map((b,i)=>
     `<div class="bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${5.5+i*1.4}s;--bdel:${i*.65}s;"></div>`
   ).join('');
 
-  const sparkles = g.sparkles.map(s=>
+  const sparkles=g.sparkles.map(s=>
     `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${9+Math.min(g.lv,5)}px;--sdur:${s.sd};--sdel:${s.sl};">✦</span>`
   ).join('');
 
-  const isRb   = g.lv===10;
-  const frameBg= isRb
-    ? 'background:linear-gradient(135deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00);'
-    : `background:linear-gradient(135deg,color-mix(in srgb,${g.cb} 80%,#fff) 0%,color-mix(in srgb,${g.cb} 40%,transparent) 40%,color-mix(in srgb,${g.cb} 70%,#fff) 60%,color-mix(in srgb,${g.cb} 30%,transparent) 100%);`;
-  const badgeSt= isRb
-    ? 'background:linear-gradient(135deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f);border-color:rgba(255,255,255,.3);'
+  const isRb=g.lv===10;
+
+  /* 프레임 배경 */
+  const frameBg=isRb
+    ? 'background:linear-gradient(135deg,#ff44cc,#cc44ff,#4466ff,#44ffee,#44ff88,#ffee44,#ff6644,#ff44cc);'
+    : `background:linear-gradient(135deg,
+        color-mix(in srgb,${g.cb} 80%,#fff) 0%,
+        color-mix(in srgb,${g.cb} 40%,transparent) 40%,
+        color-mix(in srgb,${g.cb} 70%,#fff) 60%,
+        color-mix(in srgb,${g.cb} 30%,transparent) 100%
+      );`;
+
+  /* 배지 */
+  const badgeSt=isRb
+    ? 'background:linear-gradient(135deg,#6600cc,#ff44cc,#cc44ff);border-color:rgba(255,180,255,.4);'
     : '';
 
   return `
@@ -460,13 +443,9 @@ function buildCardHTML(g){
   onmousemove="card3D(event,this)"
   onmouseleave="cardReset(this)">
 
-  <!-- 고급 테두리 프레임 -->
   <div class="card-frame" style="${frameBg}"></div>
-
-  <!-- 회전 빔 (테두리 라인형) -->
   ${buildBeams(g)}
 
-  <!-- 카드 본체 -->
   <div class="card-body">
     <div class="card-face">
       <div class="card-bokeh">${bokeh}</div>
@@ -493,75 +472,41 @@ function buildCardHTML(g){
 </div>`;
 }
 
-/* ── 3D 틸트 (그림자 박스 없음) ── */
+/* ── 3D 틸트 ── */
 function card3D(e,el){
-  const r  = el.getBoundingClientRect();
-  const x  = e.clientX-r.left;
-  const y  = e.clientY-r.top;
-  const cx = r.width/2, cy=r.height/2;
-  const MAX= 20;
-  const ry =  ((x-cx)/cx)*MAX;
-  const rx = -((y-cy)/cy)*MAX;
-  const mx = (x/r.width *100).toFixed(1)+'%';
-  const my = (y/r.height*100).toFixed(1)+'%';
+  const r=el.getBoundingClientRect();
+  const x=e.clientX-r.left, y=e.clientY-r.top;
+  const cx=r.width/2, cy=r.height/2, MAX=20;
+  const ry=((x-cx)/cx)*MAX, rx=-((y-cy)/cy)*MAX;
+  const mx=(x/r.width*100).toFixed(1)+'%';
+  const my=(y/r.height*100).toFixed(1)+'%';
 
-  const body  = el.querySelector('.card-body');
-  const face  = el.querySelector('.card-face');
-  const shine = el.querySelector('.card-shine');
+  el.querySelector('.card-body').style.transform=
+    `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
 
-  body.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
-
-  /* 광택: 마우스 위치 추가 반응 (기본 광택 위에 추가) */
-  shine.style.background=`
-    linear-gradient(135deg,
-      rgba(255,255,255,.13) 0%,
-      rgba(255,255,255,.04) 30%,
-      transparent 60%
-    ),
-    linear-gradient(225deg,
-      rgba(255,255,255,.08) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse 55% 45% at ${mx} ${my},
-      rgba(255,255,255,.18) 0%,
-      rgba(255,255,255,.05) 50%,
-      transparent 75%
-    )
+  el.querySelector('.card-shine').style.background=`
+    linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),
+    radial-gradient(ellipse 55% 45% at ${mx} ${my},
+      rgba(255,255,255,.2) 0%,rgba(255,255,255,.05) 50%,transparent 75%)
   `;
 
-  face.style.background=`
+  el.querySelector('.card-face').style.background=`
     radial-gradient(ellipse 78% 58% at ${mx} ${my},
-      color-mix(in srgb,var(--cb) 24%,transparent) 0%,
-      transparent 68%
-    ),
+      color-mix(in srgb,var(--cb) 24%,transparent) 0%,transparent 68%),
     linear-gradient(160deg,
       color-mix(in srgb,var(--ca) 30%,#0d0d1a) 0%,
       #0d0d1a 55%,
-      color-mix(in srgb,var(--ca) 14%,#07070f) 100%
-    )
+      color-mix(in srgb,var(--ca) 14%,#07070f) 100%)
   `;
 }
 
 function cardReset(el){
-  const body  = el.querySelector('.card-body');
-  const face  = el.querySelector('.card-face');
-  const shine = el.querySelector('.card-shine');
-
-  body.style.transform='rotateX(0deg) rotateY(0deg) scale(1)';
-  face.style.background='';
-
-  /* 기본 항상 표시 광택으로 복귀 */
-  shine.style.background=`
-    linear-gradient(135deg,
-      rgba(255,255,255,.12) 0%,
-      rgba(255,255,255,.04) 30%,
-      transparent 60%
-    ),
-    linear-gradient(225deg,
-      rgba(255,255,255,.07) 0%,
-      transparent 50%
-    )
+  el.querySelector('.card-body').style.transform='rotateX(0deg) rotateY(0deg) scale(1)';
+  el.querySelector('.card-face').style.background='';
+  el.querySelector('.card-shine').style.background=`
+    linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)
   `;
 }
 
