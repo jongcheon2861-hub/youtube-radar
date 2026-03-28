@@ -1,216 +1,989 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>농구 선수 카드</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YTAnalytics Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+<style>
+@property --beam-angle { syntax:"<angle>"; initial-value:0deg; inherits:false; }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Arial', sans-serif;
-        }
+:root {
+  --bg:#0a0a14; --bg2:#10101e; --card-bg:#12121f;
+  --border:#2a2a3e; --text:#e0e0f0; --text2:#9090b0;
+  --accent:#6c63ff; --r:12px; --ad-w:200px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 
-        .card {
-            width: 280px;
-            height: 392px;
-            background: linear-gradient(135deg, #ff6ec7 0%, #a855f7 50%, #7c3aed 100%);
-            border-radius: 12px;
-            padding: 4px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
+/* ══ KEYFRAMES ══ */
+@keyframes beamSpin    {to{--beam-angle:360deg;}}
+@keyframes glowPulse   {0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes rainbowText {0%{color:#ff0040;}16%{color:#ff8c00;}33%{color:#ffe600;}50%{color:#00ff88;}66%{color:#00cfff;}83%{color:#bf00ff;}100%{color:#ff0040;}}
+@keyframes fadeIn      {from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes float3d     {0%,100%{transform:translateY(0) rotateX(0);}50%{transform:translateY(-6px) rotateX(2deg);}}
+@keyframes sparkle     {0%,100%{opacity:.3;transform:scale(.8);}50%{opacity:1;transform:scale(1.3);}}
+@keyframes shimmerSlide{0%{transform:translateX(-150%) skewX(-20deg);}100%{transform:translateX(250%) skewX(-20deg);}}
+@keyframes bandPulse   {0%,100%{opacity:.6;}50%{opacity:1;}}
+@keyframes rainbowBand {0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}
 
-        .card-inner {
-            width: 100%;
-            height: 100%;
-            background: #1a1a2e;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
+/* 오라 펄스 */
+@keyframes ap1  {0%,100%{opacity:.45;transform:scale(1);}  50%{opacity:.70;transform:scale(1.06);}}
+@keyframes ap2  {0%,100%{opacity:.55;transform:scale(1);}  50%{opacity:.82;transform:scale(1.10);}}
+@keyframes ap3  {0%,100%{opacity:.68;transform:scale(1);}  50%{opacity:.96;transform:scale(1.14);}}
+@keyframes ap9  {0%,100%{opacity:.75;transform:scale(1);}  50%{opacity:1.0; transform:scale(1.18);}}
+@keyframes ap10 {
+  0%  {opacity:.90;transform:scale(1);   filter:hue-rotate(0deg)   blur(var(--bl,44px));}
+  33% {opacity:1.0; transform:scale(1.14);filter:hue-rotate(120deg) blur(calc(var(--bl,44px)*1.2));}
+  66% {opacity:.96; transform:scale(1.22);filter:hue-rotate(240deg) blur(calc(var(--bl,44px)*1.4));}
+  100%{opacity:.90;transform:scale(1);   filter:hue-rotate(360deg) blur(var(--bl,44px));}
+}
 
-        .card-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            z-index: 10;
-        }
+/* ══ LAYOUT ══ */
+.app-wrap{display:flex;flex-direction:column;min-height:100vh;}
+header{display:flex;align-items:center;gap:12px;padding:0 20px;height:56px;background:linear-gradient(135deg,#0f0f20,#1a1a30);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{font-size:1.3rem;font-weight:900;white-space:nowrap;background:linear-gradient(90deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.search-bar{flex:1;max-width:480px;display:flex;gap:8px;}
+.search-bar input{flex:1;padding:8px 14px;background:#1a1a2e;border:1px solid var(--border);border-radius:24px;color:var(--text);font-size:.9rem;}
+.search-bar input:focus{outline:none;border-color:var(--accent);}
+.btn{padding:8px 18px;border:none;border-radius:20px;cursor:pointer;font-size:.85rem;font-weight:700;transition:all .2s;}
+.btn-primary{background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;}
+.btn-primary:hover{transform:scale(1.04);filter:brightness(1.15);}
+.body-row{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:200px;min-width:200px;background:var(--bg2);border-right:1px solid var(--border);padding:12px 8px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:500;color:var(--text2);transition:all .2s;}
+.sidebar-item:hover,.sidebar-item.active{background:#1e1e35;color:var(--text);}
+.sidebar-item .ic{font-size:1.1rem;}
+.main-area{flex:1;overflow-y:auto;padding:20px;min-width:0;}
+.ad-zone{width:var(--ad-w);min-width:var(--ad-w);flex-shrink:0;background:var(--bg2);border-left:1px solid var(--border);padding:12px 8px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;}
+.ad-slot{background:#1a1a2e;border:1px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--text2);text-align:center;flex:1;min-height:180px;}
+.section{display:none;animation:fadeIn .4s ease;}
+.section.active{display:block;}
 
-        .stars {
-            display: flex;
-            gap: 2px;
-        }
+/* ══════════════════════════════════════════════════════
+   ★★★ PLAYER CARD SYSTEM ★★★
+   농구 선수 카드 스타일 레벨 카드
 
-        .star {
-            color: #ffd700;
-            font-size: 14px;
-            text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
-        }
+   .card-scene
+     ├ .aura-back / bottom / left / right  (4방향 타원 오라)
+     └ .lv-player-card   (외부 그라데이션 테두리)
+         └ .lv-card-inner
+             ├ .card-header   (별 + 배지)
+             ├ .card-sparkles (반짝임)
+             ├ .card-bokeh    (보케)
+             ├ .card-bg-art   (배경 아트)
+             ├ .card-img-area (이미지 영역)
+             ├ .card-shine    (빛 반사 슬라이드)
+             ├ .card-vignette (비네트)
+             └ .card-footer   (하단 정보)
+══════════════════════════════════════════════════════ */
 
-        .badge {
-            background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
+/* ── 카드 씬 (오라 공간) ── */
+.card-scene{
+  position:relative;
+  padding:52px 46px 74px;
+  display:inline-block;
+  width:100%;
+}
 
-        .sparkles {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 9;
-        }
+/* 4방향 오라 */
+.aura-back,.aura-bottom,.aura-left,.aura-right{
+  position:absolute;border-radius:50%;pointer-events:none;opacity:0;
+  transition:opacity .5s ease;
+}
+.aura-back  {width:76%;height:42%;top:7%;   left:12%;}
+.aura-bottom{width:90%;height:34%;bottom:2%;left:5%;}
+.aura-left  {width:25%;height:64%;top:18%;  left:0%;}
+.aura-right {width:25%;height:64%;top:18%;  right:0%;}
+.aura-back.always,.aura-bottom.always,.aura-left.always,.aura-right.always{opacity:1;}
 
-        .sparkle {
-            position: absolute;
-            color: #ffd700;
-            font-size: 12px;
-            animation: sparkle 2s infinite;
-        }
+/* ── 외부 카드 (그라데이션 테두리) ── */
+.lv-player-card{
+  width:280px;
+  height:392px;
+  border-radius:14px;
+  padding:3px;                /* 테두리 두께 */
+  position:relative;
+  cursor:pointer;
+  animation:float3d 4s ease-in-out infinite;
+  transition:transform .35s cubic-bezier(.23,1,.32,1),filter .3s;
+  margin:0 auto;
+}
+.lv-player-card:hover{
+  transform:scale(1.06) translateY(-10px) rotateX(6deg) rotateY(2deg);
+  filter:brightness(1.1);
+  animation-play-state:paused;
+}
 
-        .sparkle:nth-child(1) { left: 20px; top: 5px; animation-delay: 0s; }
-        .sparkle:nth-child(2) { left: 35px; top: 15px; animation-delay: 0.3s; }
-        .sparkle:nth-child(3) { left: 15px; top: 25px; animation-delay: 0.6s; }
+/* 빔 회전 테두리 — 카드 래퍼에 직접 */
+.lv-player-card::before{
+  content:'';position:absolute;inset:-2px;border-radius:16px;
+  animation:beamSpin var(--bd,2.5s) linear infinite;
+  z-index:0;
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  mask-composite:exclude;
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  padding:3px;
+}
+.lv-player-card::after{
+  content:'';position:absolute;inset:-6px;border-radius:20px;
+  animation:beamSpin var(--bd,2.5s) linear infinite;
+  filter:blur(12px);opacity:.8;z-index:-1;
+}
 
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
+/* ── 내부 카드 ── */
+.lv-card-inner{
+  width:100%;height:100%;
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
+  background:#1a1a2e;
+}
 
-        .bokeh {
-            position: absolute;
-            top: 20px;
-            left: 15px;
-            z-index: 8;
-        }
+/* ── 배경 아트 레이어 ── */
+.card-bg-art{
+  position:absolute;inset:0;z-index:0;
+  pointer-events:none;
+}
 
-        .bokeh-light {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 182, 77, 0.6) 0%, transparent 70%);
-            filter: blur(4px);
-        }
+/* ── 상단 헤더 ── */
+.card-header{
+  position:absolute;top:0;left:0;right:0;
+  padding:11px 12px;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  z-index:10;
+}
+.card-stars{display:flex;gap:2px;}
+.card-star{font-size:13px;color:#ffd700;text-shadow:0 0 4px rgba(255,215,0,.6);}
+.card-badge{
+  padding:3px 11px;border-radius:8px;
+  font-size:10px;font-weight:900;
+  letter-spacing:.5px;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
 
-        .bokeh-light:nth-child(1) {
-            width: 40px;
-            height: 40px;
-            left: 0;
-            top: 0;
-        }
+/* ── 반짝임 ── */
+.card-sparkles{position:absolute;top:8px;left:8px;z-index:9;pointer-events:none;}
+.card-sparkle{
+  position:absolute;font-size:11px;
+  animation:sparkle 2s ease-in-out infinite;
+}
+.card-sparkle:nth-child(1){left:18px;top:6px;animation-delay:0s;}
+.card-sparkle:nth-child(2){left:34px;top:18px;animation-delay:.35s;}
+.card-sparkle:nth-child(3){left:12px;top:28px;animation-delay:.7s;}
+.card-sparkle:nth-child(4){left:48px;top:8px;animation-delay:.5s;}
 
-        .bokeh-light:nth-child(2) {
-            width: 25px;
-            height: 25px;
-            left: 30px;
-            top: 10px;
-            background: radial-gradient(circle, rgba(255, 150, 100, 0.5) 0%, transparent 70%);
-        }
+/* ── 보케 ── */
+.card-bokeh{position:absolute;top:14px;left:10px;z-index:8;pointer-events:none;}
+.bokeh-dot{
+  position:absolute;border-radius:50%;
+  filter:blur(5px);
+}
 
-        .player-image {
-            width: 100%;
-            height: 320px;
-            object-fit: cover;
-            object-position: center top;
-            position: relative;
-        }
+/* ── 이미지 영역 ── */
+.card-img-area{
+  position:absolute;top:0;left:0;right:0;
+  height:316px;           /* 카드 전체의 약 81% */
+  overflow:hidden;z-index:2;
+}
+.card-player-img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  display:block;
+}
+/* 이미지 없을 때 기본 배경 */
+.card-img-placeholder{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;
+}
+.placeholder-icon{font-size:4rem;opacity:.4;}
+.placeholder-lv{font-size:5rem;font-weight:900;opacity:.15;line-height:1;}
 
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 320px;
-            background: radial-gradient(ellipse at center, transparent 20%, rgba(26, 26, 46, 0.5) 80%);
-            pointer-events: none;
-        }
+/* ── 빛 반사 슬라이드 ── */
+.card-shine{
+  position:absolute;inset:0;z-index:6;pointer-events:none;
+  overflow:hidden;
+}
+.card-shine::before{
+  content:'';position:absolute;top:0;bottom:0;
+  width:60px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),rgba(255,255,255,.32),rgba(255,255,255,.18),transparent);
+  animation:shimmerSlide var(--shine-spd,3.5s) ease-in-out infinite;
+}
 
-        .card-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, #7c3aed 0%, #6b21a8 100%);
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* ── 비네트 ── */
+.card-vignette{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 30%,rgba(10,10,20,.55) 100%);
+}
 
-        .season {
-            color: white;
-            font-size: 13px;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
+/* ── 상단 하단 컬러 밴드 ── */
+.card-top-grad{
+  position:absolute;top:0;left:0;right:0;height:42%;
+  z-index:3;pointer-events:none;
+  animation:bandPulse var(--band-spd,3s) ease-in-out infinite;
+}
+.card-bot-grad{
+  position:absolute;bottom:0;left:0;right:0;height:42%;
+  z-index:3;pointer-events:none;
+  animation:bandPulse var(--band-spd,3s) ease-in-out infinite .8s;
+}
 
-        .player-name {
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-    </style>
+/* ── 테두리 내부 엣지 글로우 ── */
+.card-edge{
+  position:absolute;inset:0;z-index:7;pointer-events:none;
+  border-radius:12px;
+}
+
+/* ── 하단 푸터 ── */
+.card-footer{
+  position:absolute;bottom:0;left:0;right:0;height:76px;
+  z-index:8;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px 8px;
+}
+.card-season{
+  color:#fff;font-size:12px;font-weight:700;
+  background:rgba(0,0,0,.35);
+  padding:4px 10px;border-radius:7px;
+  backdrop-filter:blur(4px);
+}
+.card-lv-info{text-align:right;}
+.card-lv-num{font-size:2.2rem;font-weight:900;line-height:1;}
+.card-lv-name{font-size:.78rem;font-weight:700;margin-top:1px;}
+
+/* ══════════════════════════════════════════
+   레벨별 스타일 정의
+══════════════════════════════════════════ */
+
+/* ─ LV1 흰색 ─ */
+.lv1 .lv-player-card{background:linear-gradient(135deg,#e8e8e8,#b0b0b0,#f8f8f8,#c8c8c8);}
+.lv1 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#ccc 84%,#fff 90%,#ccc 95%,transparent 100%);}
+.lv1 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#ffffff88 88%,#fff 92%,transparent 100%);}
+.lv1 .card-bg-art{background:linear-gradient(160deg,#1e1e2e 0%,#242436 50%,#1a1a2a 100%);}
+.lv1 .card-top-grad{background:linear-gradient(180deg,rgba(220,220,240,.55) 0%,rgba(200,200,220,.22) 55%,transparent 100%);}
+.lv1 .card-bot-grad{background:linear-gradient(0deg,  rgba(200,200,220,.65) 0%,rgba(180,180,200,.25) 55%,transparent 100%);}
+.lv1 .card-edge{box-shadow:inset 0 0 0 1px rgba(255,255,255,.40),inset 0 0 14px rgba(255,255,255,.12);}
+.lv1 .card-badge{background:linear-gradient(135deg,#ccc,#888);color:#000;}
+.lv1 .card-star{color:#aaa;}
+.lv1 .card-sparkle{color:#ddd;}
+.lv1 .bokeh-dot:nth-child(1){width:38px;height:38px;left:0;top:0;background:radial-gradient(circle,rgba(220,220,255,.55) 0%,transparent 70%);}
+.lv1 .bokeh-dot:nth-child(2){width:24px;height:24px;left:28px;top:10px;background:radial-gradient(circle,rgba(200,200,240,.45) 0%,transparent 70%);}
+.lv1 .card-footer{background:linear-gradient(135deg,rgba(80,80,100,.85),rgba(60,60,80,.90));}
+.lv1 .card-lv-num{color:#e0e0e0;}
+.lv1 .card-lv-name{color:#aaaaaa;}
+.lv1{--shine-spd:4s;--band-spd:4s;}
+.lv1 .aura-back  {background:radial-gradient(ellipse,#fff 0%,#ccc 50%,transparent 100%);filter:blur(22px);animation:ap1 3.5s ease-in-out infinite;}
+.lv1 .aura-bottom{background:radial-gradient(ellipse,#eee 0%,#aaa 50%,transparent 100%);filter:blur(28px);animation:ap1 3.5s ease-in-out infinite .5s;}
+.lv1 .aura-left  {background:radial-gradient(ellipse,#ddd 0%,#999 50%,transparent 100%);filter:blur(20px);animation:ap1 3.5s ease-in-out infinite .2s;}
+.lv1 .aura-right {background:radial-gradient(ellipse,#ddd 0%,#999 50%,transparent 100%);filter:blur(20px);animation:ap1 3.5s ease-in-out infinite .8s;}
+
+/* ─ LV2 파랑 ─ */
+.lv2 .lv-player-card{background:linear-gradient(135deg,#4fc3f7,#0288d1,#29b6f6,#01579b);}
+.lv2 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#0288d1 84%,#4fc3f7 90%,#0288d1 95%,transparent 100%);}
+.lv2 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#4fc3f788 88%,#4fc3f7 92%,transparent 100%);}
+.lv2 .card-bg-art{background:linear-gradient(160deg,#0d1b2a 0%,#1a2f4a 50%,#0a1520 100%);}
+.lv2 .card-top-grad{background:linear-gradient(180deg,rgba(41,182,246,.60) 0%,rgba(2,136,209,.24) 55%,transparent 100%);}
+.lv2 .card-bot-grad{background:linear-gradient(0deg,  rgba(41,182,246,.65) 0%,rgba(1,87,155,.28) 55%,transparent 100%);}
+.lv2 .card-edge{box-shadow:inset 0 0 0 1px rgba(79,195,247,.50),inset 0 0 16px rgba(79,195,247,.15);}
+.lv2 .card-badge{background:linear-gradient(135deg,#29b6f6,#0288d1);color:#fff;}
+.lv2 .card-star{color:#4fc3f7;text-shadow:0 0 6px rgba(79,195,247,.7);}
+.lv2 .card-sparkle{color:#4fc3f7;}
+.lv2 .bokeh-dot:nth-child(1){width:38px;height:38px;left:0;top:0;background:radial-gradient(circle,rgba(79,195,247,.55) 0%,transparent 70%);}
+.lv2 .bokeh-dot:nth-child(2){width:24px;height:24px;left:28px;top:10px;background:radial-gradient(circle,rgba(41,182,246,.45) 0%,transparent 70%);}
+.lv2 .card-footer{background:linear-gradient(135deg,rgba(2,88,136,.88),rgba(1,57,100,.92));}
+.lv2 .card-lv-num{color:#4fc3f7;}
+.lv2 .card-lv-name{color:#90e0ff;}
+.lv2{--shine-spd:3.8s;--band-spd:3.8s;}
+.lv2 .aura-back  {background:radial-gradient(ellipse,#4fc3f7 0%,#0288d1 50%,transparent 100%);filter:blur(24px);animation:ap1 3.2s ease-in-out infinite;}
+.lv2 .aura-bottom{background:radial-gradient(ellipse,#29b6f6 0%,#01579b 50%,transparent 100%);filter:blur(30px);animation:ap1 3.2s ease-in-out infinite .5s;}
+.lv2 .aura-left  {background:radial-gradient(ellipse,#29b6f6 0%,#0277bd 50%,transparent 100%);filter:blur(22px);animation:ap1 3.2s ease-in-out infinite .2s;}
+.lv2 .aura-right {background:radial-gradient(ellipse,#29b6f6 0%,#0277bd 50%,transparent 100%);filter:blur(22px);animation:ap1 3.2s ease-in-out infinite .8s;}
+
+/* ─ LV3 노랑 ─ */
+.lv3 .lv-player-card{background:linear-gradient(135deg,#fff176,#f9a825,#ffee58,#e65100);}
+.lv3 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#f9a825 84%,#fff176 90%,#f9a825 95%,transparent 100%);}
+.lv3 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#fff17688 88%,#fff176 92%,transparent 100%);}
+.lv3 .card-bg-art{background:linear-gradient(160deg,#1a1800 0%,#2c2400 50%,#161400 100%);}
+.lv3 .card-top-grad{background:linear-gradient(180deg,rgba(255,241,118,.62) 0%,rgba(249,168,37,.25) 55%,transparent 100%);}
+.lv3 .card-bot-grad{background:linear-gradient(0deg,  rgba(255,241,118,.68) 0%,rgba(230,81,0,.28) 55%,transparent 100%);}
+.lv3 .card-edge{box-shadow:inset 0 0 0 1px rgba(255,241,118,.55),inset 0 0 16px rgba(255,241,118,.18);}
+.lv3 .card-badge{background:linear-gradient(135deg,#fff176,#f9a825);color:#1a1000;}
+.lv3 .card-star{color:#ffd700;text-shadow:0 0 6px rgba(255,215,0,.8);}
+.lv3 .card-sparkle{color:#fff176;}
+.lv3 .bokeh-dot:nth-child(1){width:40px;height:40px;left:0;top:0;background:radial-gradient(circle,rgba(255,241,118,.58) 0%,transparent 70%);}
+.lv3 .bokeh-dot:nth-child(2){width:24px;height:24px;left:28px;top:10px;background:radial-gradient(circle,rgba(249,168,37,.48) 0%,transparent 70%);}
+.lv3 .card-footer{background:linear-gradient(135deg,rgba(100,70,0,.88),rgba(70,46,0,.92));}
+.lv3 .card-lv-num{color:#fff176;}
+.lv3 .card-lv-name{color:#ffd54f;}
+.lv3{--shine-spd:3.5s;--band-spd:3.5s;}
+.lv3 .aura-back  {background:radial-gradient(ellipse,#fff176 0%,#f9a825 50%,transparent 100%);filter:blur(24px);animation:ap1 3s ease-in-out infinite;}
+.lv3 .aura-bottom{background:radial-gradient(ellipse,#fff176 0%,#e65100 50%,transparent 100%);filter:blur(32px);animation:ap1 3s ease-in-out infinite .5s;}
+.lv3 .aura-left  {background:radial-gradient(ellipse,#ffee58 0%,#f57f17 50%,transparent 100%);filter:blur(24px);animation:ap1 3s ease-in-out infinite .2s;}
+.lv3 .aura-right {background:radial-gradient(ellipse,#ffee58 0%,#f57f17 50%,transparent 100%);filter:blur(24px);animation:ap1 3s ease-in-out infinite .8s;}
+
+/* ─ LV4 오렌지 ─ */
+.lv4 .lv-player-card{background:linear-gradient(135deg,#ffb74d,#e65100,#ff8a00,#bf360c);}
+.lv4 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#e65100 84%,#ffb74d 90%,#e65100 95%,transparent 100%);}
+.lv4 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#ffb74d88 88%,#ffb74d 92%,transparent 100%);}
+.lv4 .card-bg-art{background:linear-gradient(160deg,#1e0e00 0%,#321800 50%,#180a00 100%);}
+.lv4 .card-top-grad{background:linear-gradient(180deg,rgba(255,183,77,.68) 0%,rgba(230,81,0,.28) 55%,transparent 100%);}
+.lv4 .card-bot-grad{background:linear-gradient(0deg,  rgba(255,183,77,.72) 0%,rgba(191,54,12,.32) 55%,transparent 100%);}
+.lv4 .card-edge{box-shadow:inset 0 0 0 1px rgba(255,183,77,.60),inset 0 0 18px rgba(255,183,77,.20);}
+.lv4 .card-badge{background:linear-gradient(135deg,#ffb74d,#e65100);color:#1a0500;}
+.lv4 .card-star{color:#ff9800;text-shadow:0 0 6px rgba(255,152,0,.8);}
+.lv4 .card-sparkle{color:#ffb74d;}
+.lv4 .bokeh-dot:nth-child(1){width:40px;height:40px;left:0;top:0;background:radial-gradient(circle,rgba(255,183,77,.58) 0%,transparent 70%);}
+.lv4 .bokeh-dot:nth-child(2){width:24px;height:24px;left:28px;top:10px;background:radial-gradient(circle,rgba(230,81,0,.48) 0%,transparent 70%);}
+.lv4 .card-footer{background:linear-gradient(135deg,rgba(120,50,0,.88),rgba(80,30,0,.92));}
+.lv4 .card-lv-num{color:#ffb74d;}
+.lv4 .card-lv-name{color:#ffa040;}
+.lv4{--shine-spd:3.2s;--band-spd:3.2s;}
+.lv4 .aura-back  {background:radial-gradient(ellipse,#ffb74d 0%,#e65100 48%,transparent 100%);filter:blur(26px);animation:ap2 2.8s ease-in-out infinite;}
+.lv4 .aura-bottom{background:radial-gradient(ellipse,#ffcc80 0%,#bf360c 48%,transparent 100%);filter:blur(36px);animation:ap2 2.8s ease-in-out infinite .5s;}
+.lv4 .aura-left  {background:radial-gradient(ellipse,#ffa726 0%,#d84315 48%,transparent 100%);filter:blur(26px);animation:ap2 2.8s ease-in-out infinite .2s;}
+.lv4 .aura-right {background:radial-gradient(ellipse,#ffa726 0%,#d84315 48%,transparent 100%);filter:blur(26px);animation:ap2 2.8s ease-in-out infinite .8s;}
+
+/* ─ LV5 초록 ─ */
+.lv5 .lv-player-card{background:linear-gradient(135deg,#66bb6a,#1b5e20,#4caf50,#2e7d32);}
+.lv5 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#1b5e20 84%,#66bb6a 90%,#1b5e20 95%,transparent 100%);}
+.lv5 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#66bb6a88 88%,#66bb6a 92%,transparent 100%);}
+.lv5 .card-bg-art{background:linear-gradient(160deg,#001a00 0%,#002800 50%,#001200 100%);}
+.lv5 .card-top-grad{background:linear-gradient(180deg,rgba(102,187,106,.65) 0%,rgba(27,94,32,.28) 55%,transparent 100%);}
+.lv5 .card-bot-grad{background:linear-gradient(0deg,  rgba(102,187,106,.70) 0%,rgba(27,94,32,.32) 55%,transparent 100%);}
+.lv5 .card-edge{box-shadow:inset 0 0 0 1px rgba(102,187,106,.60),inset 0 0 18px rgba(102,187,106,.20);}
+.lv5 .card-badge{background:linear-gradient(135deg,#66bb6a,#2e7d32);color:#fff;}
+.lv5 .card-star{color:#66bb6a;text-shadow:0 0 6px rgba(102,187,106,.8);}
+.lv5 .card-sparkle{color:#66bb6a;}
+.lv5 .bokeh-dot:nth-child(1){width:40px;height:40px;left:0;top:0;background:radial-gradient(circle,rgba(102,187,106,.55) 0%,transparent 70%);}
+.lv5 .bokeh-dot:nth-child(2){width:24px;height:24px;left:28px;top:10px;background:radial-gradient(circle,rgba(76,175,80,.45) 0%,transparent 70%);}
+.lv5 .card-footer{background:linear-gradient(135deg,rgba(0,60,0,.88),rgba(0,40,0,.92));}
+.lv5 .card-lv-num{color:#66bb6a;}
+.lv5 .card-lv-name{color:#a5d6a7;}
+.lv5{--shine-spd:3s;--band-spd:3s;}
+.lv5 .aura-back  {background:radial-gradient(ellipse,#66bb6a 0%,#1b5e20 46%,transparent 100%);filter:blur(28px);animation:ap2 2.6s ease-in-out infinite;}
+.lv5 .aura-bottom{background:radial-gradient(ellipse,#81c784 0%,#1a4020 46%,transparent 100%);filter:blur(38px);animation:ap2 2.6s ease-in-out infinite .5s;}
+.lv5 .aura-left  {background:radial-gradient(ellipse,#4caf50 0%,#2e7d32 46%,transparent 100%);filter:blur(28px);animation:ap2 2.6s ease-in-out infinite .2s;}
+.lv5 .aura-right {background:radial-gradient(ellipse,#4caf50 0%,#2e7d32 46%,transparent 100%);filter:blur(28px);animation:ap2 2.6s ease-in-out infinite .8s;}
+
+/* ─ LV6 보라 ─ */
+.lv6 .lv-player-card{background:linear-gradient(135deg,#ce93d8,#6a1b9a,#ba68c8,#4a148c);}
+.lv6 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#6a1b9a 84%,#ce93d8 90%,#6a1b9a 95%,transparent 100%);}
+.lv6 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#ce93d888 88%,#ce93d8 92%,transparent 100%);filter:blur(13px);}
+.lv6 .card-bg-art{background:linear-gradient(160deg,#180020 0%,#260030 50%,#120018 100%);}
+.lv6 .card-top-grad{background:linear-gradient(180deg,rgba(206,147,216,.72) 0%,rgba(106,27,154,.32) 55%,transparent 100%);}
+.lv6 .card-bot-grad{background:linear-gradient(0deg,  rgba(206,147,216,.78) 0%,rgba(74,20,140,.36) 55%,transparent 100%);}
+.lv6 .card-edge{box-shadow:inset 0 0 0 1px rgba(206,147,216,.65),inset 0 0 20px rgba(206,147,216,.22);}
+.lv6 .card-badge{background:linear-gradient(135deg,#ce93d8,#6a1b9a);color:#fff;}
+.lv6 .card-star{color:#ce93d8;text-shadow:0 0 8px rgba(206,147,216,.9);}
+.lv6 .card-sparkle{color:#ce93d8;}
+.lv6 .bokeh-dot:nth-child(1){width:42px;height:42px;left:0;top:0;background:radial-gradient(circle,rgba(206,147,216,.58) 0%,transparent 70%);}
+.lv6 .bokeh-dot:nth-child(2){width:26px;height:26px;left:30px;top:12px;background:radial-gradient(circle,rgba(186,104,200,.48) 0%,transparent 70%);}
+.lv6 .card-footer{background:linear-gradient(135deg,rgba(70,0,110,.90),rgba(48,0,75,.94));}
+.lv6 .card-lv-num{color:#ce93d8;text-shadow:0 0 12px rgba(206,147,216,.6);}
+.lv6 .card-lv-name{color:#e1bee7;}
+.lv6{--shine-spd:2.8s;--band-spd:2.8s;}
+.lv6 .aura-back  {background:radial-gradient(ellipse,#ce93d8 0%,#6a1b9a 44%,transparent 100%);filter:blur(30px);animation:ap2 2.4s ease-in-out infinite;}
+.lv6 .aura-bottom{background:radial-gradient(ellipse,#e040fb 0%,#4a148c 44%,transparent 100%);filter:blur(42px);animation:ap2 2.4s ease-in-out infinite .5s;}
+.lv6 .aura-left  {background:radial-gradient(ellipse,#ba68c8 0%,#7b1fa2 44%,transparent 100%);filter:blur(30px);animation:ap2 2.4s ease-in-out infinite .2s;}
+.lv6 .aura-right {background:radial-gradient(ellipse,#ba68c8 0%,#7b1fa2 44%,transparent 100%);filter:blur(30px);animation:ap2 2.4s ease-in-out infinite .8s;}
+
+/* ─ LV7 분홍 ─ */
+.lv7 .lv-player-card{background:linear-gradient(135deg,#f48fb1,#880e4f,#ec407a,#6d0030);}
+.lv7 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#880e4f 84%,#f48fb1 90%,#880e4f 95%,transparent 100%);}
+.lv7 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#f48fb188 88%,#f48fb1 92%,transparent 100%);filter:blur(13px);}
+.lv7 .card-bg-art{background:linear-gradient(160deg,#200014 0%,#340020 50%,#180010 100%);}
+.lv7 .card-top-grad{background:linear-gradient(180deg,rgba(244,143,177,.78) 0%,rgba(136,14,79,.34) 55%,transparent 100%);}
+.lv7 .card-bot-grad{background:linear-gradient(0deg,  rgba(244,143,177,.82) 0%,rgba(109,0,48,.38) 55%,transparent 100%);}
+.lv7 .card-edge{box-shadow:inset 0 0 0 1px rgba(244,143,177,.70),inset 0 0 22px rgba(244,143,177,.25);}
+.lv7 .card-badge{background:linear-gradient(135deg,#f48fb1,#880e4f);color:#fff;}
+.lv7 .card-star{color:#f48fb1;text-shadow:0 0 8px rgba(244,143,177,.9);}
+.lv7 .card-sparkle{color:#f48fb1;}
+.lv7 .bokeh-dot:nth-child(1){width:44px;height:44px;left:0;top:0;background:radial-gradient(circle,rgba(244,143,177,.60) 0%,transparent 70%);}
+.lv7 .bokeh-dot:nth-child(2){width:26px;height:26px;left:32px;top:12px;background:radial-gradient(circle,rgba(236,64,122,.50) 0%,transparent 70%);}
+.lv7 .card-footer{background:linear-gradient(135deg,rgba(100,0,55,.90),rgba(65,0,35,.94));}
+.lv7 .card-lv-num{color:#f48fb1;text-shadow:0 0 14px rgba(244,143,177,.7);}
+.lv7 .card-lv-name{color:#fce4ec;}
+.lv7{--shine-spd:2.5s;--band-spd:2.5s;}
+.lv7 .aura-back  {background:radial-gradient(ellipse,#f48fb1 0%,#880e4f 42%,transparent 100%);filter:blur(32px);animation:ap3 2.2s ease-in-out infinite;}
+.lv7 .aura-bottom{background:radial-gradient(ellipse,#f06292 0%,#6d0030 42%,transparent 100%);filter:blur(46px);animation:ap3 2.2s ease-in-out infinite .5s;}
+.lv7 .aura-left  {background:radial-gradient(ellipse,#ec407a 0%,#880e4f 42%,transparent 100%);filter:blur(32px);animation:ap3 2.2s ease-in-out infinite .2s;}
+.lv7 .aura-right {background:radial-gradient(ellipse,#ec407a 0%,#880e4f 42%,transparent 100%);filter:blur(32px);animation:ap3 2.2s ease-in-out infinite .8s;}
+
+/* ─ LV8 빨강 ─ */
+.lv8 .lv-player-card{background:linear-gradient(135deg,#ef5350,#b71c1c,#ff1744,#7f0000);}
+.lv8 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 75%,#b71c1c 84%,#ef5350 90%,#b71c1c 95%,transparent 100%);}
+.lv8 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 75%,#ef535088 88%,#ef5350 92%,transparent 100%);filter:blur(14px);}
+.lv8 .card-bg-art{background:linear-gradient(160deg,#200000 0%,#300000 50%,#180000 100%);}
+.lv8 .card-top-grad{background:linear-gradient(180deg,rgba(239,83,80,.82) 0%,rgba(183,28,28,.36) 55%,transparent 100%);}
+.lv8 .card-bot-grad{background:linear-gradient(0deg,  rgba(239,83,80,.88) 0%,rgba(127,0,0,.40) 55%,transparent 100%);}
+.lv8 .card-edge{box-shadow:inset 0 0 0 1px rgba(239,83,80,.75),inset 0 0 24px rgba(239,83,80,.28);}
+.lv8 .card-badge{background:linear-gradient(135deg,#ef5350,#b71c1c);color:#fff;}
+.lv8 .card-star{color:#ef5350;text-shadow:0 0 10px rgba(239,83,80,1);}
+.lv8 .card-sparkle{color:#ff5252;}
+.lv8 .bokeh-dot:nth-child(1){width:46px;height:46px;left:0;top:0;background:radial-gradient(circle,rgba(239,83,80,.62) 0%,transparent 70%);}
+.lv8 .bokeh-dot:nth-child(2){width:28px;height:28px;left:32px;top:12px;background:radial-gradient(circle,rgba(255,23,68,.52) 0%,transparent 70%);}
+.lv8 .card-footer{background:linear-gradient(135deg,rgba(120,0,0,.90),rgba(80,0,0,.94));}
+.lv8 .card-lv-num{color:#ef5350;text-shadow:0 0 16px rgba(239,83,80,.8);}
+.lv8 .card-lv-name{color:#ffcdd2;}
+.lv8{--shine-spd:2.2s;--band-spd:2.2s;}
+.lv8 .aura-back  {background:radial-gradient(ellipse,#ef5350 0%,#b71c1c 40%,transparent 100%);filter:blur(36px);animation:ap3 2s ease-in-out infinite;}
+.lv8 .aura-bottom{background:radial-gradient(ellipse,#ff5252 0%,#7f0000 40%,transparent 100%);filter:blur(50px);animation:ap3 2s ease-in-out infinite .5s;}
+.lv8 .aura-left  {background:radial-gradient(ellipse,#e53935 0%,#b71c1c 40%,transparent 100%);filter:blur(36px);animation:ap3 2s ease-in-out infinite .2s;}
+.lv8 .aura-right {background:radial-gradient(ellipse,#e53935 0%,#b71c1c 40%,transparent 100%);filter:blur(36px);animation:ap3 2s ease-in-out infinite .8s;}
+
+/* ─ LV9 다색 ─ */
+.lv9{--bd:1.8s;--shine-spd:1.8s;--band-spd:1.8s;}
+.lv9 .lv-player-card{background:linear-gradient(135deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#ff6b6b);}
+.lv9 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 60%,#4d96ff 70%,#6bcb77 76%,#ffd93d 82%,#ff6b6b 88%,#4d96ff 94%,transparent 100%);}
+.lv9 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 60%,#4d96ff77 70%,#6bcb7777 76%,#ffd93d77 82%,#ff6b6b77 88%,transparent 100%);filter:blur(15px);}
+.lv9 .card-bg-art{background:linear-gradient(160deg,#001020 0%,#1a0028 50%,#002010 100%);}
+.lv9 .card-top-grad{background:linear-gradient(180deg,rgba(255,107,107,.55) 0%,rgba(255,217,61,.35) 35%,rgba(107,203,119,.20) 65%,transparent 100%);animation:bandPulse 1.8s ease-in-out infinite,rainbowBand 4s linear infinite;}
+.lv9 .card-bot-grad{background:linear-gradient(0deg,  rgba(77,150,255,.55) 0%,rgba(107,203,119,.35) 35%,rgba(255,217,61,.20) 65%,transparent 100%);animation:bandPulse 1.8s ease-in-out infinite .6s,rainbowBand 4s linear infinite reverse;}
+.lv9 .card-edge{box-shadow:inset 0 0 0 1px rgba(255,217,61,.70),inset 0 0 24px rgba(107,203,119,.22),inset 0 0 40px rgba(77,150,255,.14);}
+.lv9 .card-badge{background:linear-gradient(135deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);color:#fff;font-size:9px;}
+.lv9 .card-star{color:#ffd93d;text-shadow:0 0 8px rgba(255,217,61,.9),0 0 16px rgba(107,203,119,.6);}
+.lv9 .card-sparkle{color:#ffd93d;animation:sparkle 1.5s ease-in-out infinite;}
+.lv9 .bokeh-dot:nth-child(1){width:46px;height:46px;left:0;top:0;background:radial-gradient(circle,rgba(255,107,107,.58) 0%,transparent 70%);}
+.lv9 .bokeh-dot:nth-child(2){width:28px;height:28px;left:34px;top:12px;background:radial-gradient(circle,rgba(107,203,119,.50) 0%,transparent 70%);}
+.lv9 .card-footer{background:linear-gradient(135deg,rgba(10,0,40,.90),rgba(0,20,10,.94));}
+.lv9 .card-lv-num{animation:rainbowText 2s linear infinite;}
+.lv9 .card-lv-name{color:#ffd93d;}
+.lv9 .aura-back  {background:conic-gradient(from 0deg,#ff6b6b,#ffd93d,#6bcb77,#4d96ff,#ff6b6b);border-radius:50%;filter:blur(40px);animation:ap9 1.9s ease-in-out infinite;}
+.lv9 .aura-bottom{background:conic-gradient(from 90deg,#ffd93d,#6bcb77,#4d96ff,#ff6b6b,#ffd93d);border-radius:50%;filter:blur(54px);animation:ap9 1.9s ease-in-out infinite .3s;}
+.lv9 .aura-left  {background:conic-gradient(from 180deg,#6bcb77,#4d96ff,#ff6b6b,#ffd93d,#6bcb77);border-radius:50%;filter:blur(38px);animation:ap9 1.9s ease-in-out infinite .5s;}
+.lv9 .aura-right {background:conic-gradient(from 270deg,#4d96ff,#ff6b6b,#ffd93d,#6bcb77,#4d96ff);border-radius:50%;filter:blur(38px);animation:ap9 1.9s ease-in-out infinite .8s;}
+
+/* ─ LV10 무지개 (압도적) ─ */
+.lv10{--bd:1.2s;--shine-spd:1.2s;--band-spd:1.2s;}
+.lv10 .lv-player-card{background:conic-gradient(from 0deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040);padding:4px;}
+.lv10 .lv-player-card::before{background:conic-gradient(from var(--beam-angle),transparent 0%,transparent 55%,#bf00ff 65%,#ff0040 71%,#ff8c00 76%,#ffe600 81%,#00ff88 86%,#00cfff 92%,#bf00ff 97%,transparent 100%);}
+.lv10 .lv-player-card::after {background:conic-gradient(from var(--beam-angle),transparent 55%,#bf00ffaa 65%,#ff0040aa 71%,#ff8c00aa 76%,#ffe600aa 81%,#00ff88aa 86%,#00cfffaa 92%,transparent 100%);filter:blur(18px);}
+.lv10 .card-bg-art{background:linear-gradient(160deg,#0a0018 0%,#001a0a 40%,#180005 70%,#000a1a 100%);}
+.lv10 .card-top-grad{background:linear-gradient(180deg,rgba(255,0,64,.65) 0%,rgba(255,140,0,.42) 30%,rgba(255,230,0,.25) 60%,transparent 100%);animation:bandPulse 1.2s ease-in-out infinite,rainbowBand 2s linear infinite;}
+.lv10 .card-bot-grad{background:linear-gradient(0deg,  rgba(0,207,255,.65) 0%,rgba(191,0,255,.42) 30%,rgba(0,255,136,.25) 60%,transparent 100%);animation:bandPulse 1.2s ease-in-out infinite .4s,rainbowBand 2s linear infinite reverse;}
+.lv10 .card-edge{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.85),inset 0 0 20px rgba(200,100,255,.38),inset 0 0 44px rgba(100,200,255,.20),0 0 24px rgba(255,100,100,.32),0 0 44px rgba(100,200,255,.28),0 0 70px rgba(200,100,255,.18);}
+.lv10 .card-badge{background:linear-gradient(135deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff);color:#fff;font-size:9px;animation:rainbowBand 2s linear infinite;}
+.lv10 .card-star{animation:rainbowText 1.5s linear infinite;}
+.lv10 .card-sparkle{animation:sparkle 1s ease-in-out infinite,rainbowText 2s linear infinite;}
+.lv10 .bokeh-dot:nth-child(1){width:50px;height:50px;left:0;top:0;background:radial-gradient(circle,rgba(255,0,64,.62) 0%,transparent 70%);animation:rainbowBand 3s linear infinite;}
+.lv10 .bokeh-dot:nth-child(2){width:32px;height:32px;left:36px;top:14px;background:radial-gradient(circle,rgba(0,207,255,.55) 0%,transparent 70%);}
+.lv10 .card-footer{background:linear-gradient(135deg,rgba(20,0,40,.92),rgba(0,10,30,.95));}
+.lv10 .card-lv-num{animation:rainbowText 1.5s linear infinite;text-shadow:0 0 20px rgba(255,255,255,.5);}
+.lv10 .card-lv-name{animation:rainbowText 1.5s linear infinite .5s;}
+.lv10 .aura-back  {width:82%;height:46%;top:6%;left:9%;background:conic-gradient(from 0deg,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040);--bl:46px;filter:blur(46px);animation:ap10 2.5s linear infinite;}
+.lv10 .aura-bottom{width:96%;height:38%;bottom:1%;left:2%;background:conic-gradient(from 60deg,#ff8c00,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040,#ff8c00);--bl:60px;filter:blur(60px);animation:ap10 2.5s linear infinite .5s;}
+.lv10 .aura-left  {width:30%;height:76%;top:12%;left:-3%;background:conic-gradient(from 120deg,#ffe600,#00ff88,#00cfff,#bf00ff,#ff0040,#ff8c00,#ffe600);--bl:44px;filter:blur(44px);animation:ap10 2.5s linear infinite 1s;}
+.lv10 .aura-right {width:30%;height:76%;top:12%;right:-3%;background:conic-gradient(from 240deg,#00cfff,#bf00ff,#ff0040,#ff8c00,#ffe600,#00ff88,#00cfff);--bl:44px;filter:blur(44px);animation:ap10 2.5s linear infinite 1.5s;}
+
+/* ══ GRADE TABLE ══ */
+.grade-table-wrap{background:var(--card-bg);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
+.grade-table{width:100%;border-collapse:collapse;font-size:.83rem;}
+.grade-table th{background:#1a1a30;padding:10px 12px;font-size:.75rem;color:var(--text2);font-weight:600;text-align:left;}
+.grade-table td{padding:9px 12px;border-top:1px solid var(--border);}
+.grade-table tr.cur-row td{background:rgba(108,99,255,.1);}
+.lv-chip{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:9px;font-weight:900;font-size:.85rem;cursor:pointer;transition:all .2s;border:2px solid transparent;}
+.lv-chip:hover{transform:scale(1.2);filter:brightness(1.3);}
+.star-badge{color:#ffd700;font-size:.9rem;margin-left:3px;}
+
+/* ══ ANALYZE ══ */
+.analyze-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:20px;}
+.analyze-box h3{font-size:1rem;margin-bottom:14px;color:var(--text2);}
+.input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:10px;}
+.field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px;}
+.field label{font-size:.75rem;color:var(--text2);}
+.field input,.field select{padding:9px 12px;background:#1a1a2e;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.87rem;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
+.result-wrap{animation:fadeIn .5s ease;}
+.result-hero{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;}
+.result-card-col{flex:0 0 280px;}
+.result-info-col{flex:1;min-width:260px;}
+.decision-row{display:flex;gap:10px;flex-wrap:wrap;background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px;}
+.dec-item{flex:1;min-width:100px;text-align:center;}
+.dec-label{font-size:.68rem;color:var(--text2);margin-bottom:4px;}
+.dec-val{font-size:1.05rem;font-weight:900;}
+.dec-arrow{display:flex;align-items:center;font-size:1.2rem;color:var(--text2);}
+.factor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+.factor-card{background:#1a1a2e;border-radius:12px;padding:12px 14px;border-left:3px solid;transition:transform .2s;}
+.factor-card:hover{transform:translateY(-2px);}
+.fc-label{font-size:.68rem;color:var(--text2);margin-bottom:4px;}
+.fc-value{font-size:1.15rem;font-weight:900;margin-bottom:4px;}
+.fc-bar-wrap{height:4px;background:rgba(255,255,255,.08);border-radius:2px;}
+.fc-bar{height:4px;border-radius:2px;}
+.fc-badge{display:inline-block;font-size:.6rem;font-weight:700;padding:1px 7px;border-radius:10px;margin-top:5px;}
+.fq-best{background:rgba(102,187,106,.2);color:#66bb6a;}
+.fq-good{background:rgba(79,195,247,.2);color:#4fc3f7;}
+.fq-mid {background:rgba(255,183,77,.2);color:#ffb74d;}
+.fq-low {background:rgba(239,83,80,.2);color:#ef5350;}
+.score-breakdown{background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px;}
+.score-breakdown h4{font-size:.85rem;margin-bottom:10px;color:var(--text2);}
+.sb-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sb-label{font-size:.73rem;color:var(--text2);width:110px;flex-shrink:0;}
+.sb-bar-wrap{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;}
+.sb-bar{height:6px;border-radius:3px;}
+.sb-val{font-size:.73rem;font-weight:700;width:58px;text-align:right;}
+.bonus-log{background:#1a1a2e;border-radius:12px;padding:12px 14px;margin-bottom:16px;}
+.bonus-log h4{font-size:.8rem;margin-bottom:8px;color:#66bb6a;}
+.bonus-item{font-size:.73rem;color:#66bb6a;padding:2px 0;}
+.inline-grade-table-wrap{margin-top:16px;background:var(--card-bg);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);}
+
+/* ══ REVENUE ══ */
+.rev-box{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--r);padding:20px;}
+.rev-box h3{margin-bottom:14px;}
+.rev-inputs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:14px;}
+.rev-result{background:#1a1a2e;border-radius:12px;padding:16px;text-align:center;}
+.rev-amount{font-size:2rem;font-weight:900;color:#66bb6a;}
+.rev-note{font-size:.73rem;color:var(--text2);margin-top:4px;}
+
+/* ══ HOT ══ */
+.hot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+.hot-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s;}
+.hot-card:hover{transform:translateY(-3px);}
+.hot-thumb{width:100%;aspect-ratio:16/9;object-fit:cover;}
+.hot-info{padding:8px 10px;}
+.hot-title{font-size:.76rem;font-weight:600;margin-bottom:3px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hot-meta{font-size:.67rem;color:var(--text2);}
+
+/* ══ EXTRAS ══ */
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;}
+.extra-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;display:block;color:var(--text);}
+.extra-card:hover{transform:translateY(-3px);border-color:var(--accent);}
+.ex-icon{font-size:1.7rem;margin-bottom:6px;}
+.ex-name{font-size:.8rem;font-weight:700;margin-bottom:3px;}
+.ex-desc{font-size:.68rem;color:var(--text2);}
+
+/* ══ MODAL ══ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.90);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;animation:fadeIn .3s ease;}
+.modal-box{background:var(--card-bg);border-radius:20px;padding:24px;width:460px;max-width:95vw;text-align:center;position:relative;overflow:visible;}
+.modal-close{position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text2);font-size:1.4rem;cursor:pointer;}
+.modal-nav{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+.modal-nav-btn{padding:4px 10px;border-radius:8px;border:none;cursor:pointer;font-size:.73rem;font-weight:700;background:#1a1a2e;color:var(--text2);transition:all .2s;}
+.modal-nav-btn:hover{transform:scale(1.08);}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sec-head h2{font-size:1.15rem;font-weight:800;}
+.sec-badge{padding:2px 10px;background:var(--accent);border-radius:20px;font-size:.72rem;font-weight:700;}
+</style>
 </head>
 <body>
-    <div class="card">
-        <div class="card-inner">
-            <!-- 상단 헤더 -->
-            <div class="card-header">
-                <div class="stars">
-                    <span class="star">★</span>
-                    <span class="star">★</span>
-                    <span class="star">★</span>
-                    <span class="star">★</span>
-                    <span class="star">★</span>
-                </div>
-                <div class="badge">Legend</div>
-            </div>
-
-            <!-- 반짝임 효과 -->
-            <div class="sparkles">
-                <span class="sparkle">✦</span>
-                <span class="sparkle">✦</span>
-                <span class="sparkle">✦</span>
-            </div>
-
-            <!-- 보케 효과 -->
-            <div class="bokeh">
-                <div class="bokeh-light"></div>
-                <div class="bokeh-light"></div>
-            </div>
-
-            <!-- 선수 이미지 -->
-            <img src="https://www.genspark.ai/api/files/s/6AptYkWr" alt="선수 사진" class="player-image">
-            
-            <!-- 이미지 오버레이 -->
-            <div class="image-overlay"></div>
-
-            <!-- 하단 정보 -->
-            <div class="card-footer">
-                <div class="season">'17-'18</div>
-                <div class="player-name">문선</div>
-            </div>
-        </div>
+<div class="app-wrap">
+<header>
+  <div class="logo">📊 YTAnalytics Pro</div>
+  <div class="search-bar">
+    <input type="text" id="globalSearch" placeholder="채널명 또는 키워드 검색…" onkeydown="if(event.key==='Enter')handleGlobalSearch()">
+    <button class="btn btn-primary" onclick="handleGlobalSearch()">검색</button>
+  </div>
+  <button class="btn btn-primary" onclick="showSection('analyze')">🔍 채널 분석</button>
+</header>
+<div class="body-row">
+<aside class="sidebar">
+  <div class="sidebar-item active" onclick="showSection('analyze');setActive(this)"><span class="ic">🔍</span>채널 분석</div>
+  <div class="sidebar-item" onclick="showSection('hot');setActive(this)"><span class="ic">🔥</span>인기 영상</div>
+  <div class="sidebar-item" onclick="showSection('revenue');setActive(this)"><span class="ic">💰</span>수익 계산</div>
+  <div class="sidebar-item" onclick="showSection('tools');setActive(this)"><span class="ic">🛠️</span>크리에이터 도구</div>
+  <div class="sidebar-item" onclick="showSection('ideas');setActive(this)"><span class="ic">💡</span>아이디어</div>
+  <div class="sidebar-item" onclick="showSection('shop');setActive(this)"><span class="ic">🛒</span>추천 장비</div>
+</aside>
+<main class="main-area">
+  <div id="sec-analyze" class="section active">
+    <div class="sec-head"><h2>🔍 채널 분석</h2><span class="sec-badge">Algorithm Score</span></div>
+    <div class="analyze-box">
+      <h3>채널 정보 입력</h3>
+      <div class="input-row">
+        <div class="field" style="flex:2;min-width:200px"><label>채널 URL / @핸들</label><input type="text" id="chanInput" placeholder="예: @MrBeast"></div>
+        <div class="field"><label>구독자 수</label><input type="number" id="inSubs" placeholder="1000000"></div>
+        <div class="field"><label>총 조회수</label><input type="number" id="inViews" placeholder="50000000"></div>
+      </div>
+      <div class="input-row">
+        <div class="field"><label>업로드 영상 수</label><input type="number" id="inVids" placeholder="500"></div>
+        <div class="field"><label>참여율 (%)</label><input type="number" id="inEng" placeholder="4.5" step="0.1"></div>
+        <div class="field"><label>월 업로드 빈도</label><input type="number" id="inFreq" placeholder="8"></div>
+        <button class="btn btn-primary" style="align-self:flex-end;height:38px" onclick="analyzeChannel(false)">분석 시작</button>
+        <button class="btn" style="align-self:flex-end;height:38px;background:#1a1a2e;color:var(--text2)" onclick="analyzeChannel(true)">데모 실행</button>
+      </div>
     </div>
+    <div id="resultArea"></div>
+  </div>
+  <div id="sec-hot" class="section"><div class="sec-head"><h2>🔥 인기 영상 트렌드</h2></div><div class="hot-grid" id="hotGrid"></div></div>
+  <div id="sec-revenue" class="section">
+    <div class="sec-head"><h2>💰 수익 계산기</h2></div>
+    <div class="rev-box">
+      <div class="rev-inputs">
+        <div class="field"><label>월간 조회수</label><input type="number" id="rViews" value="100000" oninput="calcRevenue()"></div>
+        <div class="field"><label>CPM (USD)</label><input type="number" id="rCpm" value="3.5" step="0.1" oninput="calcRevenue()"></div>
+        <div class="field"><label>VTR (%)</label><input type="number" id="rVtr" value="45" oninput="calcRevenue()"></div>
+        <div class="field"><label>국가 배율</label>
+          <select id="rCountry" oninput="calcRevenue()">
+            <option value="1.0">🇺🇸 미국 (1.0×)</option>
+            <option value="1.15">🇬🇧 영국 (1.15×)</option>
+            <option value="0.5" selected>🇰🇷 한국 (0.5×)</option>
+            <option value="0.3">🇮🇳 인도 (0.3×)</option>
+            <option value="0.7">🇯🇵 일본 (0.7×)</option>
+          </select>
+        </div>
+      </div>
+      <div class="rev-result" id="revResult"></div>
+    </div>
+  </div>
+  <div id="sec-tools" class="section"><div class="sec-head"><h2>🛠️ 크리에이터 도구</h2></div><div class="extra-grid" id="toolsGrid"></div></div>
+  <div id="sec-ideas" class="section"><div class="sec-head"><h2>💡 콘텐츠 아이디어</h2></div><div class="extra-grid" id="ideasGrid"></div></div>
+  <div id="sec-shop" class="section"><div class="sec-head"><h2>🛒 추천 장비 & 서비스</h2></div><div class="extra-grid" id="shopGrid"></div></div>
+</main>
+<aside class="ad-zone">
+  <div class="ad-slot"><div>📢<br>광고 영역</div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역</div></div>
+  <div class="ad-slot"><div>📢<br>광고 영역</div></div>
+</aside>
+</div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-nav" id="modalNav"></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+/* ══ 레벨 데이터 ══ */
+const GRADES=[
+  {lv:1, name:'씨앗',      color:'#e0e0e0',subMin:0,        subMax:100,      rankPct:'하위 37%',      badgeText:'Starter', starCount:1, score:[0,499],           desc:'채널을 막 시작한 단계. 첫 콘텐츠 업로드 후 방향성을 잡는 시기',                   nextGoal:'구독자 100명 달성 후 커뮤니티 탭 활성화', perks:['채널 아트 최적화','키워드 리서치 시작','첫 10개 영상 업로드']},
+  {lv:2, name:'새싹',      color:'#4fc3f7',subMin:100,      subMax:1000,     rankPct:'하위 57%',      badgeText:'Rookie',  starCount:2, score:[500,1999],        desc:'초기 팬층이 생기기 시작. 수익화를 위한 기반을 다지는 단계',                        nextGoal:'구독자 1,000명 & 시청 4,000시간 → 수익화', perks:['쇼츠 활용 급성장','끝화면·카드 설정','댓글 소통 강화']},
+  {lv:3, name:'새내기',    color:'#fff176',subMin:1000,     subMax:10000,    rankPct:'상위 36%',      badgeText:'Bronze',  starCount:2, score:[2000,7999],       desc:'YouTube 파트너 프로그램 수익화 달성. 광고 수익이 시작되는 구간',                 nextGoal:'월 4회 이상 업로드로 알고리즘 신뢰 확보', perks:['YPP 수익화 시작','커뮤니티 탭 활성화','Super Thanks 활성화']},
+  {lv:4, name:'성장주',    color:'#ffb74d',subMin:10000,    subMax:50000,    rankPct:'상위 18%',      badgeText:'Silver',  starCount:3, score:[8000,24999],      desc:'알고리즘이 채널을 인식하기 시작. 바이럴 잠재력이 높아지는 구간',                 nextGoal:'시리즈물 기획으로 재방문율 높이기', perks:['채널 멤버십 개설','Super Chat 활성화','브랜드 딜 시작']},
+  {lv:5, name:'인플루언서',color:'#66bb6a',subMin:50000,    subMax:100000,   rankPct:'상위 8%',       badgeText:'Gold',    starCount:3, score:[25000,59999],     desc:'MCN 협업 및 스폰서십이 활발한 구간. 전업 크리에이터 진입 가능',                  nextGoal:'실버 버튼(10만) 달성 목표', perks:['실버 버튼 목전','MCN 계약 가능','쇼핑 기능 활성화']},
+  {lv:6, name:'실버급',    color:'#ce93d8',subMin:100000,   subMax:500000,   rankPct:'상위 3%',       badgeText:'Platinum',starCount:4, score:[60000,149999],    desc:'실버 플레이 버튼 보유. 안정적 수익과 팬덤이 형성된 구간',                       nextGoal:'골드 버튼(100만) 도전 시작', perks:['실버 버튼 보유','브랜드 협찬 정기화','해외 시청자 유입']},
+  {lv:7, name:'골드급',    color:'#f48fb1',subMin:500000,   subMax:1000000,  rankPct:'상위 0.8%',     badgeText:'Diamond', starCount:4, score:[150000,349999],   desc:'골드 플레이 버튼 목전. 국내외 광고주가 주목하는 프리미엄 구간',                  nextGoal:'골드 버튼(100만) 달성', perks:['초대형 브랜드 딜','해외 진출 가속','오프라인 이벤트 가능']},
+  {lv:8, name:'다이아급',  color:'#ef5350',subMin:1000000,  subMax:10000000, rankPct:'상위 0.1%',     badgeText:'Master',  starCount:5, score:[350000,699999],   desc:'골드 버튼 보유. 국내 메이저 크리에이터. 미디어·기업 협업 다수',                 nextGoal:'다이아몬드 버튼(1000만) 도전', perks:['골드 버튼 보유','TV·미디어 출연','글로벌 캠페인 참여']},
+  {lv:9, name:'레전드',    color:'#ffd93d',subMin:10000000, subMax:50000000, rankPct:'상위 0.003%',   badgeText:'Legend',  starCount:5, score:[700000,999999],   desc:'다이아몬드 버튼 보유. 글로벌 탑티어 크리에이터. 세계적 인지도',                 nextGoal:'레드 다이아몬드(5000만) 또는 자체 IP 구축', perks:['다이아몬드 버튼 보유','글로벌 투어','영화·드라마 참여']},
+  {lv:10,name:'신화',      color:'#ff0040',subMin:50000000, subMax:Infinity, rankPct:'상위 0.00005%', badgeText:'MYTH',    starCount:5, score:[1000000,Infinity], desc:'레드 다이아몬드 보유. YouTube 역사상 극소수만 달성한 글로벌 아이콘',             nextGoal:'유튜브를 넘어 글로벌 미디어 제국 건설', perks:['레드 다이아몬드 보유','자체 기업 운영','글로벌 아이콘']}
+];
+const API_KEYS=['YOUR_API_KEY_1','YOUR_API_KEY_2'];
+
+function fmt(n){n=parseFloat(n)||0;if(n>=1e8)return(n/1e8).toFixed(1)+'억';if(n>=1e4)return(n/1e4).toFixed(1)+'만';if(n>=1e3)return(n/1e3).toFixed(1)+'천';return n.toLocaleString();}
+function fmtMoney(u){return`$${u.toFixed(2)} (₩${Math.round(u*1350).toLocaleString()})`;}
+function qual(v,g,gr){if(v>=gr)return{cls:'fq-best',label:'최상'};if(v>=g)return{cls:'fq-good',label:'양호'};if(v>=g*.5)return{cls:'fq-mid',label:'보통'};return{cls:'fq-low',label:'부족'};}
+function lvFS(s){for(let i=9;i>=0;i--)if(s>=GRADES[i].score[0])return GRADES[i].lv;return 1;}
+function lvFSb(s){for(let i=9;i>=0;i--)if(s>=GRADES[i].subMin)return GRADES[i].lv;return 1;}
+
+/* ══ 카드 HTML 빌더 ══ */
+function buildCardHTML(g, always=false, imgUrl=''){
+  const lv=g.lv;
+  const al=always?' always':'';
+  const stars='★'.repeat(g.starCount)+'☆'.repeat(5-g.starCount);
+  const smx=g.subMax===Infinity?'∞':fmt(g.subMax);
+  const scmx=g.score[1]===Infinity?'∞':fmt(g.score[1]);
+
+  const imgContent = imgUrl
+    ? `<img src="${imgUrl}" alt="채널 이미지" class="card-player-img">`
+    : `<div class="card-img-placeholder">
+         <div class="placeholder-icon">📺</div>
+         <div class="placeholder-lv" style="color:${g.color}">LV</div>
+       </div>`;
+
+  return `
+<div class="card-scene lv${lv}">
+  <div class="lv-player-card" onclick="openModal(${lv})">
+    <div class="lv-card-inner">
+
+      <!-- 배경 아트 -->
+      <div class="card-bg-art"></div>
+
+      <!-- 상단 컬러 그라데이션 -->
+      <div class="card-top-grad"></div>
+
+      <!-- 이미지 영역 -->
+      <div class="card-img-area">
+        ${imgContent}
+      </div>
+
+      <!-- 하단 컬러 그라데이션 -->
+      <div class="card-bot-grad"></div>
+
+      <!-- 비네트 -->
+      <div class="card-vignette"></div>
+
+      <!-- 테두리 내부 엣지 글로우 -->
+      <div class="card-edge"></div>
+
+      <!-- 빛 반사 슬라이드 -->
+      <div class="card-shine"></div>
+
+      <!-- 상단 헤더 (별 + 배지) -->
+      <div class="card-header">
+        <div class="card-stars">${[...stars].map(s=>`<span class="card-star">${s}</span>`).join('')}</div>
+        <div class="card-badge">${g.badgeText}</div>
+      </div>
+
+      <!-- 반짝임 -->
+      <div class="card-sparkles">
+        <span class="card-sparkle">✦</span>
+        <span class="card-sparkle">✦</span>
+        <span class="card-sparkle">✦</span>
+        <span class="card-sparkle">✦</span>
+      </div>
+
+      <!-- 보케 -->
+      <div class="card-bokeh">
+        <div class="bokeh-dot"></div>
+        <div class="bokeh-dot"></div>
+      </div>
+
+      <!-- 하단 푸터 -->
+      <div class="card-footer">
+        <div class="card-season">${fmt(g.subMin)} ~ ${smx}</div>
+        <div class="card-lv-info">
+          <div class="card-lv-num">LV.${lv}</div>
+          <div class="card-lv-name">${g.name}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- 4방향 오라 -->
+  <div class="aura-back${al}"></div>
+  <div class="aura-bottom${al}"></div>
+  <div class="aura-left${al}"></div>
+  <div class="aura-right${al}"></div>
+</div>`;
+}
+
+/* hover 오라 JS 제어 */
+document.addEventListener('mouseover',e=>{
+  const w=e.target.closest('.lv-player-card');if(!w)return;
+  const s=w.closest('.card-scene');if(!s)return;
+  s.querySelectorAll('.aura-back,.aura-bottom,.aura-left,.aura-right').forEach(a=>a.style.opacity='1');
+});
+document.addEventListener('mouseout',e=>{
+  const w=e.target.closest('.lv-player-card');if(!w)return;
+  const s=w.closest('.card-scene');if(!s)return;
+  s.querySelectorAll('.aura-back,.aura-bottom,.aura-left,.aura-right').forEach(a=>{
+    if(!a.classList.contains('always'))a.style.opacity='0';
+  });
+});
+
+/* ══ 점수 계산 ══ */
+function computeScore(subs,views,vids,eng,freq){
+  subs=parseFloat(subs)||0;views=parseFloat(views)||0;
+  vids=Math.max(parseInt(vids)||1,1);eng=parseFloat(eng)||0;freq=parseFloat(freq)||0;
+  const avgV=views/vids,vsr=views/Math.max(subs,1);
+  const ss=Math.min(Math.log10(Math.max(subs,1))*80000,400000);
+  const sv=Math.min(Math.log10(Math.max(views,1))*50000,250000);
+  const se=Math.min(eng*30000,150000);
+  const sf=Math.min(freq*8000,80000);
+  const sa=Math.min(Math.log10(Math.max(avgV,1))*25000,120000);
+  let base=ss+sv+se+sf+sa,bonus=0,log=[];
+  if(subs>=1e6){bonus+=base*.15;log.push('구독자 100만+ 보너스 +15%');}
+  else if(subs>=1e5){bonus+=base*.07;log.push('구독자 10만+ 보너스 +7%');}
+  if(vsr>=5){bonus+=base*.12;log.push('조회/구독 비율 5배+ 보너스 +12%');}
+  else if(vsr>=2){bonus+=base*.06;log.push('조회/구독 비율 2배+ 보너스 +6%');}
+  if(eng>=10){bonus+=base*.10;log.push('참여율 10%+ 보너스 +10%');}
+  else if(eng>=6){bonus+=base*.05;log.push('참여율 6%+ 보너스 +5%');}
+  if(freq>=15){bonus+=base*.08;log.push('업로드 주 3회+ 보너스 +8%');}
+  else if(freq>=8){bonus+=base*.04;log.push('업로드 주 2회+ 보너스 +4%');}
+  return{total:Math.round(base+bonus),base:Math.round(base),bonus:Math.round(bonus),log,
+    bd:{subs:Math.round(ss),views:Math.round(sv),eng:Math.round(se),freq:Math.round(sf),avg:Math.round(sa)},
+    f:{subs,views,vids,eng,freq,avgV,vsr}};
+}
+
+/* ══ 채널 분석 ══ */
+function analyzeChannel(isDemo){
+  let subs,views,vids,eng,freq,name,avatar;
+  if(isDemo){
+    subs=460000000;views=70000000000;vids=800;eng=8.5;freq=4;
+    name='@MrBeast';
+    avatar='https://yt3.googleusercontent.com/ytc/APkrFKa6XiLa13mMVPzkmmTBcgNPjjqCGPrY86mT0OfS=s88-c-k-c0x00ffffff-no-rj';
+  }else{
+    subs=parseFloat(document.getElementById('inSubs').value)||0;
+    views=parseFloat(document.getElementById('inViews').value)||0;
+    vids=parseInt(document.getElementById('inVids').value)||1;
+    eng=parseFloat(document.getElementById('inEng').value)||0;
+    freq=parseFloat(document.getElementById('inFreq').value)||0;
+    name=document.getElementById('chanInput').value||'분석 채널';avatar='';
+  }
+  const sc=computeScore(subs,views,vids,eng,freq);
+  const sLv=lvFSb(subs),scLv=lvFS(sc.total);
+  const fLv=Math.min(10,Math.max(1,Math.round(sLv*.4+scLv*.6)));
+  const fG=GRADES[fLv-1],sG=GRADES[sLv-1],scG=GRADES[scLv-1];
+  const mx=1000000,f=sc.f;
+  const qS=qual(subs,10000,100000),qV=qual(f.views,1e6,1e10);
+  const qA=qual(f.avgV,10000,100000),qE=qual(f.eng,3,7);
+  const qF=qual(f.freq,4,12),qSc=qual(sc.total,10000,100000);
+
+  document.getElementById('resultArea').innerHTML=`
+<div class="result-wrap">
+  <div class="result-hero">
+    <div class="result-card-col">${buildCardHTML(fG,true,avatar)}</div>
+    <div class="result-info-col">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:1.1rem;font-weight:800">${name}</div>
+          <div style="font-size:.78rem;color:var(--text2)">최종 등급: <span style="color:${fG.color};font-weight:900">${fG.name} LV.${fLv}</span></div>
+        </div>
+      </div>
+      <div class="decision-row">
+        <div class="dec-item"><div class="dec-label">구독자 레벨</div><div class="dec-val" style="color:${sG.color}">LV.${sLv}<br><small style="font-size:.62rem">${sG.name}</small></div></div>
+        <div class="dec-arrow">×0.4</div>
+        <div class="dec-item"><div class="dec-label">알고리즘 레벨</div><div class="dec-val" style="color:${scG.color}">LV.${scLv}<br><small style="font-size:.62rem">${scG.name}</small></div></div>
+        <div class="dec-arrow">×0.6</div>
+        <div class="dec-item"><div class="dec-label">⭐ 최종 레벨</div><div class="dec-val" style="color:${fG.color};font-size:1.3rem">LV.${fLv}</div></div>
+      </div>
+      <div class="factor-grid">
+        ${fc('👥 구독자',fmt(subs),Math.min(subs/1e6*100,100),fG.color,qS)}
+        ${fc('👁 총 조회수',fmt(f.views),Math.min(f.views/1e10*100,100),'#4fc3f7',qV)}
+        ${fc('📹 평균 조회수',fmt(f.avgV),Math.min(f.avgV/1e5*100,100),'#fff176',qA)}
+        ${fc('💬 참여율',f.eng.toFixed(1)+'%',Math.min(f.eng/10*100,100),'#66bb6a',qE)}
+        ${fc('📅 월 업로드',f.freq+'회',Math.min(f.freq/20*100,100),'#ffb74d',qF)}
+        ${fc('🤖 알고리즘 점수',fmt(sc.total),Math.min(sc.total/mx*100,100),'#ce93d8',qSc)}
+      </div>
+    </div>
+  </div>
+  <div class="score-breakdown">
+    <h4>📊 점수 상세 분석</h4>
+    ${sbr('구독자 점수',sc.bd.subs,mx,fG.color)}
+    ${sbr('조회수 점수',sc.bd.views,mx,'#4fc3f7')}
+    ${sbr('참여율 점수',sc.bd.eng,mx,'#66bb6a')}
+    ${sbr('업로드 빈도 점수',sc.bd.freq,mx,'#ffb74d')}
+    ${sbr('평균 조회수 점수',sc.bd.avg,mx,'#fff176')}
+    <div class="sb-row">
+      <div class="sb-label" style="color:#66bb6a">⚡ 보너스</div>
+      <div class="sb-bar-wrap"><div class="sb-bar" style="width:${Math.min(sc.bonus/mx*100,100)}%;background:#66bb6a"></div></div>
+      <div class="sb-val" style="color:#66bb6a">+${fmt(sc.bonus)}</div>
+    </div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700">🎯 총 알고리즘 점수</span>
+      <span style="font-size:1.25rem;font-weight:900;color:${fG.color}">${fmt(sc.total)}</span>
+    </div>
+  </div>
+  ${sc.log.length?`<div class="bonus-log"><h4>⚡ 보너스 적용 항목</h4>${sc.log.map(b=>`<div class="bonus-item">✔ ${b}</div>`).join('')}</div>`:''}
+  <div style="background:#1a1a2e;border-radius:12px;padding:14px;margin-bottom:16px">
+    <div style="font-size:.78rem;color:var(--text2);margin-bottom:6px">🎯 다음 목표</div>
+    <div style="font-size:.88rem;font-weight:600">${fG.nextGoal}</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      ${fG.perks.map(p=>`<span style="background:${fG.color}22;color:${fG.color};border-radius:20px;padding:3px 12px;font-size:.73rem;font-weight:600">${p}</span>`).join('')}
+    </div>
+  </div>
+  <div class="inline-grade-table-wrap">
+    <table class="grade-table"><thead><tr><th>LV</th><th>등급</th><th>배지</th><th>구독자 구간</th><th>상위%</th></tr></thead>
+    <tbody id="iGTbody"></tbody></table>
+  </div>
+</div>`;
+
+  document.getElementById('iGTbody').innerHTML=GRADES.map(g=>{
+    const cur=g.lv===fLv;
+    return `<tr class="${cur?'cur-row':''}">
+      <td><span class="lv-chip" style="background:${g.color}22;color:${g.color};border-color:${g.color}44" onclick="openModal(${g.lv})">${g.lv}</span>${cur?'<span class="star-badge">★</span>':''}</td>
+      <td style="color:${g.color};font-weight:700">${g.name}</td>
+      <td><span style="background:${g.color}22;color:${g.color};padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700">${g.badgeText}</span></td>
+      <td>${fmt(g.subMin)} ~ ${g.subMax===Infinity?'∞':fmt(g.subMax)}</td>
+      <td>${g.rankPct}</td>
+    </tr>`;
+  }).join('');
+}
+
+function fc(label,value,pct,color,q){
+  return `<div class="factor-card" style="border-left-color:${color}">
+    <div class="fc-label">${label}</div><div class="fc-value" style="color:${color}">${value}</div>
+    <div class="fc-bar-wrap"><div class="fc-bar" style="width:${Math.min(pct,100)}%;background:${color}"></div></div>
+    <span class="fc-badge ${q.cls}">${q.label}</span></div>`;
+}
+function sbr(label,val,max,color){
+  return `<div class="sb-row">
+    <div class="sb-label">${label}</div>
+    <div class="sb-bar-wrap"><div class="sb-bar" style="width:${Math.min(val/max*100,100)}%;background:${color}"></div></div>
+    <div class="sb-val" style="color:${color}">${fmt(val)}</div></div>`;
+}
+
+/* ══ 모달 ══ */
+let modalLv=1;
+function openModal(lv){modalLv=lv;document.getElementById('modalOverlay').classList.add('open');buildModalNav();renderModal(lv);}
+function closeModal(e){if(!e||e.target===document.getElementById('modalOverlay'))document.getElementById('modalOverlay').classList.remove('open');}
+function buildModalNav(){
+  document.getElementById('modalNav').innerHTML=GRADES.map(g=>{
+    const act=g.lv===modalLv;
+    return `<button class="modal-nav-btn${act?' active':''}" style="${act?`background:${g.color};color:#000`:''}" onclick="renderModal(${g.lv})">${g.lv}</button>`;
+  }).join('');
+}
+function renderModal(lv){
+  modalLv=lv;const g=GRADES[lv-1];buildModalNav();
+  document.getElementById('modalContent').innerHTML=`
+    ${buildCardHTML(g,true,'')}
+    <div style="background:#1a1a2e;border-radius:10px;padding:12px;text-align:left;font-size:.78rem;margin-top:8px">
+      <div style="margin-bottom:8px;font-weight:700;color:${g.color}">🎯 다음 목표</div>
+      <div style="color:var(--text2);margin-bottom:10px">${g.nextGoal}</div>
+      <div style="font-weight:700;margin-bottom:6px">✨ 특권</div>
+      ${g.perks.map(p=>`<div style="color:var(--text2);padding:2px 0">• ${p}</div>`).join('')}
+    </div>`;
+}
+
+/* ══ 부가 기능 ══ */
+const HOT=[
+  {id:'dQw4w9WgXcQ',title:'알고리즘 마스터하는 7가지 전략',views:'2.4M',ch:'크리에이터 아카데미'},
+  {id:'jNQXAC9IVRw',title:'유튜브 쇼츠로 10만 달성한 방법',views:'1.8M',ch:'숏폼연구소'},
+  {id:'9bZkp7q19f0',title:'2025 유튜브 수익화 완벽 가이드',views:'3.1M',ch:'수익화마스터'},
+  {id:'kXYiU_JCYtU',title:'섬네일 클릭률 3배 올리는 법',views:'980K',ch:'디자인크리에이터'},
+  {id:'M7lc1UVf-VE',title:'협찬 계약 시 주의사항 A to Z',views:'1.2M',ch:'MCN가이드'},
+  {id:'JGwWNGJdvx8',title:'AI로 영상 편집 시간 70% 단축',views:'2.7M',ch:'AI크리에이터'},
+];
+function loadHotVideos(){
+  document.getElementById('hotGrid').innerHTML=HOT.map(v=>`
+    <div class="hot-card" onclick="window.open('https://youtube.com/watch?v=${v.id}','_blank')">
+      <img class="hot-thumb" src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="${v.title}">
+      <div class="hot-info"><div class="hot-title">${v.title}</div><div class="hot-meta">${v.ch} · ${v.views} 조회</div></div>
+    </div>`).join('');
+}
+function calcRevenue(){
+  const v=parseFloat(document.getElementById('rViews').value)||0;
+  const c=parseFloat(document.getElementById('rCpm').value)||0;
+  const t=parseFloat(document.getElementById('rVtr').value)||0;
+  const m=parseFloat(document.getElementById('rCountry').value)||1;
+  const mv=v*(t/100),gross=(mv/1000)*c*m,net=gross*.55;
+  document.getElementById('revResult').innerHTML=`
+    <div style="font-size:.78rem;color:var(--text2);margin-bottom:6px">예상 월 수익 (YouTube 55% 지급)</div>
+    <div class="rev-amount">${fmtMoney(net)}</div>
+    <div class="rev-note">수익화 조회수 ${fmt(mv)} · 총 예상 ${fmtMoney(gross)} → YouTube 수수료 45% 제외</div>`;
+}
+const TOOLS=[
+  {icon:'🔍',name:'KeywordTool',desc:'유튜브 키워드 리서치',url:'https://keywordtool.io/youtube'},
+  {icon:'🎨',name:'Canva',desc:'섬네일 디자인',url:'https://canva.com'},
+  {icon:'📊',name:'Social Blade',desc:'채널 통계 분석',url:'https://socialblade.com'},
+  {icon:'🤖',name:'ChatGPT',desc:'스크립트 작성 AI',url:'https://chat.openai.com'},
+  {icon:'✂️',name:'DaVinci Resolve',desc:'무료 영상 편집',url:'https://blackmagicdesign.com/products/davinciresolve'},
+  {icon:'🎵',name:'YT Audio Library',desc:'저작권 무료 음악',url:'https://studio.youtube.com'},
+  {icon:'📈',name:'VidIQ',desc:'SEO 분석 도구',url:'https://vidiq.com'},
+  {icon:'🎬',name:'TubeBuddy',desc:'채널 성장 도구',url:'https://tubebuddy.com'},
+];
+const IDEAS=[
+  {icon:'💡',name:'브이로그',desc:'일상 기록으로 친밀감 형성',url:'#'},
+  {icon:'📚',name:'튜토리얼',desc:'전문 지식 공유 시리즈',url:'#'},
+  {icon:'🎮',name:'게임 리뷰',desc:'신작 게임 플레이 & 리뷰',url:'#'},
+  {icon:'🍳',name:'요리 레시피',desc:'간편 요리 숏폼 시리즈',url:'#'},
+  {icon:'💪',name:'운동 루틴',desc:'30일 챌린지 시리즈',url:'#'},
+  {icon:'🌍',name:'여행 브이로그',desc:'국내외 여행지 소개',url:'#'},
+  {icon:'💰',name:'재테크',desc:'투자·절약 팁 공유',url:'#'},
+  {icon:'🎭',name:'챌린지',desc:'트렌드 챌린지 참여',url:'#'},
+];
+const SHOP=[
+  {icon:'📷',name:'소니 ZV-E10',desc:'Vlog 최적 카메라',url:'https://www.sony.co.kr'},
+  {icon:'🎙',name:'슈어 MV7',desc:'팟캐스트·유튜브 마이크',url:'https://www.shure.com'},
+  {icon:'💡',name:'엘게이토 링라이트',desc:'스트리밍 조명',url:'https://www.elgato.com'},
+  {icon:'🖥',name:'아이패드 프로',desc:'편집·작업 태블릿',url:'https://apple.com/ipad-pro'},
+  {icon:'⚙️',name:'VidIQ Pro',desc:'SEO 프리미엄 플랜',url:'https://vidiq.com/pricing'},
+  {icon:'🎬',name:'어도비 프리미어',desc:'전문 영상 편집',url:'https://adobe.com/products/premiere'},
+];
+function buildExtras(){
+  const g=(data,id)=>{document.getElementById(id).innerHTML=data.map(d=>`<a class="extra-card" href="${d.url}" target="_blank" rel="noopener"><div class="ex-icon">${d.icon}</div><div class="ex-name">${d.name}</div><div class="ex-desc">${d.desc}</div></a>`).join('');};
+  g(TOOLS,'toolsGrid');g(IDEAS,'ideasGrid');g(SHOP,'shopGrid');
+}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));const el=document.getElementById('sec-'+id);if(el)el.classList.add('active');}
+function setActive(el){document.querySelectorAll('.sidebar-item').forEach(s=>s.classList.remove('active'));el.classList.add('active');}
+function handleGlobalSearch(){const q=document.getElementById('globalSearch').value.trim();if(!q)return;document.getElementById('chanInput').value=q;showSection('analyze');setActive(document.querySelector('.sidebar-item'));}
+document.addEventListener('DOMContentLoaded',()=>{loadHotVideos();buildExtras();calcRevenue();analyzeChannel(true);});
+</script>
 </body>
 </html>
