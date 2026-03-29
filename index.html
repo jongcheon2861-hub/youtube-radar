@@ -13,6 +13,10 @@
   --gold:#d4a942;
   --gold-l:#f0c96a;
   --white:#f0eee8;
+  --rose:#e8a0b0;
+  --rose-d:#c4687e;
+  --rose-l:#f5c6d0;
+  --rose-g:#ff9eb5;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -30,269 +34,357 @@ body{
 /* ── 별 배경 ── */
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{position:absolute;border-radius:50%;animation:twinkle var(--d) var(--delay) infinite alternate ease-in-out;}
-@keyframes twinkle{0%{opacity:.15;transform:scale(1);}100%{opacity:.85;transform:scale(1.5);}}
-
-/* ── 공통 레이아웃 ── */
-.logo-section,.badge-section{
-  position:relative;z-index:1;
-  display:flex;align-items:center;gap:22px;
-}
+@keyframes twinkle{0%{opacity:.1;transform:scale(1);}100%{opacity:.9;transform:scale(1.6);}}
 
 /* ══════════════════════════════════
-   메인 로고 심볼
+   메인 로고 래퍼 — 클릭 전체 이동
+══════════════════════════════════ */
+.logo-link{
+  position:relative;z-index:1;
+  display:flex;align-items:center;gap:22px;
+  text-decoration:none;
+  /* 사각형 라운드 테두리 */
+  border:1px solid rgba(212,169,66,.35);
+  border-radius:20px;
+  padding:28px 36px;
+  /* 내부 방사 */
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(168,85,247,.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 50%, rgba(212,169,66,.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%,  rgba(232,160,176,.07) 0%, transparent 60%),
+    rgba(4,4,12,.6);
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,.1),
+    0 0 30px rgba(168,85,247,.12),
+    0 0 60px rgba(212,169,66,.06),
+    inset 0 0 40px rgba(107,33,168,.15),
+    inset 0 0 80px rgba(212,169,66,.05);
+  transition:
+    border-color .4s,
+    box-shadow .4s,
+    background .4s;
+  cursor:pointer;
+  animation:logoFloat 4s ease-in-out infinite;
+}
+@keyframes logoFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-6px);}
+}
+.logo-link:hover{
+  border-color:rgba(232,160,176,.6);
+  box-shadow:
+    0 0 0 1px rgba(232,160,176,.25),
+    0 0 40px rgba(232,160,176,.2),
+    0 0 80px rgba(168,85,247,.15),
+    inset 0 0 50px rgba(107,33,168,.25),
+    inset 0 0 100px rgba(232,160,176,.08);
+}
+
+/* 테두리 흐름 효과 */
+.logo-link::before{
+  content:'';
+  position:absolute;inset:0;
+  border-radius:20px;
+  background:linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(232,160,176,.15) 30%,
+    rgba(212,169,66,.1) 50%,
+    rgba(168,85,247,.12) 70%,
+    transparent 100%
+  );
+  background-size:200% 200%;
+  animation:borderShine 4s linear infinite;
+  pointer-events:none;
+}
+@keyframes borderShine{
+  0%{background-position:0% 50%;}
+  100%{background-position:200% 50%;}
+}
+
+/* 코너 장식 */
+.logo-link::after{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:20px;
+  background:
+    linear-gradient(to right, var(--rose-d), transparent 40%) top left / 60px 1px no-repeat,
+    linear-gradient(to left,  var(--gold),   transparent 40%) top right/ 60px 1px no-repeat,
+    linear-gradient(to right, var(--rose-d), transparent 40%) bottom left / 60px 1px no-repeat,
+    linear-gradient(to left,  var(--gold),   transparent 40%) bottom right/ 60px 1px no-repeat;
+  pointer-events:none;
+  opacity:.8;
+  animation:cornerPulse 3s ease-in-out infinite;
+}
+@keyframes cornerPulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+
+/* ══════════════════════════════════
+   블랙홀 심볼 — 메인
 ══════════════════════════════════ */
 .logo-symbol{
   position:relative;
-  width:72px;height:72px;
+  width:80px;height:80px;
   flex-shrink:0;
 }
 
-/* 방사 (radiance) */
 .sym-radiance{
-  position:absolute;inset:-20px;
+  position:absolute;inset:-30px;
   border-radius:50%;
-  background:radial-gradient(circle,rgba(168,85,247,.28) 0%,rgba(212,169,66,.12) 45%,transparent 70%);
-  animation:radPulse 3s ease-in-out infinite;
+  background:radial-gradient(circle,rgba(168,85,247,.55) 0%,rgba(212,169,66,.2) 30%,rgba(232,160,176,.08) 55%,transparent 70%);
+  animation:radPulse 2.5s ease-in-out infinite;
 }
-@keyframes radPulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
+.sym-radiance2{
+  position:absolute;inset:-50px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(107,33,168,.35) 0%,transparent 65%);
+  animation:radPulse 3.8s ease-in-out infinite reverse;
+}
+@keyframes radPulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
 
-/* 강착원반 링 */
 .acc-ring{
   position:absolute;
   border-radius:50%;
-  border:1.5px solid transparent;
   top:50%;left:50%;
-  transform:translate(-50%,-50%) rotateX(68deg);
   animation:accSpin var(--dur) linear infinite;
 }
-@keyframes accSpin{from{transform:translate(-50%,-50%) rotateX(68deg) rotate(0deg);}
-                   to{transform:translate(-50%,-50%) rotateX(68deg) rotate(360deg);}}
-.acc-ring:nth-child(1){width:88px;height:88px;border-color:rgba(212,169,66,.9);--dur:2.8s;}
-.acc-ring:nth-child(2){width:100px;height:100px;border-color:rgba(168,85,247,.75);--dur:2.2s;animation-direction:reverse;}
-.acc-ring:nth-child(3){width:112px;height:112px;border-color:rgba(212,169,66,.45);--dur:1.6s;}
-.acc-ring:nth-child(4){width:124px;height:124px;border-color:rgba(168,85,247,.3);--dur:1.0s;animation-direction:reverse;}
-
-/* 제트 (jet) */
-.jet{
-  position:absolute;left:50%;transform:translateX(-50%);
-  width:2px;border-radius:1px;
-  animation:jetPulse 1.8s ease-in-out infinite;
+@keyframes accSpin{
+  from{transform:translate(-50%,-50%) rotateX(72deg) rotate(0deg);}
+  to{  transform:translate(-50%,-50%) rotateX(72deg) rotate(360deg);}
 }
-.jet-top{top:-28px;height:26px;background:linear-gradient(to top,var(--gold),transparent);}
-.jet-bot{bottom:-28px;height:26px;background:linear-gradient(to bottom,var(--purple),transparent);}
-@keyframes jetPulse{0%,100%{opacity:.5;height:26px;}50%{opacity:1;height:34px;}}
+.acc-ring:nth-child(3){width:90px;height:90px;border:2px solid rgba(240,201,106,.95);box-shadow:0 0 8px rgba(240,201,106,.7),inset 0 0 6px rgba(240,201,106,.3);--dur:2.0s;}
+.acc-ring:nth-child(4){width:106px;height:106px;border:1.5px solid rgba(168,85,247,.85);box-shadow:0 0 10px rgba(168,85,247,.6);--dur:1.5s;animation-direction:reverse;}
+.acc-ring:nth-child(5){width:122px;height:122px;border:1px solid rgba(240,201,106,.5);box-shadow:0 0 14px rgba(240,201,106,.3);--dur:1.1s;}
+.acc-ring:nth-child(6){width:140px;height:140px;border:1px solid rgba(168,85,247,.3);box-shadow:0 0 18px rgba(168,85,247,.2);--dur:.75s;animation-direction:reverse;}
 
-/* 파티클 */
+.event-horizon{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle,#000 30%,rgba(107,33,168,.9) 65%,transparent 100%);
+  box-shadow:0 0 0 2px rgba(212,169,66,.4),0 0 16px rgba(168,85,247,.8),0 0 32px rgba(107,33,168,.6),0 0 48px rgba(212,169,66,.2);
+  animation:horizonPulse 1.8s ease-in-out infinite;
+}
+@keyframes horizonPulse{
+  0%,100%{box-shadow:0 0 0 2px rgba(212,169,66,.4),0 0 16px rgba(168,85,247,.8),0 0 32px rgba(107,33,168,.6),0 0 48px rgba(212,169,66,.2);}
+  50%{box-shadow:0 0 0 3px rgba(240,201,106,.7),0 0 24px rgba(168,85,247,1),0 0 48px rgba(107,33,168,.9),0 0 70px rgba(212,169,66,.4);}
+}
+
+.jet{position:absolute;left:50%;transform:translateX(-50%);border-radius:2px;animation:jetPulse 1.4s ease-in-out infinite;}
+.jet-top{top:-42px;width:3px;height:38px;background:linear-gradient(to top,rgba(240,201,106,1),rgba(168,85,247,.6),transparent);box-shadow:0 0 6px rgba(240,201,106,.6);}
+.jet-bot{bottom:-42px;width:3px;height:38px;background:linear-gradient(to bottom,rgba(168,85,247,1),rgba(107,33,168,.6),transparent);box-shadow:0 0 6px rgba(168,85,247,.6);}
+@keyframes jetPulse{0%,100%{opacity:.6;transform:translateX(-50%) scaleY(1);}50%{opacity:1;transform:translateX(-50%) scaleY(1.25);}}
+
 .particle{
-  position:absolute;
-  width:3px;height:3px;
-  border-radius:50%;
-  background:var(--gold);
-  top:50%;left:50%;
+  position:absolute;border-radius:50%;top:50%;left:50%;
   transform-origin:0 0;
   animation:pullIn var(--pd) var(--pdelay) ease-in infinite;
 }
 @keyframes pullIn{
-  0%{opacity:1;transform:rotate(var(--pa)) translateX(var(--pr)) scale(1);}
-  100%{opacity:0;transform:rotate(calc(var(--pa)+540deg)) translateX(2px) scale(0);}
+  0%{opacity:1;transform:rotate(var(--pa)) translateX(var(--pr)) scale(1.2);}
+  80%{opacity:.6;}
+  100%{opacity:0;transform:rotate(calc(var(--pa)+600deg)) translateX(1px) scale(0);}
 }
 
-/* 플레어 */
-.flare{
-  position:absolute;inset:-4px;
-  border-radius:50%;
-  border:1px solid rgba(240,201,106,.6);
-  animation:flarePulse 2.5s ease-in-out infinite;
-}
-.flare:nth-child(1){animation-delay:0s;}
-.flare:nth-child(2){animation-delay:.83s;inset:-10px;border-color:rgba(168,85,247,.4);}
-.flare:nth-child(3){animation-delay:1.66s;inset:-16px;border-color:rgba(212,169,66,.2);}
-@keyframes flarePulse{0%{opacity:.8;transform:scale(1);}50%{opacity:.3;transform:scale(1.08);}100%{opacity:.8;transform:scale(1);}}
+.flare{position:absolute;border-radius:50%;animation:flarePulse 2.2s ease-in-out infinite;}
+.flare:nth-child(1){inset:-2px;border:1px solid rgba(240,201,106,.7);animation-delay:0s;}
+.flare:nth-child(2){inset:-12px;border:1px solid rgba(168,85,247,.45);animation-delay:.73s;}
+.flare:nth-child(3){inset:-22px;border:1px solid rgba(212,169,66,.2);animation-delay:1.46s;}
+@keyframes flarePulse{0%{opacity:.9;transform:scale(1);}50%{opacity:.2;transform:scale(1.1);}100%{opacity:.9;transform:scale(1);}}
 
-/* 코어 */
-.core{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:18px;height:18px;
-  border-radius:50%;
-  background:radial-gradient(circle,var(--gold-l) 0%,var(--gold) 40%,var(--purple-d) 70%,transparent 100%);
-  box-shadow:0 0 12px var(--gold),0 0 24px rgba(168,85,247,.6);
-  animation:coreGlow 2s ease-in-out infinite;
-}
-@keyframes coreGlow{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2);}}
+.gravity-lens{position:absolute;inset:-6px;border-radius:50%;border:1px dashed rgba(240,201,106,.25);animation:lensRotate 8s linear infinite;}
+.gravity-lens2{position:absolute;inset:-14px;border-radius:50%;border:1px dashed rgba(168,85,247,.18);animation:lensRotate 12s linear infinite reverse;}
+@keyframes lensRotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
 /* ══════════════════════════════════
    메인 워드마크
 ══════════════════════════════════ */
-.wordmark{
-  display:flex;flex-direction:column;
-  gap:4px;
-}
+.wordmark{display:flex;flex-direction:column;gap:5px;position:relative;}
 
-/* 왼쪽 방사 효과 */
 .wm-radiance{
-  position:absolute;left:-10px;top:50%;transform:translateY(-50%);
-  width:40px;height:60px;
-  background:radial-gradient(ellipse at left,rgba(168,85,247,.18),transparent 80%);
+  position:absolute;left:-14px;top:50%;transform:translateY(-50%);
+  width:50px;height:70px;
+  background:radial-gradient(ellipse at left,rgba(168,85,247,.2),transparent 80%);
   pointer-events:none;
 }
 
 .wm-algo{
   font-family:'Cinzel',serif;
-  font-size:52px;
-  font-weight:900;
-  letter-spacing:14px;
-  color:var(--white);
-  line-height:1;
-  text-shadow:0 0 20px rgba(212,169,66,.4),0 0 40px rgba(168,85,247,.2);
-  position:relative;
+  font-size:52px;font-weight:900;letter-spacing:14px;
+  color:var(--white);line-height:1;
+  text-shadow:0 0 20px rgba(212,169,66,.35),0 0 40px rgba(168,85,247,.2);
 }
 
-/* 구분선 */
-.wm-rule{
-  display:flex;align-items:center;gap:6px;
-  margin:3px 0;
-}
-.wm-rule-line{
-  flex:1;height:1px;
-  background:linear-gradient(to right,rgba(212,169,66,.6),rgba(168,85,247,.3));
-}
+.wm-rule{display:flex;align-items:center;gap:6px;margin:2px 0;}
+.wm-rule-line{flex:1;height:1px;background:linear-gradient(to right,rgba(212,169,66,.7),rgba(168,85,247,.4));}
 .wm-rule-diamond{
-  width:5px;height:5px;
-  background:var(--gold);
-  transform:rotate(45deg);
+  width:5px;height:5px;background:var(--gold);transform:rotate(45deg);
   animation:diamondPulse 2s ease-in-out infinite;
 }
-@keyframes diamondPulse{0%,100%{box-shadow:0 0 4px var(--gold);}50%{box-shadow:0 0 10px var(--gold),0 0 20px rgba(168,85,247,.5);}}
+@keyframes diamondPulse{
+  0%,100%{box-shadow:0 0 4px var(--gold);}
+  50%{box-shadow:0 0 12px var(--gold),0 0 24px rgba(168,85,247,.6);}
+}
 
-/* 도메인 (알고리빙천사 = algo.living1004.com) */
+/* 로즈골드 도메인 — 고정 */
 .wm-domain{
   font-family:'Noto Sans KR',sans-serif;
-  font-size:10px;
-  font-weight:300;
-  letter-spacing:3px;
-  color:rgba(168,85,247,.75);
+  font-size:10px;font-weight:300;letter-spacing:3px;
+  color:var(--rose) !important;
   text-decoration:none;
-  transition:color .3s, text-shadow .3s;
+  text-shadow:0 0 8px rgba(232,160,176,.6),0 0 18px rgba(196,104,126,.35);
+  pointer-events:none; /* 링크는 래퍼에서 처리 */
+  position:relative;
 }
-.wm-domain:hover{
-  color:var(--gold-l);
-  text-shadow:0 0 10px rgba(212,169,66,.5);
+.wm-domain::before{
+  content:'';position:absolute;
+  bottom:-2px;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,var(--rose-d),var(--rose),var(--rose-d),transparent);
+  opacity:.55;animation:domainLine 3s ease-in-out infinite;
 }
+@keyframes domainLine{0%,100%{opacity:.3;}50%{opacity:.9;}}
 
 /* ══════════════════════════════════
-   미니 뱃지
+   미니 뱃지 — 사각형 라운드 테두리 + 내부방사
 ══════════════════════════════════ */
 .badge-section{
-  gap:10px;
-  background:rgba(4,4,12,.7);
-  border:1px solid rgba(212,169,66,.25);
-  border-radius:40px;
-  padding:8px 18px 8px 10px;
-  box-shadow:0 0 20px rgba(168,85,247,.15),inset 0 0 12px rgba(4,4,12,.8);
+  position:relative;z-index:1;
+  display:flex;align-items:center;gap:10px;
+  /* 사각형 라운드 테두리 */
+  border:1px solid rgba(212,169,66,.3);
+  border-radius:16px;
+  padding:14px 20px 14px 12px;
+  /* 내부 방사 */
+  background:
+    radial-gradient(ellipse at 25% 50%, rgba(168,85,247,.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 50%, rgba(212,169,66,.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 0%,  rgba(232,160,176,.06) 0%, transparent 60%),
+    rgba(4,4,12,.72);
+  box-shadow:
+    0 0 0 1px rgba(168,85,247,.08),
+    0 0 20px rgba(168,85,247,.1),
+    0 0 40px rgba(212,169,66,.05),
+    inset 0 0 28px rgba(107,33,168,.12),
+    inset 0 0 56px rgba(212,169,66,.04);
+  cursor:default;
+}
+
+/* 뱃지 코너 장식 */
+.badge-section::after{
+  content:'';
+  position:absolute;inset:-1px;
+  border-radius:16px;
+  background:
+    linear-gradient(to right, var(--rose-d), transparent 40%) top left / 36px 1px no-repeat,
+    linear-gradient(to left,  var(--gold),   transparent 40%) top right/ 36px 1px no-repeat,
+    linear-gradient(to right, var(--rose-d), transparent 40%) bottom left / 36px 1px no-repeat,
+    linear-gradient(to left,  var(--gold),   transparent 40%) bottom right/ 36px 1px no-repeat;
+  pointer-events:none;opacity:.7;
+  animation:cornerPulse 3s ease-in-out infinite;
 }
 
 /* 뱃지 심볼 */
 .badge-sym{
   position:relative;
-  width:36px;height:36px;
-  flex-shrink:0;
+  width:36px;height:36px;flex-shrink:0;
 }
-.badge-sym .sym-radiance{inset:-10px;}
-.badge-sym .acc-ring:nth-child(1){width:44px;height:44px;}
-.badge-sym .acc-ring:nth-child(2){width:50px;height:50px;}
-.badge-sym .acc-ring:nth-child(3){width:56px;height:56px;}
-.badge-sym .acc-ring:nth-child(4){width:62px;height:62px;}
-.badge-sym .jet-top{top:-14px;height:13px;}
-.badge-sym .jet-bot{bottom:-14px;height:13px;}
-.badge-sym .core{width:9px;height:9px;}
-.badge-sym .particle{width:2px;height:2px;}
-.badge-sym .flare:nth-child(1){inset:-2px;}
+.badge-sym .sym-radiance{inset:-12px;}
+.badge-sym .sym-radiance2{inset:-20px;}
+.badge-sym .acc-ring:nth-child(3){width:44px;height:44px;border-width:1.5px;}
+.badge-sym .acc-ring:nth-child(4){width:52px;height:52px;border-width:1px;}
+.badge-sym .acc-ring:nth-child(5){width:60px;height:60px;border-width:.8px;}
+.badge-sym .acc-ring:nth-child(6){width:68px;height:68px;border-width:.6px;}
+.badge-sym .jet-top{top:-18px;height:16px;width:2px;}
+.badge-sym .jet-bot{bottom:-18px;height:16px;width:2px;}
+.badge-sym .event-horizon{width:16px;height:16px;}
+.badge-sym .gravity-lens{inset:-3px;}
+.badge-sym .gravity-lens2{inset:-7px;}
+.badge-sym .flare:nth-child(1){inset:-1px;}
 .badge-sym .flare:nth-child(2){inset:-5px;}
-.badge-sym .flare:nth-child(3){inset:-8px;}
+.badge-sym .flare:nth-child(3){inset:-9px;}
 
-/* 뱃지 텍스트 */
 .badge-text{display:flex;flex-direction:column;gap:2px;}
 .badge-algo{
-  font-family:'Cinzel',serif;
-  font-size:18px;
-  font-weight:900;
-  letter-spacing:6px;
-  color:var(--white);
-  line-height:1;
-  text-shadow:0 0 12px rgba(212,169,66,.3);
+  font-family:'Cinzel',serif;font-size:18px;font-weight:900;
+  letter-spacing:6px;color:var(--white);line-height:1;
+  text-shadow:0 0 10px rgba(212,169,66,.3);
 }
 .badge-rule{display:flex;align-items:center;gap:4px;margin:2px 0;}
 .badge-rule-line{flex:1;height:1px;background:linear-gradient(to right,rgba(212,169,66,.5),rgba(168,85,247,.25));}
 .badge-rule-diamond{width:3px;height:3px;background:var(--gold);transform:rotate(45deg);animation:diamondPulse 2s ease-in-out infinite;}
 
-/* 뱃지 도메인 */
+/* 뱃지 도메인 — 로즈골드 고정, 링크없음 */
 .badge-domain{
   font-family:'Noto Sans KR',sans-serif;
-  font-size:7px;
-  font-weight:300;
-  letter-spacing:1.5px;
-  color:rgba(168,85,247,.7);
+  font-size:7px;font-weight:300;letter-spacing:1.5px;
+  color:var(--rose) !important;
   text-decoration:none;
-  transition:color .3s;
+  text-shadow:0 0 6px rgba(232,160,176,.5),0 0 12px rgba(196,104,126,.3);
+  cursor:default;
+  position:relative;
 }
-.badge-domain:hover{color:var(--gold-l);}
-
+.badge-domain::before{
+  content:'';position:absolute;
+  bottom:-1px;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,var(--rose-d),transparent);
+  opacity:.45;animation:domainLine 3s ease-in-out infinite;
+}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <script>
 const bg=document.querySelector('.bg');
-for(let i=0;i<50;i++){
+for(let i=0;i<60;i++){
   const s=document.createElement('div');
   s.className='star';
-  const sz=Math.random()*2+.5;
-  const colors=['#f0c96a','#a855f7','#f0eee8','#d4a942'];
+  const sz=Math.random()*2+.4;
+  const colors=['#f0c96a','#a855f7','#f0eee8','#e8a0b0','#d4a942','#c4687e'];
   s.style.cssText=`
     width:${sz}px;height:${sz}px;
     background:${colors[Math.floor(Math.random()*colors.length)]};
     left:${Math.random()*100}%;
     top:${Math.random()*100}%;
-    --d:${2+Math.random()*4}s;
-    --delay:${Math.random()*4}s;
+    --d:${1.5+Math.random()*3.5}s;
+    --delay:${Math.random()*5}s;
   `;
   bg.appendChild(s);
 }
 </script>
 
-<!-- ══ 메인 로고 ══ -->
-<div class="logo-section">
+<!-- ══ 메인 로고 — 전체 클릭 시 사이트 이동 ══ -->
+<a class="logo-link" href="https://algo.living1004.com" target="_blank">
 
-  <!-- 블랙홀 심볼 -->
   <div class="logo-symbol">
     <div class="sym-radiance"></div>
+    <div class="sym-radiance2"></div>
     <div class="acc-ring"></div>
     <div class="acc-ring"></div>
     <div class="acc-ring"></div>
     <div class="acc-ring"></div>
+    <div class="gravity-lens"></div>
+    <div class="gravity-lens2"></div>
     <div class="jet jet-top"></div>
     <div class="jet jet-bot"></div>
-    <!-- 파티클 8개 -->
-    <div class="particle" style="--pa:0deg;  --pr:32px;--pd:1.4s;--pdelay:0s;"></div>
-    <div class="particle" style="--pa:45deg; --pr:28px;--pd:1.2s;--pdelay:.2s;"></div>
-    <div class="particle" style="--pa:90deg; --pr:30px;--pd:1.6s;--pdelay:.4s;"></div>
-    <div class="particle" style="--pa:135deg;--pr:26px;--pd:1.3s;--pdelay:.6s;"></div>
-    <div class="particle" style="--pa:180deg;--pr:31px;--pd:1.5s;--pdelay:.1s;"></div>
-    <div class="particle" style="--pa:225deg;--pr:27px;--pd:1.1s;--pdelay:.3s;"></div>
-    <div class="particle" style="--pa:270deg;--pr:29px;--pd:1.4s;--pdelay:.5s;"></div>
-    <div class="particle" style="--pa:315deg;--pr:25px;--pd:1.2s;--pdelay:.7s;"></div>
-    <!-- 플레어 -->
+    <div class="particle" style="width:3px;height:3px;background:#f0c96a;--pa:0deg;  --pr:36px;--pd:1.3s;--pdelay:0s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:30deg; --pr:32px;--pd:1.1s;--pdelay:.15s;"></div>
+    <div class="particle" style="width:3px;height:3px;background:#f0c96a;--pa:60deg; --pr:34px;--pd:1.5s;--pdelay:.3s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:90deg; --pr:30px;--pd:1.2s;--pdelay:.45s;"></div>
+    <div class="particle" style="width:3px;height:3px;background:#d4a942;--pa:120deg;--pr:35px;--pd:1.4s;--pdelay:.6s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:150deg;--pr:28px;--pd:1.0s;--pdelay:.75s;"></div>
+    <div class="particle" style="width:3px;height:3px;background:#f0c96a;--pa:180deg;--pr:33px;--pd:1.6s;--pdelay:.9s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:210deg;--pr:31px;--pd:1.2s;--pdelay:.05s;"></div>
+    <div class="particle" style="width:3px;height:3px;background:#d4a942;--pa:240deg;--pr:36px;--pd:1.3s;--pdelay:.2s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:270deg;--pr:29px;--pd:1.1s;--pdelay:.35s;"></div>
+    <div class="particle" style="width:3px;height:3px;background:#f0c96a;--pa:300deg;--pr:34px;--pd:1.5s;--pdelay:.5s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:330deg;--pr:27px;--pd:1.4s;--pdelay:.65s;"></div>
     <div class="flare"></div>
     <div class="flare"></div>
     <div class="flare"></div>
-    <!-- 코어 -->
-    <div class="core"></div>
+    <div class="event-horizon"></div>
   </div>
 
-  <!-- 워드마크 -->
-  <div class="wordmark" style="position:relative;">
+  <div class="wordmark">
     <div class="wm-radiance"></div>
     <div class="wm-algo">ALGO</div>
     <div class="wm-rule">
@@ -300,33 +392,35 @@ for(let i=0;i<50;i++){
       <div class="wm-rule-diamond"></div>
       <div class="wm-rule-line"></div>
     </div>
-    <a class="wm-domain" href="https://algo.living1004.com" target="_blank">algo.living1004.com</a>
+    <span class="wm-domain">algo.living1004.com</span>
   </div>
-</div>
 
-<!-- ══ 미니 뱃지 ══ -->
+</a>
+
+<!-- ══ 미니 뱃지 — 링크 없음 ══ -->
 <div class="badge-section">
 
-  <!-- 뱃지 블랙홀 심볼 -->
   <div class="badge-sym">
     <div class="sym-radiance"></div>
+    <div class="sym-radiance2"></div>
     <div class="acc-ring"></div>
     <div class="acc-ring"></div>
     <div class="acc-ring"></div>
     <div class="acc-ring"></div>
+    <div class="gravity-lens"></div>
+    <div class="gravity-lens2"></div>
     <div class="jet jet-top"></div>
     <div class="jet jet-bot"></div>
-    <div class="particle" style="--pa:0deg;  --pr:16px;--pd:1.4s;--pdelay:0s;"></div>
-    <div class="particle" style="--pa:90deg; --pr:14px;--pd:1.6s;--pdelay:.4s;"></div>
-    <div class="particle" style="--pa:180deg;--pr:15px;--pd:1.5s;--pdelay:.1s;"></div>
-    <div class="particle" style="--pa:270deg;--pr:13px;--pd:1.4s;--pdelay:.5s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#f0c96a;--pa:0deg;  --pr:16px;--pd:1.3s;--pdelay:0s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:90deg; --pr:14px;--pd:1.5s;--pdelay:.4s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#d4a942;--pa:180deg;--pr:15px;--pd:1.4s;--pdelay:.2s;"></div>
+    <div class="particle" style="width:2px;height:2px;background:#a855f7;--pa:270deg;--pr:13px;--pd:1.2s;--pdelay:.6s;"></div>
     <div class="flare"></div>
     <div class="flare"></div>
     <div class="flare"></div>
-    <div class="core"></div>
+    <div class="event-horizon"></div>
   </div>
 
-  <!-- 뱃지 텍스트 -->
   <div class="badge-text">
     <div class="badge-algo">ALGO</div>
     <div class="badge-rule">
@@ -334,7 +428,7 @@ for(let i=0;i<50;i++){
       <div class="badge-rule-diamond"></div>
       <div class="badge-rule-line"></div>
     </div>
-    <a class="badge-domain" href="https://algo.living1004.com" target="_blank">algo.living1004.com</a>
+    <span class="badge-domain">algo.living1004.com</span>
   </div>
 
 </div>
