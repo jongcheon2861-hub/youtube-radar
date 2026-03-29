@@ -4,426 +4,288 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ALGO · 알고리빙1004</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --void:     #04040c;
-  --purple:   #2d0d5c;
-  --purple-l: #a855f7;
-  --gold:     #d4a942;
-  --gold-l:   #f0c96a;
-  --gold-w:   #fff8e7;
-  --white:    #f0eee8;
+  --void:   #04040c;
+  --purple: #a855f7;
+  --gold:   #d4a942;
+  --gold-l: #f0c96a;
+  --white:  #f0eee8;
+  --dim:    rgba(240,238,232,.35);
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-body {
+body{
   background: var(--void);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 56px;
+  gap: 72px;
   padding: 80px 24px;
   overflow-x: hidden;
 }
 
 /* ── 배경 ── */
-.bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+.bg{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(ellipse 60% 50% at 50% 40%,
-      rgba(45,13,92,.22) 0%,
-      rgba(10,5,20,.18)  45%,
-      transparent        75%),
+    radial-gradient(ellipse 50% 40% at 50% 38%,
+      rgba(45,13,92,.18) 0%, transparent 70%),
     #04040c;
 }
-.star {
-  position: fixed; border-radius: 50%;
-  pointer-events: none; z-index: 0;
+.star{
+  position:fixed; border-radius:50%;
+  pointer-events:none; z-index:0;
   animation: twk ease-in-out infinite;
 }
-@keyframes twk {
-  0%,100% { opacity:.04; }
-  50%     { opacity:.38; }
+@keyframes twk{
+  0%,100%{ opacity:.03; }
+  50%    { opacity:.3; }
 }
 
 /* ── 섹션 레이블 ── */
-.sec-label {
-  position: relative; z-index: 10;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 9px; font-weight: 300;
-  letter-spacing: 5px; text-transform: uppercase;
-  color: rgba(168,85,247,.3);
-  margin-bottom: 20px; text-align: center;
+.sec-label{
+  position:relative; z-index:10;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:9px; font-weight:300;
+  letter-spacing:5px; text-transform:uppercase;
+  color:rgba(168,85,247,.28);
+  margin-bottom:18px; text-align:center;
 }
 
 /* ══════════════════════════════
    대형 로고
 ══════════════════════════════ */
-.logo-section {
-  position: relative; z-index: 10;
-  display: flex; flex-direction: column; align-items: center;
-}
-.logo-box {
-  position: relative;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 12px;
-  padding: 44px 64px 40px;
-  animation: logoFloat 8s ease-in-out infinite;
-}
-@keyframes logoFloat {
-  0%,100% { transform: translateY(0); }
-  50%     { transform: translateY(-8px); }
-}
-.logo-glow {
-  position: absolute; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 50% 50%,
-      rgba(107,33,168,.14) 0%,
-      rgba(212,169,66,.06) 45%,
-      transparent 72%);
-  filter: blur(24px);
-  animation: glowPulse 5s ease-in-out infinite;
-}
-@keyframes glowPulse {
-  0%,100% { opacity:.7; }
-  50%     { opacity:1; }
+.logo-section{
+  position:relative; z-index:10;
+  display:flex; flex-direction:column; align-items:center;
 }
 
-/* 상단 룰 */
-.logo-top-rule {
-  display: flex; align-items: center; gap: 12px;
-  width: 100%; z-index: 2; position: relative;
+.logo-wrap{
+  display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  animation: float 8s ease-in-out infinite;
 }
-.rule-line {
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,169,66,.35));
-}
-.rule-line.r {
-  background: linear-gradient(90deg, rgba(212,169,66,.35), transparent);
-}
-.rule-diamond {
-  width: 5px; height: 5px;
-  background: var(--gold);
-  transform: rotate(45deg);
-  box-shadow: 0 0 6px rgba(212,169,66,.7);
-  animation: diamondPulse 3s ease-in-out infinite;
-}
-@keyframes diamondPulse {
-  0%,100% { box-shadow: 0 0 5px rgba(212,169,66,.6); }
-  50%     { box-shadow: 0 0 12px rgba(212,169,66,1), 0 0 20px rgba(212,169,66,.35); }
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-6px); }
 }
 
-/* ALGO */
-.logo-main {
-  position: relative; z-index: 2;
-  font-family: 'Cinzel', serif;
-  font-size: 68px; font-weight: 900;
-  letter-spacing: 22px; padding-right: 22px;
-  color: var(--white);
-  text-shadow:
-    0 0 40px rgba(212,169,66,.28),
-    0 0 80px rgba(107,33,168,.2),
-    0 1px 0 rgba(0,0,0,.8);
-  animation: mainGlow 5s ease-in-out infinite;
-}
-@keyframes mainGlow {
-  0%,100% {
-    text-shadow:
-      0 0 30px rgba(212,169,66,.2),
-      0 0 60px rgba(107,33,168,.15),
-      0 1px 0 rgba(0,0,0,.8);
-  }
-  50% {
-    text-shadow:
-      0 0 50px rgba(212,169,66,.45),
-      0 0 90px rgba(168,85,247,.25),
-      0 0 120px rgba(212,169,66,.1),
-      0 1px 0 rgba(0,0,0,.8);
-  }
+/* 심볼 + 워드마크 가로 배치 */
+.logo-mark-row{
+  display:flex; align-items:center; gap:14px;
 }
 
-/* 구분선 */
-.logo-mid-rule {
-  width: 100%; position: relative; z-index: 2;
-  display: flex; align-items: center; gap: 8px;
+/* ── 심볼: 블랙홀 원 ── */
+.logo-symbol{
+  position:relative;
+  width:44px; height:44px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
 }
-.mid-line {
-  flex: 1; height: 1px;
+/* 바깥 원 */
+.sym-ring{
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(212,169,66,.3);
+  animation: ringPulse 4s ease-in-out infinite;
+}
+@keyframes ringPulse{
+  0%,100%{ border-color:rgba(212,169,66,.25); box-shadow:none; }
+  50%    { border-color:rgba(212,169,66,.55); box-shadow:0 0 12px rgba(212,169,66,.15); }
+}
+/* 안쪽 채움 — 블랙홀 코어 */
+.sym-core{
+  width:28px; height:28px; border-radius:50%;
+  background: radial-gradient(circle at 38% 38%,
+    rgba(168,85,247,.55) 0%,
+    rgba(45,13,92,.9)    40%,
+    rgba(4,4,12,1)       70%);
+  position:relative; z-index:2;
+  animation: coreSpin 12s linear infinite;
+}
+@keyframes coreSpin{
+  from{ box-shadow: inset 0 0 8px rgba(168,85,247,.3),  0 0 8px rgba(168,85,247,.1); }
+  50% { box-shadow: inset 0 0 14px rgba(212,169,66,.35), 0 0 14px rgba(212,169,66,.12); }
+  to  { box-shadow: inset 0 0 8px rgba(168,85,247,.3),  0 0 8px rgba(168,85,247,.1); }
+}
+/* 심볼 고리 — 기울어진 타원 */
+.sym-orbit{
+  position:absolute; inset:0;
+  border-radius:50%;
+  border-top:1px solid rgba(212,169,66,.45);
+  border-bottom:1px solid transparent;
+  border-left:1px solid transparent;
+  border-right:1px solid transparent;
+  transform: rotateX(68deg) rotateZ(-20deg);
+  animation: orbitSpin 6s linear infinite;
+}
+@keyframes orbitSpin{
+  from{ transform: rotateX(68deg) rotateZ(0deg); }
+  to  { transform: rotateX(68deg) rotateZ(360deg); }
+}
+
+/* ── 워드마크 ── */
+.logo-wordmark{
+  display:flex; flex-direction:column; gap:2px;
+}
+.wm-algo{
+  font-family:'Cinzel',serif;
+  font-size:38px; font-weight:900;
+  letter-spacing:10px; padding-right:10px;
+  color:var(--white);
+  line-height:1;
+  text-shadow: 0 0 32px rgba(212,169,66,.22);
+  animation: wmGlow 5s ease-in-out infinite;
+}
+@keyframes wmGlow{
+  0%,100%{ text-shadow:0 0 28px rgba(212,169,66,.18); }
+  50%    { text-shadow:0 0 44px rgba(212,169,66,.4), 0 0 70px rgba(168,85,247,.15); }
+}
+.wm-sub{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:9px; font-weight:300;
+  letter-spacing:5px;
+  color:rgba(212,169,66,.42);
+  padding-left:2px;
+}
+
+/* 슬로건 구분선 */
+.logo-rule{
+  width:100%; height:1px;
   background: linear-gradient(90deg,
     transparent,
-    rgba(168,85,247,.25) 20%,
-    rgba(212,169,66,.5)  50%,
-    rgba(168,85,247,.25) 80%,
+    rgba(168,85,247,.18) 20%,
+    rgba(212,169,66,.38) 50%,
+    rgba(168,85,247,.18) 80%,
     transparent);
+  position:relative;
 }
-.mid-dot {
-  width: 3px; height: 3px; border-radius: 50%;
-  background: var(--gold-l);
-  box-shadow: 0 0 6px rgba(240,201,106,.8);
-}
-
-/* 서브 */
-.logo-sub {
-  position: relative; z-index: 2;
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300;
-  font-size: 13px; letter-spacing: 7px; padding-right: 7px;
-  color: rgba(212,169,66,.5);
-  animation: subPulse 5s ease-in-out infinite;
-}
-@keyframes subPulse {
-  0%,100% { opacity:.5; }
-  50%     { opacity:.8; }
+.logo-rule::after{
+  content:'';
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%) rotate(45deg);
+  width:4px; height:4px;
+  background:var(--gold);
+  box-shadow:0 0 6px rgba(212,169,66,.8);
 }
 
-/* 하단 룰 */
-.logo-bot-rule {
-  display: flex; align-items: center; gap: 8px;
-  width: 100%; z-index: 2; position: relative; opacity:.4;
+/* 슬로건 */
+.logo-slogan{
+  display:flex; flex-direction:column;
+  align-items:center; gap:5px;
+  text-align:center;
 }
-.bot-line {
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212,169,66,.3));
+.slogan-line1{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:11px; font-weight:300;
+  letter-spacing:2px;
+  color:rgba(240,238,232,.38);
+  line-height:1.7;
 }
-.bot-line.r {
-  background: linear-gradient(90deg, rgba(212,169,66,.3), transparent);
+.slogan-em{
+  color:rgba(240,238,232,.65);
+  font-weight:400;
 }
-.bot-dot {
-  width: 3px; height: 3px; border-radius: 50%;
-  background: rgba(168,85,247,.6);
-}
-
-/* ══════════════════════════════
-   슬로건 블록
-══════════════════════════════ */
-.slogan-section {
-  position: relative; z-index: 10;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 0;
-  max-width: 560px;
-  width: 100%;
-  text-align: center;
-}
-
-/* 슬로건 외곽 컨테이너 */
-.slogan-box {
-  position: relative;
-  width: 100%;
-  padding: 32px 36px 28px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 16px;
-}
-
-/* 슬로건 배경 — 극도로 절제 */
-.slogan-bg {
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg,
-    rgba(45,13,92,.06) 0%,
-    rgba(4,4,12,.0)   100%);
-}
-
-/* 슬로건 상단 장식선 */
-.slogan-rule-top {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%;
-}
-.sr-line {
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg,
-    transparent, rgba(168,85,247,.2));
-}
-.sr-line.r {
-  background: linear-gradient(90deg,
-    rgba(168,85,247,.2), transparent);
-}
-.sr-dot {
-  width: 3px; height: 3px; border-radius: 50%;
-  background: rgba(168,85,247,.45);
-  box-shadow: 0 0 5px rgba(168,85,247,.5);
-}
-
-/* 메인 슬로건 텍스트 */
-.slogan-main {
-  position: relative; z-index: 2;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 6px;
-}
-
-/* "알고리즘의 블랙홀에 빠진 당신을 위한" */
-.slogan-line1 {
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px; font-weight: 300;
-  letter-spacing: 2px;
-  color: rgba(240,238,232,.45);
-  line-height: 1.8;
-}
-
-/* "단 하나의 사이트" — 강조 */
-.slogan-line2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 22px; font-weight: 400;
-  letter-spacing: 3px;
-  /* 골드→화이트 그라디언트 */
-  background: linear-gradient(90deg,
-    rgba(212,169,66,.7)  0%,
-    rgba(255,248,231,1)  40%,
-    rgba(240,201,106,.9) 70%,
-    rgba(168,85,247,.7)  100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 100%;
-  animation: sloganShimmer 6s ease-in-out infinite;
-  filter: drop-shadow(0 0 10px rgba(212,169,66,.2));
-}
-@keyframes sloganShimmer {
-  0%,100% { background-position: 0% 50%; }
-  50%     { background-position: 100% 50%; }
-}
-
-/* 가운데 작은 구분 */
-.slogan-divider {
-  display: flex; align-items: center; gap: 8px;
-  opacity: .4;
-}
-.sl-dash {
-  width: 20px; height: 1px;
-  background: rgba(212,169,66,.5);
-}
-.sl-star {
-  font-size: 7px; color: rgba(212,169,66,.7);
-  line-height: 1;
-}
-
-/* 도메인 */
-.slogan-domain {
-  font-family: 'Cinzel', serif;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 4px;
-  color: rgba(168,85,247,.55);
-  text-shadow: 0 0 12px rgba(168,85,247,.2);
+.slogan-line2{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:10px; font-weight:300;
+  letter-spacing:3px;
+  color:rgba(168,85,247,.45);
   animation: domainPulse 4s ease-in-out infinite;
-  transition: color .3s, text-shadow .3s;
-  cursor: default;
 }
-.slogan-domain:hover {
-  color: rgba(168,85,247,.85);
-  text-shadow: 0 0 18px rgba(168,85,247,.45);
-}
-@keyframes domainPulse {
-  0%,100% { opacity:.55; }
-  50%     { opacity:.82; }
-}
-
-/* 슬로건 하단 장식선 */
-.slogan-rule-bot {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; opacity: .5;
+@keyframes domainPulse{
+  0%,100%{ opacity:.45; }
+  50%    { opacity:.72; }
 }
 
 /* ══════════════════════════════
    소형 배지
 ══════════════════════════════ */
-.badge-section {
-  position: relative; z-index: 10;
-  display: flex; flex-direction: column; align-items: center;
+.badge-section{
+  position:relative; z-index:10;
+  display:flex; flex-direction:column; align-items:center;
 }
-.badge {
-  position: relative;
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 9px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  animation: badgeFloat 6s ease-in-out infinite;
-  transition: transform .2s;
+
+.badge{
+  position:relative;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 16px 7px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  animation:badgeFloat 6s ease-in-out infinite;
+  transition:transform .2s;
 }
-.badge:hover { transform: scale(1.04) !important; }
-@keyframes badgeFloat {
-  0%,100% { transform: translateY(0); }
-  50%     { transform: translateY(-5px); }
+.badge:hover{ transform:scale(1.04) !important; }
+@keyframes badgeFloat{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-4px); }
 }
-.badge-bg {
-  position: absolute; inset: 0; border-radius: 6px; z-index: 0;
-  background: linear-gradient(135deg,
-    rgba(45,13,92,.45) 0%, rgba(4,4,12,.65) 100%);
-  backdrop-filter: blur(6px);
+/* 배지 배경 */
+.badge-bg{
+  position:absolute; inset:0; border-radius:6px; z-index:0;
+  background:rgba(45,13,92,.3);
+  backdrop-filter:blur(6px);
 }
-.badge-frame {
-  position: absolute; inset: 0; border-radius: 6px;
-  z-index: 1; pointer-events: none;
-  padding: 1px;
-  background: linear-gradient(135deg,
-    rgba(212,169,66,.5)  0%,
-    rgba(168,85,247,.3)  35%,
-    rgba(212,169,66,.18) 65%,
-    rgba(168,85,247,.45) 100%);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+/* 배지 테두리 */
+.badge-frame{
+  position:absolute; inset:0; border-radius:6px;
+  z-index:1; pointer-events:none;
+  border:1px solid rgba(212,169,66,.2);
+  transition:border-color .3s;
 }
-.badge-inner-glow {
-  position: absolute; inset: 0; border-radius: 6px;
-  z-index: 0; pointer-events: none;
-  background: radial-gradient(ellipse at 50% 50%,
-    rgba(107,33,168,.15) 0%, transparent 70%);
-  animation: glowPulse 4s ease-in-out infinite;
+.badge:hover .badge-frame{
+  border-color:rgba(212,169,66,.4);
 }
-.badge-shine {
-  position: absolute; inset: 0; border-radius: 6px;
-  z-index: 2; overflow: hidden; pointer-events: none;
+
+/* 배지 미니 심볼 */
+.badge-sym{
+  position:relative;
+  width:18px; height:18px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; z-index:3;
 }
-.badge-shine::after {
-  content: '';
-  position: absolute; top: 0; left: -120%; width: 60%; height: 100%;
-  background: linear-gradient(90deg,
-    transparent, rgba(255,255,255,.08), transparent);
-  transform: skewX(-20deg);
-  animation: shine 6s ease-in-out infinite;
+.badge-sym-ring{
+  position:absolute; inset:0; border-radius:50%;
+  border:1px solid rgba(212,169,66,.3);
 }
-@keyframes shine {
-  0%,60%,100% { left:-120%; }
-  82%          { left: 130%; }
+.badge-sym-core{
+  width:10px; height:10px; border-radius:50%;
+  background:radial-gradient(circle at 38% 38%,
+    rgba(168,85,247,.6) 0%,
+    rgba(45,13,92,.95)  45%,
+    rgba(4,4,12,1)      72%);
+  box-shadow: inset 0 0 4px rgba(168,85,247,.3);
 }
-.badge-divider {
-  width: 1px; height: 16px;
-  background: linear-gradient(180deg,
-    transparent, rgba(212,169,66,.35), transparent);
-  position: relative; z-index: 3;
+.badge-sym-orbit{
+  position:absolute; inset:0; border-radius:50%;
+  border-top:1px solid rgba(212,169,66,.4);
+  border-bottom:1px solid transparent;
+  border-left:1px solid transparent;
+  border-right:1px solid transparent;
+  transform:rotateX(68deg);
+  animation:orbitSpin 6s linear infinite;
 }
-.badge-algo {
-  font-family: 'Cinzel', serif;
-  font-size: 12px; font-weight: 700;
-  letter-spacing: 4px; padding-right: 4px;
-  color: var(--white);
-  text-shadow: 0 0 12px rgba(212,169,66,.35);
-  position: relative; z-index: 3;
-  animation: mainGlow 5s ease-in-out infinite;
+
+/* 배지 텍스트 */
+.badge-text{
+  display:flex; flex-direction:column; gap:1px;
+  z-index:3;
 }
-.badge-sub-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300;
-  font-size: 10px; letter-spacing: 3px;
-  color: rgba(212,169,66,.48);
-  position: relative; z-index: 3;
-  white-space: nowrap;
+.badge-algo{
+  font-family:'Cinzel',serif;
+  font-size:11px; font-weight:900;
+  letter-spacing:4px; padding-right:4px;
+  color:var(--white);
+  line-height:1;
+  text-shadow:0 0 10px rgba(212,169,66,.25);
 }
-.badge-dot {
-  width: 4px; height: 4px; border-radius: 50%;
-  position: relative; z-index: 3; flex-shrink: 0;
-}
-.badge-dot.left {
-  background: var(--gold-l);
-  box-shadow: 0 0 6px rgba(240,201,106,.8);
-  animation: diamondPulse 3s ease-in-out infinite;
-}
-.badge-dot.right {
-  background: var(--purple-l);
-  box-shadow: 0 0 6px rgba(168,85,247,.8);
-  animation: diamondPulse 3s ease-in-out infinite 1.5s;
+.badge-sub{
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:7px; font-weight:300;
+  letter-spacing:3px;
+  color:rgba(212,169,66,.38);
 }
 </style>
 </head>
@@ -433,20 +295,11 @@ body {
 
 <script>
 (function(){
-  const c = ['rgba(255,248,231,.9)','rgba(168,85,247,.8)','rgba(212,169,66,.8)'];
-  for(let i=0;i<55;i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const sz = Math.random()*1.4+.3;
-    const col = c[Math.floor(Math.random()*c.length)];
-    s.style.cssText = `
-      width:${sz}px; height:${sz}px;
-      left:${Math.random()*100}%; top:${Math.random()*100}%;
-      background:${col};
-      box-shadow:0 0 ${sz*2}px ${col};
-      animation-duration:${Math.random()*5+3}s;
-      animation-delay:${Math.random()*8}s;
-    `;
+  const c=['rgba(255,248,231,.9)','rgba(168,85,247,.8)','rgba(212,169,66,.8)'];
+  for(let i=0;i<50;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*1.3+.3, col=c[Math.floor(Math.random()*c.length)];
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${col};box-shadow:0 0 ${sz*2}px ${col};animation-duration:${Math.random()*5+3}s;animation-delay:${Math.random()*8}s;`;
     document.body.appendChild(s);
   }
 })();
@@ -455,61 +308,32 @@ body {
 <!-- ══ 대형 로고 ══ -->
 <div class="logo-section">
   <div class="sec-label">◈ &nbsp; Page Title Logo &nbsp; ◈</div>
-  <div class="logo-box">
-    <div class="logo-glow"></div>
-    <div class="logo-top-rule">
-      <div class="rule-line"></div>
-      <div class="rule-diamond"></div>
-      <div class="rule-line r"></div>
-    </div>
-    <div class="logo-main">ALGO</div>
-    <div class="logo-mid-rule">
-      <div class="mid-line"></div>
-      <div class="mid-dot"></div>
-      <div class="mid-line"></div>
-    </div>
-    <div class="logo-sub">알고리빙1004</div>
-    <div class="logo-bot-rule">
-      <div class="bot-line"></div>
-      <div class="bot-dot"></div>
-      <div class="bot-line r"></div>
-    </div>
-  </div>
-</div>
 
-<!-- ══ 슬로건 ══ -->
-<div class="slogan-section">
-  <div class="slogan-box">
-    <div class="slogan-bg"></div>
+  <div class="logo-wrap">
 
-    <!-- 상단 장식선 -->
-    <div class="slogan-rule-top">
-      <div class="sr-line"></div>
-      <div class="sr-dot"></div>
-      <div class="sr-line r"></div>
-    </div>
-
-    <!-- 슬로건 텍스트 -->
-    <div class="slogan-main">
-      <div class="slogan-line1">알고리즘의 블랙홀에 빠진 당신을 위한</div>
-
-      <div class="slogan-divider">
-        <div class="sl-dash"></div>
-        <div class="sl-star">✦</div>
-        <div class="sl-dash"></div>
+    <!-- 심볼 + 워드마크 -->
+    <div class="logo-mark-row">
+      <div class="logo-symbol">
+        <div class="sym-ring"></div>
+        <div class="sym-orbit"></div>
+        <div class="sym-core"></div>
       </div>
-
-      <div class="slogan-line2">단 하나의 사이트</div>
+      <div class="logo-wordmark">
+        <div class="wm-algo">ALGO</div>
+        <div class="wm-sub">알고리빙1004</div>
+      </div>
     </div>
 
-    <!-- 도메인 -->
-    <div class="slogan-domain">algo.living1004.com</div>
+    <!-- 룰 -->
+    <div class="logo-rule"></div>
 
-    <!-- 하단 장식선 -->
-    <div class="slogan-rule-bot">
-      <div class="sr-line"></div>
-      <div class="sr-dot"></div>
-      <div class="sr-line r"></div>
+    <!-- 슬로건 -->
+    <div class="logo-slogan">
+      <div class="slogan-line1">
+        알고리즘의 블랙홀에 빠진 당신을 위한&nbsp;
+        <span class="slogan-em">단 하나의 사이트</span>
+      </div>
+      <div class="slogan-line2">algo.living1004.com</div>
     </div>
 
   </div>
@@ -518,16 +342,21 @@ body {
 <!-- ══ 소형 배지 ══ -->
 <div class="badge-section">
   <div class="sec-label">◈ &nbsp; Card Header Badge &nbsp; ◈</div>
+
   <div class="badge">
     <div class="badge-bg"></div>
     <div class="badge-frame"></div>
-    <div class="badge-inner-glow"></div>
-    <div class="badge-shine"></div>
-    <div class="badge-dot left"></div>
-    <div class="badge-algo">ALGO</div>
-    <div class="badge-divider"></div>
-    <div class="badge-sub-text">알고리빙1004</div>
-    <div class="badge-dot right"></div>
+
+    <div class="badge-sym">
+      <div class="badge-sym-ring"></div>
+      <div class="badge-sym-orbit"></div>
+      <div class="badge-sym-core"></div>
+    </div>
+
+    <div class="badge-text">
+      <div class="badge-algo">ALGO</div>
+      <div class="badge-sub">알고리빙1004</div>
+    </div>
   </div>
 </div>
 
