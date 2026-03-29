@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALGO · 알고리빙1004</title>
+<title>ALGO · 알고리빙천사</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -26,7 +26,6 @@ body{
   overflow-x: hidden;
 }
 
-/* ── 배경 ── */
 .bg{
   position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
@@ -44,7 +43,6 @@ body{
   50%    { opacity:.28; }
 }
 
-/* ── 섹션 레이블 ── */
 .sec-label{
   position:relative; z-index:10;
   font-family:'Noto Sans KR',sans-serif;
@@ -70,26 +68,23 @@ body{
   0%,100%{ transform:translateY(0); }
   50%    { transform:translateY(-6px); }
 }
-
-/* 심볼 + 워드마크 */
 .logo-mark-row{
-  display:flex; align-items:center; gap:18px;
+  display:flex; align-items:center; gap:20px;
   position:relative;
 }
 
-/* ── 방사 효과 (로고 전체 뒤) ── */
+/* 로고 전체 방사 */
 .logo-radiance{
   position:absolute;
-  width:320px; height:120px;
+  width:340px; height:130px;
   top:50%; left:50%; transform:translate(-50%,-50%);
   pointer-events:none; z-index:0;
   border-radius:50%;
   background: radial-gradient(ellipse at center,
-    rgba(212,169,66,.13)  0%,
-    rgba(168,85,247,.09)  35%,
-    rgba(107,33,168,.04)  60%,
-    transparent           80%);
-  filter: blur(18px);
+    rgba(212,169,66,.1)  0%,
+    rgba(168,85,247,.07) 40%,
+    transparent          72%);
+  filter: blur(20px);
   animation: radiancePulse 5s ease-in-out infinite;
 }
 @keyframes radiancePulse{
@@ -98,206 +93,265 @@ body{
 }
 
 /* ══════════════════════════════
-   심볼 아이콘 (고급화)
+   블랙홀 심볼 — 강렬하게 빨려드는 느낌
 ══════════════════════════════ */
 .logo-symbol{
   position:relative;
-  width:56px; height:56px;
+  width:64px; height:64px;
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0; z-index:2;
+  /* perspective 로 3D 깊이 */
+  perspective: 400px;
 }
 
-/* 심볼 내부 방사 코어 */
-.sym-radiance{
+/* ── 강착원반 — 빨려드는 빛의 소용돌이 ── */
+.accretion{
   position:absolute;
-  width:70px; height:70px;
   border-radius:50%;
-  background: radial-gradient(circle at center,
-    rgba(212,169,66,.25)  0%,
-    rgba(168,85,247,.15)  30%,
-    rgba(107,33,168,.06)  55%,
-    transparent           72%);
-  filter: blur(8px);
-  pointer-events:none; z-index:0;
-  animation: symRadPulse 4s ease-in-out infinite;
-}
-@keyframes symRadPulse{
-  0%,100%{ opacity:.7; transform:scale(1); }
-  50%    { opacity:1;  transform:scale(1.2); }
+  pointer-events:none;
+  border:1px solid transparent;
+  animation: accretionSpin linear infinite;
 }
 
-/* 바깥 원 — 얇고 정제된 골드 */
-.sym-outer{
-  position:absolute;
-  width:54px; height:54px;
-  border-radius:50%;
-  border:1px solid rgba(212,169,66,.28);
-  z-index:1;
-  animation: outerPulse 5s ease-in-out infinite;
+/* 1단 — 가장 바깥, 희미한 골드 */
+.accretion-1{
+  width:62px; height:62px;
+  border-top-color:    rgba(212,169,66,.55);
+  border-right-color:  rgba(212,169,66,.25);
+  border-bottom-color: rgba(212,169,66,.08);
+  border-left-color:   rgba(212,169,66,.25);
+  transform: rotateX(72deg);
+  animation-duration: 2.8s;
+  box-shadow: 0 0 6px rgba(212,169,66,.1);
 }
-@keyframes outerPulse{
-  0%,100%{ border-color:rgba(212,169,66,.22); }
-  50%    { border-color:rgba(212,169,66,.5); box-shadow:0 0 14px rgba(212,169,66,.12); }
+/* 2단 */
+.accretion-2{
+  width:52px; height:52px;
+  border-top-color:    rgba(168,85,247,.7);
+  border-right-color:  rgba(212,169,66,.3);
+  border-bottom-color: rgba(168,85,247,.15);
+  border-left-color:   rgba(212,169,66,.3);
+  transform: rotateX(72deg);
+  animation-duration: 2.2s;
+  animation-direction: reverse;
 }
-
-/* 중간 원 — 퍼플 */
-.sym-mid{
-  position:absolute;
+/* 3단 */
+.accretion-3{
   width:42px; height:42px;
-  border-radius:50%;
-  border:1px solid rgba(168,85,247,.18);
-  z-index:1;
-  animation: midPulse 5s ease-in-out infinite .8s;
+  border-top-color:    rgba(212,169,66,.8);
+  border-right-color:  rgba(168,85,247,.4);
+  border-bottom-color: rgba(212,169,66,.2);
+  border-left-color:   rgba(168,85,247,.4);
+  transform: rotateX(72deg);
+  animation-duration: 1.6s;
 }
-@keyframes midPulse{
-  0%,100%{ border-color:rgba(168,85,247,.14); }
-  50%    { border-color:rgba(168,85,247,.38); }
+/* 4단 — 가장 안쪽, 가장 빠름 */
+.accretion-4{
+  width:32px; height:32px;
+  border-top-color:    rgba(255,255,255,.6);
+  border-right-color:  rgba(240,201,106,.5);
+  border-bottom-color: rgba(255,255,255,.15);
+  border-left-color:   rgba(240,201,106,.5);
+  transform: rotateX(72deg);
+  animation-duration: 1.0s;
+  animation-direction: reverse;
 }
 
-/* 코어 — 블랙홀 */
+@keyframes accretionSpin{
+  from{ transform: rotateX(72deg) rotateZ(0deg); }
+  to  { transform: rotateX(72deg) rotateZ(360deg); }
+}
+
+/* ── 제트 — 블랙홀 위아래로 뿜는 빛 ── */
+.jet{
+  position:absolute;
+  left:50%; transform:translateX(-50%);
+  width:2px;
+  border-radius:2px;
+  pointer-events:none;
+  animation: jetPulse 3s ease-in-out infinite;
+}
+.jet-top{
+  bottom:calc(50% + 14px);
+  height:14px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(168,85,247,.5) 40%,
+    rgba(212,169,66,.8) 100%);
+  box-shadow: 0 0 4px rgba(168,85,247,.4), 0 0 8px rgba(168,85,247,.2);
+  animation-delay: 0s;
+}
+.jet-bot{
+  top:calc(50% + 14px);
+  height:14px;
+  background: linear-gradient(0deg,
+    transparent 0%,
+    rgba(168,85,247,.5) 40%,
+    rgba(212,169,66,.8) 100%);
+  box-shadow: 0 0 4px rgba(168,85,247,.4), 0 0 8px rgba(168,85,247,.2);
+  animation-delay: .2s;
+}
+@keyframes jetPulse{
+  0%,100%{ opacity:.6; transform:translateX(-50%) scaleY(1); }
+  50%    { opacity:1;  transform:translateX(-50%) scaleY(1.3); }
+}
+
+/* ── 블랙홀 코어 ── */
 .sym-core{
-  position:relative; z-index:3;
-  width:26px; height:26px;
+  position:relative; z-index:5;
+  width:20px; height:20px;
   border-radius:50%;
-  background: radial-gradient(circle at 35% 32%,
-    rgba(212,169,66,.18)  0%,
-    rgba(107,33,168,.75)  30%,
-    rgba(20,5,45,.95)     58%,
-    rgba(4,4,12,1)        80%);
+  background: radial-gradient(circle at 38% 35%,
+    rgba(107,33,168,.4)  0%,
+    rgba(15,5,35,.97)    35%,
+    rgba(4,4,12,1)       65%);
   box-shadow:
-    inset 0 0 8px rgba(168,85,247,.4),
-    inset 0 0 3px rgba(212,169,66,.2),
-    0 0 10px rgba(107,33,168,.25),
-    0 0 20px rgba(107,33,168,.1);
-  animation: coreGlow 4s ease-in-out infinite;
+    inset 0 0 6px rgba(168,85,247,.5),
+    inset 0 0 2px rgba(212,169,66,.3),
+    0 0 12px rgba(107,33,168,.6),
+    0 0 24px rgba(107,33,168,.35),
+    0 0 40px rgba(107,33,168,.15);
+  animation: coreGlow 3s ease-in-out infinite;
 }
 @keyframes coreGlow{
   0%,100%{
     box-shadow:
-      inset 0 0 8px rgba(168,85,247,.35),
-      inset 0 0 3px rgba(212,169,66,.18),
-      0 0 8px rgba(107,33,168,.2),
-      0 0 18px rgba(107,33,168,.08);
+      inset 0 0 6px rgba(168,85,247,.45),
+      inset 0 0 2px rgba(212,169,66,.25),
+      0 0 10px rgba(107,33,168,.55),
+      0 0 22px rgba(107,33,168,.3),
+      0 0 38px rgba(107,33,168,.12);
   }
   50%{
     box-shadow:
-      inset 0 0 14px rgba(168,85,247,.6),
-      inset 0 0 5px rgba(212,169,66,.35),
-      0 0 16px rgba(107,33,168,.4),
-      0 0 32px rgba(107,33,168,.18),
-      0 0 48px rgba(212,169,66,.08);
+      inset 0 0 10px rgba(168,85,247,.75),
+      inset 0 0 4px rgba(212,169,66,.5),
+      0 0 18px rgba(107,33,168,.85),
+      0 0 36px rgba(107,33,168,.55),
+      0 0 60px rgba(107,33,168,.25),
+      0 0 80px rgba(212,169,66,.1);
   }
 }
 
-/* 궤도 링 1 — 기울어진 골드 타원 */
-.sym-orbit-1{
-  position:absolute;
-  width:52px; height:52px;
-  border-radius:50%;
-  border:1px solid transparent;
-  border-top-color: rgba(212,169,66,.55);
-  border-right-color: rgba(212,169,66,.15);
-  z-index:2;
-  transform: rotateX(65deg) rotateZ(0deg);
-  animation: orbit1 7s linear infinite;
+/* ── 빨려드는 먼지 파티클 (SVG 기반) ── */
+.pull-wrap{
+  position:absolute; inset:0;
+  border-radius:50%; z-index:4;
+  pointer-events:none;
+  animation: pullRotate 8s linear infinite;
 }
-@keyframes orbit1{
-  from{ transform: rotateX(65deg) rotateZ(0deg); }
-  to  { transform: rotateX(65deg) rotateZ(360deg); }
+@keyframes pullRotate{
+  from{ transform: rotate(0deg); }
+  to  { transform: rotate(360deg); }
 }
 
-/* 궤도 링 2 — 반대 방향 퍼플 */
-.sym-orbit-2{
+/* 개별 먼지 점 — 나선형으로 배치 */
+.pdot{
   position:absolute;
-  width:44px; height:44px;
   border-radius:50%;
-  border:1px solid transparent;
-  border-bottom-color: rgba(168,85,247,.45);
-  border-left-color:   rgba(168,85,247,.12);
-  z-index:2;
-  transform: rotateX(65deg) rotateZ(120deg);
-  animation: orbit2 10s linear infinite reverse;
+  animation: pullIn ease-in infinite;
 }
-@keyframes orbit2{
-  from{ transform: rotateX(65deg) rotateZ(0deg); }
-  to  { transform: rotateX(65deg) rotateZ(360deg); }
+.pdot:nth-child(1) { width:2.5px;height:2.5px; background:rgba(212,169,66,.9); top:2px;  left:28px; animation-duration:2.4s; animation-delay:0s;    }
+.pdot:nth-child(2) { width:2px;  height:2px;   background:rgba(168,85,247,.8); top:8px;  left:54px; animation-duration:2.4s; animation-delay:0.3s;  }
+.pdot:nth-child(3) { width:2px;  height:2px;   background:rgba(240,201,106,.7);top:22px; left:62px; animation-duration:2.4s; animation-delay:0.6s;  }
+.pdot:nth-child(4) { width:2.5px;height:2.5px; background:rgba(168,85,247,.85);top:50px; left:56px; animation-duration:2.4s; animation-delay:0.9s;  }
+.pdot:nth-child(5) { width:2px;  height:2px;   background:rgba(212,169,66,.75);top:58px; left:30px; animation-duration:2.4s; animation-delay:1.2s;  }
+.pdot:nth-child(6) { width:1.5px;height:1.5px; background:rgba(255,255,255,.6); top:50px; left:6px;  animation-duration:2.4s; animation-delay:1.5s;  }
+.pdot:nth-child(7) { width:2px;  height:2px;   background:rgba(240,201,106,.8); top:24px; left:2px;  animation-duration:2.4s; animation-delay:1.8s;  }
+.pdot:nth-child(8) { width:1.5px;height:1.5px; background:rgba(168,85,247,.7);  top:10px; left:14px; animation-duration:2.4s; animation-delay:2.1s;  }
+
+@keyframes pullIn{
+  0%  { transform:scale(1); opacity:1; }
+  70% { opacity:.8; }
+  100%{ transform:scale(0) translate(10px,10px); opacity:0; }
 }
 
-/* 궤도 링 3 — 수직 골드 */
-.sym-orbit-3{
+/* ── 강렬한 외곽 플레어 ── */
+.flare{
   position:absolute;
-  width:36px; height:36px;
   border-radius:50%;
-  border:1px solid transparent;
-  border-top-color:  rgba(212,169,66,.3);
-  border-left-color: rgba(212,169,66,.1);
-  z-index:2;
-  transform: rotateY(72deg) rotateZ(45deg);
-  animation: orbit3 14s linear infinite;
+  pointer-events:none;
+  border:1px solid;
+  opacity:0;
+  animation: flareExpand ease-out infinite;
 }
-@keyframes orbit3{
-  from{ transform: rotateY(72deg) rotateZ(0deg); }
-  to  { transform: rotateY(72deg) rotateZ(360deg); }
+.flare-1{
+  width:20px; height:20px;
+  border-color: rgba(168,85,247,.8);
+  animation-duration:2.5s; animation-delay:0s;
+}
+.flare-2{
+  width:20px; height:20px;
+  border-color: rgba(212,169,66,.6);
+  animation-duration:2.5s; animation-delay:.83s;
+}
+.flare-3{
+  width:20px; height:20px;
+  border-color: rgba(255,255,255,.4);
+  animation-duration:2.5s; animation-delay:1.66s;
+}
+@keyframes flareExpand{
+  0%  { width:18px; height:18px; opacity:.9; }
+  100%{ width:72px; height:72px; opacity:0;  }
 }
 
-/* 코어 중심 광점 */
-.sym-dot{
+/* ── 심볼 내부 방사 ── */
+.sym-radiance{
   position:absolute;
-  width:4px; height:4px;
+  width:80px; height:80px;
   border-radius:50%;
-  background: var(--gold-l);
-  box-shadow: 0 0 6px rgba(240,201,106,.9), 0 0 14px rgba(240,201,106,.5);
-  z-index:4;
-  animation: dotPulse 3s ease-in-out infinite;
+  background: radial-gradient(circle at center,
+    rgba(212,169,66,.22)  0%,
+    rgba(168,85,247,.15)  28%,
+    rgba(107,33,168,.07)  52%,
+    transparent           70%);
+  filter: blur(8px);
+  pointer-events:none; z-index:0;
+  animation: symRadPulse 3s ease-in-out infinite;
 }
-@keyframes dotPulse{
-  0%,100%{ transform:scale(1); opacity:.85; }
-  50%    { transform:scale(1.5); opacity:1;
-    box-shadow:0 0 10px rgba(240,201,106,1), 0 0 22px rgba(240,201,106,.6), 0 0 36px rgba(168,85,247,.3); }
+@keyframes symRadPulse{
+  0%,100%{ opacity:.75; transform:scale(1); }
+  50%    { opacity:1;   transform:scale(1.2); }
 }
 
-/* ── 워드마크 ── */
+/* ══════════════════════════════
+   워드마크
+══════════════════════════════ */
 .logo-wordmark{
   display:flex; flex-direction:column;
-  gap:4px; z-index:2;
-  position:relative;
+  gap:5px; z-index:2; position:relative;
 }
-
-/* 워드마크 내부 방사 */
 .wm-radiance{
   position:absolute;
-  width:180px; height:60px;
+  width:200px; height:70px;
   top:50%; left:0; transform:translateY(-50%);
   border-radius:50%;
-  background: radial-gradient(ellipse at 20% 50%,
-    rgba(212,169,66,.1)  0%,
-    rgba(168,85,247,.06) 40%,
+  background: radial-gradient(ellipse at 15% 50%,
+    rgba(212,169,66,.09)  0%,
+    rgba(168,85,247,.05) 40%,
     transparent          70%);
-  filter: blur(12px);
+  filter: blur(14px);
   pointer-events:none; z-index:0;
   animation: radiancePulse 5s ease-in-out infinite;
 }
-
 .wm-algo{
   font-family:'Cinzel',serif;
   font-size:40px; font-weight:900;
   letter-spacing:12px; padding-right:12px;
   color:var(--white);
-  line-height:1;
-  position:relative; z-index:2;
+  line-height:1; position:relative; z-index:2;
   animation: wmGlow 5s ease-in-out infinite;
 }
 @keyframes wmGlow{
-  0%,100%{ text-shadow:0 0 24px rgba(212,169,66,.15); }
-  50%    { text-shadow:0 0 40px rgba(212,169,66,.38), 0 0 65px rgba(168,85,247,.12); }
+  0%,100%{ text-shadow:0 0 24px rgba(212,169,66,.14); }
+  50%    { text-shadow:0 0 40px rgba(212,169,66,.36), 0 0 65px rgba(168,85,247,.12); }
 }
 .wm-sub{
   font-family:'Noto Sans KR',sans-serif;
   font-size:9px; font-weight:300;
   letter-spacing:5px;
   color:rgba(212,169,66,.38);
-  padding-left:3px;
-  position:relative; z-index:2;
+  padding-left:3px; position:relative; z-index:2;
 }
 
 /* ── 구분선 ── */
@@ -306,7 +360,7 @@ body{
   background: linear-gradient(90deg,
     transparent,
     rgba(168,85,247,.15) 20%,
-    rgba(212,169,66,.35) 50%,
+    rgba(212,169,66,.32) 50%,
     rgba(168,85,247,.15) 80%,
     transparent);
   position:relative;
@@ -331,8 +385,7 @@ body{
   position:relative;
   display:inline-flex; align-items:center; gap:10px;
   padding:8px 18px 8px 12px;
-  border-radius:6px;
-  cursor:pointer;
+  border-radius:6px; cursor:pointer;
   animation: badgeFloat 6s ease-in-out infinite;
   transition:transform .2s;
 }
@@ -341,34 +394,23 @@ body{
   0%,100%{ transform:translateY(0); }
   50%    { transform:translateY(-4px); }
 }
-
-/* 배지 배경 */
 .badge-bg{
   position:absolute; inset:0; border-radius:6px; z-index:0;
-  background: rgba(45,13,92,.28);
-  backdrop-filter:blur(8px);
+  background:rgba(45,13,92,.28); backdrop-filter:blur(8px);
 }
-
-/* 배지 내부 방사 */
 .badge-radiance{
   position:absolute; inset:0; border-radius:6px; z-index:0; pointer-events:none;
-  background: radial-gradient(ellipse at 25% 50%,
-    rgba(212,169,66,.1)  0%,
-    rgba(168,85,247,.07) 45%,
-    transparent          70%);
-  animation: radiancePulse 5s ease-in-out infinite;
+  background:radial-gradient(ellipse at 22% 50%,
+    rgba(212,169,66,.1) 0%, rgba(168,85,247,.06) 45%, transparent 70%);
+  animation:radiancePulse 5s ease-in-out infinite;
 }
-
-/* 배지 테두리 */
 .badge-frame{
   position:absolute; inset:0; border-radius:6px;
   z-index:1; pointer-events:none;
   border:1px solid rgba(212,169,66,.18);
-  transition: border-color .3s;
+  transition:border-color .3s;
 }
 .badge:hover .badge-frame{ border-color:rgba(212,169,66,.38); }
-
-/* 배지 샤인 */
 .badge-shine{
   position:absolute; inset:0; border-radius:6px;
   z-index:2; overflow:hidden; pointer-events:none;
@@ -376,65 +418,70 @@ body{
 .badge-shine::after{
   content:''; position:absolute;
   top:0; left:-120%; width:55%; height:100%;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);
   transform:skewX(-20deg);
-  animation: shine 6s ease-in-out infinite;
+  animation:shine 6s ease-in-out infinite;
 }
-@keyframes shine{
-  0%,60%,100%{ left:-120%; }
-  82%        { left:130%; }
-}
+@keyframes shine{ 0%,60%,100%{left:-120%;} 82%{left:130%;} }
 
-/* 배지 미니 심볼 */
+/* 배지 미니 블랙홀 심볼 */
 .badge-sym{
   position:relative;
   width:22px; height:22px;
   display:flex; align-items:center; justify-content:center;
   flex-shrink:0; z-index:3;
+  perspective:200px;
 }
 .badge-sym-radiance{
-  position:absolute;
-  width:28px; height:28px; border-radius:50%;
+  position:absolute; width:28px; height:28px; border-radius:50%;
   background:radial-gradient(circle at center,
     rgba(212,169,66,.2) 0%, rgba(168,85,247,.1) 40%, transparent 68%);
   filter:blur(4px);
-  animation: symRadPulse 4s ease-in-out infinite;
+  animation:symRadPulse 3s ease-in-out infinite;
 }
-.badge-sym-outer{
-  position:absolute; inset:0; border-radius:50%;
-  border:1px solid rgba(212,169,66,.28);
-}
-.badge-sym-mid{
-  position:absolute;
-  width:16px; height:16px;
-  border-radius:50%;
-  border:1px solid rgba(168,85,247,.18);
-}
-.badge-sym-core{
-  width:10px; height:10px; border-radius:50%; z-index:2;
-  background: radial-gradient(circle at 35% 32%,
-    rgba(212,169,66,.15)  0%,
-    rgba(107,33,168,.8)   35%,
-    rgba(4,4,12,1)        78%);
-  box-shadow: inset 0 0 5px rgba(168,85,247,.45), 0 0 6px rgba(107,33,168,.3);
-  animation: coreGlow 4s ease-in-out infinite;
-}
-.badge-sym-orbit{
-  position:absolute;
-  width:20px; height:20px; border-radius:50%;
+.badge-acc{
+  position:absolute; border-radius:50%;
   border:1px solid transparent;
-  border-top-color: rgba(212,169,66,.5);
-  border-right-color: rgba(212,169,66,.12);
-  transform: rotateX(65deg);
-  animation: orbit1 7s linear infinite;
+  animation:accretionSpin linear infinite;
 }
-.badge-sym-dot{
-  position:absolute;
-  width:2.5px; height:2.5px; border-radius:50%;
-  background:var(--gold-l);
-  box-shadow:0 0 4px rgba(240,201,106,.9);
-  z-index:4;
-  animation: dotPulse 3s ease-in-out infinite;
+.badge-acc-1{
+  width:22px; height:22px;
+  border-top-color:   rgba(212,169,66,.6);
+  border-right-color: rgba(212,169,66,.2);
+  transform:rotateX(72deg);
+  animation-duration:1.8s;
+}
+.badge-acc-2{
+  width:16px; height:16px;
+  border-top-color:   rgba(168,85,247,.7);
+  border-right-color: rgba(212,169,66,.25);
+  transform:rotateX(72deg);
+  animation-duration:1.2s;
+  animation-direction:reverse;
+}
+.badge-flare{
+  position:absolute; border-radius:50%;
+  border:1px solid; opacity:0;
+  animation:flareExpand ease-out infinite;
+}
+.badge-flare-1{ border-color:rgba(168,85,247,.7); animation-duration:2.2s; animation-delay:0s; }
+.badge-flare-2{ border-color:rgba(212,169,66,.5); animation-duration:2.2s; animation-delay:.73s; }
+.badge-flare-3{ border-color:rgba(255,255,255,.3); animation-duration:2.2s; animation-delay:1.46s; }
+@keyframes flareExpandBadge{
+  0%  { width:6px;  height:6px;  opacity:.85; }
+  100%{ width:26px; height:26px; opacity:0;   }
+}
+.badge-flare{ animation-name:flareExpandBadge; }
+
+.badge-sym-core{
+  width:9px; height:9px; border-radius:50%; z-index:3;
+  background:radial-gradient(circle at 36% 34%,
+    rgba(107,33,168,.45) 0%, rgba(10,3,25,.97) 40%, rgba(4,4,12,1) 70%);
+  box-shadow:
+    inset 0 0 5px rgba(168,85,247,.55),
+    0 0 8px rgba(107,33,168,.7),
+    0 0 16px rgba(107,33,168,.4);
+  animation:coreGlow 3s ease-in-out infinite;
 }
 
 /* 배지 텍스트 */
@@ -478,34 +525,52 @@ body{
 
   <div class="logo-wrap">
     <div class="logo-mark-row">
-
-      <!-- 방사 효과 -->
       <div class="logo-radiance"></div>
 
-      <!-- 고급 심볼 -->
+      <!-- 블랙홀 심볼 -->
       <div class="logo-symbol">
         <div class="sym-radiance"></div>
-        <div class="sym-outer"></div>
-        <div class="sym-mid"></div>
-        <div class="sym-orbit-1"></div>
-        <div class="sym-orbit-2"></div>
-        <div class="sym-orbit-3"></div>
+
+        <!-- 강착원반 4단 -->
+        <div class="accretion accretion-1"></div>
+        <div class="accretion accretion-2"></div>
+        <div class="accretion accretion-3"></div>
+        <div class="accretion accretion-4"></div>
+
+        <!-- 제트 -->
+        <div class="jet jet-top"></div>
+        <div class="jet jet-bot"></div>
+
+        <!-- 빨려드는 파티클 -->
+        <div class="pull-wrap">
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+          <div class="pdot"></div>
+        </div>
+
+        <!-- 플레어 파동 -->
+        <div class="flare flare-1"></div>
+        <div class="flare flare-2"></div>
+        <div class="flare flare-3"></div>
+
+        <!-- 코어 -->
         <div class="sym-core"></div>
-        <div class="sym-dot"></div>
       </div>
 
       <!-- 워드마크 -->
       <div class="logo-wordmark">
         <div class="wm-radiance"></div>
         <div class="wm-algo">ALGO</div>
-        <div class="wm-sub">알고리빙1004</div>
+        <div class="wm-sub">알고리빙천사</div>
       </div>
-
     </div>
 
-    <!-- 룰 -->
     <div class="logo-rule"></div>
-
   </div>
 </div>
 
@@ -521,19 +586,19 @@ body{
 
     <div class="badge-sym">
       <div class="badge-sym-radiance"></div>
-      <div class="badge-sym-outer"></div>
-      <div class="badge-sym-mid"></div>
-      <div class="badge-sym-orbit"></div>
+      <div class="badge-acc badge-acc-1"></div>
+      <div class="badge-acc badge-acc-2"></div>
+      <div class="badge-flare badge-flare-1"></div>
+      <div class="badge-flare badge-flare-2"></div>
+      <div class="badge-flare badge-flare-3"></div>
       <div class="badge-sym-core"></div>
-      <div class="badge-sym-dot"></div>
     </div>
 
     <div class="badge-text">
       <div class="badge-algo">ALGO</div>
-      <div class="badge-sub">알고리빙1004</div>
+      <div class="badge-sub">알고리빙천사</div>
     </div>
   </div>
-
 </div>
 
 </body>
