@@ -3,396 +3,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D 레벨 카드 미리보기</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<title>ALGO 로고 미리보기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#07070f;--text:#e8e8f0;--sub:#7777aa;--accent:#6c63ff;}
+:root{--bg:#07070f;--purple:#7b2fff;--light-purple:#c084fc;--gold:#ffd700;--dark-purple:#3d00a0;--deep-black:#07000f;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;padding:48px 24px 80px;}
-.page-title{text-align:center;font-size:2rem;font-weight:900;background:linear-gradient(90deg,#6c63ff,#a78bfa,#6c63ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:titleSlide 3s linear infinite;margin-bottom:8px;}
-@keyframes titleSlide{to{background-position:200% center;}}
-.page-sub{text-align:center;color:var(--sub);font-size:.88rem;margin-bottom:48px;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:90px 40px;padding:40px 20px 60px;max-width:1400px;margin:0 auto;}
-.card-scene{width:220px;height:308px;perspective:900px;position:relative;cursor:pointer;margin:auto;}
-.card-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(0deg) rotateY(0deg);transition:transform .1s ease;will-change:transform;}
-.card-frame{position:absolute;inset:-3px;border-radius:21px;z-index:1;pointer-events:none;}
-.card-frame::after{content:'';position:absolute;inset:2px;border-radius:19px;background:var(--bg);}
-.beam-container{position:absolute;inset:-3px;border-radius:21px;overflow:hidden;z-index:2;pointer-events:none;}
-.beam-ring{position:absolute;width:400%;height:400%;top:50%;left:50%;margin-top:-200%;margin-left:-200%;animation:beamRingSpin var(--beam-speed,3s) linear infinite;transform-origin:center center;}
-@keyframes beamRingSpin{from{rotate:0deg;}to{rotate:360deg;}}
-.card-body{position:absolute;inset:0;border-radius:18px;z-index:3;transition:box-shadow .3s ease;}
-.card-face{position:absolute;inset:0;border-radius:18px;overflow:hidden;}
-.card-face::before{content:'';position:absolute;inset:0;border-radius:18px;background:repeating-linear-gradient(-45deg,transparent 0px,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);pointer-events:none;z-index:1;}
-.card-shine{position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none;z-index:5;mix-blend-mode:screen;transition:background .08s ease;}
-.card-top-band{position:absolute;top:0;left:0;right:0;height:44%;border-radius:18px 18px 0 0;z-index:2;pointer-events:none;}
-.card-bot-band{position:absolute;bottom:0;left:0;right:0;height:40%;border-radius:0 0 18px 18px;z-index:2;pointer-events:none;}
-.card-header{position:absolute;top:0;left:0;right:0;padding:13px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;z-index:10;}
-.card-lv-label{font-size:11px;font-weight:900;letter-spacing:.08em;padding:3px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);backdrop-filter:blur(4px);}
-.card-badge{color:#fff;padding:4px 11px;border-radius:8px;font-size:10px;font-weight:900;letter-spacing:.09em;box-shadow:0 2px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.2);}
-.card-bokeh{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:18px;}
-.bokeh-dot{position:absolute;border-radius:50%;filter:blur(var(--bblur,5px));opacity:var(--bop,.35);animation:bokehDrift var(--bdur,7s) ease-in-out infinite;animation-delay:var(--bdel,0s);}
-@keyframes bokehDrift{0%,100%{transform:translate(0,0) scale(1);}25%{transform:translate(7px,-9px) scale(1.12);}50%{transform:translate(-6px,7px) scale(.91);}75%{transform:translate(9px,4px) scale(1.06);}}
-.card-sparkles{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;border-radius:18px;}
-.sparkle-dot{position:absolute;font-size:var(--ssz,11px);animation:sparklePop var(--sdur,2.2s) ease-in-out infinite;animation-delay:var(--sdel,0s);}
-@keyframes sparklePop{0%,100%{opacity:.08;transform:scale(.45) rotate(-12deg);}40%{opacity:1;transform:scale(1.25) rotate(12deg);}65%{opacity:.75;transform:scale(1.05) rotate(5deg);}}
-.card-icon-wrap{position:absolute;top:46%;left:50%;transform:translate(-50%,-54%);z-index:8;display:flex;flex-direction:column;align-items:center;gap:9px;}
-.card-main-icon{font-size:3.5rem;animation:iconHover 3.5s ease-in-out infinite;}
-@keyframes iconHover{0%,100%{transform:translateY(0) rotateY(0deg);}30%{transform:translateY(-7px) rotateY(9deg);}70%{transform:translateY(-3px) rotateY(-6deg);}}
-.card-main-name{font-size:1.06rem;font-weight:900;letter-spacing:.06em;}
-.card-vignette{position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);}
-.card-xp-wrap{position:absolute;bottom:52px;left:14px;right:14px;z-index:10;}
-.card-xp-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.xp-title{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.5);}
-.xp-range{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);}
-.xp-bar-bg{width:100%;height:5px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;position:relative;}
-.xp-bar-fill{height:100%;border-radius:4px;position:relative;transition:width .6s ease;}
-.xp-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);animation:xpShine 2s linear infinite;}
-@keyframes xpShine{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
-.xp-sub-label{display:flex;justify-content:space-between;align-items:center;margin-top:4px;}
-.xp-lv-range{font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.04em;}
-.xp-pct{font-size:8px;font-weight:700;color:rgba(255,255,255,.4);}
-.card-footer{position:absolute;bottom:0;left:0;right:0;padding:9px 14px;display:flex;justify-content:space-between;align-items:center;z-index:10;border-radius:0 0 18px 18px;border-top:1px solid rgba(255,255,255,.15);}
-.footer-lv{font-size:10px;font-weight:900;background:rgba(0,0,0,.32);padding:3px 9px;border-radius:6px;letter-spacing:.07em;border:1px solid rgba(255,255,255,.2);color:#fff;}
-.footer-name{font-size:13px;font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);}
-.footer-subs{font-size:10px;color:rgba(255,255,255,.7);}
-.card-scene::before,.card-scene::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:60%;border-radius:50%;pointer-events:none;z-index:0;}
-.card-scene::before{top:-18px;height:36px;filter:blur(14px);animation:topGlow 3s ease-in-out infinite;}
-.card-scene::after{bottom:-18px;height:36px;filter:blur(14px);animation:botGlow 3s ease-in-out infinite;}
-@keyframes topGlow{0%,100%{opacity:.55;transform:translateX(-50%) scaleX(1);}50%{opacity:.88;transform:translateX(-50%) scaleX(1.14);}}
-@keyframes botGlow{0%,100%{opacity:.50;transform:translateX(-50%) scaleX(1);}50%{opacity:.82;transform:translateX(-50%) scaleX(1.12);}}
-@keyframes fogPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:.88;transform:scale(1.07);}}
+body{background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:80px;padding:60px 24px;}
 
-/* ════ LV1 → 아이스 블루 ════ */
-.card-scene[data-lv="1"]::before,.card-scene[data-lv="1"]::after{background:radial-gradient(ellipse,rgba(180,230,255,.9) 0%,transparent 70%);}
-.card-scene[data-lv="1"] .card-lv-label{color:#b0e8ff;border-color:rgba(128,208,240,.45);text-shadow:0 0 8px rgba(128,208,240,.8);}
-.card-scene[data-lv="1"] .card-frame{background:linear-gradient(135deg,#0a1a2e,#2a6080,#80d0f0,#ffffff,#80d0f0,#2a6080,#0a1a2e);background-size:300% 300%;animation:iceShift 3s ease-in-out infinite;}
-@keyframes iceShift{0%{background-position:0% 50%;filter:brightness(1.5) saturate(1.2);}50%{background-position:100% 50%;filter:brightness(2.0) saturate(1.5);}100%{background-position:0% 50%;filter:brightness(1.5) saturate(1.2);}}
-.card-scene[data-lv="1"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1a4060 2%,#3a90c0 4%,#90dff8 5.5%,#ffffff 6.5%,#90dff8 8%,transparent 10%,transparent 100%);filter:brightness(1.9) saturate(1.3);}
-.card-scene[data-lv="1"] .card-body{background:linear-gradient(160deg,#060f18 0%,#04090f 55%,#060f18 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(128,208,240,.35),0 0 90px rgba(100,180,220,.18),0 0 0 1px rgba(128,208,240,.38);}
-.card-scene[data-lv="1"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(128,208,240,.22) 0%,transparent 70%),linear-gradient(160deg,#071018 0%,#04090f 55%,#060f18 100%);}
-.card-scene[data-lv="1"] .card-top-band{background:linear-gradient(180deg,rgba(128,208,240,.45) 0%,transparent 100%);}
-.card-scene[data-lv="1"] .card-bot-band{background:linear-gradient(0deg,rgba(128,208,240,.38) 0%,transparent 100%);}
-.card-scene[data-lv="1"] .card-main-icon{filter:drop-shadow(0 0 14px rgba(128,208,240,.9)) drop-shadow(0 0 32px rgba(100,180,220,.55));}
-.card-scene[data-lv="1"] .card-main-name{color:#b0e8ff;text-shadow:0 0 14px rgba(128,208,240,.9),0 0 32px rgba(100,180,220,.6);}
-.card-scene[data-lv="1"] .card-badge{background:linear-gradient(135deg,#1a4060,#3a90c0);}
-.card-scene[data-lv="1"] .card-footer{background:linear-gradient(135deg,#06101c 0%,#0a1a2a 100%);}
-.card-scene[data-lv="1"] .bokeh-dot{background:radial-gradient(circle,rgba(176,232,255,.75) 0%,transparent 70%);}
-.card-scene[data-lv="1"] .sparkle-dot{color:#b0e8ff;text-shadow:0 0 8px rgba(128,208,240,.9);}
-.card-scene[data-lv="1"] .xp-bar-fill{background:linear-gradient(90deg,#1a4060,#3a90c0,#90dff8);box-shadow:0 0 6px rgba(128,208,240,.7);}
+/* ════ 섹션 타이틀 ════ */
+.section-title{color:rgba(255,255,255,.35);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px;text-align:center;}
 
-/* ════ LV2 → 스틸 블루 ════ */
-.card-scene[data-lv="2"]::before,.card-scene[data-lv="2"]::after{background:radial-gradient(ellipse,rgba(100,149,220,.9) 0%,transparent 70%);}
-.card-scene[data-lv="2"] .card-lv-label{color:#a8c8f0;border-color:rgba(74,127,193,.45);text-shadow:0 0 8px rgba(74,127,193,.8);}
-.card-scene[data-lv="2"] .card-frame{background:linear-gradient(135deg,#1c2e4a,#4a7fc1,#a8c8f0,#4a7fc1,#1c2e4a);background-size:300% 300%;animation:steelShift 4s ease-in-out infinite;}
-@keyframes steelShift{0%{background-position:0% 50%;filter:brightness(1.3);}50%{background-position:100% 50%;filter:brightness(1.7);}100%{background-position:0% 50%;filter:brightness(1.3);}}
-.card-scene[data-lv="2"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1c3a5e 2%,#4a7fc1 4%,#a8c8f0 5.5%,#4a7fc1 7%,#1c3a5e 9%,transparent 11%,transparent 100%);filter:brightness(1.5);}
-.card-scene[data-lv="2"] .card-body{background:linear-gradient(160deg,#0d1a2e 0%,#0a0f1a 55%,#0d1a2e 100%);box-shadow:0 20px 55px rgba(0,0,0,.7),0 0 30px rgba(74,127,193,.25),0 0 0 1px rgba(74,127,193,.3);}
-.card-scene[data-lv="2"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(74,127,193,.18) 0%,transparent 70%),linear-gradient(160deg,#0f1e33 0%,#0a0f1a 55%,#0d1a2e 100%);}
-.card-scene[data-lv="2"] .card-top-band{background:linear-gradient(180deg,rgba(74,127,193,.35) 0%,transparent 100%);}
-.card-scene[data-lv="2"] .card-bot-band{background:linear-gradient(0deg,rgba(74,127,193,.30) 0%,transparent 100%);}
-.card-scene[data-lv="2"] .card-main-icon{filter:drop-shadow(0 0 10px rgba(74,127,193,.8)) drop-shadow(0 0 22px rgba(74,127,193,.4));}
-.card-scene[data-lv="2"] .card-main-name{color:#a8c8f0;text-shadow:0 0 12px rgba(74,127,193,.9),0 0 24px rgba(74,127,193,.5);}
-.card-scene[data-lv="2"] .card-badge{background:linear-gradient(135deg,#1c3a5e,#4a7fc1);}
-.card-scene[data-lv="2"] .card-footer{background:linear-gradient(135deg,#0d1e36 0%,#162a45 100%);}
-.card-scene[data-lv="2"] .bokeh-dot{background:radial-gradient(circle,rgba(168,200,240,.7) 0%,transparent 70%);}
-.card-scene[data-lv="2"] .sparkle-dot{color:#a8c8f0;text-shadow:0 0 6px rgba(74,127,193,.9);}
-.card-scene[data-lv="2"] .xp-bar-fill{background:linear-gradient(90deg,#1c3a5e,#4a7fc1,#a8c8f0);box-shadow:0 0 6px rgba(74,127,193,.7);}
+/* ════ 큰 로고 ════ */
+.logo-large-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}
+.logo-large{position:relative;display:flex;align-items:center;justify-content:center;gap:0;padding:0 20px;}
 
-/* ════ LV3 → 코발트 블루 ════ */
-.card-scene[data-lv="3"]::before,.card-scene[data-lv="3"]::after{background:radial-gradient(ellipse,rgba(0,160,255,.9) 0%,transparent 70%);}
-.card-scene[data-lv="3"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,160,255,.3) 0%,rgba(0,120,220,.16) 45%,transparent 72%);filter:blur(18px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="3"] .card-lv-label{color:#66ccff;border-color:rgba(0,153,255,.45);text-shadow:0 0 8px rgba(0,153,255,.8);}
-.card-scene[data-lv="3"] .card-frame{background:linear-gradient(135deg,#001a33,#0055aa,#00aaff,#ffffff,#00aaff,#0055aa,#001a33);background-size:300% 300%;animation:cobaltShift 3.5s ease-in-out infinite;}
-@keyframes cobaltShift{0%{background-position:0% 50%;filter:brightness(1.4) saturate(1.3);}50%{background-position:100% 50%;filter:brightness(1.9) saturate(1.6);}100%{background-position:0% 50%;filter:brightness(1.4) saturate(1.3);}}
-.card-scene[data-lv="3"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#003366 2%,#0077cc 4%,#00aaff 5.5%,#ffffff 6.5%,#00aaff 8%,transparent 10%,transparent 100%);filter:brightness(1.8) saturate(1.4);}
-.card-scene[data-lv="3"] .card-body{background:linear-gradient(160deg,#00091a 0%,#000d22 55%,#00091a 100%);box-shadow:0 22px 58px rgba(0,0,0,.75),0 0 35px rgba(0,153,255,.28),0 0 0 1px rgba(0,153,255,.32);}
-.card-scene[data-lv="3"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(0,153,255,.2) 0%,transparent 70%),linear-gradient(160deg,#000e22 0%,#000d22 55%,#00091a 100%);}
-.card-scene[data-lv="3"] .card-top-band{background:linear-gradient(180deg,rgba(0,153,255,.4) 0%,transparent 100%);}
-.card-scene[data-lv="3"] .card-bot-band{background:linear-gradient(0deg,rgba(0,153,255,.35) 0%,transparent 100%);}
-.card-scene[data-lv="3"] .card-main-icon{filter:drop-shadow(0 0 12px rgba(0,170,255,.9)) drop-shadow(0 0 28px rgba(0,153,255,.5));}
-.card-scene[data-lv="3"] .card-main-name{color:#66ccff;text-shadow:0 0 14px rgba(0,170,255,.9),0 0 30px rgba(0,153,255,.55);}
-.card-scene[data-lv="3"] .card-badge{background:linear-gradient(135deg,#003366,#0077cc);}
-.card-scene[data-lv="3"] .card-footer{background:linear-gradient(135deg,#00091f 0%,#001433 100%);}
-.card-scene[data-lv="3"] .bokeh-dot{background:radial-gradient(circle,rgba(102,204,255,.75) 0%,transparent 70%);}
-.card-scene[data-lv="3"] .sparkle-dot{color:#66ccff;text-shadow:0 0 8px rgba(0,170,255,.9);}
-.card-scene[data-lv="3"] .xp-bar-fill{background:linear-gradient(90deg,#003366,#0077cc,#00aaff);box-shadow:0 0 6px rgba(0,153,255,.7);}
+/* 날개 공통 */
+.wing{position:relative;width:120px;height:80px;display:flex;align-items:center;}
+.wing-left{justify-content:flex-end;}
+.wing-right{justify-content:flex-start;}
 
-/* ════ LV4 ════ */
-.card-scene[data-lv="4"]::before,.card-scene[data-lv="4"]::after{background:radial-gradient(ellipse,rgba(0,200,120,.9) 0%,transparent 70%);}
-.card-scene[data-lv="4"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,200,120,.3) 0%,rgba(0,160,90,.16) 45%,transparent 72%);filter:blur(18px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="4"] .card-lv-label{color:#66ffaa;border-color:rgba(0,204,102,.45);text-shadow:0 0 8px rgba(0,204,102,.8);}
-.card-scene[data-lv="4"] .card-frame{background:linear-gradient(135deg,#001a0d,#006633,#00cc66,#aaffcc,#00cc66,#006633,#001a0d);background-size:300% 300%;animation:emeraldShift 3s ease-in-out infinite;}
-@keyframes emeraldShift{0%{background-position:0% 50%;filter:brightness(1.4) saturate(1.4);}50%{background-position:100% 50%;filter:brightness(1.9) saturate(1.7);}100%{background-position:0% 50%;filter:brightness(1.4) saturate(1.4);}}
-.card-scene[data-lv="4"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004422 2%,#009944 4%,#00cc66 5.5%,#aaffcc 6.5%,#00cc66 8%,transparent 10%,transparent 100%);filter:brightness(1.8) saturate(1.5);}
-.card-scene[data-lv="4"] .card-body{background:linear-gradient(160deg,#001a0a 0%,#000f06 55%,#001a0a 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,200,100,.35),0 0 90px rgba(0,160,80,.18),0 0 0 1px rgba(0,200,100,.38);}
-.card-scene[data-lv="4"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(0,200,100,.22) 0%,transparent 70%),linear-gradient(160deg,#001a0a 0%,#000f06 55%,#001a0a 100%);}
-.card-scene[data-lv="4"] .card-top-band{background:linear-gradient(180deg,rgba(0,204,102,.45) 0%,transparent 100%);}
-.card-scene[data-lv="4"] .card-bot-band{background:linear-gradient(0deg,rgba(0,204,102,.38) 0%,transparent 100%);}
-.card-scene[data-lv="4"] .card-main-icon{filter:drop-shadow(0 0 14px rgba(0,204,102,.9)) drop-shadow(0 0 32px rgba(0,170,80,.55));}
-.card-scene[data-lv="4"] .card-main-name{color:#66ffaa;text-shadow:0 0 14px rgba(0,204,102,.9),0 0 32px rgba(0,170,80,.6);}
-.card-scene[data-lv="4"] .card-badge{background:linear-gradient(135deg,#004422,#009944);}
-.card-scene[data-lv="4"] .card-footer{background:linear-gradient(135deg,#001508 0%,#002a12 100%);}
-.card-scene[data-lv="4"] .bokeh-dot{background:radial-gradient(circle,rgba(102,255,170,.75) 0%,transparent 70%);}
-.card-scene[data-lv="4"] .sparkle-dot{color:#66ffaa;text-shadow:0 0 8px rgba(0,204,102,.9);}
-.card-scene[data-lv="4"] .xp-bar-fill{background:linear-gradient(90deg,#004422,#009944,#00cc66);box-shadow:0 0 6px rgba(0,204,102,.7);}
+/* SVG 날개 */
+.wing svg{overflow:visible;}
 
-/* ════ LV5 ════ */
-.card-scene[data-lv="5"]::before,.card-scene[data-lv="5"]::after{background:radial-gradient(ellipse,rgba(0,180,160,.9) 0%,transparent 70%);}
-.card-scene[data-lv="5"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,180,160,.3) 0%,rgba(0,140,120,.16) 45%,transparent 72%);filter:blur(18px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="5"] .card-lv-label{color:#66ffdd;border-color:rgba(0,204,170,.45);text-shadow:0 0 8px rgba(0,204,170,.8);}
-.card-scene[data-lv="5"] .card-frame{background:linear-gradient(135deg,#001a18,#006655,#00ccaa,#ffd700,#00ccaa,#006655,#001a18);background-size:300% 300%;animation:tealShift 3s ease-in-out infinite;}
-@keyframes tealShift{0%{background-position:0% 50%;filter:brightness(1.4) saturate(1.3);}50%{background-position:100% 50%;filter:brightness(1.9) saturate(1.6);}100%{background-position:0% 50%;filter:brightness(1.4) saturate(1.3);}}
-.card-scene[data-lv="5"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004433 2%,#009977 4%,#00ccaa 5.5%,#ffd700 6.5%,#00ccaa 8%,transparent 10%,transparent 100%);filter:brightness(1.8) saturate(1.4);}
-.card-scene[data-lv="5"] .card-body{background:linear-gradient(160deg,#001a16 0%,#000f0d 55%,#001a16 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,180,150,.35),0 0 90px rgba(0,150,120,.18),0 0 0 1px rgba(0,180,150,.38);}
-.card-scene[data-lv="5"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(0,180,150,.22) 0%,transparent 70%),linear-gradient(160deg,#001a16 0%,#000f0d 55%,#001a16 100%);}
-.card-scene[data-lv="5"] .card-top-band{background:linear-gradient(180deg,rgba(0,204,170,.45) 0%,transparent 100%);}
-.card-scene[data-lv="5"] .card-bot-band{background:linear-gradient(0deg,rgba(0,204,170,.38) 0%,transparent 100%);}
-.card-scene[data-lv="5"] .card-main-icon{filter:drop-shadow(0 0 14px rgba(0,204,170,.9)) drop-shadow(0 0 32px rgba(0,170,140,.55));}
-.card-scene[data-lv="5"] .card-main-name{color:#66ffdd;text-shadow:0 0 14px rgba(0,204,170,.9),0 0 32px rgba(0,170,140,.6);}
-.card-scene[data-lv="5"] .card-badge{background:linear-gradient(135deg,#004433,#009977);}
-.card-scene[data-lv="5"] .card-footer{background:linear-gradient(135deg,#001512 0%,#002a22 100%);}
-.card-scene[data-lv="5"] .bokeh-dot{background:radial-gradient(circle,rgba(102,255,221,.75) 0%,transparent 70%);}
-.card-scene[data-lv="5"] .sparkle-dot{color:#66ffdd;text-shadow:0 0 8px rgba(0,204,170,.9);}
-.card-scene[data-lv="5"] .xp-bar-fill{background:linear-gradient(90deg,#004433,#009977,#00ccaa);box-shadow:0 0 6px rgba(0,204,170,.7);}
+/* 큰 로고 텍스트 */
+.logo-large-text{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:10;}
+.logo-large-main{font-family:'Orbitron',sans-serif;font-size:3.2rem;font-weight:900;letter-spacing:.18em;color:#fff;position:relative;text-shadow:0 0 20px rgba(123,47,255,.9),0 0 40px rgba(123,47,255,.6),0 0 80px rgba(123,47,255,.3);animation:logoPulse 2.5s ease-in-out infinite alternate;}
+@keyframes logoPulse{from{text-shadow:0 0 16px rgba(123,47,255,.8),0 0 32px rgba(123,47,255,.5),0 0 60px rgba(123,47,255,.25);}to{text-shadow:0 0 28px rgba(192,132,252,1),0 0 55px rgba(160,80,255,.8),0 0 100px rgba(123,47,255,.5),0 0 140px rgba(80,0,180,.3);}}
+.logo-large-sub{font-family:'Noto Sans KR',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.35em;color:var(--gold);text-shadow:0 0 8px rgba(255,215,0,.7),0 0 16px rgba(255,215,0,.4);opacity:.9;}
+.logo-large-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(192,132,252,.6),rgba(255,215,0,.6),rgba(192,132,252,.6),transparent);margin:3px 0;}
 
-/* ════ LV6 ════ */
-.card-scene[data-lv="6"]::before,.card-scene[data-lv="6"]::after{background:radial-gradient(ellipse,rgba(220,150,0,.9) 0%,transparent 70%);}
-.card-scene[data-lv="6"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,150,0,.42) 0%,rgba(180,110,0,.24) 45%,transparent 72%);filter:blur(24px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="6"] .card-lv-label{color:#ffd166;border-color:rgba(232,160,0,.45);text-shadow:0 0 8px rgba(232,160,0,.8);}
-.card-scene[data-lv="6"] .card-frame{background:linear-gradient(135deg,#1a0d00,#7a4400,#e8a000,#fff3cc,#e8a000,#7a4400,#1a0d00);background-size:300% 300%;animation:amberShift 2.8s ease-in-out infinite;}
-@keyframes amberShift{0%{background-position:0% 50%;filter:brightness(1.4) saturate(1.4);}50%{background-position:100% 50%;filter:brightness(1.9) saturate(1.7);}100%{background-position:0% 50%;filter:brightness(1.4) saturate(1.4);}}
-.card-scene[data-lv="6"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#4a2200 2%,#aa6600 4%,#e8a000 5.5%,#fff3cc 6.5%,#e8a000 8%,transparent 10%,transparent 100%);filter:brightness(1.8) saturate(1.5);}
-.card-scene[data-lv="6"] .card-body{background:linear-gradient(160deg,#1a0900 0%,#0f0500 55%,#1a0900 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,150,0,.45),0 0 110px rgba(180,110,0,.25),0 0 0 1px rgba(220,150,0,.42);}
-.card-scene[data-lv="6"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(220,150,0,.25) 0%,transparent 70%),linear-gradient(160deg,#1a0900 0%,#0f0500 55%,#1a0900 100%);}
-.card-scene[data-lv="6"] .card-top-band{background:linear-gradient(180deg,rgba(232,160,0,.50) 0%,transparent 100%);}
-.card-scene[data-lv="6"] .card-bot-band{background:linear-gradient(0deg,rgba(232,160,0,.45) 0%,transparent 100%);}
-.card-scene[data-lv="6"] .card-main-icon{filter:drop-shadow(0 0 16px rgba(232,160,0,.9)) drop-shadow(0 0 36px rgba(200,130,0,.6));}
-.card-scene[data-lv="6"] .card-main-name{color:#ffd166;text-shadow:0 0 16px rgba(232,160,0,.9),0 0 36px rgba(200,130,0,.65);}
-.card-scene[data-lv="6"] .card-badge{background:linear-gradient(135deg,#4a2200,#aa6600);}
-.card-scene[data-lv="6"] .card-footer{background:linear-gradient(135deg,#1a0a00 0%,#2e1500 100%);}
-.card-scene[data-lv="6"] .bokeh-dot{background:radial-gradient(circle,rgba(255,200,80,.75) 0%,transparent 70%);}
-.card-scene[data-lv="6"] .sparkle-dot{color:#ffd166;text-shadow:0 0 8px rgba(232,160,0,.9);}
-.card-scene[data-lv="6"] .xp-bar-fill{background:linear-gradient(90deg,#4a2200,#aa6600,#e8a000);box-shadow:0 0 6px rgba(232,160,0,.7);}
+/* 큰 로고 외곽 글로우 */
+.logo-large-glow{position:absolute;inset:-20px;background:radial-gradient(ellipse at center,rgba(123,47,255,.18) 0%,rgba(80,0,180,.08) 50%,transparent 75%);pointer-events:none;animation:glowPulse 2.5s ease-in-out infinite alternate;}
+@keyframes glowPulse{from{opacity:.7;}to{opacity:1;}}
 
-/* ════ LV7 ════ */
-.card-scene[data-lv="7"]::before,.card-scene[data-lv="7"]::after{background:radial-gradient(ellipse,rgba(255,120,0,.9) 0%,transparent 70%);}
-.card-scene[data-lv="7"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(255,120,0,.42) 0%,rgba(220,80,0,.24) 45%,transparent 72%);filter:blur(24px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="7"] .card-lv-label{color:#ffaa44;border-color:rgba(255,102,0,.45);text-shadow:0 0 8px rgba(255,102,0,.8);}
-.card-scene[data-lv="7"] .card-frame{background:linear-gradient(135deg,#1a0500,#882200,#ff6600,#ffdd88,#ff6600,#882200,#1a0500);background-size:300% 300%;animation:solarShift 2.5s ease-in-out infinite;}
-@keyframes solarShift{0%{background-position:0% 50%;filter:brightness(1.5) saturate(1.5);}50%{background-position:100% 50%;filter:brightness(2.0) saturate(1.8);}100%{background-position:0% 50%;filter:brightness(1.5) saturate(1.5);}}
-.card-scene[data-lv="7"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551100 2%,#cc4400 4%,#ff6600 5.5%,#ffdd88 6.5%,#ff6600 8%,transparent 10%,transparent 100%);filter:brightness(1.9) saturate(1.6);}
-.card-scene[data-lv="7"] .card-body{background:linear-gradient(160deg,#1a0500 0%,#0f0200 55%,#1a0500 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(255,100,0,.50),0 0 110px rgba(220,60,0,.28),0 0 0 1px rgba(255,100,0,.45);}
-.card-scene[data-lv="7"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(255,100,0,.26) 0%,transparent 70%),linear-gradient(160deg,#1a0500 0%,#0f0200 55%,#1a0500 100%);}
-.card-scene[data-lv="7"] .card-top-band{background:linear-gradient(180deg,rgba(255,102,0,.52) 0%,transparent 100%);}
-.card-scene[data-lv="7"] .card-bot-band{background:linear-gradient(0deg,rgba(255,102,0,.46) 0%,transparent 100%);}
-.card-scene[data-lv="7"] .card-main-icon{filter:drop-shadow(0 0 16px rgba(255,102,0,.9)) drop-shadow(0 0 38px rgba(220,60,0,.65));}
-.card-scene[data-lv="7"] .card-main-name{color:#ffaa44;text-shadow:0 0 16px rgba(255,102,0,.9),0 0 38px rgba(220,60,0,.7);}
-.card-scene[data-lv="7"] .card-badge{background:linear-gradient(135deg,#551100,#cc4400);}
-.card-scene[data-lv="7"] .card-footer{background:linear-gradient(135deg,#1a0400 0%,#2e0800 100%);}
-.card-scene[data-lv="7"] .bokeh-dot{background:radial-gradient(circle,rgba(255,160,60,.75) 0%,transparent 70%);}
-.card-scene[data-lv="7"] .sparkle-dot{color:#ffaa44;text-shadow:0 0 8px rgba(255,102,0,.9);}
-.card-scene[data-lv="7"] .xp-bar-fill{background:linear-gradient(90deg,#551100,#cc4400,#ff6600);box-shadow:0 0 6px rgba(255,102,0,.7);}
+/* ════ 작은 뱃지 ════ */
+.badge-wrap{display:flex;flex-direction:column;align-items:center;gap:0;}
+.logo-badge{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:0;padding:5px 10px;background:rgba(0,0,0,.45);border:1px solid rgba(192,132,252,.4);border-radius:10px;backdrop-filter:blur(8px);box-shadow:0 0 12px rgba(123,47,255,.35),0 0 24px rgba(123,47,255,.15),inset 0 1px 0 rgba(255,255,255,.08);overflow:hidden;}
+.logo-badge::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,47,255,.12) 0%,transparent 50%,rgba(255,215,0,.06) 100%);border-radius:10px;pointer-events:none;}
 
-/* ════ LV8 ════ */
-.card-scene[data-lv="8"]::before,.card-scene[data-lv="8"]::after{background:radial-gradient(ellipse,rgba(200,0,40,.9) 0%,transparent 70%);}
-.card-scene[data-lv="8"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(200,0,40,.42) 0%,rgba(150,0,25,.24) 45%,transparent 72%);filter:blur(24px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="8"] .card-lv-label{color:#ff6680;border-color:rgba(204,0,51,.45);text-shadow:0 0 8px rgba(204,0,51,.8);}
-.card-scene[data-lv="8"] .card-frame{background:linear-gradient(135deg,#1a0008,#770011,#cc0033,#ffaabb,#cc0033,#770011,#1a0008);background-size:300% 300%;animation:rubyShift 2.5s ease-in-out infinite;}
-@keyframes rubyShift{0%{background-position:0% 50%;filter:brightness(1.5) saturate(1.5);}50%{background-position:100% 50%;filter:brightness(2.0) saturate(1.8);}100%{background-position:0% 50%;filter:brightness(1.5) saturate(1.5);}}
-.card-scene[data-lv="8"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#440008 2%,#aa0022 4%,#cc0033 5.5%,#ffaabb 6.5%,#cc0033 8%,transparent 10%,transparent 100%);filter:brightness(1.9) saturate(1.6);}
-.card-scene[data-lv="8"] .card-body{background:linear-gradient(160deg,#1a0006 0%,#0f0003 55%,#1a0006 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(200,0,40,.50),0 0 110px rgba(160,0,30,.28),0 0 0 1px rgba(200,0,40,.45);}
-.card-scene[data-lv="8"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(200,0,40,.26) 0%,transparent 70%),linear-gradient(160deg,#1a0006 0%,#0f0003 55%,#1a0006 100%);}
-.card-scene[data-lv="8"] .card-top-band{background:linear-gradient(180deg,rgba(204,0,51,.52) 0%,transparent 100%);}
-.card-scene[data-lv="8"] .card-bot-band{background:linear-gradient(0deg,rgba(204,0,51,.46) 0%,transparent 100%);}
-.card-scene[data-lv="8"] .card-main-icon{filter:drop-shadow(0 0 16px rgba(204,0,51,.9)) drop-shadow(0 0 38px rgba(160,0,30,.65));}
-.card-scene[data-lv="8"] .card-main-name{color:#ff6680;text-shadow:0 0 16px rgba(204,0,51,.9),0 0 38px rgba(160,0,30,.7);}
-.card-scene[data-lv="8"] .card-badge{background:linear-gradient(135deg,#440008,#aa0022);}
-.card-scene[data-lv="8"] .card-footer{background:linear-gradient(135deg,#1a0005 0%,#2e000a 100%);}
-.card-scene[data-lv="8"] .bokeh-dot{background:radial-gradient(circle,rgba(255,100,130,.75) 0%,transparent 70%);}
-.card-scene[data-lv="8"] .sparkle-dot{color:#ff6680;text-shadow:0 0 8px rgba(204,0,51,.9);}
-.card-scene[data-lv="8"] .xp-bar-fill{background:linear-gradient(90deg,#440008,#aa0022,#cc0033);box-shadow:0 0 6px rgba(204,0,51,.7);}
+/* 작은 날개 */
+.wing-sm{width:32px;height:24px;display:flex;align-items:center;}
+.wing-sm-left{justify-content:flex-end;}
+.wing-sm-right{justify-content:flex-start;}
 
-/* ════ LV9 ════ */
-.card-scene[data-lv="9"]::before,.card-scene[data-lv="9"]::after{background:radial-gradient(ellipse,rgba(220,100,150,.9) 0%,transparent 70%);}
-.card-scene[data-lv="9"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,100,150,.42) 0%,rgba(180,60,110,.24) 45%,transparent 72%);filter:blur(24px);pointer-events:none;z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="9"] .card-lv-label{color:#ffaacc;border-color:rgba(204,68,136,.45);text-shadow:0 0 8px rgba(204,68,136,.8);}
-.card-scene[data-lv="9"] .card-frame{background:linear-gradient(135deg,#1a0010,#882255,#cc4488,#ffccdd,#ffd700,#ffccdd,#cc4488,#882255,#1a0010);background-size:300% 300%;animation:roseShift 2.5s ease-in-out infinite;}
-@keyframes roseShift{0%{background-position:0% 50%;filter:brightness(1.5) saturate(1.5);}50%{background-position:100% 50%;filter:brightness(2.0) saturate(1.8);}100%{background-position:0% 50%;filter:brightness(1.5) saturate(1.5);}}
-.card-scene[data-lv="9"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551133 2%,#aa3366 4%,#cc4488 5.5%,#ffccdd 6.5%,#ffd700 7.5%,#cc4488 9%,transparent 11%,transparent 100%);filter:brightness(1.9) saturate(1.6);}
-.card-scene[data-lv="9"] .card-body{background:linear-gradient(160deg,#1a0010 0%,#0f0008 55%,#1a0010 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,80,140,.50),0 0 110px rgba(180,50,110,.28),0 0 0 1px rgba(220,80,140,.45);}
-.card-scene[data-lv="9"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(220,80,140,.26) 0%,transparent 70%),linear-gradient(160deg,#1a0010 0%,#0f0008 55%,#1a0010 100%);}
-.card-scene[data-lv="9"] .card-top-band{background:linear-gradient(180deg,rgba(204,68,136,.52) 0%,transparent 100%);}
-.card-scene[data-lv="9"] .card-bot-band{background:linear-gradient(0deg,rgba(204,68,136,.46) 0%,transparent 100%);}
-.card-scene[data-lv="9"] .card-main-icon{filter:drop-shadow(0 0 16px rgba(220,80,140,.9)) drop-shadow(0 0 38px rgba(180,50,110,.65));}
-.card-scene[data-lv="9"] .card-main-name{color:#ffaacc;text-shadow:0 0 16px rgba(220,80,140,.9),0 0 38px rgba(180,50,110,.7);}
-.card-scene[data-lv="9"] .card-badge{background:linear-gradient(135deg,#551133,#aa3366);}
-.card-scene[data-lv="9"] .card-footer{background:linear-gradient(135deg,#1a000e 0%,#2e0018 100%);}
-.card-scene[data-lv="9"] .bokeh-dot{background:radial-gradient(circle,rgba(255,170,200,.75) 0%,transparent 70%);}
-.card-scene[data-lv="9"] .sparkle-dot{color:#ffaacc;text-shadow:0 0 8px rgba(220,80,140,.9);}
-.card-scene[data-lv="9"] .xp-bar-fill{background:linear-gradient(90deg,#551133,#aa3366,#cc4488,#ffd700);box-shadow:0 0 6px rgba(220,80,140,.7);}
+/* 작은 뱃지 텍스트 */
+.badge-text{font-family:'Orbitron',sans-serif;font-size:.72rem;font-weight:900;letter-spacing:.15em;color:#fff;text-shadow:0 0 8px rgba(123,47,255,.9),0 0 16px rgba(123,47,255,.5);position:relative;z-index:2;padding:0 4px;}
 
-/* ════ LV MAX ════ */
-.card-scene[data-lv="MAX"]::before,.card-scene[data-lv="MAX"]::after{background:radial-gradient(ellipse,rgba(160,60,255,.95) 0%,transparent 70%);}
-.card-scene[data-lv="MAX"] .fog-wrap{position:absolute;inset:-58px;border-radius:26px;background:radial-gradient(ellipse at center,rgba(140,40,255,.58) 0%,rgba(100,20,200,.34) 40%,transparent 70%);filter:blur(32px);pointer-events:none;z-index:0;animation:fogPulse 2.5s ease-in-out infinite;}
-.card-scene[data-lv="MAX"] .fog-wrap2{position:absolute;inset:-30px;border-radius:23px;background:radial-gradient(ellipse at center,rgba(160,40,255,.28) 0%,rgba(120,20,220,.2) 50%,transparent 75%);filter:blur(18px);pointer-events:none;z-index:0;animation:fogPulse 3.5s ease-in-out infinite reverse;}
-.card-scene[data-lv="MAX"] .card-lv-label{color:#e0aaff;border-color:rgba(192,132,252,.55);text-shadow:0 0 10px rgba(180,100,255,.9),0 0 20px rgba(140,60,255,.6);animation:maxLvPulse 2s ease-in-out infinite alternate;}
-@keyframes maxLvPulse{from{text-shadow:0 0 8px rgba(160,80,255,.8),0 0 16px rgba(120,40,220,.6);}to{text-shadow:0 0 16px rgba(220,150,255,1),0 0 32px rgba(180,80,255,.8);}}
-.card-scene[data-lv="MAX"] .card-frame{background:linear-gradient(135deg,#0d0020,#3d00a0,#7b2fff,#c084fc,#ffd700,#c084fc,#7b2fff,#3d00a0,#0d0020);background-size:300% 300%;animation:royalMaxShift 2s ease-in-out infinite;}
-@keyframes royalMaxShift{0%{background-position:0% 50%;filter:brightness(1.6) saturate(1.6);}50%{background-position:100% 50%;filter:brightness(2.2) saturate(2.0);}100%{background-position:0% 50%;filter:brightness(1.6) saturate(1.6);}}
-.card-scene[data-lv="MAX"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#220055 2%,#6600cc 3.5%,#9933ff 5%,#c084fc 6%,#ffd700 7%,#c084fc 8%,#6600cc 9.5%,transparent 11%,transparent 100%);filter:brightness(2.0) saturate(1.8);}
-.card-scene[data-lv="MAX"] .card-body{background:linear-gradient(160deg,#0d0020 0%,#07000f 55%,#0d0020 100%);box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 80px rgba(123,47,255,.65),0 0 140px rgba(100,20,200,.38),0 0 200px rgba(80,0,180,.2),0 0 0 1px rgba(192,132,252,.5);animation:maxGlow 2s ease-in-out infinite;}
-@keyframes maxGlow{0%,100%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 70px rgba(123,47,255,.58),0 0 120px rgba(100,20,200,.32),0 0 0 1px rgba(192,132,252,.45);}50%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 100px rgba(150,80,255,.75),0 0 180px rgba(120,30,220,.45),0 0 0 1px rgba(220,160,255,.65);}}
-.card-scene[data-lv="MAX"] .card-face{background:radial-gradient(ellipse 80% 55% at 50% 40%,rgba(123,47,255,.3) 0%,transparent 70%),linear-gradient(160deg,#0f0022 0%,#07000f 55%,#0d0020 100%);}
-.card-scene[data-lv="MAX"] .card-top-band{background:linear-gradient(180deg,rgba(123,47,255,.60) 0%,transparent 100%);}
-.card-scene[data-lv="MAX"] .card-bot-band{background:linear-gradient(0deg,rgba(123,47,255,.46) 0%,transparent 100%);}
-.card-scene[data-lv="MAX"] .card-main-icon{filter:drop-shadow(0 0 20px rgba(160,80,255,.95)) drop-shadow(0 0 44px rgba(120,30,220,.7)) drop-shadow(0 0 70px rgba(80,0,180,.4));animation:iconHover 3.5s ease-in-out infinite,maxIconPulse 2s ease-in-out infinite;}
-@keyframes maxIconPulse{0%,100%{filter:drop-shadow(0 0 16px rgba(160,80,255,.85)) drop-shadow(0 0 38px rgba(120,30,220,.6));}50%{filter:drop-shadow(0 0 28px rgba(200,120,255,1)) drop-shadow(0 0 60px rgba(160,60,255,.8)) drop-shadow(0 0 90px rgba(100,0,220,.5));}}
-.card-scene[data-lv="MAX"] .card-main-name{color:#e0aaff;text-shadow:0 0 18px rgba(180,100,255,.9),0 0 40px rgba(140,60,255,.7),0 0 70px rgba(100,20,220,.5);animation:maxNamePulse 2s ease-in-out infinite alternate;}
-@keyframes maxNamePulse{from{text-shadow:0 0 14px rgba(160,80,255,.8),0 0 32px rgba(120,40,220,.6);}to{text-shadow:0 0 26px rgba(220,150,255,1),0 0 55px rgba(180,80,255,.8),0 0 90px rgba(140,30,255,.55);}}
-.card-scene[data-lv="MAX"] .card-badge{background:linear-gradient(135deg,#3d00a0,#7b2fff,#c084fc,#ffd700);border-color:rgba(255,215,0,.45);}
-.card-scene[data-lv="MAX"] .card-footer{background:linear-gradient(135deg,#0d0020 0%,#1a0040 100%);border-top:1px solid rgba(192,132,252,.3);}
-.card-scene[data-lv="MAX"] .bokeh-dot{background:radial-gradient(circle,rgba(200,140,255,.8) 0%,transparent 70%);}
-.card-scene[data-lv="MAX"] .sparkle-dot{color:#e0aaff;text-shadow:0 0 10px rgba(180,100,255,.9);}
-.card-scene[data-lv="MAX"] .xp-bar-fill{background:linear-gradient(90deg,#3d00a0,#6600cc,#9933ff,#c084fc);background-size:200% 100%;animation:maxXpShine 1.5s linear infinite;box-shadow:0 0 8px rgba(160,80,255,.9),0 0 16px rgba(123,47,255,.6);}
-@keyframes maxXpShine{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+/* ════ 날개 애니메이션 ════ */
+@keyframes wingFlicker{0%,100%{filter:drop-shadow(0 0 6px rgba(123,47,255,.8)) drop-shadow(0 0 12px rgba(123,47,255,.5));}50%{filter:drop-shadow(0 0 10px rgba(192,132,252,1)) drop-shadow(0 0 20px rgba(160,80,255,.8)) drop-shadow(0 0 35px rgba(255,215,0,.3));}}
+@keyframes wingFlickerSm{0%,100%{filter:drop-shadow(0 0 3px rgba(123,47,255,.8)) drop-shadow(0 0 6px rgba(123,47,255,.5));}50%{filter:drop-shadow(0 0 5px rgba(192,132,252,1)) drop-shadow(0 0 10px rgba(160,80,255,.8));}}
+
+.wing svg{animation:wingFlicker 2.5s ease-in-out infinite alternate;}
+.wing-sm svg{animation:wingFlickerSm 2.5s ease-in-out infinite alternate;}
+
+/* ════ 배경 파티클 ════ */
+.particle{position:fixed;border-radius:50%;pointer-events:none;animation:particleDrift linear infinite;}
+@keyframes particleDrift{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:1;}90%{opacity:.5;}100%{transform:translateY(-10vh) scale(1.2);opacity:0;}}
 </style>
 </head>
 <body>
-<div class="page-title">▶ 3D 레벨 카드 미리보기</div>
-<div class="page-sub">마우스를 카드 위에 올리면 빔·테두리·카드가 함께 3D 틸트됩니다</div>
-<div class="cards-grid" id="cards-grid"></div>
+
+<!-- 배경 파티클 -->
 <script>
-const XP_RANGES = {
-  1:  { min:1,   max:10,  current:5,   next:10  },
-  2:  { min:11,  max:20,  current:15,  next:20  },
-  3:  { min:21,  max:30,  current:24,  next:30  },
-  4:  { min:31,  max:40,  current:35,  next:40  },
-  5:  { min:41,  max:50,  current:46,  next:50  },
-  6:  { min:51,  max:60,  current:55,  next:60  },
-  7:  { min:61,  max:70,  current:65,  next:70  },
-  8:  { min:71,  max:80,  current:75,  next:80  },
-  9:  { min:81,  max:90,  current:87,  next:90  },
-  MAX:{ min:91,  max:100, current:100, next:100 }
-};
-
-const GRADES = [
-  { lv:1,   name:'무감지', icon:'🕯️', badge:'무감지', subs:'0 ~ 1K',   beamCount:1, beamSpeed:'4.2s', bokeh:[{w:34,h:34,l:8,t:7,blur:6,op:.28,dur:5.5,del:0},{w:20,h:20,l:65,t:18,blur:4,op:.22,dur:7,del:.8}], sparkles:[{l:22,t:34,sz:9,dur:'2.3s',del:'0s'},{l:60,t:14,sz:8,dur:'2.9s',del:'.4s'},{l:78,t:45,sz:7,dur:'2.6s',del:'.8s'}] },
-  { lv:2,   name:'감지',   icon:'🔥', badge:'감지',   subs:'1K ~ 10K', beamCount:1, beamSpeed:'3.8s', bokeh:[{w:38,h:38,l:7,t:5,blur:7,op:.32,dur:6,del:0},{w:22,h:22,l:60,t:17,blur:4,op:.26,dur:8,del:.9},{w:14,h:14,l:32,t:32,blur:3,op:.20,dur:7,del:1.8}], sparkles:[{l:18,t:30,sz:9,dur:'2s',del:'0s'},{l:58,t:11,sz:9,dur:'2.5s',del:'.3s'},{l:80,t:42,sz:8,dur:'2.2s',del:'.7s'}] },
-  { lv:3,   name:'탐색',   icon:'💣', badge:'탐색',   subs:'10K ~ 50K',beamCount:2, beamSpeed:'3.4s', bokeh:[{w:42,h:42,l:6,t:4,blur:9,op:.36,dur:6,del:0},{w:24,h:24,l:62,t:15,blur:5,op:.29,dur:8,del:.9},{w:16,h:16,l:30,t:30,blur:4,op:.22,dur:7,del:1.8},{w:10,h:10,l:52,t:44,blur:3,op:.16,dur:9,del:2.7}], sparkles:[{l:12,t:22,sz:10,dur:'1.9s',del:'0s'},{l:50,t:8,sz:10,dur:'2.3s',del:'.25s'},{l:84,t:32,sz:9,dur:'2.1s',del:'.55s'},{l:36,t:52,sz:8,dur:'2.5s',del:'.85s'}] },
-  { lv:4,   name:'침투',   icon:'💥', badge:'침투',   subs:'50K~100K', beamCount:2, beamSpeed:'3.2s', bokeh:[{w:44,h:44,l:5,t:4,blur:10,op:.38,dur:6,del:0},{w:26,h:26,l:63,t:14,blur:5,op:.31,dur:8,del:.85},{w:18,h:18,l:29,t:28,blur:4,op:.24,dur:7,del:1.7},{w:12,h:12,l:50,t:42,blur:3,op:.18,dur:9,del:2.55},{w:8,h:8,l:18,t:58,blur:2,op:.13,dur:6.5,del:3.4}], sparkles:[{l:10,t:20,sz:11,dur:'1.8s',del:'0s'},{l:48,t:6,sz:10,dur:'2.2s',del:'.2s'},{l:86,t:30,sz:10,dur:'2.0s',del:'.5s'},{l:34,t:50,sz:9,dur:'2.4s',del:'.8s'},{l:70,t:60,sz:9,dur:'1.9s',del:'1.1s'}] },
-  { lv:5,   name:'안착',   icon:'🌟', badge:'안착',   subs:'100K~500K',beamCount:2, beamSpeed:'3.0s', bokeh:[{w:46,h:46,l:5,t:3,blur:11,op:.40,dur:5.8,del:0},{w:28,h:28,l:64,t:13,blur:6,op:.33,dur:7.8,del:.8},{w:20,h:20,l:28,t:27,blur:5,op:.26,dur:6.8,del:1.6},{w:14,h:14,l:48,t:41,blur:3,op:.20,dur:8.8,del:2.4},{w:9,h:9,l:18,t:57,blur:2,op:.14,dur:6.3,del:3.2}], sparkles:[{l:9,t:19,sz:11,dur:'1.7s',del:'0s'},{l:46,t:5,sz:11,dur:'2.1s',del:'.18s'},{l:88,t:29,sz:10,dur:'1.9s',del:'.44s'},{l:32,t:49,sz:10,dur:'2.3s',del:'.72s'},{l:68,t:59,sz:9,dur:'1.8s',del:'1.0s'}] },
-  { lv:6,   name:'증식',   icon:'✨', badge:'증식',   subs:'500K~1M',  beamCount:3, beamSpeed:'2.8s', bokeh:[{w:50,h:50,l:4,t:3,blur:13,op:.44,dur:5.5,del:0},{w:30,h:30,l:65,t:12,blur:7,op:.36,dur:7.5,del:.75},{w:22,h:22,l:26,t:25,blur:5,op:.28,dur:6.5,del:1.5},{w:15,h:15,l:46,t:40,blur:4,op:.21,dur:8.5,del:2.25},{w:10,h:10,l:16,t:55,blur:3,op:.15,dur:6.0,del:3.0},{w:7,h:7,l:74,t:52,blur:2,op:.11,dur:8.0,del:3.75}], sparkles:[{l:8,t:18,sz:12,dur:'1.6s',del:'0s'},{l:44,t:4,sz:11,dur:'2.0s',del:'.15s'},{l:88,t:27,sz:11,dur:'1.8s',del:'.38s'},{l:30,t:47,sz:10,dur:'2.2s',del:'.65s'},{l:68,t:58,sz:10,dur:'1.7s',del:'.92s'},{l:16,t:64,sz:9,dur:'1.9s',del:'1.18s'}] },
-  { lv:7,   name:'잠식',   icon:'🔱', badge:'잠식',   subs:'1M~2M',    beamCount:3, beamSpeed:'2.5s', bokeh:[{w:52,h:52,l:3,t:2,blur:14,op:.46,dur:5.3,del:0},{w:32,h:32,l:66,t:11,blur:7,op:.38,dur:7.3,del:.72},{w:24,h:24,l:25,t:24,blur:6,op:.30,dur:6.3,del:1.44},{w:16,h:16,l:45,t:39,blur:4,op:.22,dur:8.3,del:2.16},{w:11,h:11,l:15,t:54,blur:3,op:.16,dur:5.8,del:2.88},{w:7,h:7,l:75,t:51,blur:2,op:.11,dur:7.8,del:3.6}], sparkles:[{l:7,t:17,sz:12,dur:'1.5s',del:'0s'},{l:43,t:3,sz:12,dur:'1.9s',del:'.12s'},{l:89,t:26,sz:11,dur:'1.7s',del:'.35s'},{l:29,t:46,sz:11,dur:'2.1s',del:'.62s'},{l:67,t:57,sz:10,dur:'1.6s',del:'.9s'},{l:15,t:63,sz:9,dur:'1.8s',del:'1.15s'}] },
-  { lv:8,   name:'지배',   icon:'👑', badge:'지배',   subs:'2M~5M',    beamCount:3, beamSpeed:'2.3s', bokeh:[{w:54,h:54,l:3,t:2,blur:15,op:.48,dur:5.1,del:0},{w:34,h:34,l:66,t:10,blur:8,op:.40,dur:7.1,del:.68},{w:26,h:26,l:24,t:23,blur:6,op:.32,dur:6.1,del:1.36},{w:18,h:18,l:44,t:38,blur:5,op:.24,dur:8.1,del:2.04},{w:12,h:12,l:14,t:53,blur:3,op:.17,dur:5.6,del:2.72},{w:8,h:8,l:76,t:50,blur:2,op:.12,dur:7.6,del:3.4}], sparkles:[{l:6,t:16,sz:13,dur:'1.4s',del:'0s'},{l:42,t:2,sz:12,dur:'1.8s',del:'.1s'},{l:90,t:25,sz:12,dur:'1.6s',del:'.32s'},{l:28,t:45,sz:11,dur:'2.0s',del:'.58s'},{l:66,t:56,sz:11,dur:'1.5s',del:'.86s'},{l:14,t:62,sz:10,dur:'1.7s',del:'1.12s'}] },
-  { lv:9,   name:'융합',   icon:'⚜️', badge:'융합',   subs:'5M~10M',   beamCount:4, beamSpeed:'2.1s', bokeh:[{w:56,h:56,l:2,t:2,blur:16,op:.50,dur:4.9,del:0},{w:36,h:36,l:67,t:9,blur:9,op:.42,dur:6.9,del:.65},{w:28,h:28,l:23,t:22,blur:7,op:.34,dur:5.9,del:1.3},{w:20,h:20,l:43,t:37,blur:5,op:.26,dur:7.9,del:1.95},{w:13,h:13,l:13,t:52,blur:4,op:.19,dur:5.4,del:2.6},{w:9,h:9,l:77,t:49,blur:3,op:.13,dur:7.4,del:3.25},{w:6,h:6,l:55,t:63,blur:2,op:.09,dur:9,del:3.9}], sparkles:[{l:5,t:15,sz:13,dur:'1.3s',del:'0s'},{l:41,t:1,sz:12,dur:'1.7s',del:'.08s'},{l:91,t:24,sz:12,dur:'1.5s',del:'.28s'},{l:27,t:44,sz:11,dur:'1.9s',del:'.52s'},{l:65,t:55,sz:11,dur:'1.4s',del:'.8s'},{l:13,t:61,sz:10,dur:'1.6s',del:'1.06s'},{l:54,t:70,sz:10,dur:'1.8s',del:'1.32s'}] },
-  { lv:'MAX',name:'숙주',  icon:'☠️', badge:'숙주',   subs:'10M+',     beamCount:4, beamSpeed:'1.8s', bokeh:[{w:60,h:60,l:1,t:1,blur:18,op:.55,dur:4.6,del:0},{w:38,h:38,l:68,t:8,blur:10,op:.46,dur:6.6,del:.6},{w:30,h:30,l:22,t:21,blur:8,op:.38,dur:5.6,del:1.2},{w:22,h:22,l:42,t:36,blur:6,op:.29,dur:7.6,del:1.8},{w:15,h:15,l:12,t:51,blur:4,op:.21,dur:5.1,del:2.4},{w:10,h:10,l:78,t:48,blur:3,op:.14,dur:7.1,del:3.0},{w:7,h:7,l:56,t:62,blur:2,op:.10,dur:8.8,del:3.6},{w:4,h:4,l:34,t:72,blur:1,op:.07,dur:6.4,del:4.2}], sparkles:[{l:4,t:14,sz:14,dur:'1.2s',del:'0s'},{l:40,t:1,sz:13,dur:'1.6s',del:'.07s'},{l:92,t:23,sz:12,dur:'1.4s',del:'.25s'},{l:26,t:43,sz:12,dur:'1.8s',del:'.48s'},{l:64,t:54,sz:11,dur:'1.3s',del:'.74s'},{l:12,t:60,sz:11,dur:'1.5s',del:'1.0s'},{l:53,t:69,sz:10,dur:'1.7s',del:'1.25s'},{l:80,t:74,sz:10,dur:'1.4s',del:'1.52s'}] }
-];
-
-function buildBeams(g) {
-  let html = '';
-  const spdf = parseFloat(g.beamSpeed);
-  for (let i = 0; i < g.beamCount; i++) {
-    const delay = '-' + ((spdf / g.beamCount) * i).toFixed(3) + 's';
-    html += `<div class="beam-container"><div class="beam-ring" style="animation-duration:${g.beamSpeed};animation-delay:${delay};"></div></div>`;
-  }
-  return html;
+for(let i=0;i<18;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  const size=Math.random()*3+1;
+  p.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${Math.random()>.5?'rgba(123,47,255,.6)':'rgba(255,215,0,.4)'};animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*8}s;`;
+  document.body.appendChild(p);
 }
+</script>
 
-function buildFog(g) {
-  if (g.lv === 1 || g.lv === 2) return '';
-  if (g.lv === 'MAX') return `<div class="fog-wrap"></div><div class="fog-wrap2"></div>`;
-  return `<div class="fog-wrap"></div>`;
-}
+<!-- ════ 큰 로고 ════ -->
+<div class="logo-large-wrap">
+  <div class="section-title">페이지 타이틀 로고</div>
+  <div class="logo-large">
+    <div class="logo-large-glow"></div>
 
-function buildXP(g) {
-  const xp = XP_RANGES[g.lv];
-  const isMax = g.lv === 'MAX';
-  const pct = Math.round(((xp.current - xp.min) / (xp.max - xp.min)) * 100);
-  const fillPct = isMax ? 100 : pct;
-  const rangeText = `${xp.min} ~ ${xp.max}`;
-  const currentText = isMax ? '✦ MAX ✦' : `${xp.current} / ${xp.max}`;
-  const pctText = isMax ? '100%' : `${fillPct}%`;
-  return `
-<div class="card-xp-wrap">
-  <div class="card-xp-label">
-    <span class="xp-title">⚡ EXP</span>
-    <span class="xp-range">${currentText}</span>
-  </div>
-  <div class="xp-bar-bg">
-    <div class="xp-bar-fill" style="width:${fillPct}%;"></div>
-  </div>
-  <div class="xp-sub-label">
-    <span class="xp-lv-range">구간 ${rangeText}</span>
-    <span class="xp-pct">${pctText}</span>
-  </div>
-</div>`;
-}
+    <!-- 왼쪽 날개 -->
+    <div class="wing wing-left">
+      <svg width="120" height="80" viewBox="0 0 120 80">
+        <!-- 메인 날개 형태 -->
+        <path d="M115,40 C95,20 70,15 45,22 C30,26 18,32 8,40" fill="none" stroke="url(#wingGradL)" stroke-width="2.2" stroke-linecap="round"/>
+        <!-- 깃털 1 (가장 위) -->
+        <path d="M105,28 C88,18 68,16 50,24" fill="none" stroke="url(#featherGrad1L)" stroke-width="1.4" stroke-linecap="round" opacity=".9"/>
+        <!-- 깃털 2 -->
+        <path d="M110,34 C92,22 72,18 52,26" fill="none" stroke="url(#featherGrad2L)" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+        <!-- 깃털 3 -->
+        <path d="M113,40 C95,28 75,24 55,31" fill="none" stroke="url(#featherGrad3L)" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
+        <!-- 깃털 4 -->
+        <path d="M110,47 C93,36 73,32 53,38" fill="none" stroke="url(#featherGrad2L)" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+        <!-- 깃털 5 -->
+        <path d="M105,54 C88,44 68,40 48,46" fill="none" stroke="url(#featherGrad1L)" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+        <!-- 깃털 6 (가장 아래) -->
+        <path d="M95,60 C80,52 62,48 44,54" fill="none" stroke="url(#wingGradL)" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
+        <!-- 깃털 끝 포인트들 -->
+        <circle cx="115" cy="40" r="2.5" fill="#ffd700" opacity=".9"/>
+        <circle cx="105" cy="28" r="1.8" fill="#c084fc" opacity=".8"/>
+        <circle cx="110" cy="34" r="2" fill="#c084fc" opacity=".85"/>
+        <circle cx="110" cy="47" r="1.8" fill="#c084fc" opacity=".75"/>
+        <circle cx="105" cy="54" r="1.5" fill="#7b2fff" opacity=".7"/>
+        <circle cx="95" cy="60" r="1.2" fill="#7b2fff" opacity=".55"/>
+        <!-- 글로우 오버레이 -->
+        <path d="M115,40 C95,20 70,15 45,22 C30,26 18,32 8,40" fill="none" stroke="rgba(192,132,252,.25)" stroke-width="8" stroke-linecap="round"/>
 
-function buildCardHTML(g) {
-  const lvLabel = g.lv === 'MAX' ? 'LV.MAX' : `LV.${g.lv}`;
-  const bokeh = g.bokeh.map(b =>
-    `<div class="bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${b.dur}s;--bdel:${b.del}s;"></div>`
-  ).join('');
-  const sparkles = g.sparkles.map(s =>
-    `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${s.sz}px;--sdur:${s.dur};--sdel:${s.del};">✦</span>`
-  ).join('');
-  return `
-<div class="card-scene" data-lv="${g.lv}" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
-  ${buildFog(g)}
-  <div class="card-tilt">
-    <div class="card-frame"></div>
-    ${buildBeams(g)}
-    <div class="card-body">
-      <div class="card-face">
-        <div class="card-bokeh">${bokeh}</div>
-        <div class="card-sparkles">${sparkles}</div>
-        <div class="card-header">
-          <div class="card-lv-label">${lvLabel}</div>
-          <div class="card-badge">${g.badge}</div>
-        </div>
-        <div class="card-icon-wrap">
-          <div class="card-main-icon">${g.icon}</div>
-          <div class="card-main-name">${g.name}</div>
-        </div>
-        <div class="card-top-band"></div>
-        <div class="card-bot-band"></div>
-        <div class="card-vignette"></div>
-        <div class="card-shine"></div>
-        ${buildXP(g)}
-        <div class="card-footer">
-          <div class="footer-lv">${lvLabel}</div>
-          <div class="footer-name">${g.name}</div>
-          <div class="footer-subs">${g.subs}</div>
-        </div>
-      </div>
+        <defs>
+          <linearGradient id="wingGradL" x1="115" y1="40" x2="8" y2="40" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="40%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.3"/>
+          </linearGradient>
+          <linearGradient id="featherGrad1L" x1="105" y1="28" x2="50" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="featherGrad2L" x1="110" y1="34" x2="52" y2="26" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="featherGrad3L" x1="113" y1="40" x2="55" y2="31" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.9"/>
+            <stop offset="30%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- 텍스트 -->
+    <div class="logo-large-text">
+      <div class="logo-large-main">ALGO</div>
+      <div class="logo-large-divider"></div>
+      <div class="logo-large-sub">알고리빙1004</div>
+    </div>
+
+    <!-- 오른쪽 날개 (좌우 반전) -->
+    <div class="wing wing-right">
+      <svg width="120" height="80" viewBox="0 0 120 80">
+        <path d="M5,40 C25,20 50,15 75,22 C90,26 102,32 112,40" fill="none" stroke="url(#wingGradR)" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M15,28 C32,18 52,16 70,24" fill="none" stroke="url(#featherGrad1R)" stroke-width="1.4" stroke-linecap="round" opacity=".9"/>
+        <path d="M10,34 C28,22 48,18 68,26" fill="none" stroke="url(#featherGrad2R)" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+        <path d="M7,40 C25,28 45,24 65,31" fill="none" stroke="url(#featherGrad3R)" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>
+        <path d="M10,47 C27,36 47,32 67,38" fill="none" stroke="url(#featherGrad2R)" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>
+        <path d="M15,54 C32,44 52,40 72,46" fill="none" stroke="url(#featherGrad1R)" stroke-width="1.4" stroke-linecap="round" opacity=".7"/>
+        <path d="M25,60 C40,52 58,48 76,54" fill="none" stroke="url(#wingGradR)" stroke-width="1.2" stroke-linecap="round" opacity=".55"/>
+        <circle cx="5" cy="40" r="2.5" fill="#ffd700" opacity=".9"/>
+        <circle cx="15" cy="28" r="1.8" fill="#c084fc" opacity=".8"/>
+        <circle cx="10" cy="34" r="2" fill="#c084fc" opacity=".85"/>
+        <circle cx="10" cy="47" r="1.8" fill="#c084fc" opacity=".75"/>
+        <circle cx="15" cy="54" r="1.5" fill="#7b2fff" opacity=".7"/>
+        <circle cx="25" cy="60" r="1.2" fill="#7b2fff" opacity=".55"/>
+        <path d="M5,40 C25,20 50,15 75,22 C90,26 102,32 112,40" fill="none" stroke="rgba(192,132,252,.25)" stroke-width="8" stroke-linecap="round"/>
+
+        <defs>
+          <linearGradient id="wingGradR" x1="5" y1="40" x2="112" y2="40" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="40%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.3"/>
+          </linearGradient>
+          <linearGradient id="featherGrad1R" x1="15" y1="28" x2="70" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="featherGrad2R" x1="10" y1="34" x2="68" y2="26" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffd700" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="featherGrad3R" x1="7" y1="40" x2="65" y2="31" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.9"/>
+            <stop offset="30%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
   </div>
-</div>`;
-}
+</div>
 
-function card3D(e, el) {
-  const r = el.getBoundingClientRect();
-  const x = e.clientX - r.left, y = e.clientY - r.top;
-  const ry = ((x - r.width/2) / (r.width/2)) * 20;
-  const rx = -((y - r.height/2) / (r.height/2)) * 20;
-  const mx = (x / r.width * 100).toFixed(1) + '%';
-  const my = (y / r.height * 100).toFixed(1) + '%';
-  const tilt = el.querySelector('.card-tilt');
-  if (tilt) tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
-  const shine = el.querySelector('.card-shine');
-  if (shine) shine.style.background = `linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),radial-gradient(ellipse 55% 45% at ${mx} ${my},rgba(255,255,255,.22) 0%,rgba(255,255,255,.05) 50%,transparent 75%)`;
-}
+<!-- ════ 작은 뱃지 ════ -->
+<div class="badge-wrap">
+  <div class="section-title">카드 헤더 뱃지</div>
+  <div class="logo-badge">
+    <!-- 왼쪽 작은 날개 -->
+    <div class="wing-sm wing-sm-left">
+      <svg width="32" height="24" viewBox="0 0 32 24">
+        <path d="M30,12 C24,6 17,4 10,7 C6,8 3,10 1,12" fill="none" stroke="url(#smWingL)" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M27,7 C21,3 14,3 8,6" fill="none" stroke="url(#smFeather1L)" stroke-width="1" stroke-linecap="round" opacity=".85"/>
+        <path d="M29,10 C23,5 16,4 9,7" fill="none" stroke="url(#smFeather2L)" stroke-width="1.1" stroke-linecap="round" opacity=".9"/>
+        <path d="M29,14 C23,9 16,8 9,11" fill="none" stroke="url(#smFeather2L)" stroke-width="1.1" stroke-linecap="round" opacity=".8"/>
+        <path d="M27,17 C21,13 14,12 8,15" fill="none" stroke="url(#smFeather1L)" stroke-width="1" stroke-linecap="round" opacity=".65"/>
+        <circle cx="30" cy="12" r="1.5" fill="#ffd700" opacity=".9"/>
+        <circle cx="27" cy="7" r="1" fill="#c084fc" opacity=".8"/>
+        <circle cx="27" cy="17" r="1" fill="#7b2fff" opacity=".65"/>
+        <path d="M30,12 C24,6 17,4 10,7 C6,8 3,10 1,12" fill="none" stroke="rgba(192,132,252,.2)" stroke-width="5" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="smWingL" x1="30" y1="12" x2="1" y2="12" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="smFeather1L" x1="27" y1="7" x2="8" y2="6" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.1"/>
+          </linearGradient>
+          <linearGradient id="smFeather2L" x1="29" y1="10" x2="9" y2="7" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.1"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
 
-function cardReset(el) {
-  const tilt = el.querySelector('.card-tilt');
-  if (tilt) tilt.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-  const shine = el.querySelector('.card-shine');
-  if (shine) shine.style.background = `linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)`;
-}
+    <!-- 뱃지 텍스트 -->
+    <div class="badge-text">ALGO</div>
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('cards-grid').innerHTML = GRADES.map(g => buildCardHTML(g)).join('');
-});
-</script>
+    <!-- 오른쪽 작은 날개 -->
+    <div class="wing-sm wing-sm-right">
+      <svg width="32" height="24" viewBox="0 0 32 24">
+        <path d="M2,12 C8,6 15,4 22,7 C26,8 29,10 31,12" fill="none" stroke="url(#smWingR)" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M5,7 C11,3 18,3 24,6" fill="none" stroke="url(#smFeather1R)" stroke-width="1" stroke-linecap="round" opacity=".85"/>
+        <path d="M3,10 C9,5 16,4 23,7" fill="none" stroke="url(#smFeather2R)" stroke-width="1.1" stroke-linecap="round" opacity=".9"/>
+        <path d="M3,14 C9,9 16,8 23,11" fill="none" stroke="url(#smFeather2R)" stroke-width="1.1" stroke-linecap="round" opacity=".8"/>
+        <path d="M5,17 C11,13 18,12 24,15" fill="none" stroke="url(#smFeather1R)" stroke-width="1" stroke-linecap="round" opacity=".65"/>
+        <circle cx="2" cy="12" r="1.5" fill="#ffd700" opacity=".9"/>
+        <circle cx="5" cy="7" r="1" fill="#c084fc" opacity=".8"/>
+        <circle cx="5" cy="17" r="1" fill="#7b2fff" opacity=".65"/>
+        <path d="M2,12 C8,6 15,4 22,7 C26,8 29,10 31,12" fill="none" stroke="rgba(192,132,252,.2)" stroke-width="5" stroke-linecap="round"/>
+        <defs>
+          <linearGradient id="smWingR" x1="2" y1="12" x2="31" y2="12" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="smFeather1R" x1="5" y1="7" x2="24" y2="6" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.1"/>
+          </linearGradient>
+          <linearGradient id="smFeather2R" x1="3" y1="10" x2="23" y2="7" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#c084fc"/>
+            <stop offset="100%" stop-color="#3d00a0" stop-opacity="0.1"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
