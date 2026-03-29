@@ -3,84 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALGO · 알고리빙1004 — 로고</title>
+<title>ALGO · 알고리빙1004</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════════
-   ROOT & RESET
-══════════════════════════════════════════ */
+/* ═══════════════════════════════
+   ROOT
+═══════════════════════════════ */
 :root{
-  --black:  #04040a;
-  --gold:   #e8c97a;
-  --gold2:  #c8a84a;
-  --white:  #f5f0e8;
-  --purple: #2d1b69;
+  --void:      #03020a;
+  --deep:      #0a0518;
+  --purple-dk: #1a0535;
+  --purple-md: #2d0d5c;
+  --purple-vt: #6b21a8;
+  --purple-lt: #a855f7;
+  --gold-dk:   #8a6520;
+  --gold-md:   #d4a942;
+  --gold-lt:   #f0c96a;
+  --gold-wh:   #fff8e7;
+  --white:     #f5f0ec;
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
 body{
-  background: var(--black);
+  background: var(--void);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  gap: 80px;
-  padding: 60px 24px;
+  gap: 90px;
+  padding: 80px 24px;
   overflow-x: hidden;
+  position: relative;
 }
 
-/* ══════════════════════════════════════════
-   배경 — 블랙홀 링
-══════════════════════════════════════════ */
-.bh-bg{
+/* ═══════════════════════════════
+   배경 — 블랙홀 코어
+═══════════════════════════════ */
+.bg-layer{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+}
+/* 심연 그라디언트 */
+.bg-void{
   position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(ellipse 70% 60% at 50% 40%,
-      rgba(45,27,105,.14) 0%, rgba(15,10,35,.28) 40%, transparent 70%),
-    #04040a;
+    radial-gradient(ellipse 55% 45% at 50% 42%,
+      rgba(45,13,92,.55)  0%,
+      rgba(26,5,53,.38)   30%,
+      rgba(10,5,24,.28)   55%,
+      transparent         80%),
+    radial-gradient(ellipse 100% 80% at 50% 50%,
+      var(--deep) 0%,
+      var(--void) 70%);
 }
-.bh-ring{
-  position:fixed; border-radius:50%; border:1px solid;
+/* 블랙홀 코어 광환 */
+.bh-core{
+  position:fixed;
+  width: 320px; height: 160px;
+  top:38%; left:50%;
+  transform: translate(-50%,-50%);
+  border-radius:50%;
+  background:
+    radial-gradient(ellipse at center,
+      rgba(107,33,168,.22) 0%,
+      rgba(107,33,168,.08) 40%,
+      transparent 70%);
+  filter: blur(18px);
   pointer-events:none; z-index:0;
-  top:40%; left:50%; transform:translate(-50%,-50%);
-  animation:bhEx linear infinite; opacity:0;
+  animation: corePulse 5s ease-in-out infinite;
 }
-.bh-ring:nth-child(2){ border-color:rgba(232,201,122,.05); animation-duration:10s; animation-delay:0s; }
-.bh-ring:nth-child(3){ border-color:rgba(245,240,232,.03); animation-duration:10s; animation-delay:2.5s; }
-.bh-ring:nth-child(4){ border-color:rgba(45,27,105,.07);   animation-duration:10s; animation-delay:5s; }
-.bh-ring:nth-child(5){ border-color:rgba(232,201,122,.03); animation-duration:10s; animation-delay:7.5s; }
-@keyframes bhEx{
-  0%  { width:60px; height:60px; opacity:0; }
-  8%  { opacity:.8; }
-  100%{ width:1000px; height:1000px; opacity:0; }
+@keyframes corePulse{
+  0%,100%{ opacity:.7; transform:translate(-50%,-50%) scale(1); }
+  50%    { opacity:1;  transform:translate(-50%,-50%) scale(1.18); }
+}
+
+/* 팽창 링 */
+.bh-ring{
+  position:fixed; border-radius:50%;
+  top:38%; left:50%; transform:translate(-50%,-50%);
+  pointer-events:none; z-index:0;
+  opacity:0;
+  animation: ringEx linear infinite;
+}
+.bh-ring:nth-child(1){ border:1px solid rgba(168,85,247,.18);  animation-duration:9s;  animation-delay:0s;   }
+.bh-ring:nth-child(2){ border:1px solid rgba(212,169,66,.1);   animation-duration:9s;  animation-delay:2.25s; }
+.bh-ring:nth-child(3){ border:1px solid rgba(107,33,168,.14);  animation-duration:9s;  animation-delay:4.5s;  }
+.bh-ring:nth-child(4){ border:1px solid rgba(240,201,106,.07); animation-duration:9s;  animation-delay:6.75s; }
+@keyframes ringEx{
+  0%  { width:80px;  height:40px;  opacity:0; }
+  6%  { opacity:.9; }
+  100%{ width:1100px; height:550px; opacity:0; }
 }
 
 /* 별 */
 .star{
-  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
-  background:var(--white);
-  animation:twinkle ease-in-out infinite;
+  position:fixed; border-radius:50%;
+  pointer-events:none; z-index:0;
+  animation: twinkle ease-in-out infinite;
 }
 @keyframes twinkle{
-  0%,100%{ opacity:.08; transform:scale(1); }
-  50%    { opacity:.5;  transform:scale(1.4); }
+  0%,100%{ opacity:.06; transform:scale(1); }
+  50%    { opacity:.55; transform:scale(1.5); }
 }
 
-/* ══════════════════════════════════════════
+/* 성운 먼지 */
+.nebula{
+  position:fixed; border-radius:50%;
+  pointer-events:none; z-index:0;
+  filter:blur(40px);
+  animation: nebulaDrift ease-in-out infinite;
+}
+@keyframes nebulaDrift{
+  0%,100%{ opacity:.12; transform:translate(0,0) scale(1); }
+  50%    { opacity:.22; transform:translate(12px,-8px) scale(1.06); }
+}
+
+/* ═══════════════════════════════
    섹션 레이블
-══════════════════════════════════════════ */
+═══════════════════════════════ */
 .sec-label{
   position:relative; z-index:10;
   font-family:'Noto Sans KR',sans-serif;
-  font-size:10px; font-weight:300;
-  letter-spacing:5px; color:rgba(232,201,122,.35);
-  text-transform:uppercase; text-align:center;
-  margin-bottom:28px;
+  font-size:9px; font-weight:300;
+  letter-spacing:6px; text-transform:uppercase;
+  color:rgba(168,85,247,.4);
+  text-align:center;
+  margin-bottom:24px;
 }
 
-/* ══════════════════════════════════════════
-   LOGO LARGE
-══════════════════════════════════════════ */
+/* ═══════════════════════════════
+   대형 로고 섹션
+═══════════════════════════════ */
 .logo-section{
   position:relative; z-index:10;
   display:flex; flex-direction:column; align-items:center;
@@ -88,404 +140,582 @@ body{
 
 .logo-wrap{
   position:relative;
-  display:flex; flex-direction:column;
-  align-items:center;
-  padding: 20px 40px 32px;
-  animation: breathe 6s ease-in-out infinite;
+  display:flex; flex-direction:column; align-items:center;
+  padding: 28px 36px 36px;
+  animation: breathe 7s ease-in-out infinite;
 }
 @keyframes breathe{
-  0%,100%{ transform:translateY(0); }
-  50%    { transform:translateY(-10px); }
+  0%,100%{ transform:translateY(0) rotateX(0deg); }
+  50%    { transform:translateY(-11px) rotateX(1.5deg); }
 }
 
-/* 후광 */
-.logo-halo{
+/* 로고 후광 — 보라 + 골드 이중 레이어 */
+.logo-halo-purple{
   position:absolute;
-  width:480px; height:280px;
-  top:50%; left:50%; transform:translate(-50%,-50%);
-  background:radial-gradient(ellipse at 50% 40%,
-    rgba(232,201,122,.1) 0%,
-    rgba(232,201,122,.04) 40%,
+  width:500px; height:240px;
+  top:48%; left:50%; transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at 50% 45%,
+    rgba(107,33,168,.28) 0%,
+    rgba(107,33,168,.1)  40%,
     transparent 70%);
-  filter:blur(24px);
-  pointer-events:none;
-  animation:haloPulse 4s ease-in-out infinite;
+  filter:blur(28px);
+  pointer-events:none; z-index:0;
+  animation:haloPurple 5s ease-in-out infinite;
 }
-@keyframes haloPulse{
-  0%,100%{ opacity:.6; transform:translate(-50%,-50%) scale(1); }
-  50%    { opacity:1;  transform:translate(-50%,-50%) scale(1.1); }
+@keyframes haloPurple{
+  0%,100%{ opacity:.65; transform:translate(-50%,-50%) scale(1); }
+  50%    { opacity:1;   transform:translate(-50%,-50%) scale(1.12); }
+}
+.logo-halo-gold{
+  position:absolute;
+  width:340px; height:140px;
+  top:52%; left:50%; transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at 50% 50%,
+    rgba(212,169,66,.18) 0%,
+    rgba(212,169,66,.06) 50%,
+    transparent 75%);
+  filter:blur(20px);
+  pointer-events:none; z-index:0;
+  animation:haloGold 4s ease-in-out infinite;
+}
+@keyframes haloGold{
+  0%,100%{ opacity:.5; }
+  50%    { opacity:.9; }
 }
 
-/* 날개 + 텍스트 수평 배치 */
+/* 날개 + 텍스트 행 */
 .logo-main-row{
-  display:flex; align-items:center; gap:16px;
+  display:flex; align-items:center; gap:10px;
+  position:relative; z-index:2;
 }
 
-/* ── 날개 컨테이너 ── */
+/* ── 날개 ── */
 .wing-wrap{ position:relative; }
-.wing-wrap.left { animation:wBeatL 5s ease-in-out infinite; transform-origin:100% 60%; }
-.wing-wrap.right{ animation:wBeatR 5s ease-in-out infinite; transform-origin:0%   60%; }
-
+.wing-wrap.left {
+  animation: wBeatL 5.5s ease-in-out infinite;
+  transform-origin:100% 58%;
+}
+.wing-wrap.right{
+  animation: wBeatR 5.5s ease-in-out infinite;
+  transform-origin:0% 58%;
+}
 @keyframes wBeatL{
-  0%,100%{ transform:rotate(0deg) scaleX(1); filter:drop-shadow(0 0 6px rgba(232,201,122,.35)); }
-  40%    { transform:rotate(-8deg) scaleX(1.06); filter:drop-shadow(0 0 14px rgba(232,201,122,.7)) drop-shadow(0 0 28px rgba(232,201,122,.25)); }
-  70%    { transform:rotate(2deg) scaleX(.98); }
+  0%,100%{
+    transform:rotate(0deg) scaleX(1);
+    filter:
+      drop-shadow(0 0 5px rgba(168,85,247,.4))
+      drop-shadow(0 0 12px rgba(212,169,66,.2));
+  }
+  38%{
+    transform:rotate(-9deg) scaleX(1.07);
+    filter:
+      drop-shadow(0 0 12px rgba(168,85,247,.8))
+      drop-shadow(0 0 24px rgba(240,201,106,.45))
+      drop-shadow(0 0 40px rgba(107,33,168,.35));
+  }
+  65%{ transform:rotate(2.5deg) scaleX(.97); }
 }
 @keyframes wBeatR{
-  0%,100%{ transform:rotate(0deg) scaleX(1); filter:drop-shadow(0 0 6px rgba(232,201,122,.35)); }
-  40%    { transform:rotate(8deg) scaleX(1.06); filter:drop-shadow(0 0 14px rgba(232,201,122,.7)) drop-shadow(0 0 28px rgba(232,201,122,.25)); }
-  70%    { transform:rotate(-2deg) scaleX(.98); }
+  0%,100%{
+    transform:rotate(0deg) scaleX(1);
+    filter:
+      drop-shadow(0 0 5px rgba(168,85,247,.4))
+      drop-shadow(0 0 12px rgba(212,169,66,.2));
+  }
+  38%{
+    transform:rotate(9deg) scaleX(1.07);
+    filter:
+      drop-shadow(0 0 12px rgba(168,85,247,.8))
+      drop-shadow(0 0 24px rgba(240,201,106,.45))
+      drop-shadow(0 0 40px rgba(107,33,168,.35));
+  }
+  65%{ transform:rotate(-2.5deg) scaleX(.97); }
 }
 
-/* ── 텍스트 ── */
+/* ── 텍스트 블록 ── */
 .logo-text{
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  display:flex; flex-direction:column; align-items:center; gap:9px;
+  position:relative; z-index:3;
 }
+
+/* 상단 장식 라인 */
+.deco-top{
+  display:flex; align-items:center; gap:12px;
+  opacity:.7;
+}
+.deco-line{
+  height:1px; width:52px;
+  background:linear-gradient(90deg, transparent, var(--gold-md));
+}
+.deco-line.r{
+  background:linear-gradient(90deg, var(--gold-md), transparent);
+}
+.deco-rune{
+  font-size:8px; color:var(--gold-md);
+  letter-spacing:2px; opacity:.8;
+}
+
+/* ALGO 메인 텍스트 */
 .logo-algo{
   font-family:'Cinzel',serif;
-  font-size:62px; font-weight:900;
-  letter-spacing:20px;
-  padding-right:20px; /* letter-spacing 보정 */
-  color:var(--white);
-  text-shadow:
-    0 0 40px rgba(232,201,122,.45),
-    0 0 80px rgba(232,201,122,.15),
-    0 2px 6px rgba(0,0,0,.9);
-  animation:textPulse 4s ease-in-out infinite;
+  font-size:66px; font-weight:900;
+  letter-spacing:22px; padding-right:22px;
+  background: linear-gradient(175deg,
+    var(--gold-wh)  0%,
+    var(--gold-lt)  28%,
+    var(--gold-md)  55%,
+    var(--purple-lt) 78%,
+    var(--gold-lt)  100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter: drop-shadow(0 0 28px rgba(168,85,247,.5));
+  animation: algoShimmer 6s ease-in-out infinite;
+  background-size:200% 200%;
 }
-@keyframes textPulse{
-  0%,100%{ text-shadow:0 0 30px rgba(232,201,122,.3), 0 2px 6px rgba(0,0,0,.9); }
-  50%    { text-shadow:0 0 55px rgba(232,201,122,.65), 0 0 100px rgba(232,201,122,.2), 0 2px 6px rgba(0,0,0,.9); }
+@keyframes algoShimmer{
+  0%,100%{ background-position:0% 50%;   filter:drop-shadow(0 0 22px rgba(168,85,247,.45)); }
+  50%    { background-position:100% 50%; filter:drop-shadow(0 0 42px rgba(168,85,247,.75)) drop-shadow(0 0 60px rgba(212,169,66,.3)); }
 }
 
 /* 구분선 */
 .logo-rule{
-  width:100%; height:1px;
+  width:100%; height:1px; position:relative;
   background:linear-gradient(90deg,
-    transparent 0%,
-    rgba(232,201,122,.18) 15%,
-    rgba(232,201,122,.55) 50%,
-    rgba(232,201,122,.18) 85%,
-    transparent 100%);
-  position:relative;
+    transparent        0%,
+    rgba(168,85,247,.2) 15%,
+    rgba(212,169,66,.6) 45%,
+    rgba(168,85,247,.5) 55%,
+    rgba(212,169,66,.2) 85%,
+    transparent        100%);
 }
 .logo-rule::before,.logo-rule::after{
-  content:'✦'; position:absolute;
+  content:''; position:absolute;
   top:50%; transform:translateY(-50%);
-  font-size:7px; color:var(--gold); opacity:.55;
-  line-height:1;
+  width:4px; height:4px; border-radius:50%;
 }
-.logo-rule::before{ left:12%; }
-.logo-rule::after { right:12%; }
+.logo-rule::before{ left:18%;  background:var(--gold-md); box-shadow:0 0 6px var(--gold-md); }
+.logo-rule::after { right:18%; background:var(--purple-lt); box-shadow:0 0 6px var(--purple-lt); }
 
-.logo-sub-text{
+/* 서브 텍스트 */
+.logo-sub{
   font-family:'Cormorant Garamond',serif;
   font-style:italic; font-weight:300;
-  font-size:14px; letter-spacing:7px;
-  color:rgba(232,201,122,.55);
-  padding-right:7px;
+  font-size:14px; letter-spacing:8px; padding-right:8px;
+  color:rgba(212,169,66,.55);
+  animation: subFade 5s ease-in-out infinite;
+}
+@keyframes subFade{
+  0%,100%{ opacity:.55; }
+  50%    { opacity:.85; }
 }
 
-/* ══════════════════════════════════════════
-   BADGE (소형)
-══════════════════════════════════════════ */
+/* ═══════════════════════════════
+   소형 배지
+═══════════════════════════════ */
 .badge-section{
   position:relative; z-index:10;
   display:flex; flex-direction:column; align-items:center;
 }
 
-.badge-outer{
+.badge-wrap{
   position:relative;
-  display:flex; align-items:center;
-  gap:8px;
-  padding:10px 20px 10px 16px;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 18px 9px 14px;
   border-radius:40px;
-  animation:badgeFloat 5s ease-in-out infinite;
+  animation:badgeFloat 5.5s ease-in-out infinite;
+  cursor:pointer;
 }
 @keyframes badgeFloat{
   0%,100%{ transform:translateY(0); }
-  50%    { transform:translateY(-5px); }
+  50%    { transform:translateY(-6px); }
 }
+.badge-wrap:hover{ transform:scale(1.04); transition:transform .2s; }
 
-/* 그라디언트 테두리 */
-.badge-border-wrap{
-  position:absolute; inset:-1px; border-radius:41px; z-index:-1;
-  padding:1px;
+/* 배지 유리 배경 */
+.badge-glass{
+  position:absolute; inset:0; border-radius:40px; z-index:0;
   background:linear-gradient(135deg,
-    rgba(232,201,122,.5) 0%,
-    rgba(200,168,74,.15) 40%,
-    rgba(232,201,122,.4) 100%);
-  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude;
+    rgba(45,13,92,.55)   0%,
+    rgba(10,5,24,.7)     50%,
+    rgba(26,5,53,.5)    100%);
+  backdrop-filter:blur(8px);
 }
-.badge-bg{
-  position:absolute; inset:0; border-radius:40px; z-index:-1;
-  background:linear-gradient(135deg,
-    rgba(232,201,122,.07) 0%,
-    rgba(45,27,105,.15) 100%);
-  backdrop-filter:blur(6px);
+/* 배지 테두리 — 보라+골드 그라디언트 */
+.badge-border{
+  position:absolute; inset:0; border-radius:40px; z-index:1; pointer-events:none;
+  border:1px solid transparent;
+  background:
+    linear-gradient(var(--void),var(--void)) padding-box,
+    linear-gradient(135deg,
+      rgba(168,85,247,.7)  0%,
+      rgba(212,169,66,.5)  35%,
+      rgba(168,85,247,.4)  65%,
+      rgba(240,201,106,.6) 100%) border-box;
+}
+/* 배지 내부 글로우 */
+.badge-glow{
+  position:absolute; inset:0; border-radius:40px; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse at center,
+    rgba(107,33,168,.2) 0%, transparent 70%);
+  animation:badgeGlowPulse 4s ease-in-out infinite;
+}
+@keyframes badgeGlowPulse{
+  0%,100%{ opacity:.6; }
+  50%    { opacity:1; }
 }
 /* 샤인 */
 .badge-shine{
-  position:absolute; inset:0; border-radius:40px; overflow:hidden; z-index:0; pointer-events:none;
+  position:absolute; inset:0; border-radius:40px; z-index:2;
+  overflow:hidden; pointer-events:none;
 }
 .badge-shine::after{
   content:''; position:absolute;
-  top:0; left:-140%; width:80%; height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+  top:0; left:-130%; width:75%; height:100%;
+  background:linear-gradient(90deg,
+    transparent,
+    rgba(255,255,255,.12),
+    transparent);
   transform:skewX(-18deg);
-  animation:badgeShine 5s ease-in-out infinite;
+  animation:shineSlide 5s ease-in-out infinite;
 }
-@keyframes badgeShine{
-  0%,55%,100%{ left:-140%; }
-  80%        { left:160%; }
+@keyframes shineSlide{
+  0%,58%,100%{ left:-130%; }
+  82%        { left:150%; }
 }
 
-.badge-algo{
+.badge-algo-text{
   font-family:'Cinzel',serif;
-  font-size:14px; font-weight:700;
+  font-size:13px; font-weight:700;
   letter-spacing:5px; padding-right:5px;
-  color:rgba(232,201,122,.85);
-  position:relative; z-index:1;
-  animation:badgeTextGlow 4s ease-in-out infinite;
+  background:linear-gradient(90deg,
+    var(--gold-lt)   0%,
+    var(--gold-wh)   40%,
+    var(--purple-lt) 70%,
+    var(--gold-lt)   100%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  position:relative; z-index:3;
+  animation:badgeTextAnim 5s ease-in-out infinite;
+  background-size:200% 100%;
 }
-@keyframes badgeTextGlow{
-  0%,100%{ text-shadow:0 0 8px rgba(232,201,122,.3); }
-  50%    { text-shadow:0 0 16px rgba(232,201,122,.7), 0 0 28px rgba(232,201,122,.25); }
+@keyframes badgeTextAnim{
+  0%,100%{ background-position:0% 50%; }
+  50%    { background-position:100% 50%; }
 }
 </style>
 </head>
 <body>
 
-<!-- 배경 -->
-<div class="bh-bg"></div>
+<!-- 배경 레이어 -->
+<div class="bg-void"></div>
+<div class="bh-core"></div>
 <div class="bh-ring"></div>
 <div class="bh-ring"></div>
 <div class="bh-ring"></div>
 <div class="bh-ring"></div>
 
 <script>
-/* 별 생성 */
-for(let i=0;i<55;i++){
-  const s=document.createElement('div');
-  s.className='star';
-  const sz=Math.random()*1.8+.4;
-  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*5+3}s;animation-delay:${Math.random()*6}s;`;
-  document.body.appendChild(s);
-}
+/* ─── 별 생성 ─── */
+(function(){
+  const colors = [
+    'rgba(255,248,231,.9)',
+    'rgba(168,85,247,.8)',
+    'rgba(212,169,66,.8)',
+    'rgba(245,240,236,.7)',
+  ];
+  for(let i=0;i<70;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*1.6+.3;
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    s.style.cssText=`
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      background:${c};
+      box-shadow:0 0 ${sz*2}px ${c};
+      animation-duration:${Math.random()*5+3}s;
+      animation-delay:${Math.random()*7}s;
+    `;
+    document.body.appendChild(s);
+  }
+})();
+
+/* ─── 성운 먼지 ─── */
+(function(){
+  const nebulae=[
+    {w:280,h:180,l:10,t:15,c:'rgba(107,33,168,.18)',dur:12},
+    {w:200,h:140,l:70,t:60,c:'rgba(212,169,66,.1)',dur:16},
+    {w:240,h:160,l:55,t:20,c:'rgba(45,13,92,.22)',dur:10},
+    {w:180,h:120,l:20,t:70,c:'rgba(168,85,247,.12)',dur:14},
+  ];
+  nebulae.forEach(n=>{
+    const el=document.createElement('div');
+    el.className='nebula';
+    el.style.cssText=`
+      width:${n.w}px;height:${n.h}px;
+      left:${n.l}%;top:${n.t}%;
+      background:radial-gradient(ellipse,${n.c} 0%,transparent 70%);
+      animation-duration:${n.dur}s;
+      animation-delay:${Math.random()*4}s;
+    `;
+    document.body.appendChild(el);
+  });
+})();
 </script>
 
-<!-- ════════════════════════
+<!-- ══════════════════════
      대형 로고
-════════════════════════ -->
+══════════════════════ -->
 <div class="logo-section">
   <div class="sec-label">◈ &nbsp; Page Title Logo &nbsp; ◈</div>
+
   <div class="logo-wrap">
-    <div class="logo-halo"></div>
+    <div class="logo-halo-purple"></div>
+    <div class="logo-halo-gold"></div>
 
     <div class="logo-main-row">
 
-      <!-- 왼쪽 날개 -->
+      <!-- ── 왼쪽 날개 ── -->
       <div class="wing-wrap left">
-        <svg width="150" height="130" viewBox="0 0 150 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="155" height="135" viewBox="0 0 155 135" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="gL_main" x1="150" y1="20" x2="10" y2="110" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.95"/>
-              <stop offset="45%"  stop-color="#f5f0e8" stop-opacity="0.55"/>
-              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.08"/>
+            <!-- 골드→퍼플 날개 그라디언트 -->
+            <linearGradient id="wgL" x1="145" y1="10" x2="5" y2="125" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#f0c96a" stop-opacity="1"/>
+              <stop offset="30%"  stop-color="#d4a942" stop-opacity="0.85"/>
+              <stop offset="65%"  stop-color="#a855f7" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.12"/>
             </linearGradient>
-            <linearGradient id="gL_feather" x1="140" y1="15" x2="20" y2="120" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.1"/>
+            <!-- 면 채움 그라디언트 -->
+            <linearGradient id="wfL" x1="145" y1="5" x2="15" y2="130" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.22"/>
+              <stop offset="45%"  stop-color="#d4a942" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.04"/>
             </linearGradient>
-            <filter id="fL_glow">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <filter id="fgL">
+              <feGaussianBlur stdDeviation="1.8" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
 
-          <!--
-            진짜 천사 날개 구조:
-            - 어깨 기점(오른쪽 중앙)에서 위로 활짝 펼쳐짐
-            - 1차깃(가장 길고 위) → 2차깃 → 3차깃(짧고 아래) 순서
-            - 깃털 끝이 왼쪽 위로 향함
-          -->
-
-          <!-- 날개 면 (반투명 채움) -->
+          <!-- 날개 반투명 면 -->
           <path d="
-            M 138 65
-            C 120 55, 95 30, 70 10
-            C 55 0,  30 -2, 15 18
-            C 35 22, 58 35, 72 50
-            C 52 38, 25 32, 10 42
-            C 28 48, 55 55, 70 65
-            C 50 60, 22 60, 8  72
-            C 28 72, 55 72, 70 78
-            C 48 78, 24 82, 12 92
-            C 32 88, 58 84, 72 88
-            C 60 94, 38 100, 28 108
-            C 48 102, 70 96, 82 98
-            C 78 105, 68 112, 62 118
-            L 138 65 Z
-          " fill="url(#gL_main)" opacity="0.13" filter="url(#fL_glow)"/>
+            M 142 66
+            C 122 52, 96 28, 68 8
+            C 50 -2, 24 -4, 8 18
+            C 30 23, 56 38, 72 52
+            C 50 40, 22 34, 7 46
+            C 26 52, 54 60, 72 68
+            C 49 63, 22 64, 7 76
+            C 26 76, 54 75, 72 80
+            C 50 82, 24 86, 10 96
+            C 30 91, 56 88, 72 92
+            C 60 98, 38 106, 26 114
+            C 46 107, 68 101, 80 104
+            L 142 66 Z
+          " fill="url(#wfL)" filter="url(#fgL)"/>
 
-          <!-- 1차깃 — 가장 길고 위쪽, 날카롭게 뻗음 -->
-          <path d="M 138,65 C 115,50 88,28 62,8" stroke="url(#gL_feather)" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
-          <path d="M 138,65 C 112,53 82,34 58,16" stroke="url(#gL_feather)" stroke-width="1.1" stroke-linecap="round" opacity="0.6"/>
+          <!-- 1차 대형깃 — 위로 힘차게 -->
+          <path d="M 142,66 C 116,50 88,26 64,7"
+            stroke="url(#wgL)" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+          <path d="M 141,66 C 112,52 82,32 56,14"
+            stroke="url(#wgL)" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
 
           <!-- 2차깃 -->
-          <path d="M 134,68 C 108,58 78,44 48,32" stroke="url(#gL_feather)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
-          <path d="M 130,72 C 104,65 76,54 46,46" stroke="url(#gL_feather)" stroke-width="0.85" stroke-linecap="round" opacity="0.45"/>
+          <path d="M 138,69 C 110,58 80,44 48,31"
+            stroke="url(#wgL)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
+          <path d="M 134,73 C 106,64 78,53 46,45"
+            stroke="url(#wgL)" stroke-width="0.9" stroke-linecap="round" opacity="0.45"/>
 
           <!-- 3차깃 -->
-          <path d="M 124,76 C 100,72 74,66 44,62" stroke="url(#gL_feather)" stroke-width="0.8"  stroke-linecap="round" opacity="0.4"/>
-          <path d="M 118,80 C 95,78  70,74 40,72"  stroke="url(#gL_feather)" stroke-width="0.75" stroke-linecap="round" opacity="0.35"/>
+          <path d="M 128,78 C 102,72 74,66 42,60"
+            stroke="url(#wgL)" stroke-width="0.8" stroke-linecap="round" opacity="0.38"/>
+          <path d="M 122,83 C 97,79 70,74 38,70"
+            stroke="url(#wgL)" stroke-width="0.75" stroke-linecap="round" opacity="0.3"/>
 
-          <!-- 소형 복깃 (날개 아랫단) -->
-          <path d="M 110,85 C 88,85  65,84 36,84"  stroke="url(#gL_feather)" stroke-width="0.65" stroke-linecap="round" opacity="0.28"/>
-          <path d="M 100,91 C 80,92  58,92 32,92"  stroke="url(#gL_feather)" stroke-width="0.6"  stroke-linecap="round" opacity="0.22"/>
-          <path d="M 88, 98 C 70,100 50,100 30,100" stroke="url(#gL_feather)" stroke-width="0.55" stroke-linecap="round" opacity="0.17"/>
-          <path d="M 74,106 C 60,108 44,108 28,107" stroke="url(#gL_feather)" stroke-width="0.5"  stroke-linecap="round" opacity="0.13"/>
+          <!-- 소형 복깃 (아랫단) -->
+          <path d="M 114,88  C 90,86  64,84 32,83"
+            stroke="url(#wgL)" stroke-width="0.65" stroke-linecap="round" opacity="0.24"/>
+          <path d="M 104,95  C 82,94  58,93 28,92"
+            stroke="url(#wgL)" stroke-width="0.6"  stroke-linecap="round" opacity="0.18"/>
+          <path d="M 92, 102 C 72,102 50,102 24,101"
+            stroke="url(#wgL)" stroke-width="0.55" stroke-linecap="round" opacity="0.14"/>
+          <path d="M 78, 110 C 62,111 44,111 22,110"
+            stroke="url(#wgL)" stroke-width="0.5"  stroke-linecap="round" opacity="0.1"/>
 
-          <!-- 날개 끝 광점 -->
-          <circle cx="62" cy="8" r="2.2" fill="#e8c97a" opacity="0.9">
-            <animate attributeName="r"       values="2.2;3.5;2.2" dur="2.8s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.9;1;0.9"   dur="2.8s" repeatCount="indefinite"/>
+          <!-- 날개 끝 광점 (골드) -->
+          <circle cx="64" cy="7" r="2.4" fill="#f0c96a" opacity="0.95">
+            <animate attributeName="r"       values="2.4;4;2.4"   dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.95;1;0.95" dur="3s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="62" cy="8" r="6" fill="none" stroke="rgba(232,201,122,0.35)" stroke-width="1">
-            <animate attributeName="r"       values="6;14;6"    dur="2.8s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.35;0;0.35" dur="2.8s" repeatCount="indefinite"/>
+          <!-- 퍼플 확산링 -->
+          <circle cx="64" cy="7" r="7" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="1">
+            <animate attributeName="r"       values="7;18;7"      dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0;0.5"   dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <!-- 골드 확산링 -->
+          <circle cx="64" cy="7" r="4" fill="none" stroke="rgba(240,201,106,0.4)" stroke-width="0.8">
+            <animate attributeName="r"       values="4;12;4"      dur="3s" repeatCount="indefinite" begin="0.4s"/>
+            <animate attributeName="opacity" values="0.4;0;0.4"   dur="3s" repeatCount="indefinite" begin="0.4s"/>
           </circle>
 
           <!-- 어깨 연결점 -->
-          <circle cx="138" cy="65" r="2.5" fill="rgba(232,201,122,0.4)"/>
+          <circle cx="142" cy="66" r="3" fill="rgba(168,85,247,0.5)"/>
+          <circle cx="142" cy="66" r="5" fill="none" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
         </svg>
       </div>
 
-      <!-- 텍스트 -->
+      <!-- ── 텍스트 ── -->
       <div class="logo-text">
+        <div class="deco-top">
+          <div class="deco-line"></div>
+          <div class="deco-rune">✦</div>
+          <div class="deco-line r"></div>
+        </div>
         <div class="logo-algo">ALGO</div>
         <div class="logo-rule"></div>
-        <div class="logo-sub-text">알고리빙1004</div>
+        <div class="logo-sub">알고리빙1004</div>
       </div>
 
-      <!-- 오른쪽 날개 (좌우 반전) -->
+      <!-- ── 오른쪽 날개 ── -->
       <div class="wing-wrap right">
-        <svg width="150" height="130" viewBox="0 0 150 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="155" height="135" viewBox="0 0 155 135" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="gR_main" x1="0" y1="20" x2="140" y2="110" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.95"/>
-              <stop offset="45%"  stop-color="#f5f0e8" stop-opacity="0.55"/>
-              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.08"/>
+            <linearGradient id="wgR" x1="10" y1="10" x2="150" y2="125" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#f0c96a" stop-opacity="1"/>
+              <stop offset="30%"  stop-color="#d4a942" stop-opacity="0.85"/>
+              <stop offset="65%"  stop-color="#a855f7" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.12"/>
             </linearGradient>
-            <linearGradient id="gR_feather" x1="10" y1="15" x2="130" y2="120" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.8"/>
-              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.1"/>
+            <linearGradient id="wfR" x1="10" y1="5" x2="140" y2="130" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.22"/>
+              <stop offset="45%"  stop-color="#d4a942" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.04"/>
             </linearGradient>
           </defs>
 
           <!-- 날개 면 -->
           <path d="
-            M 12 65
-            C 30 55, 55 30, 80 10
-            C 95 0,  120 -2, 135 18
-            C 115 22, 92 35, 78 50
-            C 98 38, 125 32, 140 42
-            C 122 48, 95 55, 80 65
-            C 100 60, 128 60, 142 72
-            C 122 72, 95 72, 80 78
-            C 102 78, 126 82, 138 92
-            C 118 88, 92 84, 78 88
-            C 90 94, 112 100, 122 108
-            C 102 102, 80 96, 68 98
-            C 72 105, 82 112, 88 118
-            L 12 65 Z
-          " fill="url(#gR_main)" opacity="0.13" filter="url(#fL_glow)"/>
+            M 13 66
+            C 33 52, 59 28, 87 8
+            C 105 -2, 131 -4, 147 18
+            C 125 23, 99 38, 83 52
+            C 105 40, 133 34, 148 46
+            C 129 52, 101 60, 83 68
+            C 106 63, 133 64, 148 76
+            C 129 76, 101 75, 83 80
+            C 105 82, 131 86, 145 96
+            C 125 91, 99 88, 83 92
+            C 95 98, 117 106, 129 114
+            C 109 107, 87 101, 75 104
+            L 13 66 Z
+          " fill="url(#wfR)" filter="url(#fgL)"/>
 
           <!-- 1차깃 -->
-          <path d="M 12,65 C 35,50 62,28 88,8"   stroke="url(#gR_feather)" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
-          <path d="M 12,65 C 38,53 68,34 92,16"  stroke="url(#gR_feather)" stroke-width="1.1" stroke-linecap="round" opacity="0.6"/>
+          <path d="M 13,66 C 39,50 67,26 91,7"
+            stroke="url(#wgR)" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+          <path d="M 14,66 C 43,52 73,32 99,14"
+            stroke="url(#wgR)" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
 
           <!-- 2차깃 -->
-          <path d="M 16,68 C 42,58 72,44 102,32" stroke="url(#gR_feather)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
-          <path d="M 20,72 C 46,65 74,54 104,46" stroke="url(#gR_feather)" stroke-width="0.85" stroke-linecap="round" opacity="0.45"/>
+          <path d="M 17,69 C 45,58 75,44 107,31"
+            stroke="url(#wgR)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
+          <path d="M 21,73 C 49,64 77,53 109,45"
+            stroke="url(#wgR)" stroke-width="0.9" stroke-linecap="round" opacity="0.45"/>
 
           <!-- 3차깃 -->
-          <path d="M 26,76 C 50,72 76,66 106,62" stroke="url(#gR_feather)" stroke-width="0.8"  stroke-linecap="round" opacity="0.4"/>
-          <path d="M 32,80 C 55,78 80,74 110,72"  stroke="url(#gR_feather)" stroke-width="0.75" stroke-linecap="round" opacity="0.35"/>
+          <path d="M 27,78 C 53,72 81,66 113,60"
+            stroke="url(#wgR)" stroke-width="0.8" stroke-linecap="round" opacity="0.38"/>
+          <path d="M 33,83 C 58,79 85,74 117,70"
+            stroke="url(#wgR)" stroke-width="0.75" stroke-linecap="round" opacity="0.3"/>
 
           <!-- 소형 복깃 -->
-          <path d="M 40,85  C 62,85  85,84 114,84"  stroke="url(#gR_feather)" stroke-width="0.65" stroke-linecap="round" opacity="0.28"/>
-          <path d="M 50,91  C 70,92  92,92 118,92"  stroke="url(#gR_feather)" stroke-width="0.6"  stroke-linecap="round" opacity="0.22"/>
-          <path d="M 62,98  C 80,100 100,100 120,100" stroke="url(#gR_feather)" stroke-width="0.55" stroke-linecap="round" opacity="0.17"/>
-          <path d="M 76,106 C 90,108 106,108 122,107" stroke="url(#gR_feather)" stroke-width="0.5"  stroke-linecap="round" opacity="0.13"/>
+          <path d="M 41,88  C 65,86  91,84 123,83"
+            stroke="url(#wgR)" stroke-width="0.65" stroke-linecap="round" opacity="0.24"/>
+          <path d="M 51,95  C 73,94  97,93 127,92"
+            stroke="url(#wgR)" stroke-width="0.6"  stroke-linecap="round" opacity="0.18"/>
+          <path d="M 63,102 C 83,102 105,102 131,101"
+            stroke="url(#wgR)" stroke-width="0.55" stroke-linecap="round" opacity="0.14"/>
+          <path d="M 77,110 C 93,111 111,111 133,110"
+            stroke="url(#wgR)" stroke-width="0.5"  stroke-linecap="round" opacity="0.1"/>
 
           <!-- 날개 끝 광점 -->
-          <circle cx="88" cy="8" r="2.2" fill="#e8c97a" opacity="0.9">
-            <animate attributeName="r"       values="2.2;3.5;2.2" dur="2.8s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.9;1;0.9"   dur="2.8s" repeatCount="indefinite"/>
+          <circle cx="91" cy="7" r="2.4" fill="#f0c96a" opacity="0.95">
+            <animate attributeName="r"       values="2.4;4;2.4"   dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.95;1;0.95" dur="3s" repeatCount="indefinite"/>
           </circle>
-          <circle cx="88" cy="8" r="6" fill="none" stroke="rgba(232,201,122,0.35)" stroke-width="1">
-            <animate attributeName="r"       values="6;14;6"    dur="2.8s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.35;0;0.35" dur="2.8s" repeatCount="indefinite"/>
+          <circle cx="91" cy="7" r="7" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="1">
+            <animate attributeName="r"       values="7;18;7"    dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="91" cy="7" r="4" fill="none" stroke="rgba(240,201,106,0.4)" stroke-width="0.8">
+            <animate attributeName="r"       values="4;12;4"    dur="3s" repeatCount="indefinite" begin="0.4s"/>
+            <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite" begin="0.4s"/>
           </circle>
 
           <!-- 어깨 연결점 -->
-          <circle cx="12" cy="65" r="2.5" fill="rgba(232,201,122,0.4)"/>
+          <circle cx="13" cy="66" r="3" fill="rgba(168,85,247,0.5)"/>
+          <circle cx="13" cy="66" r="5" fill="none" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
         </svg>
       </div>
 
     </div><!-- /logo-main-row -->
   </div><!-- /logo-wrap -->
-</div>
+</div><!-- /logo-section -->
 
-<!-- ════════════════════════
+
+<!-- ══════════════════════
      소형 배지
-════════════════════════ -->
+══════════════════════ -->
 <div class="badge-section">
   <div class="sec-label">◈ &nbsp; Card Header Badge &nbsp; ◈</div>
-  <div class="badge-outer">
-    <div class="badge-border-wrap"></div>
-    <div class="badge-bg"></div>
+
+  <div class="badge-wrap">
+    <div class="badge-glass"></div>
+    <div class="badge-border"></div>
+    <div class="badge-glow"></div>
     <div class="badge-shine"></div>
 
     <!-- 왼쪽 미니 날개 -->
-    <svg width="36" height="28" viewBox="0 0 150 130" fill="none">
+    <svg width="38" height="26" viewBox="0 0 155 135" fill="none" style="position:relative;z-index:3;">
       <defs>
-        <linearGradient id="bL" x1="150" y1="20" x2="10" y2="110" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.15"/>
+        <linearGradient id="bmL" x1="145" y1="10" x2="10" y2="125" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#f0c96a" stop-opacity="0.95"/>
+          <stop offset="50%"  stop-color="#a855f7" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.2"/>
         </linearGradient>
       </defs>
-      <path d="M 138,65 C 115,50 88,28 62,8"  stroke="url(#bL)" stroke-width="5"   stroke-linecap="round" opacity="0.85"/>
-      <path d="M 134,68 C 108,58 78,44 48,32" stroke="url(#bL)" stroke-width="4"   stroke-linecap="round" opacity="0.6"/>
-      <path d="M 128,73 C 102,66 74,57 44,50" stroke="url(#bL)" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
-      <path d="M 120,79 C 96,75  70,70 40,66" stroke="url(#bL)" stroke-width="3"   stroke-linecap="round" opacity="0.32"/>
-      <path d="M 108,86 C 86,84  62,82 34,80" stroke="url(#bL)" stroke-width="2.5" stroke-linecap="round" opacity="0.22"/>
-      <circle cx="62" cy="8" r="5" fill="#e8c97a" opacity="0.85">
-        <animate attributeName="r"       values="5;8;5"       dur="2.8s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.85;1;0.85" dur="2.8s" repeatCount="indefinite"/>
+      <path d="M 142,66 C 116,50 88,26 64,7"  stroke="url(#bmL)" stroke-width="6"   stroke-linecap="round" opacity="0.9"/>
+      <path d="M 138,69 C 110,58 80,44 48,31" stroke="url(#bmL)" stroke-width="4.5" stroke-linecap="round" opacity="0.65"/>
+      <path d="M 132,74 C 104,66 76,56 44,48" stroke="url(#bmL)" stroke-width="4"   stroke-linecap="round" opacity="0.48"/>
+      <path d="M 124,80 C 98,74  72,68 40,63" stroke="url(#bmL)" stroke-width="3.5" stroke-linecap="round" opacity="0.34"/>
+      <path d="M 114,87 C 90,83  64,80 32,77" stroke="url(#bmL)" stroke-width="3"   stroke-linecap="round" opacity="0.22"/>
+      <circle cx="64" cy="7" r="7" fill="#f0c96a" opacity="0.9">
+        <animate attributeName="r"       values="7;11;7"      dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.9;1;0.9"   dur="3s" repeatCount="indefinite"/>
       </circle>
     </svg>
 
-    <span class="badge-algo">ALGO</span>
+    <span class="badge-algo-text">ALGO</span>
 
     <!-- 오른쪽 미니 날개 -->
-    <svg width="36" height="28" viewBox="0 0 150 130" fill="none">
+    <svg width="38" height="26" viewBox="0 0 155 135" fill="none" style="position:relative;z-index:3;">
       <defs>
-        <linearGradient id="bR" x1="0" y1="20" x2="140" y2="110" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.15"/>
+        <linearGradient id="bmR" x1="10" y1="10" x2="150" y2="125" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#f0c96a" stop-opacity="0.95"/>
+          <stop offset="50%"  stop-color="#a855f7" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.2"/>
         </linearGradient>
       </defs>
-      <path d="M 12,65 C 35,50 62,28 88,8"   stroke="url(#bR)" stroke-width="5"   stroke-linecap="round" opacity="0.85"/>
-      <path d="M 16,68 C 42,58 72,44 102,32" stroke="url(#bR)" stroke-width="4"   stroke-linecap="round" opacity="0.6"/>
-      <path d="M 22,73 C 48,66 76,57 106,50" stroke="url(#bR)" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
-      <path d="M 30,79 C 54,75  80,70 110,66" stroke="url(#bR)" stroke-width="3"   stroke-linecap="round" opacity="0.32"/>
-      <path d="M 42,86 C 64,84  88,82 116,80" stroke="url(#bR)" stroke-width="2.5" stroke-linecap="round" opacity="0.22"/>
-      <circle cx="88" cy="8" r="5" fill="#e8c97a" opacity="0.85">
-        <animate attributeName="r"       values="5;8;5"       dur="2.8s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.85;1;0.85" dur="2.8s" repeatCount="indefinite"/>
+      <path d="M 13,66 C 39,50 67,26 91,7"   stroke="url(#bmR)" stroke-width="6"   stroke-linecap="round" opacity="0.9"/>
+      <path d="M 17,69 C 45,58 75,44 107,31" stroke="url(#bmR)" stroke-width="4.5" stroke-linecap="round" opacity="0.65"/>
+      <path d="M 23,74 C 51,66 79,56 111,48" stroke="url(#bmR)" stroke-width="4"   stroke-linecap="round" opacity="0.48"/>
+      <path d="M 31,80 C 57,74  83,68 115,63" stroke="url(#bmR)" stroke-width="3.5" stroke-linecap="round" opacity="0.34"/>
+      <path d="M 41,87 C 65,83  91,80 123,77" stroke="url(#bmR)" stroke-width="3"   stroke-linecap="round" opacity="0.22"/>
+      <circle cx="91" cy="7" r="7" fill="#f0c96a" opacity="0.9">
+        <animate attributeName="r"       values="7;11;7"      dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.9;1;0.9"   dur="3s" repeatCount="indefinite"/>
       </circle>
     </svg>
 
