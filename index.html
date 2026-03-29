@@ -13,6 +13,54 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 @keyframes titleSlide{to{background-position:200% center;}}
 .page-sub{text-align:center;color:var(--sub);font-size:.88rem;margin-bottom:48px;}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:90px 40px;padding:40px 20px 60px;max-width:1400px;margin:0 auto;}
+
+/* ── 카드 위 레이블 래퍼 ── */
+.card-wrap{position:relative;display:flex;flex-direction:column;align-items:center;}
+.card-above-label{
+  position:absolute;
+  top:-38px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  padding:4px 14px;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
+  color:#fff;
+  text-shadow:0 0 10px rgba(255,255,255,.4);
+  z-index:20;
+}
+
+/* 레벨별 레이블 색상 */
+.card-wrap[data-lv="1"] .card-above-label{color:#a8c8f0;border-color:rgba(74,127,193,.5);text-shadow:0 0 10px rgba(74,127,193,.9);box-shadow:0 0 12px rgba(74,127,193,.25);}
+.card-wrap[data-lv="2"] .card-above-label{color:#66ccff;border-color:rgba(0,153,255,.5);text-shadow:0 0 10px rgba(0,153,255,.9);box-shadow:0 0 12px rgba(0,153,255,.25);}
+.card-wrap[data-lv="3"] .card-above-label{color:#b0e8ff;border-color:rgba(128,208,240,.5);text-shadow:0 0 10px rgba(128,208,240,.9);box-shadow:0 0 12px rgba(128,208,240,.25);}
+.card-wrap[data-lv="4"] .card-above-label{color:#66ffaa;border-color:rgba(0,204,102,.5);text-shadow:0 0 10px rgba(0,204,102,.9);box-shadow:0 0 12px rgba(0,204,102,.25);}
+.card-wrap[data-lv="5"] .card-above-label{color:#66ffdd;border-color:rgba(0,204,170,.5);text-shadow:0 0 10px rgba(0,204,170,.9);box-shadow:0 0 12px rgba(0,204,170,.25);}
+.card-wrap[data-lv="6"] .card-above-label{color:#ffd166;border-color:rgba(232,160,0,.5);text-shadow:0 0 10px rgba(232,160,0,.9);box-shadow:0 0 12px rgba(232,160,0,.25);}
+.card-wrap[data-lv="7"] .card-above-label{color:#ffaa44;border-color:rgba(255,102,0,.5);text-shadow:0 0 10px rgba(255,102,0,.9);box-shadow:0 0 12px rgba(255,102,0,.25);}
+.card-wrap[data-lv="8"] .card-above-label{color:#ff6680;border-color:rgba(204,0,51,.5);text-shadow:0 0 10px rgba(204,0,51,.9);box-shadow:0 0 12px rgba(204,0,51,.25);}
+.card-wrap[data-lv="9"] .card-above-label{color:#ffaacc;border-color:rgba(204,68,136,.5);text-shadow:0 0 10px rgba(204,68,136,.9);box-shadow:0 0 12px rgba(204,68,136,.25);}
+.card-wrap[data-lv="MAX"] .card-above-label{
+  color:#e0aaff;
+  border-color:rgba(192,132,252,.55);
+  text-shadow:0 0 10px rgba(180,100,255,.9),0 0 22px rgba(140,60,255,.7);
+  box-shadow:0 0 18px rgba(160,80,255,.4),0 0 32px rgba(123,47,255,.2);
+  background:linear-gradient(135deg,rgba(61,0,160,.6),rgba(123,47,255,.4));
+  animation:maxLabelPulse 2s ease-in-out infinite alternate;
+  letter-spacing:.22em;
+  font-size:14px;
+}
+@keyframes maxLabelPulse{
+  from{text-shadow:0 0 8px rgba(160,80,255,.8),0 0 18px rgba(120,40,220,.6);box-shadow:0 0 14px rgba(160,80,255,.35),0 0 26px rgba(100,20,200,.18);}
+  to{text-shadow:0 0 18px rgba(220,150,255,1),0 0 36px rgba(180,80,255,.85);box-shadow:0 0 24px rgba(200,120,255,.55),0 0 44px rgba(140,40,255,.3);}
+}
+
 .card-scene{width:220px;height:308px;perspective:900px;position:relative;cursor:pointer;margin:auto;}
 .card-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(0deg) rotateY(0deg);transition:transform .1s ease;will-change:transform;}
 .card-frame{position:absolute;inset:-3px;border-radius:21px;z-index:1;pointer-events:none;}
@@ -268,7 +316,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 <div class="page-sub">마우스를 카드 위에 올리면 빔·테두리·카드가 함께 3D 틸트됩니다</div>
 <div class="cards-grid" id="cards-grid"></div>
 <script>
-/* ── 레벨별 경험치 구간 정의 ── */
 const XP_RANGES = {
   1:  { min:1,   max:10,  current:5,   next:10  },
   2:  { min:11,  max:20,  current:15,  next:20  },
@@ -335,6 +382,12 @@ function buildXP(g) {
 </div>`;
 }
 
+function buildAboveLabel(g) {
+  // LV.1~9: 레벨 이름, LV.MAX: "MAX" 텍스트
+  const labelText = g.lv === 'MAX' ? 'MAX' : g.name;
+  return `<div class="card-above-label">${labelText}</div>`;
+}
+
 function buildCardHTML(g) {
   const lvLabel = g.lv === 'MAX' ? 'LV.MAX' : `LV.${g.lv}`;
   const bokeh = g.bokeh.map(b =>
@@ -344,32 +397,35 @@ function buildCardHTML(g) {
     `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${s.sz}px;--sdur:${s.dur};--sdel:${s.del};">✦</span>`
   ).join('');
   return `
-<div class="card-scene" data-lv="${g.lv}" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
-  ${buildFog(g)}
-  <div class="card-tilt">
-    <div class="card-frame"></div>
-    ${buildBeams(g)}
-    <div class="card-body">
-      <div class="card-face">
-        <div class="card-bokeh">${bokeh}</div>
-        <div class="card-sparkles">${sparkles}</div>
-        <div class="card-header">
-          <div class="card-lv-label">${lvLabel}</div>
-          <div class="card-badge">${g.badge}</div>
-        </div>
-        <div class="card-icon-wrap">
-          <div class="card-main-icon">${g.icon}</div>
-          <div class="card-main-name">${g.name}</div>
-        </div>
-        <div class="card-top-band"></div>
-        <div class="card-bot-band"></div>
-        <div class="card-vignette"></div>
-        <div class="card-shine"></div>
-        ${buildXP(g)}
-        <div class="card-footer">
-          <div class="footer-lv">${lvLabel}</div>
-          <div class="footer-name">${g.name}</div>
-          <div class="footer-subs">${g.subs}</div>
+<div class="card-wrap" data-lv="${g.lv}">
+  ${buildAboveLabel(g)}
+  <div class="card-scene" data-lv="${g.lv}" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
+    ${buildFog(g)}
+    <div class="card-tilt">
+      <div class="card-frame"></div>
+      ${buildBeams(g)}
+      <div class="card-body">
+        <div class="card-face">
+          <div class="card-bokeh">${bokeh}</div>
+          <div class="card-sparkles">${sparkles}</div>
+          <div class="card-header">
+            <div class="card-lv-label">${lvLabel}</div>
+            <div class="card-badge">${g.badge}</div>
+          </div>
+          <div class="card-icon-wrap">
+            <div class="card-main-icon">${g.icon}</div>
+            <div class="card-main-name">${g.name}</div>
+          </div>
+          <div class="card-top-band"></div>
+          <div class="card-bot-band"></div>
+          <div class="card-vignette"></div>
+          <div class="card-shine"></div>
+          ${buildXP(g)}
+          <div class="card-footer">
+            <div class="footer-lv">${lvLabel}</div>
+            <div class="footer-name">${g.name}</div>
+            <div class="footer-subs">${g.subs}</div>
+          </div>
         </div>
       </div>
     </div>
