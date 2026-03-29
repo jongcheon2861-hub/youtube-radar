@@ -27,7 +27,7 @@ body{
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  gap: 80px;
+  gap: 90px;
   padding: 80px 24px;
   overflow-x: hidden;
 }
@@ -99,7 +99,7 @@ body{
 .logo-wrap{
   position:relative;
   display:flex; flex-direction:column; align-items:center;
-  padding:40px 60px 44px;
+  padding:48px 60px 44px;
   animation:breathe 7s ease-in-out infinite;
 }
 @keyframes breathe{
@@ -124,7 +124,7 @@ body{
 .logo-halo-g{
   position:absolute;
   width:360px; height:130px;
-  top:54%; left:50%; transform:translate(-50%,-50%);
+  top:56%; left:50%; transform:translate(-50%,-50%);
   background:radial-gradient(ellipse at 50% 50%,
     rgba(212,169,66,.16) 0%, rgba(212,169,66,.04) 55%, transparent 75%);
   filter:blur(18px); pointer-events:none; z-index:0;
@@ -135,12 +135,30 @@ body{
   50%    { opacity:.85; }
 }
 
-/* 깃털 + 텍스트 컨테이너 */
+/* ── 로고 컨텐츠 ── */
 .logo-inner{
   position:relative;
-  display:flex; flex-direction:column; align-items:center;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
   z-index:2;
 }
+
+/* 상단 장식 */
+.logo-deco-top{
+  display:flex; align-items:center; gap:14px;
+}
+.deco-line{
+  height:1px; width:60px;
+  background:linear-gradient(90deg, transparent, rgba(212,169,66,.5));
+}
+.deco-line.r{
+  background:linear-gradient(90deg, rgba(212,169,66,.5), transparent);
+}
+.deco-emblem{
+  position:relative;
+  width:28px; height:28px;
+  display:flex; align-items:center; justify-content:center;
+}
+.deco-emblem svg{ overflow:visible; }
 
 /* ALGO 텍스트 */
 .logo-algo{
@@ -159,8 +177,6 @@ body{
   filter:drop-shadow(0 0 26px rgba(168,85,247,.48));
   animation:algoShimmer 6s ease-in-out infinite;
   position:relative; z-index:5;
-  /* 깃털이 꽂히는 뒤 공간 확보 */
-  margin-top: 20px;
 }
 @keyframes algoShimmer{
   0%,100%{ background-position:0% 50%;   filter:drop-shadow(0 0 20px rgba(168,85,247,.42)); }
@@ -169,7 +185,7 @@ body{
 
 /* 구분선 */
 .logo-rule{
-  width:100%; height:1px; margin:10px 0 8px; position:relative;
+  width:100%; height:1px; position:relative;
   background:linear-gradient(90deg,
     transparent 0%, rgba(168,85,247,.2) 15%,
     rgba(212,169,66,.58) 45%, rgba(168,85,247,.48) 55%,
@@ -191,19 +207,22 @@ body{
 }
 @keyframes subFade{ 0%,100%{ opacity:.52; } 50%{ opacity:.82; } }
 
-/* ══════════════════════════════════════
-   깃털 SVG 공통
-══════════════════════════════════════ */
-.feathers-layer{
-  position:absolute;
-  /* 텍스트 위 중앙에 꽂힌 것처럼 */
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 420px;
-  height: 110px;
-  pointer-events: none;
-  z-index: 4;
+/* 하단 장식 */
+.logo-deco-bot{
+  display:flex; align-items:center; gap:10px; opacity:.45;
+  margin-top:2px;
+}
+.deco-dot-sm{
+  width:3px; height:3px; border-radius:50%;
+  background:var(--gold-md);
+  box-shadow:0 0 4px var(--gold-md);
+}
+.deco-line-sm{
+  height:1px; width:36px;
+  background:linear-gradient(90deg, transparent, rgba(212,169,66,.4));
+}
+.deco-line-sm.r{
+  background:linear-gradient(90deg, rgba(212,169,66,.4), transparent);
 }
 
 /* ══════════════════════════════════════
@@ -215,12 +234,14 @@ body{
 }
 .badge-wrap{
   position:relative;
-  display:inline-flex; align-items:center; gap:8px;
-  padding:10px 20px;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:10px 22px;
   border-radius:40px;
   animation:badgeFloat 5.5s ease-in-out infinite;
   cursor:pointer;
+  transition:transform .2s ease;
 }
+.badge-wrap:hover{ transform:scale(1.05) !important; }
 @keyframes badgeFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
 .badge-glass{
   position:absolute; inset:0; border-radius:40px; z-index:0;
@@ -254,14 +275,6 @@ body{
 }
 @keyframes shineSlide{ 0%,58%,100%{ left:-130%; } 82%{ left:150%; } }
 
-/* 배지 깃털 레이어 */
-.badge-feathers{
-  position:absolute;
-  top: -22px; left:50%; transform:translateX(-50%);
-  width:160px; height:40px;
-  pointer-events:none; z-index:4;
-}
-
 .badge-algo-text{
   font-family:'Cinzel',serif;
   font-size:13px; font-weight:700;
@@ -288,9 +301,8 @@ body{
 <div class="bh-ring"></div>
 
 <script>
-/* 별 */
 (function(){
-  const cs=['rgba(255,248,231,.9)','rgba(168,85,247,.8)','rgba(212,169,66,.8)','rgba(245,240,236,.7)'];
+  const cs=['rgba(255,248,231,.85)','rgba(168,85,247,.75)','rgba(212,169,66,.75)','rgba(245,240,236,.65)'];
   for(let i=0;i<65;i++){
     const s=document.createElement('div'); s.className='star';
     const sz=Math.random()*1.5+.3, c=cs[Math.floor(Math.random()*cs.length)];
@@ -309,213 +321,61 @@ body{
 
     <div class="logo-inner">
 
-      <!-- 깃털 레이어 — ALGO 텍스트 위에 꽂힘 -->
-      <div class="feathers-layer">
-        <svg width="420" height="110" viewBox="0 0 420 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <!-- 흰 깃털 그라디언트: 밑둥(불투명)→끝(투명) -->
-            <linearGradient id="fg0" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
-              <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.0"/>
-              <stop offset="35%"  stop-color="#f8f4ff" stop-opacity="0.55"/>
-              <stop offset="70%"  stop-color="#fffbf0" stop-opacity="0.82"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.95"/>
-            </linearGradient>
-            <!-- 골드 섞인 깃털 -->
-            <linearGradient id="fg1" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
-              <stop offset="0%"   stop-color="#d4a942" stop-opacity="0.0"/>
-              <stop offset="30%"  stop-color="#f0c96a" stop-opacity="0.45"/>
-              <stop offset="65%"  stop-color="#fff8e7" stop-opacity="0.78"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.92"/>
-            </linearGradient>
-            <!-- 퍼플 섞인 깃털 -->
-            <linearGradient id="fg2" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
-              <stop offset="0%"   stop-color="#6b21a8" stop-opacity="0.0"/>
-              <stop offset="30%"  stop-color="#a855f7" stop-opacity="0.4"/>
-              <stop offset="65%"  stop-color="#e8d5ff" stop-opacity="0.72"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.9"/>
-            </linearGradient>
-            <filter id="ff_soft">
-              <feGaussianBlur stdDeviation="0.6" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <filter id="ff_glow">
-              <feGaussianBlur stdDeviation="2" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-
-          <!--
-            깃털 배치 전략:
-            - 중앙(ALGO 가운데) 기준으로 부채꼴 분산
-            - 각 깃털은 밑둥이 텍스트 상단(y≈105)에 위치
-            - 위로 솟구치며 좌우로 기울어짐
-            - 5종 깃털 타입: 중앙 직립, 좌/우 경사, 외곽 넓은 경사
-          -->
-
-          <!-- ╔══ 깃털 그리기: path 구조 = 밑둥→줄기→왼쪽 날→오른쪽 날 ══╗ -->
-
-          <!-- ── 중앙 깃털 (직립, 가장 길고 밝음) ── -->
-          <g filter="url(#ff_glow)">
-            <!-- 줄기 -->
-            <line x1="210" y1="105" x2="210" y2="4"
-              stroke="rgba(255,255,255,0.85)" stroke-width="0.9" stroke-linecap="round"/>
-            <!-- 왼쪽 날 -->
-            <path d="M 210,105 C 196,85 188,60 190,8"
-              stroke="url(#fg0)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.92"/>
-            <!-- 오른쪽 날 -->
-            <path d="M 210,105 C 224,85 232,60 230,8"
-              stroke="url(#fg0)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.92"/>
-            <!-- 내부 결 -->
-            <path d="M 210,95 C 204,78 200,55 202,18"
-              stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-            <path d="M 210,95 C 216,78 220,55 218,18"
-              stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-            <!-- 가로 바브 (깃털 결) -->
-            <line x1="200" y1="28" x2="220" y2="28" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
-            <line x1="198" y1="40" x2="222" y2="40" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
-            <line x1="196" y1="52" x2="224" y2="52" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
-            <line x1="194" y1="65" x2="226" y2="65" stroke="rgba(255,255,255,0.10)" stroke-width="0.5"/>
-            <line x1="192" y1="78" x2="228" y2="78" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
-          </g>
-
-          <!-- ── 중앙 왼쪽 1번 깃털 (골드) ── -->
-          <g filter="url(#ff_soft)">
-            <line x1="188" y1="107" x2="172" y2="6"
-              stroke="rgba(240,201,106,0.7)" stroke-width="0.75" stroke-linecap="round"/>
-            <path d="M 188,107 C 174,88 162,64 162,10"
-              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
-            <path d="M 188,107 C 200,86 198,62 182,6"
-              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
-            <line x1="172" y1="28" x2="187" y2="26" stroke="rgba(240,201,106,0.15)" stroke-width="0.45"/>
-            <line x1="169" y1="42" x2="186" y2="39" stroke="rgba(240,201,106,0.12)" stroke-width="0.45"/>
-            <line x1="167" y1="57" x2="185" y2="53" stroke="rgba(240,201,106,0.10)" stroke-width="0.45"/>
-            <line x1="165" y1="72" x2="184" y2="68" stroke="rgba(240,201,106,0.08)" stroke-width="0.4"/>
-          </g>
-
-          <!-- ── 중앙 오른쪽 1번 깃털 (골드) ── -->
-          <g filter="url(#ff_soft)">
-            <line x1="232" y1="107" x2="248" y2="6"
-              stroke="rgba(240,201,106,0.7)" stroke-width="0.75" stroke-linecap="round"/>
-            <path d="M 232,107 C 220,88 222,62 238,6"
-              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
-            <path d="M 232,107 C 246,86 258,64 258,10"
-              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
-            <line x1="233" y1="26" x2="248" y2="28" stroke="rgba(240,201,106,0.15)" stroke-width="0.45"/>
-            <line x1="234" y1="39" x2="251" y2="42" stroke="rgba(240,201,106,0.12)" stroke-width="0.45"/>
-            <line x1="235" y1="53" x2="253" y2="57" stroke="rgba(240,201,106,0.10)" stroke-width="0.45"/>
-            <line x1="236" y1="68" x2="256" y2="72" stroke="rgba(240,201,106,0.08)" stroke-width="0.4"/>
-          </g>
-
-          <!-- ── 왼쪽 2번 깃털 (퍼플, 경사짐) ── -->
-          <g filter="url(#ff_soft)">
-            <line x1="164" y1="108" x2="134" y2="12"
-              stroke="rgba(168,85,247,0.55)" stroke-width="0.7" stroke-linecap="round"/>
-            <path d="M 164,108 C 144,90 128,68 126,16"
-              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
-            <path d="M 164,108 C 178,88 170,64 142,8"
-              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
-            <line x1="135" y1="34" x2="153" y2="30" stroke="rgba(168,85,247,0.12)" stroke-width="0.4"/>
-            <line x1="132" y1="50" x2="151" y2="45" stroke="rgba(168,85,247,0.10)" stroke-width="0.4"/>
-            <line x1="130" y1="67" x2="149" y2="61" stroke="rgba(168,85,247,0.08)" stroke-width="0.4"/>
-          </g>
-
-          <!-- ── 오른쪽 2번 깃털 (퍼플, 경사짐) ── -->
-          <g filter="url(#ff_soft)">
-            <line x1="256" y1="108" x2="286" y2="12"
-              stroke="rgba(168,85,247,0.55)" stroke-width="0.7" stroke-linecap="round"/>
-            <path d="M 256,108 C 270,88 278,64 278,8"
-              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
-            <path d="M 256,108 C 242,90 252,68 294,16"
-              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
-            <line x1="267" y1="30" x2="285" y2="34" stroke="rgba(168,85,247,0.12)" stroke-width="0.4"/>
-            <line x1="269" y1="45" x2="288" y2="50" stroke="rgba(168,85,247,0.10)" stroke-width="0.4"/>
-            <line x1="271" y1="61" x2="290" y2="67" stroke="rgba(168,85,247,0.08)" stroke-width="0.4"/>
-          </g>
-
-          <!-- ── 왼쪽 3번 깃털 (흰색, 더 넓게 기울어짐) ── -->
-          <g filter="url(#ff_soft)">
-            <line x1="138" y1="108" x2="96" y2="22"
-              stroke="rgba(255,255,255,0.38)" stroke-width="0.6" stroke-linecap="round"/>
-            <path d="M 138,108 C 112,92 90,72 80,26"
-              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 138,108 C 156,90 148,68 112,18"
-              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
-            <line x1="98" y1="44" x2="118" y2="38" stroke="rgba(255,255,255,0.09)" stroke-width="0.38"/>
-            <line x1="95" y1="62" x2="116" y2="55" stroke="rgba(255,255,255,0.07)" stroke-width="0.38"/>
-          </g>
-
-          <!-- ── 오른쪽 3번 깃털 (흰색, 더 넓게 기울어짐) ── -->
-          <g filter="url(#ff_soft)">
-            <line x1="282" y1="108" x2="324" y2="22"
-              stroke="rgba(255,255,255,0.38)" stroke-width="0.6" stroke-linecap="round"/>
-            <path d="M 282,108 C 272,90 292,68 308,18"
-              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
-            <path d="M 282,108 C 308,90 330,72 340,26"
-              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
-            <line x1="302" y1="38" x2="322" y2="44" stroke="rgba(255,255,255,0.09)" stroke-width="0.38"/>
-            <line x1="304" y1="55" x2="325" y2="62" stroke="rgba(255,255,255,0.07)" stroke-width="0.38"/>
-          </g>
-
-          <!-- ── 외곽 왼쪽 4번 깃털 (매우 연한 흰, 가장 기울어짐) ── -->
-          <g>
-            <line x1="110" y1="108" x2="58" y2="36"
-              stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-linecap="round"/>
-            <path d="M 110,108 C 80,94 54,76 42,40"
-              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
-            <path d="M 110,108 C 128,92 118,72 74,32"
-              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
-          </g>
-
-          <!-- ── 외곽 오른쪽 4번 깃털 ── -->
-          <g>
-            <line x1="310" y1="108" x2="362" y2="36"
-              stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-linecap="round"/>
-            <path d="M 310,108 C 292,92 302,72 346,32"
-              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
-            <path d="M 310,108 C 340,94 366,76 378,40"
-              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
-          </g>
-
-          <!-- ── 깃털 끝 광점들 ── -->
-          <!-- 중앙 -->
-          <circle cx="210" cy="4" r="1.8" fill="white" opacity="0.9">
-            <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="1.8;2.8;1.8" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="210" cy="4" r="5" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.8">
-            <animate attributeName="r" values="5;12;5" dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.25;0;0.25" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <!-- 골드 깃털 끝 -->
-          <circle cx="172" cy="6" r="1.4" fill="#f0c96a" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
-          </circle>
-          <circle cx="248" cy="6" r="1.4" fill="#f0c96a" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
-          </circle>
-          <!-- 퍼플 깃털 끝 -->
-          <circle cx="134" cy="12" r="1.2" fill="#c084fc" opacity="0.7">
-            <animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite" begin="0.6s"/>
-          </circle>
-          <circle cx="286" cy="12" r="1.2" fill="#c084fc" opacity="0.7">
-            <animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite" begin="0.6s"/>
-          </circle>
-          <!-- 흰 3번 끝 -->
-          <circle cx="96"  cy="22" r="1.0" fill="white" opacity="0.5">
-            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4.5s" repeatCount="indefinite" begin="0.9s"/>
-          </circle>
-          <circle cx="324" cy="22" r="1.0" fill="white" opacity="0.5">
-            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4.5s" repeatCount="indefinite" begin="0.9s"/>
-          </circle>
-        </svg>
+      <!-- 상단 엠블렘 장식 -->
+      <div class="logo-deco-top">
+        <div class="deco-line"></div>
+        <div class="deco-emblem">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="embG" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%"   stop-color="#f0c96a"/>
+                <stop offset="50%"  stop-color="#ffffff" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+              <filter id="embF">
+                <feGaussianBlur stdDeviation="1.2" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <!-- 바깥 팔각별 -->
+            <path d="M14,1 L15.8,10.2 L24,8 L17.8,14 L24,20 L15.8,17.8 L14,27 L12.2,17.8 L4,20 L10.2,14 L4,8 L12.2,10.2 Z"
+              fill="none" stroke="url(#embG)" stroke-width="0.7" opacity="0.7" filter="url(#embF)"/>
+            <!-- 안쪽 사각 다이아몬드 -->
+            <path d="M14,6 L19,14 L14,22 L9,14 Z"
+              fill="none" stroke="url(#embG)" stroke-width="0.6" opacity="0.55"/>
+            <!-- 중심점 -->
+            <circle cx="14" cy="14" r="1.8" fill="url(#embG)" opacity="0.9">
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="1.8;2.4;1.8" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <!-- 중심 확산링 -->
+            <circle cx="14" cy="14" r="5" fill="none" stroke="rgba(212,169,66,0.3)" stroke-width="0.6">
+              <animate attributeName="r" values="5;11;5" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <!-- 십자 광선 -->
+            <line x1="14" y1="3"  x2="14" y2="6"  stroke="#f0c96a" stroke-width="0.6" opacity="0.55" stroke-linecap="round"/>
+            <line x1="14" y1="22" x2="14" y2="25" stroke="#f0c96a" stroke-width="0.6" opacity="0.55" stroke-linecap="round"/>
+            <line x1="3"  y1="14" x2="6"  y2="14" stroke="#a855f7" stroke-width="0.6" opacity="0.55" stroke-linecap="round"/>
+            <line x1="22" y1="14" x2="25" y2="14" stroke="#a855f7" stroke-width="0.6" opacity="0.55" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="deco-line r"></div>
       </div>
 
-      <!-- ALGO 텍스트 -->
+      <!-- ALGO -->
       <div class="logo-algo">ALGO</div>
       <div class="logo-rule"></div>
       <div class="logo-sub">알고리빙1004</div>
 
-    </div><!-- /logo-inner -->
+      <!-- 하단 장식 -->
+      <div class="logo-deco-bot">
+        <div class="deco-line-sm"></div>
+        <div class="deco-dot-sm"></div>
+        <div class="deco-line-sm r"></div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -528,86 +388,48 @@ body{
     <div class="badge-glow"></div>
     <div class="badge-shine"></div>
 
-    <!-- 배지 위 미니 깃털 -->
-    <div class="badge-feathers">
-      <svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="bfg0" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.0"/>
-            <stop offset="40%"  stop-color="#ffffff" stop-opacity="0.55"/>
-            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.9"/>
-          </linearGradient>
-          <linearGradient id="bfg1" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stop-color="#f0c96a" stop-opacity="0.0"/>
-            <stop offset="40%"  stop-color="#f0c96a" stop-opacity="0.55"/>
-            <stop offset="100%" stop-color="#fff8e7" stop-opacity="0.88"/>
-          </linearGradient>
-          <linearGradient id="bfg2" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.0"/>
-            <stop offset="40%"  stop-color="#a855f7" stop-opacity="0.45"/>
-            <stop offset="100%" stop-color="#e8d5ff" stop-opacity="0.82"/>
-          </linearGradient>
-        </defs>
-
-        <!-- 중앙 직립 -->
-        <line x1="80" y1="40" x2="80" y2="1" stroke="rgba(255,255,255,0.8)" stroke-width="0.7" stroke-linecap="round"/>
-        <path d="M 80,40 C 74,28 72,14 74,1" stroke="url(#bfg0)" stroke-width="0.75" fill="none" stroke-linecap="round" opacity="0.88"/>
-        <path d="M 80,40 C 86,28 88,14 86,1" stroke="url(#bfg0)" stroke-width="0.75" fill="none" stroke-linecap="round" opacity="0.88"/>
-        <!-- 중앙 광점 -->
-        <circle cx="80" cy="1" r="1.4" fill="white" opacity="0.9">
-          <animate attributeName="r" values="1.4;2.2;1.4" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="80" cy="1" r="4" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.7">
-          <animate attributeName="r" values="4;9;4" dur="3s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.22;0;0.22" dur="3s" repeatCount="indefinite"/>
-        </circle>
-
-        <!-- 왼쪽1 골드 -->
-        <line x1="68" y1="40" x2="56" y2="3" stroke="rgba(240,201,106,0.6)" stroke-width="0.6" stroke-linecap="round"/>
-        <path d="M 68,40 C 60,28 54,14 52,4" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
-        <path d="M 68,40 C 74,27 72,13 60,3" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
-        <circle cx="56" cy="3" r="1.1" fill="#f0c96a" opacity="0.75">
-          <animate attributeName="opacity" values="0.75;1;0.75" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
-        </circle>
-
-        <!-- 오른쪽1 골드 -->
-        <line x1="92" y1="40" x2="104" y2="3" stroke="rgba(240,201,106,0.6)" stroke-width="0.6" stroke-linecap="round"/>
-        <path d="M 92,40 C 86,27 88,13 100,3" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
-        <path d="M 92,40 C 100,28 106,14 108,4" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
-        <circle cx="104" cy="3" r="1.1" fill="#f0c96a" opacity="0.75">
-          <animate attributeName="opacity" values="0.75;1;0.75" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
-        </circle>
-
-        <!-- 왼쪽2 퍼플 -->
-        <line x1="54" y1="40" x2="36" y2="8" stroke="rgba(168,85,247,0.45)" stroke-width="0.55" stroke-linecap="round"/>
-        <path d="M 54,40 C 42,28 30,16 28,10" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
-        <path d="M 54,40 C 62,27 58,14 44,6" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
-        <circle cx="36" cy="8" r="0.9" fill="#c084fc" opacity="0.65">
-          <animate attributeName="opacity" values="0.65;0.9;0.65" dur="4s" repeatCount="indefinite" begin="0.6s"/>
-        </circle>
-
-        <!-- 오른쪽2 퍼플 -->
-        <line x1="106" y1="40" x2="124" y2="8" stroke="rgba(168,85,247,0.45)" stroke-width="0.55" stroke-linecap="round"/>
-        <path d="M 106,40 C 96,27 102,14 116,6" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
-        <path d="M 106,40 C 118,28 130,16 132,10" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
-        <circle cx="124" cy="8" r="0.9" fill="#c084fc" opacity="0.65">
-          <animate attributeName="opacity" values="0.65;0.9;0.65" dur="4s" repeatCount="indefinite" begin="0.6s"/>
-        </circle>
-
-        <!-- 외곽 왼쪽3 흰 -->
-        <line x1="38" y1="40" x2="16" y2="16" stroke="rgba(255,255,255,0.2)" stroke-width="0.45" stroke-linecap="round"/>
-        <path d="M 38,40 C 24,30 10,20 8,18" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
-        <path d="M 38,40 C 46,28 40,16 24,12" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
-
-        <!-- 외곽 오른쪽3 흰 -->
-        <line x1="122" y1="40" x2="144" y2="16" stroke="rgba(255,255,255,0.2)" stroke-width="0.45" stroke-linecap="round"/>
-        <path d="M 122,40 C 114,28 120,16 136,12" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
-        <path d="M 122,40 C 130,30 150,20 152,18" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
-      </svg>
-    </div>
+    <!-- 배지 좌측 미니 엠블렘 -->
+    <svg width="14" height="14" viewBox="0 0 28 28" fill="none"
+      style="position:relative;z-index:3;flex-shrink:0;">
+      <defs>
+        <linearGradient id="bEmbG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#f0c96a"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+      </defs>
+      <path d="M14,1 L15.8,10.2 L24,8 L17.8,14 L24,20 L15.8,17.8 L14,27 L12.2,17.8 L4,20 L10.2,14 L4,8 L12.2,10.2 Z"
+        fill="none" stroke="url(#bEmbG)" stroke-width="1" opacity="0.75"/>
+      <circle cx="14" cy="14" r="2.2" fill="url(#bEmbG)" opacity="0.9">
+        <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <line x1="14" y1="2"  x2="14" y2="5"  stroke="#f0c96a" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      <line x1="14" y1="23" x2="14" y2="26" stroke="#f0c96a" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      <line x1="2"  y1="14" x2="5"  y2="14" stroke="#a855f7" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      <line x1="23" y1="14" x2="26" y2="14" stroke="#a855f7" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+    </svg>
 
     <span class="badge-algo-text">ALGO</span>
+
+    <!-- 배지 우측 미니 엠블렘 -->
+    <svg width="14" height="14" viewBox="0 0 28 28" fill="none"
+      style="position:relative;z-index:3;flex-shrink:0;">
+      <defs>
+        <linearGradient id="bEmbG2" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#a855f7"/>
+          <stop offset="100%" stop-color="#f0c96a"/>
+        </linearGradient>
+      </defs>
+      <path d="M14,1 L15.8,10.2 L24,8 L17.8,14 L24,20 L15.8,17.8 L14,27 L12.2,17.8 L4,20 L10.2,14 L4,8 L12.2,10.2 Z"
+        fill="none" stroke="url(#bEmbG2)" stroke-width="1" opacity="0.75"/>
+      <circle cx="14" cy="14" r="2.2" fill="url(#bEmbG2)" opacity="0.9">
+        <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+      </circle>
+      <line x1="14" y1="2"  x2="14" y2="5"  stroke="#a855f7" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      <line x1="14" y1="23" x2="14" y2="26" stroke="#a855f7" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      <line x1="2"  y1="14" x2="5"  y2="14" stroke="#f0c96a" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+      <line x1="23" y1="14" x2="26" y2="14" stroke="#f0c96a" stroke-width="1" opacity="0.6" stroke-linecap="round"/>
+    </svg>
+
   </div>
 </div>
 
