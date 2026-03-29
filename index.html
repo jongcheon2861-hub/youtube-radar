@@ -261,10 +261,6 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 .card-scene[data-lv="MAX"] .sparkle-dot{color:#e0aaff;text-shadow:0 0 10px rgba(180,100,255,.9);}
 .card-scene[data-lv="MAX"] .xp-bar-fill{background:linear-gradient(90deg,#3d00a0,#7b2fff,#c084fc,#ffd700,#c084fc);background-size:200% 100%;animation:maxXpShine 1.5s linear infinite;box-shadow:0 0 8px rgba(160,80,255,.9),0 0 16px rgba(255,215,0,.4);}
 @keyframes maxXpShine{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-
-/* ════ LV MAX 푸터 이름 중앙 정렬 ════ */
-.card-scene[data-lv="MAX"] .card-footer.footer-max{justify-content:center;gap:0;}
-.card-scene[data-lv="MAX"] .footer-name-center{font-size:13px;font-weight:800;color:#fff;text-align:center;text-shadow:0 0 14px rgba(180,100,255,.9),0 0 28px rgba(140,60,255,.6);letter-spacing:.1em;}
 </style>
 </head>
 <body>
@@ -272,6 +268,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 <div class="page-sub">마우스를 카드 위에 올리면 빔·테두리·카드가 함께 3D 틸트됩니다</div>
 <div class="cards-grid" id="cards-grid"></div>
 <script>
+/* ── 레벨별 경험치 구간 정의 ── */
 const XP_RANGES = {
   1:  { min:1,   max:10,  current:5,   next:10  },
   2:  { min:11,  max:20,  current:15,  next:20  },
@@ -338,24 +335,6 @@ function buildXP(g) {
 </div>`;
 }
 
-function buildFooter(g) {
-  const lvLabel = g.lv === 'MAX' ? 'LV.MAX' : `LV.${g.lv}`;
-  if (g.lv === 'MAX') {
-    return `
-<div class="card-footer" style="position:relative;justify-content:space-between;align-items:center;">
-  <div class="footer-lv">${lvLabel}</div>
-  <div class="footer-name-center" style="position:absolute;left:50%;transform:translateX(-50%);font-size:13px;font-weight:800;color:#fff;text-align:center;text-shadow:0 0 14px rgba(180,100,255,.9),0 0 28px rgba(140,60,255,.6);letter-spacing:.1em;white-space:nowrap;">${g.name}</div>
-  <div class="footer-subs">${g.subs}</div>
-</div>`;
-  }
-  return `
-<div class="card-footer">
-  <div class="footer-lv">${lvLabel}</div>
-  <div class="footer-name">${g.name}</div>
-  <div class="footer-subs">${g.subs}</div>
-</div>`;
-}
-
 function buildCardHTML(g) {
   const lvLabel = g.lv === 'MAX' ? 'LV.MAX' : `LV.${g.lv}`;
   const bokeh = g.bokeh.map(b =>
@@ -387,7 +366,11 @@ function buildCardHTML(g) {
         <div class="card-vignette"></div>
         <div class="card-shine"></div>
         ${buildXP(g)}
-        ${buildFooter(g)}
+        <div class="card-footer">
+          <div class="footer-lv">${lvLabel}</div>
+          <div class="footer-name">${g.name}</div>
+          <div class="footer-subs">${g.subs}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -411,7 +394,7 @@ function cardReset(el) {
   const tilt = el.querySelector('.card-tilt');
   if (tilt) tilt.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
   const shine = el.querySelector('.card-shine');
-  if(shine) shine.style.background = `linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)`;
+  if (shine) shine.style.background = `linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
