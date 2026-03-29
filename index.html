@@ -6,9 +6,6 @@
 <title>ALGO · 알고리빙1004</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════
-   ROOT
-═══════════════════════════════ */
 :root{
   --void:      #03020a;
   --deep:      #0a0518;
@@ -30,357 +27,239 @@ body{
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  gap: 90px;
+  gap: 80px;
   padding: 80px 24px;
   overflow-x: hidden;
-  position: relative;
 }
 
-/* ═══════════════════════════════
-   배경 — 블랙홀 코어
-═══════════════════════════════ */
-.bg-layer{
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-}
-/* 심연 그라디언트 */
+/* ── 배경 ── */
 .bg-void{
   position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
     radial-gradient(ellipse 55% 45% at 50% 42%,
-      rgba(45,13,92,.55)  0%,
-      rgba(26,5,53,.38)   30%,
-      rgba(10,5,24,.28)   55%,
-      transparent         80%),
+      rgba(45,13,92,.5) 0%, rgba(26,5,53,.32) 35%, transparent 75%),
     radial-gradient(ellipse 100% 80% at 50% 50%,
-      var(--deep) 0%,
-      var(--void) 70%);
+      var(--deep) 0%, var(--void) 70%);
 }
-/* 블랙홀 코어 광환 */
 .bh-core{
-  position:fixed;
-  width: 320px; height: 160px;
-  top:38%; left:50%;
-  transform: translate(-50%,-50%);
+  position:fixed; width:300px; height:150px;
+  top:38%; left:50%; transform:translate(-50%,-50%);
   border-radius:50%;
-  background:
-    radial-gradient(ellipse at center,
-      rgba(107,33,168,.22) 0%,
-      rgba(107,33,168,.08) 40%,
-      transparent 70%);
-  filter: blur(18px);
+  background:radial-gradient(ellipse at center,
+    rgba(107,33,168,.2) 0%, rgba(107,33,168,.06) 45%, transparent 72%);
+  filter:blur(20px);
   pointer-events:none; z-index:0;
-  animation: corePulse 5s ease-in-out infinite;
+  animation:corePulse 5s ease-in-out infinite;
 }
 @keyframes corePulse{
-  0%,100%{ opacity:.7; transform:translate(-50%,-50%) scale(1); }
-  50%    { opacity:1;  transform:translate(-50%,-50%) scale(1.18); }
+  0%,100%{ opacity:.65; transform:translate(-50%,-50%) scale(1); }
+  50%    { opacity:1;   transform:translate(-50%,-50%) scale(1.2); }
 }
-
-/* 팽창 링 */
 .bh-ring{
   position:fixed; border-radius:50%;
   top:38%; left:50%; transform:translate(-50%,-50%);
-  pointer-events:none; z-index:0;
-  opacity:0;
-  animation: ringEx linear infinite;
+  pointer-events:none; z-index:0; opacity:0;
+  animation:ringEx linear infinite;
 }
-.bh-ring:nth-child(1){ border:1px solid rgba(168,85,247,.18);  animation-duration:9s;  animation-delay:0s;   }
-.bh-ring:nth-child(2){ border:1px solid rgba(212,169,66,.1);   animation-duration:9s;  animation-delay:2.25s; }
-.bh-ring:nth-child(3){ border:1px solid rgba(107,33,168,.14);  animation-duration:9s;  animation-delay:4.5s;  }
-.bh-ring:nth-child(4){ border:1px solid rgba(240,201,106,.07); animation-duration:9s;  animation-delay:6.75s; }
+.bh-ring:nth-child(1){ border:1px solid rgba(168,85,247,.16);  animation-duration:9s; animation-delay:0s;    }
+.bh-ring:nth-child(2){ border:1px solid rgba(212,169,66,.09);  animation-duration:9s; animation-delay:2.25s; }
+.bh-ring:nth-child(3){ border:1px solid rgba(107,33,168,.13);  animation-duration:9s; animation-delay:4.5s;  }
+.bh-ring:nth-child(4){ border:1px solid rgba(240,201,106,.06); animation-duration:9s; animation-delay:6.75s; }
 @keyframes ringEx{
-  0%  { width:80px;  height:40px;  opacity:0; }
-  6%  { opacity:.9; }
+  0%  { width:60px;   height:30px;  opacity:0; }
+  6%  { opacity:.85; }
   100%{ width:1100px; height:550px; opacity:0; }
 }
-
-/* 별 */
 .star{
-  position:fixed; border-radius:50%;
-  pointer-events:none; z-index:0;
-  animation: twinkle ease-in-out infinite;
+  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+  animation:twinkle ease-in-out infinite;
 }
 @keyframes twinkle{
-  0%,100%{ opacity:.06; transform:scale(1); }
-  50%    { opacity:.55; transform:scale(1.5); }
+  0%,100%{ opacity:.05; transform:scale(1); }
+  50%    { opacity:.5;  transform:scale(1.5); }
 }
 
-/* 성운 먼지 */
-.nebula{
-  position:fixed; border-radius:50%;
-  pointer-events:none; z-index:0;
-  filter:blur(40px);
-  animation: nebulaDrift ease-in-out infinite;
-}
-@keyframes nebulaDrift{
-  0%,100%{ opacity:.12; transform:translate(0,0) scale(1); }
-  50%    { opacity:.22; transform:translate(12px,-8px) scale(1.06); }
-}
-
-/* ═══════════════════════════════
-   섹션 레이블
-═══════════════════════════════ */
+/* ── 섹션 레이블 ── */
 .sec-label{
   position:relative; z-index:10;
   font-family:'Noto Sans KR',sans-serif;
   font-size:9px; font-weight:300;
   letter-spacing:6px; text-transform:uppercase;
-  color:rgba(168,85,247,.4);
-  text-align:center;
-  margin-bottom:24px;
+  color:rgba(168,85,247,.38); text-align:center;
+  margin-bottom:28px;
 }
 
-/* ═══════════════════════════════
-   대형 로고 섹션
-═══════════════════════════════ */
+/* ══════════════════════════════════════
+   대형 로고
+══════════════════════════════════════ */
 .logo-section{
   position:relative; z-index:10;
   display:flex; flex-direction:column; align-items:center;
 }
-
 .logo-wrap{
   position:relative;
   display:flex; flex-direction:column; align-items:center;
-  padding: 28px 36px 36px;
-  animation: breathe 7s ease-in-out infinite;
+  padding:40px 60px 44px;
+  animation:breathe 7s ease-in-out infinite;
 }
 @keyframes breathe{
-  0%,100%{ transform:translateY(0) rotateX(0deg); }
-  50%    { transform:translateY(-11px) rotateX(1.5deg); }
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-10px); }
 }
 
-/* 로고 후광 — 보라 + 골드 이중 레이어 */
-.logo-halo-purple{
+/* 후광 */
+.logo-halo-p{
   position:absolute;
-  width:500px; height:240px;
-  top:48%; left:50%; transform:translate(-50%,-50%);
+  width:520px; height:260px;
+  top:50%; left:50%; transform:translate(-50%,-50%);
   background:radial-gradient(ellipse at 50% 45%,
-    rgba(107,33,168,.28) 0%,
-    rgba(107,33,168,.1)  40%,
-    transparent 70%);
-  filter:blur(28px);
-  pointer-events:none; z-index:0;
-  animation:haloPurple 5s ease-in-out infinite;
+    rgba(107,33,168,.25) 0%, rgba(107,33,168,.08) 45%, transparent 70%);
+  filter:blur(30px); pointer-events:none; z-index:0;
+  animation:haloP 5s ease-in-out infinite;
 }
-@keyframes haloPurple{
-  0%,100%{ opacity:.65; transform:translate(-50%,-50%) scale(1); }
-  50%    { opacity:1;   transform:translate(-50%,-50%) scale(1.12); }
+@keyframes haloP{
+  0%,100%{ opacity:.6;  transform:translate(-50%,-50%) scale(1); }
+  50%    { opacity:1;   transform:translate(-50%,-50%) scale(1.1); }
 }
-.logo-halo-gold{
+.logo-halo-g{
   position:absolute;
-  width:340px; height:140px;
-  top:52%; left:50%; transform:translate(-50%,-50%);
+  width:360px; height:130px;
+  top:54%; left:50%; transform:translate(-50%,-50%);
   background:radial-gradient(ellipse at 50% 50%,
-    rgba(212,169,66,.18) 0%,
-    rgba(212,169,66,.06) 50%,
-    transparent 75%);
-  filter:blur(20px);
-  pointer-events:none; z-index:0;
-  animation:haloGold 4s ease-in-out infinite;
+    rgba(212,169,66,.16) 0%, rgba(212,169,66,.04) 55%, transparent 75%);
+  filter:blur(18px); pointer-events:none; z-index:0;
+  animation:haloG 4s ease-in-out infinite;
 }
-@keyframes haloGold{
-  0%,100%{ opacity:.5; }
-  50%    { opacity:.9; }
+@keyframes haloG{
+  0%,100%{ opacity:.45; }
+  50%    { opacity:.85; }
 }
 
-/* 날개 + 텍스트 행 */
-.logo-main-row{
-  display:flex; align-items:center; gap:10px;
-  position:relative; z-index:2;
+/* 깃털 + 텍스트 컨테이너 */
+.logo-inner{
+  position:relative;
+  display:flex; flex-direction:column; align-items:center;
+  z-index:2;
 }
 
-/* ── 날개 ── */
-.wing-wrap{ position:relative; }
-.wing-wrap.left {
-  animation: wBeatL 5.5s ease-in-out infinite;
-  transform-origin:100% 58%;
-}
-.wing-wrap.right{
-  animation: wBeatR 5.5s ease-in-out infinite;
-  transform-origin:0% 58%;
-}
-@keyframes wBeatL{
-  0%,100%{
-    transform:rotate(0deg) scaleX(1);
-    filter:
-      drop-shadow(0 0 5px rgba(168,85,247,.4))
-      drop-shadow(0 0 12px rgba(212,169,66,.2));
-  }
-  38%{
-    transform:rotate(-9deg) scaleX(1.07);
-    filter:
-      drop-shadow(0 0 12px rgba(168,85,247,.8))
-      drop-shadow(0 0 24px rgba(240,201,106,.45))
-      drop-shadow(0 0 40px rgba(107,33,168,.35));
-  }
-  65%{ transform:rotate(2.5deg) scaleX(.97); }
-}
-@keyframes wBeatR{
-  0%,100%{
-    transform:rotate(0deg) scaleX(1);
-    filter:
-      drop-shadow(0 0 5px rgba(168,85,247,.4))
-      drop-shadow(0 0 12px rgba(212,169,66,.2));
-  }
-  38%{
-    transform:rotate(9deg) scaleX(1.07);
-    filter:
-      drop-shadow(0 0 12px rgba(168,85,247,.8))
-      drop-shadow(0 0 24px rgba(240,201,106,.45))
-      drop-shadow(0 0 40px rgba(107,33,168,.35));
-  }
-  65%{ transform:rotate(-2.5deg) scaleX(.97); }
-}
-
-/* ── 텍스트 블록 ── */
-.logo-text{
-  display:flex; flex-direction:column; align-items:center; gap:9px;
-  position:relative; z-index:3;
-}
-
-/* 상단 장식 라인 */
-.deco-top{
-  display:flex; align-items:center; gap:12px;
-  opacity:.7;
-}
-.deco-line{
-  height:1px; width:52px;
-  background:linear-gradient(90deg, transparent, var(--gold-md));
-}
-.deco-line.r{
-  background:linear-gradient(90deg, var(--gold-md), transparent);
-}
-.deco-rune{
-  font-size:8px; color:var(--gold-md);
-  letter-spacing:2px; opacity:.8;
-}
-
-/* ALGO 메인 텍스트 */
+/* ALGO 텍스트 */
 .logo-algo{
   font-family:'Cinzel',serif;
-  font-size:66px; font-weight:900;
-  letter-spacing:22px; padding-right:22px;
-  background: linear-gradient(175deg,
-    var(--gold-wh)  0%,
-    var(--gold-lt)  28%,
-    var(--gold-md)  55%,
-    var(--purple-lt) 78%,
-    var(--gold-lt)  100%);
+  font-size:72px; font-weight:900;
+  letter-spacing:24px; padding-right:24px;
+  background:linear-gradient(175deg,
+    var(--gold-wh)   0%,
+    var(--gold-lt)   25%,
+    var(--gold-md)   52%,
+    var(--purple-lt) 76%,
+    var(--gold-lt)   100%);
   -webkit-background-clip:text; background-clip:text;
   -webkit-text-fill-color:transparent;
-  filter: drop-shadow(0 0 28px rgba(168,85,247,.5));
-  animation: algoShimmer 6s ease-in-out infinite;
   background-size:200% 200%;
+  filter:drop-shadow(0 0 26px rgba(168,85,247,.48));
+  animation:algoShimmer 6s ease-in-out infinite;
+  position:relative; z-index:5;
+  /* 깃털이 꽂히는 뒤 공간 확보 */
+  margin-top: 20px;
 }
 @keyframes algoShimmer{
-  0%,100%{ background-position:0% 50%;   filter:drop-shadow(0 0 22px rgba(168,85,247,.45)); }
-  50%    { background-position:100% 50%; filter:drop-shadow(0 0 42px rgba(168,85,247,.75)) drop-shadow(0 0 60px rgba(212,169,66,.3)); }
+  0%,100%{ background-position:0% 50%;   filter:drop-shadow(0 0 20px rgba(168,85,247,.42)); }
+  50%    { background-position:100% 50%; filter:drop-shadow(0 0 40px rgba(168,85,247,.72)) drop-shadow(0 0 58px rgba(212,169,66,.28)); }
 }
 
 /* 구분선 */
 .logo-rule{
-  width:100%; height:1px; position:relative;
+  width:100%; height:1px; margin:10px 0 8px; position:relative;
   background:linear-gradient(90deg,
-    transparent        0%,
-    rgba(168,85,247,.2) 15%,
-    rgba(212,169,66,.6) 45%,
-    rgba(168,85,247,.5) 55%,
-    rgba(212,169,66,.2) 85%,
-    transparent        100%);
+    transparent 0%, rgba(168,85,247,.2) 15%,
+    rgba(212,169,66,.58) 45%, rgba(168,85,247,.48) 55%,
+    rgba(212,169,66,.18) 85%, transparent 100%);
 }
 .logo-rule::before,.logo-rule::after{
-  content:''; position:absolute;
-  top:50%; transform:translateY(-50%);
-  width:4px; height:4px; border-radius:50%;
+  content:''; position:absolute; top:50%; transform:translateY(-50%);
+  width:3.5px; height:3.5px; border-radius:50%;
 }
-.logo-rule::before{ left:18%;  background:var(--gold-md); box-shadow:0 0 6px var(--gold-md); }
-.logo-rule::after { right:18%; background:var(--purple-lt); box-shadow:0 0 6px var(--purple-lt); }
+.logo-rule::before{ left:16%;  background:var(--gold-md); box-shadow:0 0 5px var(--gold-md); }
+.logo-rule::after { right:16%; background:var(--purple-lt); box-shadow:0 0 5px var(--purple-lt); }
 
-/* 서브 텍스트 */
 .logo-sub{
   font-family:'Cormorant Garamond',serif;
   font-style:italic; font-weight:300;
   font-size:14px; letter-spacing:8px; padding-right:8px;
-  color:rgba(212,169,66,.55);
-  animation: subFade 5s ease-in-out infinite;
+  color:rgba(212,169,66,.52);
+  animation:subFade 5s ease-in-out infinite;
 }
-@keyframes subFade{
-  0%,100%{ opacity:.55; }
-  50%    { opacity:.85; }
+@keyframes subFade{ 0%,100%{ opacity:.52; } 50%{ opacity:.82; } }
+
+/* ══════════════════════════════════════
+   깃털 SVG 공통
+══════════════════════════════════════ */
+.feathers-layer{
+  position:absolute;
+  /* 텍스트 위 중앙에 꽂힌 것처럼 */
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 110px;
+  pointer-events: none;
+  z-index: 4;
 }
 
-/* ═══════════════════════════════
+/* ══════════════════════════════════════
    소형 배지
-═══════════════════════════════ */
+══════════════════════════════════════ */
 .badge-section{
   position:relative; z-index:10;
   display:flex; flex-direction:column; align-items:center;
 }
-
 .badge-wrap{
   position:relative;
-  display:inline-flex; align-items:center; gap:6px;
-  padding:9px 18px 9px 14px;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 20px;
   border-radius:40px;
   animation:badgeFloat 5.5s ease-in-out infinite;
   cursor:pointer;
 }
-@keyframes badgeFloat{
-  0%,100%{ transform:translateY(0); }
-  50%    { transform:translateY(-6px); }
-}
-.badge-wrap:hover{ transform:scale(1.04); transition:transform .2s; }
-
-/* 배지 유리 배경 */
+@keyframes badgeFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
 .badge-glass{
   position:absolute; inset:0; border-radius:40px; z-index:0;
   background:linear-gradient(135deg,
-    rgba(45,13,92,.55)   0%,
-    rgba(10,5,24,.7)     50%,
-    rgba(26,5,53,.5)    100%);
+    rgba(45,13,92,.52) 0%, rgba(10,5,24,.68) 50%, rgba(26,5,53,.48) 100%);
   backdrop-filter:blur(8px);
 }
-/* 배지 테두리 — 보라+골드 그라디언트 */
 .badge-border{
   position:absolute; inset:0; border-radius:40px; z-index:1; pointer-events:none;
   border:1px solid transparent;
   background:
     linear-gradient(var(--void),var(--void)) padding-box,
     linear-gradient(135deg,
-      rgba(168,85,247,.7)  0%,
-      rgba(212,169,66,.5)  35%,
-      rgba(168,85,247,.4)  65%,
-      rgba(240,201,106,.6) 100%) border-box;
+      rgba(168,85,247,.65) 0%, rgba(212,169,66,.48) 35%,
+      rgba(168,85,247,.38) 65%, rgba(240,201,106,.55) 100%) border-box;
 }
-/* 배지 내부 글로우 */
 .badge-glow{
   position:absolute; inset:0; border-radius:40px; z-index:0; pointer-events:none;
-  background:radial-gradient(ellipse at center,
-    rgba(107,33,168,.2) 0%, transparent 70%);
-  animation:badgeGlowPulse 4s ease-in-out infinite;
+  background:radial-gradient(ellipse at center, rgba(107,33,168,.18) 0%, transparent 70%);
+  animation:bGlow 4s ease-in-out infinite;
 }
-@keyframes badgeGlowPulse{
-  0%,100%{ opacity:.6; }
-  50%    { opacity:1; }
-}
-/* 샤인 */
+@keyframes bGlow{ 0%,100%{ opacity:.55; } 50%{ opacity:1; } }
 .badge-shine{
-  position:absolute; inset:0; border-radius:40px; z-index:2;
-  overflow:hidden; pointer-events:none;
+  position:absolute; inset:0; border-radius:40px; z-index:2; overflow:hidden; pointer-events:none;
 }
 .badge-shine::after{
-  content:''; position:absolute;
-  top:0; left:-130%; width:75%; height:100%;
-  background:linear-gradient(90deg,
-    transparent,
-    rgba(255,255,255,.12),
-    transparent);
+  content:''; position:absolute; top:0; left:-130%; width:75%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.11), transparent);
   transform:skewX(-18deg);
   animation:shineSlide 5s ease-in-out infinite;
 }
-@keyframes shineSlide{
-  0%,58%,100%{ left:-130%; }
-  82%        { left:150%; }
+@keyframes shineSlide{ 0%,58%,100%{ left:-130%; } 82%{ left:150%; } }
+
+/* 배지 깃털 레이어 */
+.badge-feathers{
+  position:absolute;
+  top: -22px; left:50%; transform:translateX(-50%);
+  width:160px; height:40px;
+  pointer-events:none; z-index:4;
 }
 
 .badge-algo-text{
@@ -388,25 +267,19 @@ body{
   font-size:13px; font-weight:700;
   letter-spacing:5px; padding-right:5px;
   background:linear-gradient(90deg,
-    var(--gold-lt)   0%,
-    var(--gold-wh)   40%,
-    var(--purple-lt) 70%,
-    var(--gold-lt)   100%);
+    var(--gold-lt) 0%, var(--gold-wh) 40%,
+    var(--purple-lt) 70%, var(--gold-lt) 100%);
   -webkit-background-clip:text; background-clip:text;
   -webkit-text-fill-color:transparent;
-  position:relative; z-index:3;
-  animation:badgeTextAnim 5s ease-in-out infinite;
   background-size:200% 100%;
+  position:relative; z-index:3;
+  animation:badgeTA 5s ease-in-out infinite;
 }
-@keyframes badgeTextAnim{
-  0%,100%{ background-position:0% 50%; }
-  50%    { background-position:100% 50%; }
-}
+@keyframes badgeTA{ 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
 </style>
 </head>
 <body>
 
-<!-- 배경 레이어 -->
 <div class="bg-void"></div>
 <div class="bh-core"></div>
 <div class="bh-ring"></div>
@@ -415,310 +288,326 @@ body{
 <div class="bh-ring"></div>
 
 <script>
-/* ─── 별 생성 ─── */
+/* 별 */
 (function(){
-  const colors = [
-    'rgba(255,248,231,.9)',
-    'rgba(168,85,247,.8)',
-    'rgba(212,169,66,.8)',
-    'rgba(245,240,236,.7)',
-  ];
-  for(let i=0;i<70;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const sz=Math.random()*1.6+.3;
-    const c=colors[Math.floor(Math.random()*colors.length)];
-    s.style.cssText=`
-      width:${sz}px;height:${sz}px;
-      left:${Math.random()*100}%;
-      top:${Math.random()*100}%;
-      background:${c};
-      box-shadow:0 0 ${sz*2}px ${c};
-      animation-duration:${Math.random()*5+3}s;
-      animation-delay:${Math.random()*7}s;
-    `;
+  const cs=['rgba(255,248,231,.9)','rgba(168,85,247,.8)','rgba(212,169,66,.8)','rgba(245,240,236,.7)'];
+  for(let i=0;i<65;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()*1.5+.3, c=cs[Math.floor(Math.random()*cs.length)];
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${c};box-shadow:0 0 ${sz*2}px ${c};animation-duration:${Math.random()*5+3}s;animation-delay:${Math.random()*7}s;`;
     document.body.appendChild(s);
   }
 })();
-
-/* ─── 성운 먼지 ─── */
-(function(){
-  const nebulae=[
-    {w:280,h:180,l:10,t:15,c:'rgba(107,33,168,.18)',dur:12},
-    {w:200,h:140,l:70,t:60,c:'rgba(212,169,66,.1)',dur:16},
-    {w:240,h:160,l:55,t:20,c:'rgba(45,13,92,.22)',dur:10},
-    {w:180,h:120,l:20,t:70,c:'rgba(168,85,247,.12)',dur:14},
-  ];
-  nebulae.forEach(n=>{
-    const el=document.createElement('div');
-    el.className='nebula';
-    el.style.cssText=`
-      width:${n.w}px;height:${n.h}px;
-      left:${n.l}%;top:${n.t}%;
-      background:radial-gradient(ellipse,${n.c} 0%,transparent 70%);
-      animation-duration:${n.dur}s;
-      animation-delay:${Math.random()*4}s;
-    `;
-    document.body.appendChild(el);
-  });
-})();
 </script>
 
-<!-- ══════════════════════
-     대형 로고
-══════════════════════ -->
+<!-- ══ 대형 로고 ══ -->
 <div class="logo-section">
   <div class="sec-label">◈ &nbsp; Page Title Logo &nbsp; ◈</div>
-
   <div class="logo-wrap">
-    <div class="logo-halo-purple"></div>
-    <div class="logo-halo-gold"></div>
+    <div class="logo-halo-p"></div>
+    <div class="logo-halo-g"></div>
 
-    <div class="logo-main-row">
+    <div class="logo-inner">
 
-      <!-- ── 왼쪽 날개 ── -->
-      <div class="wing-wrap left">
-        <svg width="155" height="135" viewBox="0 0 155 135" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 깃털 레이어 — ALGO 텍스트 위에 꽂힘 -->
+      <div class="feathers-layer">
+        <svg width="420" height="110" viewBox="0 0 420 110" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <!-- 골드→퍼플 날개 그라디언트 -->
-            <linearGradient id="wgL" x1="145" y1="10" x2="5" y2="125" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#f0c96a" stop-opacity="1"/>
-              <stop offset="30%"  stop-color="#d4a942" stop-opacity="0.85"/>
-              <stop offset="65%"  stop-color="#a855f7" stop-opacity="0.6"/>
-              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.12"/>
+            <!-- 흰 깃털 그라디언트: 밑둥(불투명)→끝(투명) -->
+            <linearGradient id="fg0" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+              <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.0"/>
+              <stop offset="35%"  stop-color="#f8f4ff" stop-opacity="0.55"/>
+              <stop offset="70%"  stop-color="#fffbf0" stop-opacity="0.82"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.95"/>
             </linearGradient>
-            <!-- 면 채움 그라디언트 -->
-            <linearGradient id="wfL" x1="145" y1="5" x2="15" y2="130" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.22"/>
-              <stop offset="45%"  stop-color="#d4a942" stop-opacity="0.1"/>
-              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.04"/>
+            <!-- 골드 섞인 깃털 -->
+            <linearGradient id="fg1" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+              <stop offset="0%"   stop-color="#d4a942" stop-opacity="0.0"/>
+              <stop offset="30%"  stop-color="#f0c96a" stop-opacity="0.45"/>
+              <stop offset="65%"  stop-color="#fff8e7" stop-opacity="0.78"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.92"/>
             </linearGradient>
-            <filter id="fgL">
-              <feGaussianBlur stdDeviation="1.8" result="b"/>
+            <!-- 퍼플 섞인 깃털 -->
+            <linearGradient id="fg2" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+              <stop offset="0%"   stop-color="#6b21a8" stop-opacity="0.0"/>
+              <stop offset="30%"  stop-color="#a855f7" stop-opacity="0.4"/>
+              <stop offset="65%"  stop-color="#e8d5ff" stop-opacity="0.72"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.9"/>
+            </linearGradient>
+            <filter id="ff_soft">
+              <feGaussianBlur stdDeviation="0.6" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="ff_glow">
+              <feGaussianBlur stdDeviation="2" result="b"/>
               <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
 
-          <!-- 날개 반투명 면 -->
-          <path d="
-            M 142 66
-            C 122 52, 96 28, 68 8
-            C 50 -2, 24 -4, 8 18
-            C 30 23, 56 38, 72 52
-            C 50 40, 22 34, 7 46
-            C 26 52, 54 60, 72 68
-            C 49 63, 22 64, 7 76
-            C 26 76, 54 75, 72 80
-            C 50 82, 24 86, 10 96
-            C 30 91, 56 88, 72 92
-            C 60 98, 38 106, 26 114
-            C 46 107, 68 101, 80 104
-            L 142 66 Z
-          " fill="url(#wfL)" filter="url(#fgL)"/>
+          <!--
+            깃털 배치 전략:
+            - 중앙(ALGO 가운데) 기준으로 부채꼴 분산
+            - 각 깃털은 밑둥이 텍스트 상단(y≈105)에 위치
+            - 위로 솟구치며 좌우로 기울어짐
+            - 5종 깃털 타입: 중앙 직립, 좌/우 경사, 외곽 넓은 경사
+          -->
 
-          <!-- 1차 대형깃 — 위로 힘차게 -->
-          <path d="M 142,66 C 116,50 88,26 64,7"
-            stroke="url(#wgL)" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-          <path d="M 141,66 C 112,52 82,32 56,14"
-            stroke="url(#wgL)" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
+          <!-- ╔══ 깃털 그리기: path 구조 = 밑둥→줄기→왼쪽 날→오른쪽 날 ══╗ -->
 
-          <!-- 2차깃 -->
-          <path d="M 138,69 C 110,58 80,44 48,31"
-            stroke="url(#wgL)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
-          <path d="M 134,73 C 106,64 78,53 46,45"
-            stroke="url(#wgL)" stroke-width="0.9" stroke-linecap="round" opacity="0.45"/>
+          <!-- ── 중앙 깃털 (직립, 가장 길고 밝음) ── -->
+          <g filter="url(#ff_glow)">
+            <!-- 줄기 -->
+            <line x1="210" y1="105" x2="210" y2="4"
+              stroke="rgba(255,255,255,0.85)" stroke-width="0.9" stroke-linecap="round"/>
+            <!-- 왼쪽 날 -->
+            <path d="M 210,105 C 196,85 188,60 190,8"
+              stroke="url(#fg0)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.92"/>
+            <!-- 오른쪽 날 -->
+            <path d="M 210,105 C 224,85 232,60 230,8"
+              stroke="url(#fg0)" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.92"/>
+            <!-- 내부 결 -->
+            <path d="M 210,95 C 204,78 200,55 202,18"
+              stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+            <path d="M 210,95 C 216,78 220,55 218,18"
+              stroke="rgba(255,255,255,0.3)" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+            <!-- 가로 바브 (깃털 결) -->
+            <line x1="200" y1="28" x2="220" y2="28" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
+            <line x1="198" y1="40" x2="222" y2="40" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <line x1="196" y1="52" x2="224" y2="52" stroke="rgba(255,255,255,0.12)" stroke-width="0.5"/>
+            <line x1="194" y1="65" x2="226" y2="65" stroke="rgba(255,255,255,0.10)" stroke-width="0.5"/>
+            <line x1="192" y1="78" x2="228" y2="78" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+          </g>
 
-          <!-- 3차깃 -->
-          <path d="M 128,78 C 102,72 74,66 42,60"
-            stroke="url(#wgL)" stroke-width="0.8" stroke-linecap="round" opacity="0.38"/>
-          <path d="M 122,83 C 97,79 70,74 38,70"
-            stroke="url(#wgL)" stroke-width="0.75" stroke-linecap="round" opacity="0.3"/>
+          <!-- ── 중앙 왼쪽 1번 깃털 (골드) ── -->
+          <g filter="url(#ff_soft)">
+            <line x1="188" y1="107" x2="172" y2="6"
+              stroke="rgba(240,201,106,0.7)" stroke-width="0.75" stroke-linecap="round"/>
+            <path d="M 188,107 C 174,88 162,64 162,10"
+              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
+            <path d="M 188,107 C 200,86 198,62 182,6"
+              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
+            <line x1="172" y1="28" x2="187" y2="26" stroke="rgba(240,201,106,0.15)" stroke-width="0.45"/>
+            <line x1="169" y1="42" x2="186" y2="39" stroke="rgba(240,201,106,0.12)" stroke-width="0.45"/>
+            <line x1="167" y1="57" x2="185" y2="53" stroke="rgba(240,201,106,0.10)" stroke-width="0.45"/>
+            <line x1="165" y1="72" x2="184" y2="68" stroke="rgba(240,201,106,0.08)" stroke-width="0.4"/>
+          </g>
 
-          <!-- 소형 복깃 (아랫단) -->
-          <path d="M 114,88  C 90,86  64,84 32,83"
-            stroke="url(#wgL)" stroke-width="0.65" stroke-linecap="round" opacity="0.24"/>
-          <path d="M 104,95  C 82,94  58,93 28,92"
-            stroke="url(#wgL)" stroke-width="0.6"  stroke-linecap="round" opacity="0.18"/>
-          <path d="M 92, 102 C 72,102 50,102 24,101"
-            stroke="url(#wgL)" stroke-width="0.55" stroke-linecap="round" opacity="0.14"/>
-          <path d="M 78, 110 C 62,111 44,111 22,110"
-            stroke="url(#wgL)" stroke-width="0.5"  stroke-linecap="round" opacity="0.1"/>
+          <!-- ── 중앙 오른쪽 1번 깃털 (골드) ── -->
+          <g filter="url(#ff_soft)">
+            <line x1="232" y1="107" x2="248" y2="6"
+              stroke="rgba(240,201,106,0.7)" stroke-width="0.75" stroke-linecap="round"/>
+            <path d="M 232,107 C 220,88 222,62 238,6"
+              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
+            <path d="M 232,107 C 246,86 258,64 258,10"
+              stroke="url(#fg1)" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.85"/>
+            <line x1="233" y1="26" x2="248" y2="28" stroke="rgba(240,201,106,0.15)" stroke-width="0.45"/>
+            <line x1="234" y1="39" x2="251" y2="42" stroke="rgba(240,201,106,0.12)" stroke-width="0.45"/>
+            <line x1="235" y1="53" x2="253" y2="57" stroke="rgba(240,201,106,0.10)" stroke-width="0.45"/>
+            <line x1="236" y1="68" x2="256" y2="72" stroke="rgba(240,201,106,0.08)" stroke-width="0.4"/>
+          </g>
 
-          <!-- 날개 끝 광점 (골드) -->
-          <circle cx="64" cy="7" r="2.4" fill="#f0c96a" opacity="0.95">
-            <animate attributeName="r"       values="2.4;4;2.4"   dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.95;1;0.95" dur="3s" repeatCount="indefinite"/>
+          <!-- ── 왼쪽 2번 깃털 (퍼플, 경사짐) ── -->
+          <g filter="url(#ff_soft)">
+            <line x1="164" y1="108" x2="134" y2="12"
+              stroke="rgba(168,85,247,0.55)" stroke-width="0.7" stroke-linecap="round"/>
+            <path d="M 164,108 C 144,90 128,68 126,16"
+              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
+            <path d="M 164,108 C 178,88 170,64 142,8"
+              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
+            <line x1="135" y1="34" x2="153" y2="30" stroke="rgba(168,85,247,0.12)" stroke-width="0.4"/>
+            <line x1="132" y1="50" x2="151" y2="45" stroke="rgba(168,85,247,0.10)" stroke-width="0.4"/>
+            <line x1="130" y1="67" x2="149" y2="61" stroke="rgba(168,85,247,0.08)" stroke-width="0.4"/>
+          </g>
+
+          <!-- ── 오른쪽 2번 깃털 (퍼플, 경사짐) ── -->
+          <g filter="url(#ff_soft)">
+            <line x1="256" y1="108" x2="286" y2="12"
+              stroke="rgba(168,85,247,0.55)" stroke-width="0.7" stroke-linecap="round"/>
+            <path d="M 256,108 C 270,88 278,64 278,8"
+              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
+            <path d="M 256,108 C 242,90 252,68 294,16"
+              stroke="url(#fg2)" stroke-width="0.95" fill="none" stroke-linecap="round" opacity="0.78"/>
+            <line x1="267" y1="30" x2="285" y2="34" stroke="rgba(168,85,247,0.12)" stroke-width="0.4"/>
+            <line x1="269" y1="45" x2="288" y2="50" stroke="rgba(168,85,247,0.10)" stroke-width="0.4"/>
+            <line x1="271" y1="61" x2="290" y2="67" stroke="rgba(168,85,247,0.08)" stroke-width="0.4"/>
+          </g>
+
+          <!-- ── 왼쪽 3번 깃털 (흰색, 더 넓게 기울어짐) ── -->
+          <g filter="url(#ff_soft)">
+            <line x1="138" y1="108" x2="96" y2="22"
+              stroke="rgba(255,255,255,0.38)" stroke-width="0.6" stroke-linecap="round"/>
+            <path d="M 138,108 C 112,92 90,72 80,26"
+              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 138,108 C 156,90 148,68 112,18"
+              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <line x1="98" y1="44" x2="118" y2="38" stroke="rgba(255,255,255,0.09)" stroke-width="0.38"/>
+            <line x1="95" y1="62" x2="116" y2="55" stroke="rgba(255,255,255,0.07)" stroke-width="0.38"/>
+          </g>
+
+          <!-- ── 오른쪽 3번 깃털 (흰색, 더 넓게 기울어짐) ── -->
+          <g filter="url(#ff_soft)">
+            <line x1="282" y1="108" x2="324" y2="22"
+              stroke="rgba(255,255,255,0.38)" stroke-width="0.6" stroke-linecap="round"/>
+            <path d="M 282,108 C 272,90 292,68 308,18"
+              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <path d="M 282,108 C 308,90 330,72 340,26"
+              stroke="url(#fg0)" stroke-width="0.85" fill="none" stroke-linecap="round" opacity="0.6"/>
+            <line x1="302" y1="38" x2="322" y2="44" stroke="rgba(255,255,255,0.09)" stroke-width="0.38"/>
+            <line x1="304" y1="55" x2="325" y2="62" stroke="rgba(255,255,255,0.07)" stroke-width="0.38"/>
+          </g>
+
+          <!-- ── 외곽 왼쪽 4번 깃털 (매우 연한 흰, 가장 기울어짐) ── -->
+          <g>
+            <line x1="110" y1="108" x2="58" y2="36"
+              stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-linecap="round"/>
+            <path d="M 110,108 C 80,94 54,76 42,40"
+              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
+            <path d="M 110,108 C 128,92 118,72 74,32"
+              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
+          </g>
+
+          <!-- ── 외곽 오른쪽 4번 깃털 ── -->
+          <g>
+            <line x1="310" y1="108" x2="362" y2="36"
+              stroke="rgba(255,255,255,0.2)" stroke-width="0.5" stroke-linecap="round"/>
+            <path d="M 310,108 C 292,92 302,72 346,32"
+              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
+            <path d="M 310,108 C 340,94 366,76 378,40"
+              stroke="url(#fg0)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.38"/>
+          </g>
+
+          <!-- ── 깃털 끝 광점들 ── -->
+          <!-- 중앙 -->
+          <circle cx="210" cy="4" r="1.8" fill="white" opacity="0.9">
+            <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="1.8;2.8;1.8" dur="3s" repeatCount="indefinite"/>
           </circle>
-          <!-- 퍼플 확산링 -->
-          <circle cx="64" cy="7" r="7" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="1">
-            <animate attributeName="r"       values="7;18;7"      dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.5;0;0.5"   dur="3s" repeatCount="indefinite"/>
+          <circle cx="210" cy="4" r="5" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.8">
+            <animate attributeName="r" values="5;12;5" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.25;0;0.25" dur="3s" repeatCount="indefinite"/>
           </circle>
-          <!-- 골드 확산링 -->
-          <circle cx="64" cy="7" r="4" fill="none" stroke="rgba(240,201,106,0.4)" stroke-width="0.8">
-            <animate attributeName="r"       values="4;12;4"      dur="3s" repeatCount="indefinite" begin="0.4s"/>
-            <animate attributeName="opacity" values="0.4;0;0.4"   dur="3s" repeatCount="indefinite" begin="0.4s"/>
+          <!-- 골드 깃털 끝 -->
+          <circle cx="172" cy="6" r="1.4" fill="#f0c96a" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
           </circle>
-
-          <!-- 어깨 연결점 -->
-          <circle cx="142" cy="66" r="3" fill="rgba(168,85,247,0.5)"/>
-          <circle cx="142" cy="66" r="5" fill="none" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
+          <circle cx="248" cy="6" r="1.4" fill="#f0c96a" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;1;0.8" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
+          </circle>
+          <!-- 퍼플 깃털 끝 -->
+          <circle cx="134" cy="12" r="1.2" fill="#c084fc" opacity="0.7">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite" begin="0.6s"/>
+          </circle>
+          <circle cx="286" cy="12" r="1.2" fill="#c084fc" opacity="0.7">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite" begin="0.6s"/>
+          </circle>
+          <!-- 흰 3번 끝 -->
+          <circle cx="96"  cy="22" r="1.0" fill="white" opacity="0.5">
+            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4.5s" repeatCount="indefinite" begin="0.9s"/>
+          </circle>
+          <circle cx="324" cy="22" r="1.0" fill="white" opacity="0.5">
+            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4.5s" repeatCount="indefinite" begin="0.9s"/>
+          </circle>
         </svg>
       </div>
 
-      <!-- ── 텍스트 ── -->
-      <div class="logo-text">
-        <div class="deco-top">
-          <div class="deco-line"></div>
-          <div class="deco-rune">✦</div>
-          <div class="deco-line r"></div>
-        </div>
-        <div class="logo-algo">ALGO</div>
-        <div class="logo-rule"></div>
-        <div class="logo-sub">알고리빙1004</div>
-      </div>
+      <!-- ALGO 텍스트 -->
+      <div class="logo-algo">ALGO</div>
+      <div class="logo-rule"></div>
+      <div class="logo-sub">알고리빙1004</div>
 
-      <!-- ── 오른쪽 날개 ── -->
-      <div class="wing-wrap right">
-        <svg width="155" height="135" viewBox="0 0 155 135" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="wgR" x1="10" y1="10" x2="150" y2="125" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#f0c96a" stop-opacity="1"/>
-              <stop offset="30%"  stop-color="#d4a942" stop-opacity="0.85"/>
-              <stop offset="65%"  stop-color="#a855f7" stop-opacity="0.6"/>
-              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.12"/>
-            </linearGradient>
-            <linearGradient id="wfR" x1="10" y1="5" x2="140" y2="130" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.22"/>
-              <stop offset="45%"  stop-color="#d4a942" stop-opacity="0.1"/>
-              <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.04"/>
-            </linearGradient>
-          </defs>
+    </div><!-- /logo-inner -->
+  </div>
+</div>
 
-          <!-- 날개 면 -->
-          <path d="
-            M 13 66
-            C 33 52, 59 28, 87 8
-            C 105 -2, 131 -4, 147 18
-            C 125 23, 99 38, 83 52
-            C 105 40, 133 34, 148 46
-            C 129 52, 101 60, 83 68
-            C 106 63, 133 64, 148 76
-            C 129 76, 101 75, 83 80
-            C 105 82, 131 86, 145 96
-            C 125 91, 99 88, 83 92
-            C 95 98, 117 106, 129 114
-            C 109 107, 87 101, 75 104
-            L 13 66 Z
-          " fill="url(#wfR)" filter="url(#fgL)"/>
-
-          <!-- 1차깃 -->
-          <path d="M 13,66 C 39,50 67,26 91,7"
-            stroke="url(#wgR)" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-          <path d="M 14,66 C 43,52 73,32 99,14"
-            stroke="url(#wgR)" stroke-width="1.1" stroke-linecap="round" opacity="0.65"/>
-
-          <!-- 2차깃 -->
-          <path d="M 17,69 C 45,58 75,44 107,31"
-            stroke="url(#wgR)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
-          <path d="M 21,73 C 49,64 77,53 109,45"
-            stroke="url(#wgR)" stroke-width="0.9" stroke-linecap="round" opacity="0.45"/>
-
-          <!-- 3차깃 -->
-          <path d="M 27,78 C 53,72 81,66 113,60"
-            stroke="url(#wgR)" stroke-width="0.8" stroke-linecap="round" opacity="0.38"/>
-          <path d="M 33,83 C 58,79 85,74 117,70"
-            stroke="url(#wgR)" stroke-width="0.75" stroke-linecap="round" opacity="0.3"/>
-
-          <!-- 소형 복깃 -->
-          <path d="M 41,88  C 65,86  91,84 123,83"
-            stroke="url(#wgR)" stroke-width="0.65" stroke-linecap="round" opacity="0.24"/>
-          <path d="M 51,95  C 73,94  97,93 127,92"
-            stroke="url(#wgR)" stroke-width="0.6"  stroke-linecap="round" opacity="0.18"/>
-          <path d="M 63,102 C 83,102 105,102 131,101"
-            stroke="url(#wgR)" stroke-width="0.55" stroke-linecap="round" opacity="0.14"/>
-          <path d="M 77,110 C 93,111 111,111 133,110"
-            stroke="url(#wgR)" stroke-width="0.5"  stroke-linecap="round" opacity="0.1"/>
-
-          <!-- 날개 끝 광점 -->
-          <circle cx="91" cy="7" r="2.4" fill="#f0c96a" opacity="0.95">
-            <animate attributeName="r"       values="2.4;4;2.4"   dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.95;1;0.95" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="91" cy="7" r="7" fill="none" stroke="rgba(168,85,247,0.5)" stroke-width="1">
-            <animate attributeName="r"       values="7;18;7"    dur="3s" repeatCount="indefinite"/>
-            <animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="91" cy="7" r="4" fill="none" stroke="rgba(240,201,106,0.4)" stroke-width="0.8">
-            <animate attributeName="r"       values="4;12;4"    dur="3s" repeatCount="indefinite" begin="0.4s"/>
-            <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" repeatCount="indefinite" begin="0.4s"/>
-          </circle>
-
-          <!-- 어깨 연결점 -->
-          <circle cx="13" cy="66" r="3" fill="rgba(168,85,247,0.5)"/>
-          <circle cx="13" cy="66" r="5" fill="none" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
-        </svg>
-      </div>
-
-    </div><!-- /logo-main-row -->
-  </div><!-- /logo-wrap -->
-</div><!-- /logo-section -->
-
-
-<!-- ══════════════════════
-     소형 배지
-══════════════════════ -->
+<!-- ══ 소형 배지 ══ -->
 <div class="badge-section">
   <div class="sec-label">◈ &nbsp; Card Header Badge &nbsp; ◈</div>
-
   <div class="badge-wrap">
     <div class="badge-glass"></div>
     <div class="badge-border"></div>
     <div class="badge-glow"></div>
     <div class="badge-shine"></div>
 
-    <!-- 왼쪽 미니 날개 -->
-    <svg width="38" height="26" viewBox="0 0 155 135" fill="none" style="position:relative;z-index:3;">
-      <defs>
-        <linearGradient id="bmL" x1="145" y1="10" x2="10" y2="125" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stop-color="#f0c96a" stop-opacity="0.95"/>
-          <stop offset="50%"  stop-color="#a855f7" stop-opacity="0.7"/>
-          <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.2"/>
-        </linearGradient>
-      </defs>
-      <path d="M 142,66 C 116,50 88,26 64,7"  stroke="url(#bmL)" stroke-width="6"   stroke-linecap="round" opacity="0.9"/>
-      <path d="M 138,69 C 110,58 80,44 48,31" stroke="url(#bmL)" stroke-width="4.5" stroke-linecap="round" opacity="0.65"/>
-      <path d="M 132,74 C 104,66 76,56 44,48" stroke="url(#bmL)" stroke-width="4"   stroke-linecap="round" opacity="0.48"/>
-      <path d="M 124,80 C 98,74  72,68 40,63" stroke="url(#bmL)" stroke-width="3.5" stroke-linecap="round" opacity="0.34"/>
-      <path d="M 114,87 C 90,83  64,80 32,77" stroke="url(#bmL)" stroke-width="3"   stroke-linecap="round" opacity="0.22"/>
-      <circle cx="64" cy="7" r="7" fill="#f0c96a" opacity="0.9">
-        <animate attributeName="r"       values="7;11;7"      dur="3s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.9;1;0.9"   dur="3s" repeatCount="indefinite"/>
-      </circle>
-    </svg>
+    <!-- 배지 위 미니 깃털 -->
+    <div class="badge-feathers">
+      <svg width="160" height="40" viewBox="0 0 160 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bfg0" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+            <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.0"/>
+            <stop offset="40%"  stop-color="#ffffff" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.9"/>
+          </linearGradient>
+          <linearGradient id="bfg1" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+            <stop offset="0%"   stop-color="#f0c96a" stop-opacity="0.0"/>
+            <stop offset="40%"  stop-color="#f0c96a" stop-opacity="0.55"/>
+            <stop offset="100%" stop-color="#fff8e7" stop-opacity="0.88"/>
+          </linearGradient>
+          <linearGradient id="bfg2" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox">
+            <stop offset="0%"   stop-color="#a855f7" stop-opacity="0.0"/>
+            <stop offset="40%"  stop-color="#a855f7" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#e8d5ff" stop-opacity="0.82"/>
+          </linearGradient>
+        </defs>
+
+        <!-- 중앙 직립 -->
+        <line x1="80" y1="40" x2="80" y2="1" stroke="rgba(255,255,255,0.8)" stroke-width="0.7" stroke-linecap="round"/>
+        <path d="M 80,40 C 74,28 72,14 74,1" stroke="url(#bfg0)" stroke-width="0.75" fill="none" stroke-linecap="round" opacity="0.88"/>
+        <path d="M 80,40 C 86,28 88,14 86,1" stroke="url(#bfg0)" stroke-width="0.75" fill="none" stroke-linecap="round" opacity="0.88"/>
+        <!-- 중앙 광점 -->
+        <circle cx="80" cy="1" r="1.4" fill="white" opacity="0.9">
+          <animate attributeName="r" values="1.4;2.2;1.4" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="80" cy="1" r="4" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="0.7">
+          <animate attributeName="r" values="4;9;4" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.22;0;0.22" dur="3s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- 왼쪽1 골드 -->
+        <line x1="68" y1="40" x2="56" y2="3" stroke="rgba(240,201,106,0.6)" stroke-width="0.6" stroke-linecap="round"/>
+        <path d="M 68,40 C 60,28 54,14 52,4" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <path d="M 68,40 C 74,27 72,13 60,3" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <circle cx="56" cy="3" r="1.1" fill="#f0c96a" opacity="0.75">
+          <animate attributeName="opacity" values="0.75;1;0.75" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
+        </circle>
+
+        <!-- 오른쪽1 골드 -->
+        <line x1="92" y1="40" x2="104" y2="3" stroke="rgba(240,201,106,0.6)" stroke-width="0.6" stroke-linecap="round"/>
+        <path d="M 92,40 C 86,27 88,13 100,3" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <path d="M 92,40 C 100,28 106,14 108,4" stroke="url(#bfg1)" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.8"/>
+        <circle cx="104" cy="3" r="1.1" fill="#f0c96a" opacity="0.75">
+          <animate attributeName="opacity" values="0.75;1;0.75" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
+        </circle>
+
+        <!-- 왼쪽2 퍼플 -->
+        <line x1="54" y1="40" x2="36" y2="8" stroke="rgba(168,85,247,0.45)" stroke-width="0.55" stroke-linecap="round"/>
+        <path d="M 54,40 C 42,28 30,16 28,10" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
+        <path d="M 54,40 C 62,27 58,14 44,6" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
+        <circle cx="36" cy="8" r="0.9" fill="#c084fc" opacity="0.65">
+          <animate attributeName="opacity" values="0.65;0.9;0.65" dur="4s" repeatCount="indefinite" begin="0.6s"/>
+        </circle>
+
+        <!-- 오른쪽2 퍼플 -->
+        <line x1="106" y1="40" x2="124" y2="8" stroke="rgba(168,85,247,0.45)" stroke-width="0.55" stroke-linecap="round"/>
+        <path d="M 106,40 C 96,27 102,14 116,6" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
+        <path d="M 106,40 C 118,28 130,16 132,10" stroke="url(#bfg2)" stroke-width="0.65" fill="none" stroke-linecap="round" opacity="0.68"/>
+        <circle cx="124" cy="8" r="0.9" fill="#c084fc" opacity="0.65">
+          <animate attributeName="opacity" values="0.65;0.9;0.65" dur="4s" repeatCount="indefinite" begin="0.6s"/>
+        </circle>
+
+        <!-- 외곽 왼쪽3 흰 -->
+        <line x1="38" y1="40" x2="16" y2="16" stroke="rgba(255,255,255,0.2)" stroke-width="0.45" stroke-linecap="round"/>
+        <path d="M 38,40 C 24,30 10,20 8,18" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
+        <path d="M 38,40 C 46,28 40,16 24,12" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
+
+        <!-- 외곽 오른쪽3 흰 -->
+        <line x1="122" y1="40" x2="144" y2="16" stroke="rgba(255,255,255,0.2)" stroke-width="0.45" stroke-linecap="round"/>
+        <path d="M 122,40 C 114,28 120,16 136,12" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
+        <path d="M 122,40 C 130,30 150,20 152,18" stroke="url(#bfg0)" stroke-width="0.55" fill="none" stroke-linecap="round" opacity="0.38"/>
+      </svg>
+    </div>
 
     <span class="badge-algo-text">ALGO</span>
-
-    <!-- 오른쪽 미니 날개 -->
-    <svg width="38" height="26" viewBox="0 0 155 135" fill="none" style="position:relative;z-index:3;">
-      <defs>
-        <linearGradient id="bmR" x1="10" y1="10" x2="150" y2="125" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stop-color="#f0c96a" stop-opacity="0.95"/>
-          <stop offset="50%"  stop-color="#a855f7" stop-opacity="0.7"/>
-          <stop offset="100%" stop-color="#6b21a8" stop-opacity="0.2"/>
-        </linearGradient>
-      </defs>
-      <path d="M 13,66 C 39,50 67,26 91,7"   stroke="url(#bmR)" stroke-width="6"   stroke-linecap="round" opacity="0.9"/>
-      <path d="M 17,69 C 45,58 75,44 107,31" stroke="url(#bmR)" stroke-width="4.5" stroke-linecap="round" opacity="0.65"/>
-      <path d="M 23,74 C 51,66 79,56 111,48" stroke="url(#bmR)" stroke-width="4"   stroke-linecap="round" opacity="0.48"/>
-      <path d="M 31,80 C 57,74  83,68 115,63" stroke="url(#bmR)" stroke-width="3.5" stroke-linecap="round" opacity="0.34"/>
-      <path d="M 41,87 C 65,83  91,80 123,77" stroke="url(#bmR)" stroke-width="3"   stroke-linecap="round" opacity="0.22"/>
-      <circle cx="91" cy="7" r="7" fill="#f0c96a" opacity="0.9">
-        <animate attributeName="r"       values="7;11;7"      dur="3s" repeatCount="indefinite"/>
-        <animate attributeName="opacity" values="0.9;1;0.9"   dur="3s" repeatCount="indefinite"/>
-      </circle>
-    </svg>
-
   </div>
 </div>
 
