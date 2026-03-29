@@ -3,888 +3,494 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ALGO · 알고리빙1004</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<title>ALGO · 알고리빙1004 — 로고</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════
    ROOT & RESET
 ══════════════════════════════════════════ */
-:root {
-  --black:    #04040a;
-  --void:     #080810;
-  --gold:     #e8c97a;
-  --gold-dim: #a8914a;
-  --white:    #f5f0e8;
-  --purple:   #2d1b69;
-  --angel:    rgba(232,201,122,0.12);
-  --glow-w:   rgba(245,240,232,0.15);
+:root{
+  --black:  #04040a;
+  --gold:   #e8c97a;
+  --gold2:  #c8a84a;
+  --white:  #f5f0e8;
+  --purple: #2d1b69;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { font-size:16px; }
-body {
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
   background: var(--black);
-  color: var(--white);
-  font-family: 'Noto Sans KR', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
+  gap: 80px;
+  padding: 60px 24px;
   overflow-x: hidden;
 }
 
 /* ══════════════════════════════════════════
-   BLACKHOLE BACKGROUND
+   배경 — 블랙홀 링
 ══════════════════════════════════════════ */
-.bh-bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+.bh-bg{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
   background:
-    radial-gradient(ellipse 60% 50% at 50% 50%,
-      rgba(45,27,105,0.18) 0%,
-      rgba(15,10,35,0.35) 35%,
-      transparent 70%),
-    radial-gradient(ellipse 100% 100% at 50% 50%,
-      #04040a 0%,
-      #080810 60%,
-      #0a0820 100%);
+    radial-gradient(ellipse 70% 60% at 50% 40%,
+      rgba(45,27,105,.14) 0%, rgba(15,10,35,.28) 40%, transparent 70%),
+    #04040a;
 }
-.bh-ring {
-  position: fixed;
-  border-radius: 50%;
-  border: 1px solid;
-  pointer-events: none;
-  z-index: 0;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  animation: bhExpand linear infinite;
-  opacity: 0;
+.bh-ring{
+  position:fixed; border-radius:50%; border:1px solid;
+  pointer-events:none; z-index:0;
+  top:40%; left:50%; transform:translate(-50%,-50%);
+  animation:bhEx linear infinite; opacity:0;
 }
-.bh-ring:nth-child(1){ width:200px; height:200px; border-color:rgba(232,201,122,.06); animation-duration:8s; animation-delay:0s; }
-.bh-ring:nth-child(2){ width:200px; height:200px; border-color:rgba(245,240,232,.04); animation-duration:8s; animation-delay:2s; }
-.bh-ring:nth-child(3){ width:200px; height:200px; border-color:rgba(45,27,105,.08); animation-duration:8s; animation-delay:4s; }
-.bh-ring:nth-child(4){ width:200px; height:200px; border-color:rgba(232,201,122,.04); animation-duration:8s; animation-delay:6s; }
-@keyframes bhExpand {
-  0%   { width:80px; height:80px; opacity:0; }
-  10%  { opacity:1; }
-  100% { width:900px; height:900px; opacity:0; }
+.bh-ring:nth-child(2){ border-color:rgba(232,201,122,.05); animation-duration:10s; animation-delay:0s; }
+.bh-ring:nth-child(3){ border-color:rgba(245,240,232,.03); animation-duration:10s; animation-delay:2.5s; }
+.bh-ring:nth-child(4){ border-color:rgba(45,27,105,.07);   animation-duration:10s; animation-delay:5s; }
+.bh-ring:nth-child(5){ border-color:rgba(232,201,122,.03); animation-duration:10s; animation-delay:7.5s; }
+@keyframes bhEx{
+  0%  { width:60px; height:60px; opacity:0; }
+  8%  { opacity:.8; }
+  100%{ width:1000px; height:1000px; opacity:0; }
 }
 
-/* 별 파티클 */
-.star {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-  background: var(--white);
-  animation: starTwinkle ease-in-out infinite;
+/* 별 */
+.star{
+  position:fixed; border-radius:50%; pointer-events:none; z-index:0;
+  background:var(--white);
+  animation:twinkle ease-in-out infinite;
 }
-@keyframes starTwinkle {
-  0%,100% { opacity:.15; transform:scale(1); }
-  50%      { opacity:.7;  transform:scale(1.3); }
+@keyframes twinkle{
+  0%,100%{ opacity:.08; transform:scale(1); }
+  50%    { opacity:.5;  transform:scale(1.4); }
 }
 
 /* ══════════════════════════════════════════
-   PAGE HEADER — LOGO
+   섹션 레이블
 ══════════════════════════════════════════ */
-.page-header {
-  position: relative; z-index: 10;
-  display: flex; flex-direction: column;
-  align-items: center;
-  padding: 72px 24px 48px;
-  gap: 0;
+.sec-label{
+  position:relative; z-index:10;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:10px; font-weight:300;
+  letter-spacing:5px; color:rgba(232,201,122,.35);
+  text-transform:uppercase; text-align:center;
+  margin-bottom:28px;
 }
 
-/* 헤드 광원 */
-.header-light {
-  position: absolute;
-  top: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 600px; height: 300px;
-  background: radial-gradient(ellipse at 50% 0%,
-    rgba(232,201,122,.12) 0%,
-    rgba(245,240,232,.04) 40%,
+/* ══════════════════════════════════════════
+   LOGO LARGE
+══════════════════════════════════════════ */
+.logo-section{
+  position:relative; z-index:10;
+  display:flex; flex-direction:column; align-items:center;
+}
+
+.logo-wrap{
+  position:relative;
+  display:flex; flex-direction:column;
+  align-items:center;
+  padding: 20px 40px 32px;
+  animation: breathe 6s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-10px); }
+}
+
+/* 후광 */
+.logo-halo{
+  position:absolute;
+  width:480px; height:280px;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  background:radial-gradient(ellipse at 50% 40%,
+    rgba(232,201,122,.1) 0%,
+    rgba(232,201,122,.04) 40%,
     transparent 70%);
-  pointer-events: none;
+  filter:blur(24px);
+  pointer-events:none;
+  animation:haloPulse 4s ease-in-out infinite;
+}
+@keyframes haloPulse{
+  0%,100%{ opacity:.6; transform:translate(-50%,-50%) scale(1); }
+  50%    { opacity:1;  transform:translate(-50%,-50%) scale(1.1); }
 }
 
-/* 상단 장식 */
-.header-deco {
-  display: flex; align-items: center; gap: 16px;
-  margin-bottom: 32px;
-  opacity: .5;
-}
-.deco-line-h {
-  width: 80px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold));
-}
-.deco-line-h.r {
-  background: linear-gradient(90deg, var(--gold), transparent);
-}
-.deco-dot {
-  width: 4px; height: 4px; border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 8px var(--gold);
+/* 날개 + 텍스트 수평 배치 */
+.logo-main-row{
+  display:flex; align-items:center; gap:16px;
 }
 
-/* ── 날개 + 로고 컨테이너 ── */
-.logo-wrap {
-  display: flex; align-items: center; gap: 20px;
-  animation: logoBreath 6s ease-in-out infinite;
+/* ── 날개 컨테이너 ── */
+.wing-wrap{ position:relative; }
+.wing-wrap.left { animation:wBeatL 5s ease-in-out infinite; transform-origin:100% 60%; }
+.wing-wrap.right{ animation:wBeatR 5s ease-in-out infinite; transform-origin:0%   60%; }
+
+@keyframes wBeatL{
+  0%,100%{ transform:rotate(0deg) scaleX(1); filter:drop-shadow(0 0 6px rgba(232,201,122,.35)); }
+  40%    { transform:rotate(-8deg) scaleX(1.06); filter:drop-shadow(0 0 14px rgba(232,201,122,.7)) drop-shadow(0 0 28px rgba(232,201,122,.25)); }
+  70%    { transform:rotate(2deg) scaleX(.98); }
 }
-@keyframes logoBreath {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
+@keyframes wBeatR{
+  0%,100%{ transform:rotate(0deg) scaleX(1); filter:drop-shadow(0 0 6px rgba(232,201,122,.35)); }
+  40%    { transform:rotate(8deg) scaleX(1.06); filter:drop-shadow(0 0 14px rgba(232,201,122,.7)) drop-shadow(0 0 28px rgba(232,201,122,.25)); }
+  70%    { transform:rotate(-2deg) scaleX(.98); }
 }
 
-/* 날개 SVG */
-.angel-wing { position: relative; }
-.angel-wing svg { overflow: visible; }
-.wing-l { animation: wingL 5s ease-in-out infinite; transform-origin: right center; }
-.wing-r { animation: wingR 5s ease-in-out infinite; transform-origin: left center; }
-@keyframes wingL {
-  0%,100% { transform: rotate(0deg) scaleX(1); }
-  50%      { transform: rotate(-6deg) scaleX(1.04); }
+/* ── 텍스트 ── */
+.logo-text{
+  display:flex; flex-direction:column; align-items:center; gap:8px;
 }
-@keyframes wingR {
-  0%,100% { transform: rotate(0deg) scaleX(1); }
-  50%      { transform: rotate(6deg) scaleX(1.04); }
-}
-
-/* 로고 텍스트 */
-.logo-text-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-}
-.logo-main {
-  font-family: 'Cinzel', serif;
-  font-size: 64px;
-  font-weight: 900;
-  letter-spacing: 18px;
-  color: var(--white);
+.logo-algo{
+  font-family:'Cinzel',serif;
+  font-size:62px; font-weight:900;
+  letter-spacing:20px;
+  padding-right:20px; /* letter-spacing 보정 */
+  color:var(--white);
   text-shadow:
-    0 0 40px rgba(232,201,122,.4),
+    0 0 40px rgba(232,201,122,.45),
     0 0 80px rgba(232,201,122,.15),
-    0 2px 4px rgba(0,0,0,.8);
-  animation: logoGlow 4s ease-in-out infinite;
-  padding-right: 18px; /* letter-spacing 보정 */
+    0 2px 6px rgba(0,0,0,.9);
+  animation:textPulse 4s ease-in-out infinite;
 }
-@keyframes logoGlow {
-  0%,100% { text-shadow: 0 0 30px rgba(232,201,122,.3), 0 0 60px rgba(232,201,122,.1), 0 2px 4px rgba(0,0,0,.8); }
-  50%      { text-shadow: 0 0 50px rgba(232,201,122,.6), 0 0 100px rgba(232,201,122,.25), 0 2px 4px rgba(0,0,0,.8); }
+@keyframes textPulse{
+  0%,100%{ text-shadow:0 0 30px rgba(232,201,122,.3), 0 2px 6px rgba(0,0,0,.9); }
+  50%    { text-shadow:0 0 55px rgba(232,201,122,.65), 0 0 100px rgba(232,201,122,.2), 0 2px 6px rgba(0,0,0,.9); }
 }
-.logo-divider {
-  width: 100%; height: 1px;
-  background: linear-gradient(90deg,
+
+/* 구분선 */
+.logo-rule{
+  width:100%; height:1px;
+  background:linear-gradient(90deg,
     transparent 0%,
-    rgba(232,201,122,.2) 20%,
-    rgba(232,201,122,.6) 50%,
-    rgba(232,201,122,.2) 80%,
+    rgba(232,201,122,.18) 15%,
+    rgba(232,201,122,.55) 50%,
+    rgba(232,201,122,.18) 85%,
     transparent 100%);
-  position: relative;
+  position:relative;
 }
-.logo-divider::before, .logo-divider::after {
-  content: '✦';
-  position: absolute; top: 50%; transform: translateY(-50%);
-  font-size: 8px; color: var(--gold); opacity: .6;
+.logo-rule::before,.logo-rule::after{
+  content:'✦'; position:absolute;
+  top:50%; transform:translateY(-50%);
+  font-size:7px; color:var(--gold); opacity:.55;
+  line-height:1;
 }
-.logo-divider::before { left: 18%; }
-.logo-divider::after  { right: 18%; }
+.logo-rule::before{ left:12%; }
+.logo-rule::after { right:12%; }
 
-.logo-sub {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: 6px;
-  color: rgba(232,201,122,.65);
-  padding-right: 6px;
-}
-
-/* 페이지 서브타이틀 */
-.page-subtitle {
-  margin-top: 28px;
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: rgba(245,240,232,.3);
-  font-weight: 300;
-  text-transform: uppercase;
+.logo-sub-text{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic; font-weight:300;
+  font-size:14px; letter-spacing:7px;
+  color:rgba(232,201,122,.55);
+  padding-right:7px;
 }
 
 /* ══════════════════════════════════════════
-   CARDS GRID
+   BADGE (소형)
 ══════════════════════════════════════════ */
-.cards-grid {
-  position: relative; z-index: 5;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 28px;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 0 32px 100px;
+.badge-section{
+  position:relative; z-index:10;
+  display:flex; flex-direction:column; align-items:center;
 }
 
-/* ══════════════════════════════════════════
-   CARD BASE
-══════════════════════════════════════════ */
-.card-scene {
-  position: relative;
-  border-radius: 20px;
-  cursor: pointer;
-  perspective: 900px;
+.badge-outer{
+  position:relative;
+  display:flex; align-items:center;
+  gap:8px;
+  padding:10px 20px 10px 16px;
+  border-radius:40px;
+  animation:badgeFloat 5s ease-in-out infinite;
 }
-.card-tilt {
-  position: relative;
-  border-radius: 20px;
-  transition: transform .08s ease-out;
-  transform-style: preserve-3d;
+@keyframes badgeFloat{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-5px); }
 }
 
-/* 카드 본체 */
-.card-body {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  background: linear-gradient(160deg,
-    rgba(255,255,255,.04) 0%,
-    rgba(255,255,255,.01) 50%,
-    rgba(0,0,0,.3) 100%);
-  backdrop-filter: blur(2px);
-  min-height: 360px;
-  display: flex; flex-direction: column;
+/* 그라디언트 테두리 */
+.badge-border-wrap{
+  position:absolute; inset:-1px; border-radius:41px; z-index:-1;
+  padding:1px;
+  background:linear-gradient(135deg,
+    rgba(232,201,122,.5) 0%,
+    rgba(200,168,74,.15) 40%,
+    rgba(232,201,122,.4) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
 }
-
-/* 카드 테두리 */
-.card-border {
-  position: absolute; inset: 0; border-radius: 20px; pointer-events: none; z-index: 10;
-  border: 1px solid rgba(255,255,255,.08);
-}
-/* 레벨별 테두리 색상은 data-lv 로 지정 */
-
-/* 카드 외부 글로우 */
-.card-scene::before {
-  content: '';
-  position: absolute; inset: -1px; border-radius: 21px;
-  opacity: 0;
-  transition: opacity .4s;
-  pointer-events: none; z-index: -1;
-}
-.card-scene:hover::before { opacity: 1; }
-
-/* 내부 빛 상단 */
-.card-light {
-  position: absolute; top: -20%; left: 50%;
-  transform: translateX(-50%);
-  width: 180px; height: 120px;
-  border-radius: 50%;
-  filter: blur(28px);
-  pointer-events: none; z-index: 1;
-  opacity: .7;
-  animation: cardLightPulse 4s ease-in-out infinite;
-}
-@keyframes cardLightPulse {
-  0%,100% { opacity:.5; transform:translateX(-50%) scale(1); }
-  50%      { opacity:.9; transform:translateX(-50%) scale(1.15); }
-}
-
-/* 블랙홀 바닥 그라디언트 */
-.card-void {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 50%;
-  pointer-events: none; z-index: 1;
-}
-
-/* 카드 컨텐츠 */
-.card-content {
-  position: relative; z-index: 5;
-  display: flex; flex-direction: column;
-  height: 100%; padding: 24px 22px 20px;
-  gap: 0;
-}
-
-/* ── 카드 헤더 ── */
-.card-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 24px;
-}
-.card-lv {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  opacity: .5;
-  color: var(--white);
-}
-
-/* 미니 배지 (ALGO 날개 뱃지) */
-.card-badge-logo {
-  display: flex; align-items: center; gap: 5px;
-  padding: 4px 10px 4px 8px;
-  border-radius: 20px;
-  border: 1px solid rgba(232,201,122,.2);
-  background: rgba(232,201,122,.05);
-  backdrop-filter: blur(4px);
-}
-.badge-wing-mini { line-height: 1; }
-.badge-wing-mini svg { overflow: visible; vertical-align: middle; }
-.badge-algo-text {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: rgba(232,201,122,.75);
-}
-
-/* ── 아이콘 영역 ── */
-.card-icon-area {
-  display: flex; flex-direction: column; align-items: center;
-  margin: 8px 0 20px;
-  gap: 10px;
-}
-.card-icon {
-  font-size: 44px;
-  line-height: 1;
-  filter: drop-shadow(0 0 12px var(--icon-glow, rgba(255,255,255,.3)));
-  animation: iconFloat 4s ease-in-out infinite;
-}
-@keyframes iconFloat {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-5px); }
-}
-.card-name {
-  font-family: 'Cinzel', serif;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  color: var(--white);
-  text-align: center;
-}
-.card-top-pct {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 1px;
-  color: rgba(232,201,122,.5);
-}
-
-/* ── XP 바 ── */
-.card-xp-wrap {
-  margin-top: auto;
-  display: flex; flex-direction: column; gap: 7px;
-}
-.xp-label-row {
-  display: flex; justify-content: space-between; align-items: center;
-}
-.xp-label {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: rgba(245,240,232,.3);
-  font-weight: 300;
-  text-transform: uppercase;
-}
-.xp-val {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: rgba(232,201,122,.55);
-}
-.xp-bar-track {
-  height: 3px;
-  border-radius: 2px;
-  background: rgba(255,255,255,.06);
-  overflow: visible;
-  position: relative;
-}
-.xp-bar-fill {
-  height: 100%; border-radius: 2px;
-  position: relative;
-  transition: width .6s ease;
-}
-.xp-bar-fill::after {
-  content: '';
-  position: absolute; right: -1px; top: 50%;
-  transform: translateY(-50%);
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--white);
-  box-shadow: 0 0 8px var(--fill-glow, rgba(255,255,255,.8));
-}
-
-/* ── 카드 푸터 ── */
-.card-footer {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(255,255,255,.05);
-}
-.footer-pct-label {
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  color: rgba(245,240,232,.25);
-  font-weight: 300;
-}
-.footer-pct-val {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: rgba(232,201,122,.45);
-}
-
-/* 카드 샤인 */
-.card-shine {
-  position: absolute; inset: 0; border-radius: 20px;
-  pointer-events: none; z-index: 8;
-  background: linear-gradient(135deg,
-    rgba(255,255,255,.06) 0%,
-    transparent 50%);
-  transition: background .15s;
-}
-
-/* ══════════════════════════════════════════
-   LEVEL THEMES
-══════════════════════════════════════════ */
-
-/* LV1 — 무감지: 침묵의 블랙홀 */
-.card-scene[data-lv="1"] .card-body {
-  background: linear-gradient(160deg, rgba(40,40,55,.5) 0%, rgba(10,10,18,.9) 100%);
-}
-.card-scene[data-lv="1"] .card-border { border-color: rgba(180,180,200,.1); }
-.card-scene[data-lv="1"] .card-light  { background: rgba(180,190,210,.18); }
-.card-scene[data-lv="1"] .card-void   { background: linear-gradient(0deg, rgba(5,5,12,.9) 0%, transparent); }
-.card-scene[data-lv="1"] .card-icon   { --icon-glow: rgba(180,190,220,.25); }
-.card-scene[data-lv="1"] .xp-bar-fill { background: rgba(160,170,190,.5); --fill-glow: rgba(180,190,210,.8); }
-.card-scene[data-lv="1"]::before      { box-shadow: 0 0 24px rgba(150,160,180,.08); }
-
-/* LV2 — 감지: 첫 파문 */
-.card-scene[data-lv="2"] .card-body {
-  background: linear-gradient(160deg, rgba(30,45,70,.55) 0%, rgba(8,12,22,.92) 100%);
-}
-.card-scene[data-lv="2"] .card-border { border-color: rgba(80,140,220,.15); }
-.card-scene[data-lv="2"] .card-light  { background: rgba(60,120,220,.2); }
-.card-scene[data-lv="2"] .card-void   { background: linear-gradient(0deg, rgba(4,8,20,.95) 0%, transparent); }
-.card-scene[data-lv="2"] .card-icon   { --icon-glow: rgba(80,140,255,.35); }
-.card-scene[data-lv="2"] .xp-bar-fill { background: linear-gradient(90deg, rgba(50,100,200,.7), rgba(100,160,255,.9)); --fill-glow: rgba(100,160,255,.9); }
-.card-scene[data-lv="2"]::before      { box-shadow: 0 0 28px rgba(60,120,220,.12); }
-
-/* LV3 — 탐색: 코발트 심연 */
-.card-scene[data-lv="3"] .card-body {
-  background: linear-gradient(160deg, rgba(20,40,100,.55) 0%, rgba(5,8,28,.93) 100%);
-}
-.card-scene[data-lv="3"] .card-border { border-color: rgba(60,120,255,.18); }
-.card-scene[data-lv="3"] .card-light  { background: rgba(40,90,255,.22); }
-.card-scene[data-lv="3"] .card-void   { background: linear-gradient(0deg, rgba(3,5,25,.96) 0%, transparent); }
-.card-scene[data-lv="3"] .card-icon   { --icon-glow: rgba(60,120,255,.4); }
-.card-scene[data-lv="3"] .xp-bar-fill { background: linear-gradient(90deg, rgba(30,70,220,.8), rgba(80,140,255,1)); --fill-glow: rgba(80,140,255,1); }
-.card-scene[data-lv="3"]::before      { box-shadow: 0 0 32px rgba(40,90,255,.14); }
-
-/* LV4 — 침투: 보라 심층 */
-.card-scene[data-lv="4"] .card-body {
-  background: linear-gradient(160deg, rgba(50,20,100,.55) 0%, rgba(12,5,28,.93) 100%);
-}
-.card-scene[data-lv="4"] .card-border { border-color: rgba(120,60,240,.2); }
-.card-scene[data-lv="4"] .card-light  { background: rgba(100,50,220,.25); }
-.card-scene[data-lv="4"] .card-void   { background: linear-gradient(0deg, rgba(8,3,22,.97) 0%, transparent); }
-.card-scene[data-lv="4"] .card-icon   { --icon-glow: rgba(130,60,255,.45); }
-.card-scene[data-lv="4"] .xp-bar-fill { background: linear-gradient(90deg, rgba(80,30,200,.8), rgba(150,80,255,1)); --fill-glow: rgba(150,80,255,1); }
-.card-scene[data-lv="4"]::before      { box-shadow: 0 0 36px rgba(100,40,220,.16); }
-
-/* LV5 — 안착: 별빛 황혼 */
-.card-scene[data-lv="5"] .card-body {
-  background: linear-gradient(160deg, rgba(70,35,90,.55) 0%, rgba(15,6,25,.93) 100%);
-}
-.card-scene[data-lv="5"] .card-border { border-color: rgba(180,100,255,.2); }
-.card-scene[data-lv="5"] .card-light  { background: rgba(160,80,240,.25); }
-.card-scene[data-lv="5"] .card-void   { background: linear-gradient(0deg, rgba(10,4,20,.97) 0%, transparent); }
-.card-scene[data-lv="5"] .card-icon   { --icon-glow: rgba(200,120,255,.5); }
-.card-scene[data-lv="5"] .xp-bar-fill { background: linear-gradient(90deg, rgba(130,50,220,.8), rgba(200,120,255,1)); --fill-glow: rgba(200,120,255,1); }
-.card-scene[data-lv="5"]::before      { box-shadow: 0 0 40px rgba(160,80,240,.18); }
-
-/* LV6 — 증식: 새벽빛 금환 */
-.card-scene[data-lv="6"] .card-body {
-  background: linear-gradient(160deg, rgba(80,50,20,.55) 0%, rgba(18,10,4,.93) 100%);
-}
-.card-scene[data-lv="6"] .card-border { border-color: rgba(220,160,60,.2); }
-.card-scene[data-lv="6"] .card-light  { background: rgba(200,140,40,.22); }
-.card-scene[data-lv="6"] .card-void   { background: linear-gradient(0deg, rgba(12,6,2,.97) 0%, transparent); }
-.card-scene[data-lv="6"] .card-icon   { --icon-glow: rgba(240,180,60,.5); }
-.card-scene[data-lv="6"] .xp-bar-fill { background: linear-gradient(90deg, rgba(180,110,20,.8), rgba(240,180,60,1)); --fill-glow: rgba(240,180,60,1); }
-.card-scene[data-lv="6"]::before      { box-shadow: 0 0 40px rgba(200,140,40,.16); }
-
-/* LV7 — 잠식: 심홍 낙조 */
-.card-scene[data-lv="7"] .card-body {
-  background: linear-gradient(160deg, rgba(90,20,30,.55) 0%, rgba(20,4,8,.94) 100%);
-}
-.card-scene[data-lv="7"] .card-border { border-color: rgba(240,80,100,.2); }
-.card-scene[data-lv="7"] .card-light  { background: rgba(220,60,80,.25); }
-.card-scene[data-lv="7"] .card-void   { background: linear-gradient(0deg, rgba(14,2,5,.97) 0%, transparent); }
-.card-scene[data-lv="7"] .card-icon   { --icon-glow: rgba(255,80,100,.5); }
-.card-scene[data-lv="7"] .xp-bar-fill { background: linear-gradient(90deg, rgba(180,40,60,.8), rgba(255,90,110,1)); --fill-glow: rgba(255,90,110,1); }
-.card-scene[data-lv="7"]::before      { box-shadow: 0 0 44px rgba(220,60,80,.18); }
-
-/* LV8 — 지배: 크림슨 왕관 */
-.card-scene[data-lv="8"] .card-body {
-  background: linear-gradient(160deg, rgba(100,15,15,.6) 0%, rgba(22,3,3,.95) 100%);
-}
-.card-scene[data-lv="8"] .card-border { border-color: rgba(255,60,60,.22); }
-.card-scene[data-lv="8"] .card-light  { background: rgba(240,40,40,.28); }
-.card-scene[data-lv="8"] .card-void   { background: linear-gradient(0deg, rgba(15,1,1,.98) 0%, transparent); }
-.card-scene[data-lv="8"] .card-icon   { --icon-glow: rgba(255,60,60,.6); }
-.card-scene[data-lv="8"] .xp-bar-fill { background: linear-gradient(90deg, rgba(200,20,20,.85), rgba(255,70,70,1)); --fill-glow: rgba(255,70,70,1); }
-.card-scene[data-lv="8"]::before      { box-shadow: 0 0 48px rgba(240,40,40,.2); }
-
-/* LV9 — 융합: 성유 금빛 */
-.card-scene[data-lv="9"] .card-body {
-  background: linear-gradient(160deg, rgba(90,65,10,.6) 0%, rgba(20,14,2,.95) 100%);
-}
-.card-scene[data-lv="9"] .card-border { border-color: rgba(232,201,122,.28); }
-.card-scene[data-lv="9"] .card-light  { background: rgba(220,185,80,.28); }
-.card-scene[data-lv="9"] .card-void   { background: linear-gradient(0deg, rgba(14,10,1,.98) 0%, transparent); }
-.card-scene[data-lv="9"] .card-icon   { --icon-glow: rgba(232,201,122,.7); }
-.card-scene[data-lv="9"] .xp-bar-fill { background: linear-gradient(90deg, rgba(180,140,40,.85), rgba(232,201,122,1)); --fill-glow: rgba(232,201,122,1); }
-.card-scene[data-lv="9"]::before      { box-shadow: 0 0 52px rgba(220,185,80,.22); }
-
-/* LV.MAX — 숙주: 신성한 백금 */
-.card-scene[data-lv="MAX"] .card-body {
-  background: linear-gradient(160deg, rgba(60,50,90,.6) 0%, rgba(12,10,22,.96) 100%);
-  border-radius: 20px;
-}
-.card-scene[data-lv="MAX"] .card-border {
-  border-color: rgba(232,201,122,.35);
-  box-shadow: inset 0 0 30px rgba(232,201,122,.04);
-}
-.card-scene[data-lv="MAX"] .card-light  { background: rgba(200,170,255,.3); width:240px; height:160px; }
-.card-scene[data-lv="MAX"] .card-void   { background: linear-gradient(0deg, rgba(8,6,18,.99) 0%, transparent); height:60%; }
-.card-scene[data-lv="MAX"] .card-icon   { --icon-glow: rgba(232,201,122,.8); font-size:52px; }
-.card-scene[data-lv="MAX"] .xp-bar-fill {
-  background: linear-gradient(90deg, rgba(123,47,255,.8), rgba(192,132,252,.9), rgba(232,201,122,1));
-  --fill-glow: rgba(232,201,122,1);
-}
-.card-scene[data-lv="MAX"]::before      { box-shadow: 0 0 60px rgba(232,201,122,.2), 0 0 100px rgba(123,47,255,.12); }
-/* MAX 카드 특별 후광 */
-.card-scene[data-lv="MAX"] .card-halo {
-  position: absolute; inset: -40px; border-radius: 30px;
-  background: radial-gradient(ellipse at 50% 30%,
+.badge-bg{
+  position:absolute; inset:0; border-radius:40px; z-index:-1;
+  background:linear-gradient(135deg,
     rgba(232,201,122,.07) 0%,
-    rgba(123,47,255,.05) 40%,
-    transparent 70%);
-  pointer-events: none; z-index: -1;
-  animation: maxHalo 4s ease-in-out infinite;
+    rgba(45,27,105,.15) 100%);
+  backdrop-filter:blur(6px);
 }
-@keyframes maxHalo {
-  0%,100% { opacity:.7; transform:scale(1); }
-  50%      { opacity:1;  transform:scale(1.05); }
+/* 샤인 */
+.badge-shine{
+  position:absolute; inset:0; border-radius:40px; overflow:hidden; z-index:0; pointer-events:none;
 }
-/* MAX 카드 이름 금빛 */
-.card-scene[data-lv="MAX"] .card-name {
-  background: linear-gradient(135deg, var(--white) 20%, var(--gold) 60%, var(--white) 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 22px;
+.badge-shine::after{
+  content:''; position:absolute;
+  top:0; left:-140%; width:80%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+  transform:skewX(-18deg);
+  animation:badgeShine 5s ease-in-out infinite;
 }
-
-/* ══════════════════════════════════════════
-   HOVER EFFECTS
-══════════════════════════════════════════ */
-.card-scene:hover .card-border {
-  border-color: rgba(232,201,122,.22) !important;
-  transition: border-color .4s;
-}
-.card-scene:hover .card-shine {
-  background: linear-gradient(135deg,
-    rgba(255,255,255,.1) 0%,
-    rgba(255,255,255,.03) 40%,
-    transparent 60%);
+@keyframes badgeShine{
+  0%,55%,100%{ left:-140%; }
+  80%        { left:160%; }
 }
 
-/* ══════════════════════════════════════════
-   SCROLLBAR
-══════════════════════════════════════════ */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--black); }
-::-webkit-scrollbar-thumb { background: rgba(232,201,122,.2); border-radius: 2px; }
+.badge-algo{
+  font-family:'Cinzel',serif;
+  font-size:14px; font-weight:700;
+  letter-spacing:5px; padding-right:5px;
+  color:rgba(232,201,122,.85);
+  position:relative; z-index:1;
+  animation:badgeTextGlow 4s ease-in-out infinite;
+}
+@keyframes badgeTextGlow{
+  0%,100%{ text-shadow:0 0 8px rgba(232,201,122,.3); }
+  50%    { text-shadow:0 0 16px rgba(232,201,122,.7), 0 0 28px rgba(232,201,122,.25); }
+}
 </style>
 </head>
 <body>
 
-<!-- 블랙홀 배경 -->
+<!-- 배경 -->
 <div class="bh-bg"></div>
 <div class="bh-ring"></div>
 <div class="bh-ring"></div>
 <div class="bh-ring"></div>
 <div class="bh-ring"></div>
 
-<!-- 페이지 헤더 -->
-<header class="page-header">
-  <div class="header-light"></div>
-  <div class="header-deco">
-    <div class="deco-line-h"></div>
-    <div class="deco-dot"></div>
-    <div class="deco-line-h r"></div>
-  </div>
-
-  <!-- 메인 로고 -->
-  <div class="logo-wrap">
-    <!-- 왼쪽 날개 -->
-    <div class="angel-wing wing-l">
-      <svg width="140" height="100" viewBox="0 0 140 100">
-        <defs>
-          <linearGradient id="wL1" x1="1" y1=".3" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#e8c97a" stop-opacity=".9"/>
-            <stop offset="50%"  stop-color="#f5f0e8" stop-opacity=".6"/>
-            <stop offset="100%" stop-color="#e8c97a" stop-opacity=".1"/>
-          </linearGradient>
-          <filter id="wf">
-            <feGaussianBlur stdDeviation="1.5" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <!-- 주 날개면 -->
-        <path d="M128,50 C100,14 55,4 4,28 C32,34 62,42 78,50 C62,58 32,66 4,72 C55,96 100,86 128,50Z"
-          fill="url(#wL1)" opacity=".18" filter="url(#wf)"/>
-        <!-- 깃털 라인 1 -->
-        <path d="M124,47 C95,20 52,12 8,30" stroke="#e8c97a" stroke-width="1" fill="none" opacity=".55" stroke-linecap="round"/>
-        <!-- 깃털 라인 2 -->
-        <path d="M112,38 C85,18 50,12 14,28" stroke="#f5f0e8" stroke-width=".7" fill="none" opacity=".3" stroke-linecap="round"/>
-        <!-- 깃털 라인 3 -->
-        <path d="M118,53 C90,40 58,36 16,42" stroke="#e8c97a" stroke-width=".7" fill="none" opacity=".35" stroke-linecap="round"/>
-        <!-- 깃털 라인 4 -->
-        <path d="M114,60 C88,54 60,52 20,54" stroke="#f5f0e8" stroke-width=".6" fill="none" opacity=".25" stroke-linecap="round"/>
-        <!-- 깃털 라인 5 -->
-        <path d="M106,68 C82,66 58,66 24,66" stroke="#e8c97a" stroke-width=".6" fill="none" opacity=".3" stroke-linecap="round"/>
-        <!-- 깃털 라인 6 -->
-        <path d="M96,76 C75,76 54,76 28,74" stroke="#f5f0e8" stroke-width=".5" fill="none" opacity=".2" stroke-linecap="round"/>
-        <!-- 날개 끝 광점 -->
-        <circle cx="128" cy="50" r="2" fill="#e8c97a" opacity=".8">
-          <animate attributeName="opacity" values=".8;1;.8" dur="2.5s" repeatCount="indefinite"/>
-          <animate attributeName="r" values="2;3;2" dur="2.5s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="128" cy="50" r="5" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1">
-          <animate attributeName="r" values="5;10;5" dur="2.5s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".3;0;.3" dur="2.5s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-    </div>
-
-    <!-- 텍스트 -->
-    <div class="logo-text-wrap">
-      <div class="logo-main">ALGO</div>
-      <div class="logo-divider"></div>
-      <div class="logo-sub">알고리빙1004</div>
-    </div>
-
-    <!-- 오른쪽 날개 -->
-    <div class="angel-wing wing-r">
-      <svg width="140" height="100" viewBox="0 0 140 100">
-        <defs>
-          <linearGradient id="wR1" x1="0" y1=".3" x2="1" y2="1">
-            <stop offset="0%"   stop-color="#e8c97a" stop-opacity=".9"/>
-            <stop offset="50%"  stop-color="#f5f0e8" stop-opacity=".6"/>
-            <stop offset="100%" stop-color="#e8c97a" stop-opacity=".1"/>
-          </linearGradient>
-        </defs>
-        <path d="M12,50 C40,14 85,4 136,28 C108,34 78,42 62,50 C78,58 108,66 136,72 C85,96 40,86 12,50Z"
-          fill="url(#wR1)" opacity=".18" filter="url(#wf)"/>
-        <path d="M16,47 C45,20 88,12 132,30" stroke="#e8c97a" stroke-width="1" fill="none" opacity=".55" stroke-linecap="round"/>
-        <path d="M28,38 C55,18 90,12 126,28" stroke="#f5f0e8" stroke-width=".7" fill="none" opacity=".3" stroke-linecap="round"/>
-        <path d="M22,53 C50,40 82,36 124,42" stroke="#e8c97a" stroke-width=".7" fill="none" opacity=".35" stroke-linecap="round"/>
-        <path d="M26,60 C52,54 80,52 120,54" stroke="#f5f0e8" stroke-width=".6" fill="none" opacity=".25" stroke-linecap="round"/>
-        <path d="M34,68 C58,66 82,66 116,66" stroke="#e8c97a" stroke-width=".6" fill="none" opacity=".3" stroke-linecap="round"/>
-        <path d="M44,76 C65,76 86,76 112,74" stroke="#f5f0e8" stroke-width=".5" fill="none" opacity=".2" stroke-linecap="round"/>
-        <circle cx="12" cy="50" r="2" fill="#e8c97a" opacity=".8">
-          <animate attributeName="opacity" values=".8;1;.8" dur="2.5s" repeatCount="indefinite"/>
-          <animate attributeName="r" values="2;3;2" dur="2.5s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="12" cy="50" r="5" fill="none" stroke="rgba(232,201,122,.3)" stroke-width="1">
-          <animate attributeName="r" values="5;10;5" dur="2.5s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values=".3;0;.3" dur="2.5s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-    </div>
-  </div>
-
-  <p class="page-subtitle">Algorithm Depth · Level Preview</p>
-</header>
-
-<!-- 카드 그리드 -->
-<main class="cards-grid" id="cards-grid"></main>
-
 <script>
-/* ── 데이터 ── */
-const XP_RANGES = {
-  1:   { min:0,    max:1000,   current:500  },
-  2:   { min:1000, max:10000,  current:5000 },
-  3:   { min:10000,max:50000,  current:24000},
-  4:   { min:50000,max:100000, current:72000},
-  5:   { min:100000,max:500000,current:230000},
-  6:   { min:500000,max:1000000,current:680000},
-  7:   { min:1000000,max:2000000,current:1400000},
-  8:   { min:2000000,max:5000000,current:3200000},
-  9:   { min:5000000,max:10000000,current:7800000},
-  MAX: { min:10000000,max:10000000,current:10000000}
-};
-
-const TOP_PCT = {
-  1:'100%', 2:'80%', 3:'60%', 4:'45%',
-  5:'30%', 6:'18%', 7:'10%', 8:'5%',
-  9:'1%', MAX:'0.1%'
-};
-
-const GRADES = [
-  { lv:1,     name:'무감지', icon:'🕯️',  xpLabel:'0 ~ 1K'   },
-  { lv:2,     name:'감지',   icon:'🔥',  xpLabel:'1K ~ 10K' },
-  { lv:3,     name:'탐색',   icon:'💣',  xpLabel:'10K ~ 50K'},
-  { lv:4,     name:'침투',   icon:'💥',  xpLabel:'50K~100K' },
-  { lv:5,     name:'안착',   icon:'🌟',  xpLabel:'100K~500K'},
-  { lv:6,     name:'증식',   icon:'✨',  xpLabel:'500K~1M'  },
-  { lv:7,     name:'잠식',   icon:'🔱',  xpLabel:'1M~2M'    },
-  { lv:8,     name:'지배',   icon:'👑',  xpLabel:'2M~5M'    },
-  { lv:9,     name:'융합',   icon:'⚜️', xpLabel:'5M~10M'   },
-  { lv:'MAX', name:'숙주',   icon:'☠️',  xpLabel:'10M+'     },
-];
-
-/* ── XP 포맷 ── */
-function fmtXP(n) {
-  if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
-  if (n >= 1000)    return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K';
-  return String(n);
+/* 별 생성 */
+for(let i=0;i<55;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=Math.random()*1.8+.4;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*5+3}s;animation-delay:${Math.random()*6}s;`;
+  document.body.appendChild(s);
 }
-
-/* ── 미니 ALGO 날개 배지 SVG ── */
-function buildBadgeLogo() {
-  return `
-  <div class="card-badge-logo">
-    <div class="badge-wing-mini">
-      <svg width="20" height="14" viewBox="0 0 140 100">
-        <defs>
-          <linearGradient id="bwL" x1="1" y1=".3" x2="0" y2="1">
-            <stop offset="0%" stop-color="#e8c97a" stop-opacity=".9"/>
-            <stop offset="100%" stop-color="#e8c97a" stop-opacity=".2"/>
-          </linearGradient>
-        </defs>
-        <path d="M128,50 C100,14 55,4 4,28 C32,34 62,42 78,50 C62,58 32,66 4,72 C55,96 100,86 128,50Z"
-          fill="url(#bwL)" opacity=".3"/>
-        <path d="M124,47 C95,20 52,12 8,30" stroke="#e8c97a" stroke-width="4" fill="none" opacity=".7" stroke-linecap="round"/>
-        <path d="M118,53 C90,40 58,36 16,42" stroke="#e8c97a" stroke-width="3" fill="none" opacity=".5" stroke-linecap="round"/>
-        <path d="M108,62 C82,58 58,58 22,60" stroke="#e8c97a" stroke-width="2.5" fill="none" opacity=".35" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <span class="badge-algo-text">ALGO</span>
-    <div class="badge-wing-mini">
-      <svg width="20" height="14" viewBox="0 0 140 100">
-        <defs>
-          <linearGradient id="bwR" x1="0" y1=".3" x2="1" y2="1">
-            <stop offset="0%" stop-color="#e8c97a" stop-opacity=".9"/>
-            <stop offset="100%" stop-color="#e8c97a" stop-opacity=".2"/>
-          </linearGradient>
-        </defs>
-        <path d="M12,50 C40,14 85,4 136,28 C108,34 78,42 62,50 C78,58 108,66 136,72 C85,96 40,86 12,50Z"
-          fill="url(#bwR)" opacity=".3"/>
-        <path d="M16,47 C45,20 88,12 132,30" stroke="#e8c97a" stroke-width="4" fill="none" opacity=".7" stroke-linecap="round"/>
-        <path d="M22,53 C50,40 82,36 124,42" stroke="#e8c97a" stroke-width="3" fill="none" opacity=".5" stroke-linecap="round"/>
-        <path d="M32,62 C58,58 82,58 118,60" stroke="#e8c97a" stroke-width="2.5" fill="none" opacity=".35" stroke-linecap="round"/>
-      </svg>
-    </div>
-  </div>`;
-}
-
-/* ── 카드 HTML 빌더 ── */
-function buildCard(g) {
-  const isMax = g.lv === 'MAX';
-  const lvKey = g.lv;
-  const lvLabel = isMax ? 'LV.MAX' : `LV.${g.lv}`;
-  const xp = XP_RANGES[lvKey];
-  const pct = isMax ? 100 : Math.round(((xp.current - xp.min) / (xp.max - xp.min)) * 100);
-  const topPct = TOP_PCT[lvKey];
-  const xpCurrent = isMax ? '✦ MAX' : fmtXP(xp.current);
-  const xpMax = isMax ? '' : ` / ${fmtXP(xp.max)}`;
-
-  return `
-  <div class="card-scene" data-lv="${g.lv}"
-    onmousemove="onTilt(event,this)" onmouseleave="onReset(this)">
-    ${isMax ? '<div class="card-halo"></div>' : ''}
-    <div class="card-tilt">
-      <div class="card-body">
-        <div class="card-light"></div>
-        <div class="card-void"></div>
-        <div class="card-border"></div>
-        <div class="card-shine"></div>
-        <div class="card-content">
-
-          <!-- 헤더 -->
-          <div class="card-header">
-            <span class="card-lv">${lvLabel}</span>
-            ${buildBadgeLogo()}
-          </div>
-
-          <!-- 아이콘 -->
-          <div class="card-icon-area">
-            <div class="card-icon">${g.icon}</div>
-            <div class="card-name">${g.name}</div>
-            <div class="card-top-pct">상위 ${topPct}</div>
-          </div>
-
-          <!-- XP 바 -->
-          <div class="card-xp-wrap">
-            <div class="xp-label-row">
-              <span class="xp-label">⚡ EXP</span>
-              <span class="xp-val">${xpCurrent}${xpMax}</span>
-            </div>
-            <div class="xp-bar-track">
-              <div class="xp-bar-fill" style="width:${pct}%"></div>
-            </div>
-            <div class="xp-label-row" style="margin-top:2px">
-              <span class="xp-label">구간 ${g.xpLabel}</span>
-              <span class="xp-label">${isMax ? '100%' : pct + '%'}</span>
-            </div>
-          </div>
-
-          <!-- 푸터 -->
-          <div class="card-footer">
-            <span class="footer-pct-label">알고리즘 관심도</span>
-            <span class="footer-pct-val">TOP ${topPct}</span>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
-/* ── 3D 틸트 ── */
-function onTilt(e, el) {
-  const r = el.getBoundingClientRect();
-  const x = e.clientX - r.left, y = e.clientY - r.top;
-  const ry =  ((x / r.width)  - .5) * 22;
-  const rx = -((y / r.height) - .5) * 22;
-  const t = el.querySelector('.card-tilt');
-  if (t) t.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
-  const s = el.querySelector('.card-shine');
-  const mx = (x / r.width  * 100).toFixed(1) + '%';
-  const my = (y / r.height * 100).toFixed(1) + '%';
-  if (s) s.style.background =
-    `radial-gradient(ellipse 60% 50% at ${mx} ${my}, rgba(255,255,255,.1) 0%, transparent 70%),
-     linear-gradient(135deg, rgba(255,255,255,.08) 0%, transparent 50%)`;
-}
-function onReset(el) {
-  const t = el.querySelector('.card-tilt');
-  if (t) t.style.transform = 'rotateX(0) rotateY(0) scale(1)';
-  const s = el.querySelector('.card-shine');
-  if (s) s.style.background = 'linear-gradient(135deg, rgba(255,255,255,.06) 0%, transparent 50%)';
-}
-
-/* ── 별 파티클 생성 ── */
-(function(){
-  for(let i = 0; i < 60; i++){
-    const s = document.createElement('div');
-    s.className = 'star';
-    const sz = Math.random() * 2 + .5;
-    s.style.cssText = `
-      width:${sz}px; height:${sz}px;
-      left:${Math.random()*100}%;
-      top:${Math.random()*100}%;
-      opacity:${Math.random()*.4+.05};
-      animation-duration:${Math.random()*4+3}s;
-      animation-delay:${Math.random()*5}s;
-    `;
-    document.body.appendChild(s);
-  }
-})();
-
-/* ── 렌더 ── */
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('cards-grid').innerHTML = GRADES.map(buildCard).join('');
-});
 </script>
+
+<!-- ════════════════════════
+     대형 로고
+════════════════════════ -->
+<div class="logo-section">
+  <div class="sec-label">◈ &nbsp; Page Title Logo &nbsp; ◈</div>
+  <div class="logo-wrap">
+    <div class="logo-halo"></div>
+
+    <div class="logo-main-row">
+
+      <!-- 왼쪽 날개 -->
+      <div class="wing-wrap left">
+        <svg width="150" height="130" viewBox="0 0 150 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gL_main" x1="150" y1="20" x2="10" y2="110" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.95"/>
+              <stop offset="45%"  stop-color="#f5f0e8" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="gL_feather" x1="140" y1="15" x2="20" y2="120" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.1"/>
+            </linearGradient>
+            <filter id="fL_glow">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!--
+            진짜 천사 날개 구조:
+            - 어깨 기점(오른쪽 중앙)에서 위로 활짝 펼쳐짐
+            - 1차깃(가장 길고 위) → 2차깃 → 3차깃(짧고 아래) 순서
+            - 깃털 끝이 왼쪽 위로 향함
+          -->
+
+          <!-- 날개 면 (반투명 채움) -->
+          <path d="
+            M 138 65
+            C 120 55, 95 30, 70 10
+            C 55 0,  30 -2, 15 18
+            C 35 22, 58 35, 72 50
+            C 52 38, 25 32, 10 42
+            C 28 48, 55 55, 70 65
+            C 50 60, 22 60, 8  72
+            C 28 72, 55 72, 70 78
+            C 48 78, 24 82, 12 92
+            C 32 88, 58 84, 72 88
+            C 60 94, 38 100, 28 108
+            C 48 102, 70 96, 82 98
+            C 78 105, 68 112, 62 118
+            L 138 65 Z
+          " fill="url(#gL_main)" opacity="0.13" filter="url(#fL_glow)"/>
+
+          <!-- 1차깃 — 가장 길고 위쪽, 날카롭게 뻗음 -->
+          <path d="M 138,65 C 115,50 88,28 62,8" stroke="url(#gL_feather)" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
+          <path d="M 138,65 C 112,53 82,34 58,16" stroke="url(#gL_feather)" stroke-width="1.1" stroke-linecap="round" opacity="0.6"/>
+
+          <!-- 2차깃 -->
+          <path d="M 134,68 C 108,58 78,44 48,32" stroke="url(#gL_feather)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
+          <path d="M 130,72 C 104,65 76,54 46,46" stroke="url(#gL_feather)" stroke-width="0.85" stroke-linecap="round" opacity="0.45"/>
+
+          <!-- 3차깃 -->
+          <path d="M 124,76 C 100,72 74,66 44,62" stroke="url(#gL_feather)" stroke-width="0.8"  stroke-linecap="round" opacity="0.4"/>
+          <path d="M 118,80 C 95,78  70,74 40,72"  stroke="url(#gL_feather)" stroke-width="0.75" stroke-linecap="round" opacity="0.35"/>
+
+          <!-- 소형 복깃 (날개 아랫단) -->
+          <path d="M 110,85 C 88,85  65,84 36,84"  stroke="url(#gL_feather)" stroke-width="0.65" stroke-linecap="round" opacity="0.28"/>
+          <path d="M 100,91 C 80,92  58,92 32,92"  stroke="url(#gL_feather)" stroke-width="0.6"  stroke-linecap="round" opacity="0.22"/>
+          <path d="M 88, 98 C 70,100 50,100 30,100" stroke="url(#gL_feather)" stroke-width="0.55" stroke-linecap="round" opacity="0.17"/>
+          <path d="M 74,106 C 60,108 44,108 28,107" stroke="url(#gL_feather)" stroke-width="0.5"  stroke-linecap="round" opacity="0.13"/>
+
+          <!-- 날개 끝 광점 -->
+          <circle cx="62" cy="8" r="2.2" fill="#e8c97a" opacity="0.9">
+            <animate attributeName="r"       values="2.2;3.5;2.2" dur="2.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.9;1;0.9"   dur="2.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="62" cy="8" r="6" fill="none" stroke="rgba(232,201,122,0.35)" stroke-width="1">
+            <animate attributeName="r"       values="6;14;6"    dur="2.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.35;0;0.35" dur="2.8s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- 어깨 연결점 -->
+          <circle cx="138" cy="65" r="2.5" fill="rgba(232,201,122,0.4)"/>
+        </svg>
+      </div>
+
+      <!-- 텍스트 -->
+      <div class="logo-text">
+        <div class="logo-algo">ALGO</div>
+        <div class="logo-rule"></div>
+        <div class="logo-sub-text">알고리빙1004</div>
+      </div>
+
+      <!-- 오른쪽 날개 (좌우 반전) -->
+      <div class="wing-wrap right">
+        <svg width="150" height="130" viewBox="0 0 150 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="gR_main" x1="0" y1="20" x2="140" y2="110" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.95"/>
+              <stop offset="45%"  stop-color="#f5f0e8" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.08"/>
+            </linearGradient>
+            <linearGradient id="gR_feather" x1="10" y1="15" x2="130" y2="120" gradientUnits="userSpaceOnUse">
+              <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.1"/>
+            </linearGradient>
+          </defs>
+
+          <!-- 날개 면 -->
+          <path d="
+            M 12 65
+            C 30 55, 55 30, 80 10
+            C 95 0,  120 -2, 135 18
+            C 115 22, 92 35, 78 50
+            C 98 38, 125 32, 140 42
+            C 122 48, 95 55, 80 65
+            C 100 60, 128 60, 142 72
+            C 122 72, 95 72, 80 78
+            C 102 78, 126 82, 138 92
+            C 118 88, 92 84, 78 88
+            C 90 94, 112 100, 122 108
+            C 102 102, 80 96, 68 98
+            C 72 105, 82 112, 88 118
+            L 12 65 Z
+          " fill="url(#gR_main)" opacity="0.13" filter="url(#fL_glow)"/>
+
+          <!-- 1차깃 -->
+          <path d="M 12,65 C 35,50 62,28 88,8"   stroke="url(#gR_feather)" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
+          <path d="M 12,65 C 38,53 68,34 92,16"  stroke="url(#gR_feather)" stroke-width="1.1" stroke-linecap="round" opacity="0.6"/>
+
+          <!-- 2차깃 -->
+          <path d="M 16,68 C 42,58 72,44 102,32" stroke="url(#gR_feather)" stroke-width="1.0" stroke-linecap="round" opacity="0.55"/>
+          <path d="M 20,72 C 46,65 74,54 104,46" stroke="url(#gR_feather)" stroke-width="0.85" stroke-linecap="round" opacity="0.45"/>
+
+          <!-- 3차깃 -->
+          <path d="M 26,76 C 50,72 76,66 106,62" stroke="url(#gR_feather)" stroke-width="0.8"  stroke-linecap="round" opacity="0.4"/>
+          <path d="M 32,80 C 55,78 80,74 110,72"  stroke="url(#gR_feather)" stroke-width="0.75" stroke-linecap="round" opacity="0.35"/>
+
+          <!-- 소형 복깃 -->
+          <path d="M 40,85  C 62,85  85,84 114,84"  stroke="url(#gR_feather)" stroke-width="0.65" stroke-linecap="round" opacity="0.28"/>
+          <path d="M 50,91  C 70,92  92,92 118,92"  stroke="url(#gR_feather)" stroke-width="0.6"  stroke-linecap="round" opacity="0.22"/>
+          <path d="M 62,98  C 80,100 100,100 120,100" stroke="url(#gR_feather)" stroke-width="0.55" stroke-linecap="round" opacity="0.17"/>
+          <path d="M 76,106 C 90,108 106,108 122,107" stroke="url(#gR_feather)" stroke-width="0.5"  stroke-linecap="round" opacity="0.13"/>
+
+          <!-- 날개 끝 광점 -->
+          <circle cx="88" cy="8" r="2.2" fill="#e8c97a" opacity="0.9">
+            <animate attributeName="r"       values="2.2;3.5;2.2" dur="2.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.9;1;0.9"   dur="2.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="88" cy="8" r="6" fill="none" stroke="rgba(232,201,122,0.35)" stroke-width="1">
+            <animate attributeName="r"       values="6;14;6"    dur="2.8s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.35;0;0.35" dur="2.8s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- 어깨 연결점 -->
+          <circle cx="12" cy="65" r="2.5" fill="rgba(232,201,122,0.4)"/>
+        </svg>
+      </div>
+
+    </div><!-- /logo-main-row -->
+  </div><!-- /logo-wrap -->
+</div>
+
+<!-- ════════════════════════
+     소형 배지
+════════════════════════ -->
+<div class="badge-section">
+  <div class="sec-label">◈ &nbsp; Card Header Badge &nbsp; ◈</div>
+  <div class="badge-outer">
+    <div class="badge-border-wrap"></div>
+    <div class="badge-bg"></div>
+    <div class="badge-shine"></div>
+
+    <!-- 왼쪽 미니 날개 -->
+    <svg width="36" height="28" viewBox="0 0 150 130" fill="none">
+      <defs>
+        <linearGradient id="bL" x1="150" y1="20" x2="10" y2="110" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.15"/>
+        </linearGradient>
+      </defs>
+      <path d="M 138,65 C 115,50 88,28 62,8"  stroke="url(#bL)" stroke-width="5"   stroke-linecap="round" opacity="0.85"/>
+      <path d="M 134,68 C 108,58 78,44 48,32" stroke="url(#bL)" stroke-width="4"   stroke-linecap="round" opacity="0.6"/>
+      <path d="M 128,73 C 102,66 74,57 44,50" stroke="url(#bL)" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
+      <path d="M 120,79 C 96,75  70,70 40,66" stroke="url(#bL)" stroke-width="3"   stroke-linecap="round" opacity="0.32"/>
+      <path d="M 108,86 C 86,84  62,82 34,80" stroke="url(#bL)" stroke-width="2.5" stroke-linecap="round" opacity="0.22"/>
+      <circle cx="62" cy="8" r="5" fill="#e8c97a" opacity="0.85">
+        <animate attributeName="r"       values="5;8;5"       dur="2.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.85;1;0.85" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+
+    <span class="badge-algo">ALGO</span>
+
+    <!-- 오른쪽 미니 날개 -->
+    <svg width="36" height="28" viewBox="0 0 150 130" fill="none">
+      <defs>
+        <linearGradient id="bR" x1="0" y1="20" x2="140" y2="110" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#e8c97a" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#e8c97a" stop-opacity="0.15"/>
+        </linearGradient>
+      </defs>
+      <path d="M 12,65 C 35,50 62,28 88,8"   stroke="url(#bR)" stroke-width="5"   stroke-linecap="round" opacity="0.85"/>
+      <path d="M 16,68 C 42,58 72,44 102,32" stroke="url(#bR)" stroke-width="4"   stroke-linecap="round" opacity="0.6"/>
+      <path d="M 22,73 C 48,66 76,57 106,50" stroke="url(#bR)" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
+      <path d="M 30,79 C 54,75  80,70 110,66" stroke="url(#bR)" stroke-width="3"   stroke-linecap="round" opacity="0.32"/>
+      <path d="M 42,86 C 64,84  88,82 116,80" stroke="url(#bR)" stroke-width="2.5" stroke-linecap="round" opacity="0.22"/>
+      <circle cx="88" cy="8" r="5" fill="#e8c97a" opacity="0.85">
+        <animate attributeName="r"       values="5;8;5"       dur="2.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.85;1;0.85" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+
+  </div>
+</div>
+
 </body>
 </html>
