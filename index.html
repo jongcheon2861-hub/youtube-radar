@@ -7,22 +7,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&display=swap" rel="stylesheet"/>
 
 <script>
-function buildFavicon(size){
-  const c = document.createElement('canvas');
-  c.width = size; c.height = size;
-  const ctx = c.getContext('2d');
+function buildFavicon(outputSize, renderScale){
+  /* renderScale 배수로 슈퍼샘플링 후 다운샘플 */
+  const rs  = renderScale || 8;
+  const big = outputSize * rs;
+
+  const bigC   = document.createElement('canvas');
+  bigC.width   = big; bigC.height = big;
+  const bigCtx = bigC.getContext('2d');
+  bigCtx.imageSmoothingEnabled = true;
+  bigCtx.imageSmoothingQuality = 'high';
 
   /* 배경 */
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, size, size);
+  bigCtx.fillStyle = '#000';
+  bigCtx.fillRect(0, 0, big, big);
 
   /* 배경 글로우 */
-  const bgG = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size*0.7);
-  bgG.addColorStop(0, 'rgba(100,0,255,0.30)');
-  bgG.addColorStop(0.5,'rgba(255,140,0,0.12)');
-  bgG.addColorStop(1, 'transparent');
-  ctx.fillStyle = bgG;
-  ctx.fillRect(0, 0, size, size);
+  const bgG = bigCtx.createRadialGradient(big/2,big/2,0, big/2,big/2, big*0.7);
+  bgG.addColorStop(0,   'rgba(100,0,255,0.30)');
+  bgG.addColorStop(0.5, 'rgba(255,140,0,0.12)');
+  bgG.addColorStop(1,   'transparent');
+  bigCtx.fillStyle = bgG;
+  bigCtx.fillRect(0, 0, big, big);
 
   const letters = [
     { ch:'A', top:'#fff5c0', mid:'#FFD700', bot:'#B8400A', glow:'#FFD700' },
@@ -31,101 +37,107 @@ function buildFavicon(size){
     { ch:'O', top:'#f0d0ff', mid:'#9B30FF', bot:'#3A007A', glow:'#9B30FF' },
   ];
 
-  const padX = size * 0.04;
-  const maxW = size - padX * 2;
+  const padX = big * 0.04;
+  const maxW = big - padX * 2;
 
   /* 이진탐색: 폰트 크기 자동 맞춤 */
-  let lo = 1, hi = size, fs = hi / 2;
-  for(let iter = 0; iter < 28; iter++){
-    ctx.font = `900 ${fs}px Cinzel, serif`;
-    const tw = letters.reduce((a, l) => a + ctx.measureText(l.ch).width, 0);
-    if(tw > maxW) hi = fs;
-    else          lo = fs;
+  let lo = 1, hi = big, fs = hi / 2;
+  for(let iter = 0; iter < 32; iter++){
+    bigCtx.font = `900 ${fs}px Cinzel, serif`;
+    const tw = letters.reduce((a,l) => a + bigCtx.measureText(l.ch).width, 0);
+    if(tw > maxW) hi = fs; else lo = fs;
     fs = (lo + hi) / 2;
   }
-  ctx.font = `900 ${fs}px Cinzel, serif`;
+  bigCtx.font = `900 ${fs}px Cinzel, serif`;
+  bigCtx.textBaseline = 'middle';
 
-  const totalW = letters.reduce((a, l) => a + ctx.measureText(l.ch).width, 0);
-  let curX = (size - totalW) / 2;
-  const textY = size / 2;
-  ctx.textBaseline = 'middle';
+  const totalW = letters.reduce((a,l) => a + bigCtx.measureText(l.ch).width, 0);
+  let curX = (big - totalW) / 2;
+  const textY = big / 2;
 
   letters.forEach(({ ch, top, mid, bot, glow }) => {
-    const w  = ctx.measureText(ch).width;
+    const w  = bigCtx.measureText(ch).width;
     const cx = curX + w / 2;
 
-    /* 입체 그림자 */
-    ctx.shadowColor   = 'rgba(0,0,0,0.9)';
-    ctx.shadowBlur    = size * 0.04;
-    ctx.shadowOffsetX = size * 0.025;
-    ctx.shadowOffsetY = size * 0.030;
-
-    const shadowG = ctx.createLinearGradient(curX, textY - fs*0.5, curX + w, textY + fs*0.5);
+    /* 1) 드롭 섀도 */
+    bigCtx.shadowColor    = 'rgba(0,0,0,0.9)';
+    bigCtx.shadowBlur     = big * 0.04;
+    bigCtx.shadowOffsetX  = big * 0.025;
+    bigCtx.shadowOffsetY  = big * 0.030;
+    const shadowG = bigCtx.createLinearGradient(curX, textY-fs*0.5, curX+w, textY+fs*0.5);
     shadowG.addColorStop(0, 'rgba(0,0,0,0.7)');
     shadowG.addColorStop(1, 'rgba(0,0,0,0.3)');
-    ctx.fillStyle = shadowG;
-    ctx.fillText(ch, curX, textY);
+    bigCtx.fillStyle = shadowG;
+    bigCtx.fillText(ch, curX, textY);
 
-    /* 메인 글자 */
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.shadowColor   = glow;
-    ctx.shadowBlur    = size * 0.18;
-
-    const tG = ctx.createLinearGradient(cx, textY - fs*0.52, cx, textY + fs*0.52);
+    /* 2) 메인 글자 */
+    bigCtx.shadowOffsetX = 0;
+    bigCtx.shadowOffsetY = 0;
+    bigCtx.shadowColor   = glow;
+    bigCtx.shadowBlur    = big * 0.18;
+    const tG = bigCtx.createLinearGradient(cx, textY-fs*0.52, cx, textY+fs*0.52);
     tG.addColorStop(0,    top);
     tG.addColorStop(0.25, mid);
     tG.addColorStop(0.55, mid);
     tG.addColorStop(0.80, bot);
     tG.addColorStop(1,    '#000');
-    ctx.fillStyle = tG;
-    ctx.fillText(ch, curX, textY);
+    bigCtx.fillStyle = tG;
+    bigCtx.fillText(ch, curX, textY);
 
-    /* 상단 하이라이트 오버레이 */
-    ctx.shadowBlur = 0;
-    const hlG = ctx.createLinearGradient(cx, textY - fs*0.52, cx, textY);
-    hlG.addColorStop(0,   'rgba(255,255,255,0.55)');
-    hlG.addColorStop(0.3, 'rgba(255,255,255,0.15)');
+    /* 3) 상단 하이라이트 */
+    bigCtx.shadowBlur = 0;
+    const hlG = bigCtx.createLinearGradient(cx, textY-fs*0.52, cx, textY);
+    hlG.addColorStop(0,   'rgba(255,255,255,0.60)');
+    hlG.addColorStop(0.3, 'rgba(255,255,255,0.18)');
     hlG.addColorStop(1,   'rgba(255,255,255,0)');
-    ctx.fillStyle = hlG;
-    ctx.fillText(ch, curX, textY);
+    bigCtx.fillStyle = hlG;
+    bigCtx.fillText(ch, curX, textY);
 
     curX += w;
   });
 
-  return c;
+  /* 슈퍼샘플 → 출력 사이즈로 다운샘플 */
+  const outC   = document.createElement('canvas');
+  outC.width   = outputSize; outC.height = outputSize;
+  const outCtx = outC.getContext('2d');
+  outCtx.imageSmoothingEnabled = true;
+  outCtx.imageSmoothingQuality = 'high';
+  outCtx.drawImage(bigC, 0, 0, outputSize, outputSize);
+
+  return outC;
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   document.fonts.ready.then(() => {
-    [16, 32, 64, 128].forEach(sz => {
-      const canvas = buildFavicon(sz);
-      const link   = document.createElement('link');
-      link.rel     = 'icon';
-      link.type    = 'image/png';
-      link.sizes   = `${sz}x${sz}`;
-      link.href    = canvas.toDataURL('image/png');
-      document.head.appendChild(link);
-    });
+    /* 파비콘: 256px 고화질 단일 주입 */
+    const favCanvas = buildFavicon(256, 8);
+    const link = document.createElement('link');
+    link.rel   = 'icon';
+    link.type  = 'image/png';
+    link.sizes = '256x256';
+    link.href  = favCanvas.toDataURL('image/png');
+    document.head.appendChild(link);
+
     renderPreviews();
   });
 });
 
 function renderPreviews(){
-  const sizes        = [16, 32, 64, 128];
-  const displaySizes = [80, 112, 148, 180];
+  /* 미리보기: 각 사이즈별 8× 슈퍼샘플 */
+  const sizes        = [16, 32, 64, 128, 256];
+  const displaySizes = [80, 112, 148, 180, 220];
   const container    = document.getElementById('faviconSizes');
   if(!container) return;
   container.innerHTML = '';
 
   sizes.forEach((sz, i) => {
-    const canvas = buildFavicon(sz);
+    const canvas = buildFavicon(sz, 8);
     const wrap   = document.createElement('div');
     wrap.className = 'fav-item';
 
-    const canvasWrap = document.createElement('div');
-    canvasWrap.className = 'fav-canvas-wrap';
-    canvasWrap.style.cssText = `
+    const cw = document.createElement('div');
+    cw.className = 'fav-canvas-wrap';
+    cw.style.cssText = `
       width:${displaySizes[i]}px;
       height:${displaySizes[i]}px;
       border-radius:${6 + i*3}px;
@@ -135,16 +147,16 @@ function renderPreviews(){
       width:${displaySizes[i]}px;
       height:${displaySizes[i]}px;
       display:block;
-      image-rendering:pixelated;
+      image-rendering:auto;
     `;
-    canvasWrap.appendChild(canvas);
+    cw.appendChild(canvas);
 
-    const label = document.createElement('div');
-    label.className   = 'fav-size-label';
-    label.textContent = `${sz}×${sz}`;
+    const lbl = document.createElement('div');
+    lbl.className   = 'fav-size-label';
+    lbl.textContent = `${sz}×${sz}`;
 
-    wrap.appendChild(canvasWrap);
-    wrap.appendChild(label);
+    wrap.appendChild(cw);
+    wrap.appendChild(lbl);
     container.appendChild(wrap);
   });
 }
@@ -218,58 +230,27 @@ body{
     0 0 30px currentColor;
 }
 
-/* A – 딥 골드 */
 .l-a{
   background:linear-gradient(175deg,
-    #FFFACD 0%,
-    #FFD700 20%,
-    #FFA500 45%,
-    #CC5500 70%,
-    #7A2200 90%,
-    #1a0800 100%
-  );
+    #FFFACD 0%,#FFD700 20%,#FFA500 45%,#CC5500 70%,#7A2200 90%,#1a0800 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   --lf:5.8s;--ld:0s;
 }
-
-/* L – 딥 퍼플 */
 .l-l{
   background:linear-gradient(175deg,
-    #F0D0FF 0%,
-    #CC66FF 20%,
-    #9900FF 45%,
-    #6600BB 70%,
-    #330066 90%,
-    #0a0015 100%
-  );
+    #F0D0FF 0%,#CC66FF 20%,#9900FF 45%,#6600BB 70%,#330066 90%,#0a0015 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   --lf:6.2s;--ld:.4s;
 }
-
-/* G – 딥 골드 */
 .l-g{
   background:linear-gradient(175deg,
-    #FFFACD 0%,
-    #FFD700 20%,
-    #FFA500 45%,
-    #CC5500 70%,
-    #7A2200 90%,
-    #1a0800 100%
-  );
+    #FFFACD 0%,#FFD700 20%,#FFA500 45%,#CC5500 70%,#7A2200 90%,#1a0800 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   --lf:5.5s;--ld:.8s;
 }
-
-/* O – 딥 퍼플 */
 .l-o{
   background:linear-gradient(175deg,
-    #F0D0FF 0%,
-    #CC66FF 20%,
-    #9900FF 45%,
-    #6600BB 70%,
-    #330066 90%,
-    #0a0015 100%
-  );
+    #F0D0FF 0%,#CC66FF 20%,#9900FF 45%,#6600BB 70%,#330066 90%,#0a0015 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   --lf:6.5s;--ld:1.2s;
 }
@@ -279,28 +260,21 @@ body{
   100%{transform:translateY(-7px) scale(1.03);}
 }
 
-/* ── 데코 라인 ── */
 .deco-line{
   position:relative;
   width:540px;height:2px;
   margin-top:10px;
   background:linear-gradient(90deg,
-    transparent 0%,
-    #6600BB 12%,
-    #FFD700 30%,
-    #FF6600 50%,
-    #FFD700 70%,
-    #9900FF 88%,
-    transparent 100%
-  );
-  box-shadow:0 0 12px #FFD70066, 0 0 24px #9900FF44;
+    transparent 0%,#6600BB 12%,#FFD700 30%,
+    #FF6600 50%,#FFD700 70%,#9900FF 88%,transparent 100%);
+  box-shadow:0 0 12px #FFD70066,0 0 24px #9900FF44;
   animation:linePulse 4s ease-in-out infinite alternate;
 }
 .deco-line::before,.deco-line::after{
   content:'';position:absolute;top:50%;transform:translateY(-50%);
   width:7px;height:7px;border-radius:50%;
   background:#FFD700;
-  box-shadow:0 0 10px 4px #FFD700, 0 0 20px #FF6600;
+  box-shadow:0 0 10px 4px #FFD700,0 0 20px #FF6600;
 }
 .deco-line::before{left:0;}
 .deco-line::after{right:0;}
@@ -310,7 +284,7 @@ body{
   transform:translate(-50%,-50%) rotate(45deg);
   width:10px;height:10px;
   background:linear-gradient(135deg,#FFFACD,#FF6600,#9900FF);
-  box-shadow:0 0 14px 5px #FFD70099, 0 0 28px #9900FF66;
+  box-shadow:0 0 14px 5px #FFD70099,0 0 28px #9900FF66;
   animation:diamondPulse 3s ease-in-out infinite alternate;
 }
 
@@ -323,13 +297,10 @@ body{
   100%{transform:translate(-50%,-50%) rotate(45deg) scale(1.7);}
 }
 
-/* 배경 글로우 */
 .bg-glow{
   position:absolute;width:760px;height:320px;border-radius:50%;
   background:radial-gradient(ellipse,
-    rgba(119,0,238,0.08) 0%,
-    rgba(255,215,0,0.06) 40%,
-    transparent 70%);
+    rgba(119,0,238,0.08) 0%,rgba(255,215,0,0.06) 40%,transparent 70%);
   top:50%;left:50%;transform:translate(-50%,-50%);
   animation:bgGlow 6s ease-in-out infinite alternate;
   pointer-events:none;z-index:-1;
@@ -339,7 +310,6 @@ body{
   100%{opacity:1;transform:translate(-50%,-50%) scale(1.12);}
 }
 
-/* 파티클 */
 .particles{
   position:absolute;width:640px;height:320px;
   top:50%;left:50%;transform:translate(-50%,-50%);
@@ -366,7 +336,7 @@ body{
   color:#FFD700;opacity:.75;
 }
 .favicon-sizes{
-  display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;justify-content:center;
+  display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap;justify-content:center;
 }
 .fav-item{
   display:flex;flex-direction:column;align-items:center;gap:8px;
@@ -384,7 +354,6 @@ body{
   color:#9900FF;letter-spacing:2px;opacity:.85;
 }
 
-/* 구분선 */
 .divider{
   width:440px;height:1px;
   background:linear-gradient(90deg,
