@@ -3,17 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Black Sphere Symbol</title>
+<title>Layered Sphere</title>
 <style>
-:root{
-  --void:#000000;
-  --c1:#ff2020;      /* 레드 */
-  --c2:#ff5500;      /* 레드오렌지 */
-  --c3:#ff8800;      /* 오렌지 */
-  --c4:#cc2200;      /* 다크레드 */
-  --c5:#1a0000;      /* 거의블랙레드 */
-  --c6:#331100;      /* 블랙오렌지 */
-}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
   background:#000;
@@ -26,7 +17,6 @@ body{
   overflow:hidden;
 }
 
-/* ── 별 배경 ── */
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{
   position:absolute;border-radius:50%;
@@ -34,408 +24,453 @@ body{
 }
 @keyframes twinkle{
   0%{opacity:.03;transform:scale(1);}
-  100%{opacity:.75;transform:scale(2);}
+  100%{opacity:.8;transform:scale(2);}
 }
 
-/* ════════════════════════════
+/* ════════════════════════════════
    메인 씬
-════════════════════════════ */
+════════════════════════════════ */
 .scene{
   position:relative;z-index:1;
   width:420px;height:420px;
   display:flex;align-items:center;justify-content:center;
 }
 
-/* ════════════════════════════
-   외부 방사
-════════════════════════════ */
-.outer-radiance{
-  position:absolute;
-  width:440px;height:440px;
-  border-radius:50%;
-  background:radial-gradient(circle,
-    transparent 28%,
-    rgba(255,32,32,.04)  38%,
-    rgba(255,85,0,.07)   50%,
-    rgba(204,34,0,.05)   62%,
-    transparent 76%
-  );
-  animation:outerRad 5s ease-in-out infinite;
-}
-@keyframes outerRad{
-  0%,100%{transform:scale(1);opacity:.6;}
-  50%{transform:scale(1.1);opacity:1;}
-}
+/* ════════════════════════════════
+   겹겹이 구체 레이어
+   각 구체는 반투명 + 글로우
+   바깥→안으로 갈수록 더 진해짐
+════════════════════════════════ */
 
-/* ════════════════════════════
-   구체 — 완전한 블랙
-════════════════════════════ */
-.sphere{
+/* 공통 구체 스타일 */
+.layer{
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:140px;height:140px;
+  border-radius:50%;
+  animation:layerPulse var(--lp) ease-in-out infinite;
+}
+
+/* ── 레이어 7 (가장 바깥 — 희미한 헤일로) ── */
+.l7{
+  width:360px;height:360px;
+  background:radial-gradient(circle,
+    transparent           30%,
+    rgba(255,80,0,.04)    55%,
+    rgba(255,140,0,.06)   70%,
+    rgba(255,50,0,.04)    82%,
+    transparent           95%
+  );
+  box-shadow:
+    0 0 60px rgba(255,100,0,.08),
+    0 0 120px rgba(255,60,0,.05);
+  --lp:6s;
+  z-index:3;
+  animation:outerHalo 6s ease-in-out infinite;
+}
+@keyframes outerHalo{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6;}
+  50%{transform:translate(-50%,-50%) scale(1.06);opacity:1;}
+}
+
+/* ── 레이어 6 ── */
+.l6{
+  width:300px;height:300px;
+  background:radial-gradient(circle at 50% 50%,
+    transparent           18%,
+    rgba(255,60,0,.05)    35%,
+    rgba(255,120,0,.1)    52%,
+    rgba(220,50,0,.12)    66%,
+    rgba(180,30,0,.08)    78%,
+    transparent           90%
+  );
+  box-shadow:
+    0 0 40px rgba(255,80,0,.12),
+    0 0 80px rgba(220,50,0,.07),
+    inset 0 0 30px rgba(255,60,0,.06);
+  --lp:5.5s;
+  z-index:4;
+}
+@keyframes layerPulse{
+  0%,100%{opacity:.75;}
+  50%{opacity:1;}
+}
+
+/* ── 레이어 5 ── */
+.l5{
+  width:250px;height:250px;
+  background:radial-gradient(circle at 50% 50%,
+    transparent           15%,
+    rgba(255,80,0,.08)    32%,
+    rgba(255,150,0,.16)   50%,
+    rgba(230,60,0,.2)     65%,
+    rgba(180,30,0,.14)    78%,
+    rgba(100,15,0,.06)    90%,
+    transparent           100%
+  );
+  box-shadow:
+    0 0 30px rgba(255,100,0,.2),
+    0 0 65px rgba(220,60,0,.1),
+    inset 0 0 25px rgba(255,80,0,.1);
+  --lp:5s;
+  z-index:5;
+}
+
+/* ── 레이어 4 ── */
+.l4{
+  width:206px;height:206px;
+  background:radial-gradient(circle at 50% 50%,
+    transparent           12%,
+    rgba(255,100,0,.12)   28%,
+    rgba(255,170,0,.22)   46%,
+    rgba(240,80,0,.28)    62%,
+    rgba(200,40,0,.22)    76%,
+    rgba(130,15,0,.12)    88%,
+    transparent           100%
+  );
+  box-shadow:
+    0 0 24px rgba(255,120,0,.3),
+    0 0 55px rgba(230,70,0,.15),
+    inset 0 0 20px rgba(255,100,0,.15);
+  --lp:4.5s;
+  z-index:6;
+}
+
+/* ── 레이어 3 ── */
+.l3{
+  width:168px;height:168px;
+  background:radial-gradient(circle at 50% 50%,
+    transparent           10%,
+    rgba(255,120,0,.16)   26%,
+    rgba(255,190,0,.28)   44%,
+    rgba(250,100,0,.36)   60%,
+    rgba(210,50,0,.3)     74%,
+    rgba(150,20,0,.18)    86%,
+    transparent           100%
+  );
+  box-shadow:
+    0 0 20px rgba(255,140,0,.4),
+    0 0 45px rgba(240,80,0,.2),
+    inset 0 0 18px rgba(255,120,0,.2);
+  --lp:4s;
+  z-index:7;
+}
+
+/* ── 레이어 2 ── */
+.l2{
+  width:136px;height:136px;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(10,2,0,.3)       8%,
+    rgba(255,140,0,.2)    24%,
+    rgba(255,200,20,.35)  42%,
+    rgba(255,110,0,.45)   58%,
+    rgba(220,55,0,.4)     72%,
+    rgba(160,25,0,.28)    84%,
+    rgba(60,5,0,.15)      94%,
+    transparent           100%
+  );
+  box-shadow:
+    0 0 16px rgba(255,160,0,.55),
+    0 0 38px rgba(250,90,0,.28),
+    inset 0 0 16px rgba(255,140,0,.28);
+  --lp:3.5s;
+  z-index:8;
+}
+
+/* ── 레이어 1 (코어 바깥 글로우) ── */
+.l1{
+  width:108px;height:108px;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(5,0,0,.5)        15%,
+    rgba(255,160,10,.25)  30%,
+    rgba(255,210,30,.42)  48%,
+    rgba(255,120,0,.55)   64%,
+    rgba(230,60,0,.5)     78%,
+    rgba(170,25,0,.38)    90%,
+    transparent           100%
+  );
+  box-shadow:
+    0 0 14px rgba(255,180,0,.65),
+    0 0 32px rgba(255,100,0,.38),
+    0 0 60px rgba(220,60,0,.2),
+    inset 0 0 14px rgba(255,160,0,.35);
+  --lp:3s;
+  z-index:9;
+}
+
+/* ── 코어 — 완전 블랙 구체 ── */
+.core{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:72px;height:72px;
   border-radius:50%;
   z-index:20;
-  background:
-    radial-gradient(circle at 34% 28%,
-      rgba(40,5,5,.5)    0%,
-      rgba(15,2,2,.8)   22%,
-      rgba(5,0,0,.95)   45%,
-      #000              68%,
-      #000              100%
-    );
+  background:radial-gradient(circle at 34% 28%,
+    rgba(30,5,0,.6)     0%,
+    rgba(10,1,0,.9)     25%,
+    rgba(3,0,0,.98)     50%,
+    #000                70%,
+    #000                100%
+  );
   box-shadow:
-    0 0 0 1.5px rgba(255,32,32,.5),
-    0 0 0 4px   rgba(255,32,32,.12),
-    0 0 22px    rgba(255,32,32,.65),
-    0 0 55px    rgba(204,34,0,.45),
-    0 0 100px   rgba(100,10,0,.3),
-    inset 0 0 28px rgba(180,20,0,.35),
-    inset 0 0 55px rgba(80,5,0,.6);
-  animation:spherePulse 3s ease-in-out infinite;
+    0 0 0 1px  rgba(255,100,0,.4),
+    0 0 0 3px  rgba(255,60,0,.12),
+    0 0 16px   rgba(255,80,0,.5),
+    0 0 38px   rgba(200,50,0,.3),
+    0 0 70px   rgba(150,30,0,.18),
+    inset 0 0 20px rgba(120,15,0,.45),
+    inset 0 0 40px rgba(60,5,0,.65);
+  animation:corePulse 2.5s ease-in-out infinite;
 }
-@keyframes spherePulse{
+@keyframes corePulse{
   0%,100%{
     box-shadow:
-      0 0 0 1.5px rgba(255,32,32,.5),
-      0 0 0 4px rgba(255,32,32,.12),
-      0 0 22px rgba(255,32,32,.65),
-      0 0 55px rgba(204,34,0,.45),
-      0 0 100px rgba(100,10,0,.3),
-      inset 0 0 28px rgba(180,20,0,.35),
-      inset 0 0 55px rgba(80,5,0,.6);
+      0 0 0 1px rgba(255,100,0,.4),0 0 0 3px rgba(255,60,0,.12),
+      0 0 16px rgba(255,80,0,.5),0 0 38px rgba(200,50,0,.3),0 0 70px rgba(150,30,0,.18),
+      inset 0 0 20px rgba(120,15,0,.45),inset 0 0 40px rgba(60,5,0,.65);
   }
   50%{
     box-shadow:
-      0 0 0 2px rgba(255,32,32,.75),
-      0 0 0 7px rgba(255,32,32,.2),
-      0 0 35px rgba(255,32,32,.9),
-      0 0 80px rgba(204,34,0,.65),
-      0 0 150px rgba(100,10,0,.45),
-      inset 0 0 38px rgba(180,20,0,.55),
-      inset 0 0 70px rgba(80,5,0,.75);
+      0 0 0 2px rgba(255,120,0,.65),0 0 0 5px rgba(255,80,0,.2),
+      0 0 26px rgba(255,100,0,.75),0 0 58px rgba(220,60,0,.5),0 0 110px rgba(170,35,0,.3),
+      inset 0 0 28px rgba(140,20,0,.65),inset 0 0 55px rgba(80,8,0,.8);
   }
 }
 
-/* 구체 하이라이트 */
-.sphere-hl{
+/* 코어 하이라이트 */
+.core-hl{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:140px;height:140px;
+  width:72px;height:72px;
   border-radius:50%;z-index:21;
-  background:radial-gradient(circle at 30% 25%,
-    rgba(255,120,80,.14) 0%,
-    rgba(255,60,20,.07)  25%,
-    transparent          52%
+  background:radial-gradient(circle at 30% 24%,
+    rgba(255,180,100,.16)  0%,
+    rgba(255,120,60,.08)   22%,
+    transparent            48%
   );
   pointer-events:none;
 }
 
-/* ════════════════════════════
-   궤도 라인 6개
-   간격: 14px
-   r: 78 92 106 120 134 148
-   색: c1 c2 c3 c4 c5 c6
-════════════════════════════ */
-.orbit-line{
-  position:absolute;top:50%;left:50%;
-  border-radius:50%;border-style:solid;
-  animation:orbitSpin var(--os) linear infinite;
-}
-@keyframes orbitSpin{
-  from{transform:translate(-50%,-50%) var(--tilt) rotate(0deg);}
-  to{  transform:translate(-50%,-50%) var(--tilt) rotate(360deg);}
-}
+/* ════════════════════════════════
+   토성 링 시스템
+   주황·빨강·노랑 계열
+   6개 링, 14px 간격
+   링 직경: 156 184 212 240 268 296
+════════════════════════════════ */
 
-/* 1 — 레드 */
-.ol1{
-  width:156px;height:156px;
-  border:1.5px solid rgba(255,32,32,.9);
-  box-shadow:0 0 7px rgba(255,32,32,.75),0 0 16px rgba(255,32,32,.3);
-  --os:4s;
-  --tilt:rotateX(90deg);
-}
-/* 2 — 레드오렌지 */
-.ol2{
-  width:184px;height:184px;
-  border:1.5px solid rgba(255,85,0,.88);
-  box-shadow:0 0 7px rgba(255,85,0,.7),0 0 16px rgba(255,85,0,.28);
-  --os:5.5s;
-  --tilt:rotateX(75deg) rotateZ(30deg);
-  animation-direction:reverse;
-}
-/* 3 — 오렌지 */
-.ol3{
-  width:212px;height:212px;
-  border:1.5px solid rgba(255,136,0,.88);
-  box-shadow:0 0 7px rgba(255,136,0,.7),0 0 16px rgba(255,136,0,.28);
-  --os:7s;
-  --tilt:rotateX(60deg) rotateZ(60deg);
-}
-/* 4 — 다크레드 */
-.ol4{
-  width:240px;height:240px;
-  border:1.5px solid rgba(204,34,0,.85);
-  box-shadow:0 0 7px rgba(204,34,0,.65),0 0 16px rgba(204,34,0,.25);
-  --os:9s;
-  --tilt:rotateX(80deg) rotateZ(100deg);
-  animation-direction:reverse;
-}
-/* 5 — 블랙레드 */
-.ol5{
-  width:268px;height:268px;
-  border:1.5px solid rgba(120,15,0,.9);
-  box-shadow:0 0 5px rgba(120,15,0,.7),0 0 12px rgba(120,15,0,.3);
-  --os:11s;
-  --tilt:rotateX(70deg) rotateZ(130deg);
-}
-/* 6 — 블랙오렌지 */
-.ol6{
-  width:296px;height:296px;
-  border:1.5px solid rgba(90,20,0,.88);
-  box-shadow:0 0 5px rgba(90,20,0,.65),0 0 12px rgba(90,20,0,.25);
-  --os:13.5s;
-  --tilt:rotateX(85deg) rotateZ(160deg);
-  animation-direction:reverse;
-}
+/* 색상:
+   r1: 레드          #ff2020
+   r2: 레드오렌지   #ff5500
+   r3: 오렌지       #ff8c00
+   r4: 딥오렌지     #ff6a00
+   r5: 골드옐로우   #ffbe00
+   r6: 옐로우       #ffe000
+*/
 
-/* ════════════════════════════
-   토성 링 (뒤 레이어) z:10
-════════════════════════════ */
+/* 링 뒤 레이어 z:10 */
 .ring-system{
   position:absolute;top:50%;left:50%;
   width:400px;height:400px;
   transform:translate(-50%,-50%);
   z-index:10;
 }
-.saturn-ring{
-  position:absolute;border-radius:50%;border-style:solid;top:50%;left:50%;
+.s-ring{
+  position:absolute;border-radius:50%;top:50%;left:50%;border-style:solid;
   animation:ringSpin var(--rs) linear infinite;
 }
 @keyframes ringSpin{
   from{transform:translate(-50%,-50%) rotateX(72deg) rotate(0deg);}
   to{  transform:translate(-50%,-50%) rotateX(72deg) rotate(360deg);}
 }
-/* 링 1 — 레드 */
-.sr1{
-  width:156px;height:156px;
-  border:1.8px solid rgba(255,32,32,.9);
-  box-shadow:0 0 10px rgba(255,32,32,.75),0 0 24px rgba(255,32,32,.3);
-  --rs:4s;
-}
-/* 링 2 — 레드오렌지 */
-.sr2{
-  width:184px;height:184px;
-  border:1.8px solid rgba(255,85,0,.88);
-  box-shadow:0 0 10px rgba(255,85,0,.7),0 0 22px rgba(255,85,0,.28);
-  --rs:5.5s;animation-direction:reverse;
-}
-/* 링 3 — 오렌지 */
-.sr3{
-  width:212px;height:212px;
-  border:1.8px solid rgba(255,136,0,.88);
-  box-shadow:0 0 10px rgba(255,136,0,.7),0 0 22px rgba(255,136,0,.28);
-  --rs:7s;
-}
-/* 링 4 — 다크레드 */
-.sr4{
-  width:240px;height:240px;
-  border:1.8px solid rgba(204,34,0,.85);
-  box-shadow:0 0 9px rgba(204,34,0,.65),0 0 20px rgba(204,34,0,.25);
-  --rs:9s;animation-direction:reverse;
-}
-/* 링 5 — 블랙레드 */
-.sr5{
-  width:268px;height:268px;
-  border:1.8px solid rgba(120,15,0,.88);
-  box-shadow:0 0 7px rgba(120,15,0,.65),0 0 16px rgba(120,15,0,.25);
-  --rs:11s;
-}
-/* 링 6 — 블랙오렌지 */
-.sr6{
-  width:296px;height:296px;
-  border:1.8px solid rgba(90,20,0,.85);
-  box-shadow:0 0 7px rgba(90,20,0,.6),0 0 16px rgba(90,20,0,.22);
-  --rs:13.5s;animation-direction:reverse;
-}
+.sr1{width:156px;height:156px;border:2px solid rgba(255,32,32,.9);box-shadow:0 0 10px rgba(255,32,32,.75),0 0 24px rgba(255,32,32,.3);--rs:4s;}
+.sr2{width:184px;height:184px;border:2px solid rgba(255,85,0,.88);box-shadow:0 0 10px rgba(255,85,0,.7),0 0 22px rgba(255,85,0,.3);--rs:5.5s;animation-direction:reverse;}
+.sr3{width:212px;height:212px;border:2px solid rgba(255,140,0,.88);box-shadow:0 0 10px rgba(255,140,0,.72),0 0 24px rgba(255,140,0,.3);--rs:7s;}
+.sr4{width:240px;height:240px;border:2px solid rgba(255,106,0,.85);box-shadow:0 0 10px rgba(255,106,0,.68),0 0 22px rgba(255,106,0,.28);--rs:9s;animation-direction:reverse;}
+.sr5{width:268px;height:268px;border:2px solid rgba(255,190,0,.88);box-shadow:0 0 10px rgba(255,190,0,.72),0 0 24px rgba(255,190,0,.3);--rs:11s;}
+.sr6{width:296px;height:296px;border:2px solid rgba(255,224,0,.85);box-shadow:0 0 10px rgba(255,224,0,.68),0 0 24px rgba(255,224,0,.28);--rs:13.5s;animation-direction:reverse;}
 
-/* ════════════════════════════
-   토성 링 전면 (구체 앞) z:25
-   하단 절반만 렌더 → 입체감
-════════════════════════════ */
+/* 링 앞 레이어 z:25 */
 .ring-front{
   position:absolute;top:50%;left:50%;
   width:400px;height:400px;
   transform:translate(-50%,-50%);
   z-index:25;pointer-events:none;
 }
-.saturn-ring-front{
+.s-ring-f{
   position:absolute;border-radius:50%;top:50%;left:50%;
-  animation:ringFrontSpin var(--rfs) linear infinite;
+  animation:ringFSpin var(--rfs) linear infinite;
 }
-@keyframes ringFrontSpin{
+@keyframes ringFSpin{
   from{transform:translate(-50%,-50%) rotateX(72deg) rotate(0deg);}
   to{  transform:translate(-50%,-50%) rotateX(72deg) rotate(360deg);}
 }
-.srf1{width:156px;height:156px;border-bottom:1.8px solid rgba(255,32,32,.9);border-left:1.8px solid rgba(255,32,32,.55);border-right:1.8px solid rgba(255,32,32,.55);border-top:1.8px solid transparent;box-shadow:0 0 8px rgba(255,32,32,.55);--rfs:4s;}
-.srf2{width:184px;height:184px;border-bottom:1.8px solid rgba(255,85,0,.88);border-left:1.8px solid rgba(255,85,0,.5);border-right:1.8px solid rgba(255,85,0,.5);border-top:1.8px solid transparent;box-shadow:0 0 8px rgba(255,85,0,.5);--rfs:5.5s;animation-direction:reverse;}
-.srf3{width:212px;height:212px;border-bottom:1.8px solid rgba(255,136,0,.88);border-left:1.8px solid rgba(255,136,0,.5);border-right:1.8px solid rgba(255,136,0,.5);border-top:1.8px solid transparent;box-shadow:0 0 8px rgba(255,136,0,.5);--rfs:7s;}
-.srf4{width:240px;height:240px;border-bottom:1.8px solid rgba(204,34,0,.85);border-left:1.8px solid rgba(204,34,0,.45);border-right:1.8px solid rgba(204,34,0,.45);border-top:1.8px solid transparent;box-shadow:0 0 7px rgba(204,34,0,.45);--rfs:9s;animation-direction:reverse;}
-.srf5{width:268px;height:268px;border-bottom:1.8px solid rgba(120,15,0,.88);border-left:1.8px solid rgba(120,15,0,.42);border-right:1.8px solid rgba(120,15,0,.42);border-top:1.8px solid transparent;box-shadow:0 0 6px rgba(120,15,0,.42);--rfs:11s;}
-.srf6{width:296px;height:296px;border-bottom:1.8px solid rgba(90,20,0,.85);border-left:1.8px solid rgba(90,20,0,.38);border-right:1.8px solid rgba(90,20,0,.38);border-top:1.8px solid transparent;box-shadow:0 0 6px rgba(90,20,0,.38);--rfs:13.5s;animation-direction:reverse;}
+.srf1{width:156px;height:156px;border-bottom:2px solid rgba(255,32,32,.9);border-left:2px solid rgba(255,32,32,.55);border-right:2px solid rgba(255,32,32,.55);border-top:2px solid transparent;box-shadow:0 0 9px rgba(255,32,32,.55);--rfs:4s;}
+.srf2{width:184px;height:184px;border-bottom:2px solid rgba(255,85,0,.88);border-left:2px solid rgba(255,85,0,.5);border-right:2px solid rgba(255,85,0,.5);border-top:2px solid transparent;box-shadow:0 0 9px rgba(255,85,0,.5);--rfs:5.5s;animation-direction:reverse;}
+.srf3{width:212px;height:212px;border-bottom:2px solid rgba(255,140,0,.88);border-left:2px solid rgba(255,140,0,.5);border-right:2px solid rgba(255,140,0,.5);border-top:2px solid transparent;box-shadow:0 0 9px rgba(255,140,0,.52);--rfs:7s;}
+.srf4{width:240px;height:240px;border-bottom:2px solid rgba(255,106,0,.85);border-left:2px solid rgba(255,106,0,.46);border-right:2px solid rgba(255,106,0,.46);border-top:2px solid transparent;box-shadow:0 0 8px rgba(255,106,0,.48);--rfs:9s;animation-direction:reverse;}
+.srf5{width:268px;height:268px;border-bottom:2px solid rgba(255,190,0,.88);border-left:2px solid rgba(255,190,0,.48);border-right:2px solid rgba(255,190,0,.48);border-top:2px solid transparent;box-shadow:0 0 8px rgba(255,190,0,.5);--rfs:11s;}
+.srf6{width:296px;height:296px;border-bottom:2px solid rgba(255,224,0,.85);border-left:2px solid rgba(255,224,0,.45);border-right:2px solid rgba(255,224,0,.45);border-top:2px solid transparent;box-shadow:0 0 8px rgba(255,224,0,.45);--rfs:13.5s;animation-direction:reverse;}
 
-/* ════════════════════════════
+/* ════════════════════════════════
    미니 버전
-════════════════════════════ */
+════════════════════════════════ */
 .mini-scene{
   position:relative;z-index:1;
   width:180px;height:180px;
   display:flex;align-items:center;justify-content:center;
 }
-.mini-sphere{
+
+/* 미니 레이어 */
+.ml{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:52px;height:52px;border-radius:50%;z-index:20;
-  background:radial-gradient(circle at 34% 28%,rgba(40,5,5,.5) 0%,rgba(15,2,2,.8) 22%,#000 55%,#000 100%);
-  box-shadow:0 0 0 1.5px rgba(255,32,32,.5),0 0 14px rgba(255,32,32,.7),0 0 32px rgba(204,34,0,.45),inset 0 0 14px rgba(180,20,0,.35);
-  animation:spherePulse 3s ease-in-out infinite;
+  border-radius:50%;
+  animation:layerPulse var(--lp) ease-in-out infinite;
 }
-.mini-sphere-hl{
+.ml7{width:130px;height:130px;background:radial-gradient(circle,transparent 30%,rgba(255,80,0,.04) 55%,rgba(255,140,0,.06) 70%,transparent 95%);--lp:6s;z-index:3;}
+.ml6{width:108px;height:108px;background:radial-gradient(circle at 50% 50%,transparent 18%,rgba(255,60,0,.06) 36%,rgba(255,120,0,.12) 54%,rgba(220,50,0,.13) 68%,transparent 90%);box-shadow:0 0 14px rgba(255,80,0,.12);--lp:5.5s;z-index:4;}
+.ml5{width:90px;height:90px;background:radial-gradient(circle at 50% 50%,transparent 15%,rgba(255,80,0,.1) 32%,rgba(255,150,0,.2) 50%,rgba(230,60,0,.24) 66%,transparent 90%);box-shadow:0 0 12px rgba(255,100,0,.2);--lp:5s;z-index:5;}
+.ml4{width:74px;height:74px;background:radial-gradient(circle at 50% 50%,transparent 12%,rgba(255,100,0,.15) 28%,rgba(255,170,0,.28) 46%,rgba(240,80,0,.32) 63%,transparent 90%);box-shadow:0 0 10px rgba(255,120,0,.3);--lp:4.5s;z-index:6;}
+.ml3{width:60px;height:60px;background:radial-gradient(circle at 50% 50%,transparent 10%,rgba(255,120,0,.18) 26%,rgba(255,190,0,.32) 44%,rgba(250,100,0,.4) 62%,transparent 88%);box-shadow:0 0 8px rgba(255,140,0,.4);--lp:4s;z-index:7;}
+.ml2{width:48px;height:48px;background:radial-gradient(circle at 50% 50%,rgba(10,2,0,.3) 8%,rgba(255,140,0,.22) 24%,rgba(255,200,20,.38) 42%,rgba(255,110,0,.48) 58%,transparent 88%);box-shadow:0 0 7px rgba(255,160,0,.55);--lp:3.5s;z-index:8;}
+.ml1{width:38px;height:38px;background:radial-gradient(circle at 50% 50%,rgba(5,0,0,.5) 15%,rgba(255,160,10,.28) 30%,rgba(255,210,30,.45) 48%,rgba(255,120,0,.55) 64%,transparent 90%);box-shadow:0 0 6px rgba(255,180,0,.65),0 0 14px rgba(255,100,0,.38);--lp:3s;z-index:9;}
+
+.mini-core{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:52px;height:52px;border-radius:50%;z-index:21;
-  background:radial-gradient(circle at 30% 25%,rgba(255,120,80,.14) 0%,transparent 50%);
+  width:26px;height:26px;border-radius:50%;z-index:20;
+  background:radial-gradient(circle at 34% 28%,rgba(30,5,0,.6) 0%,rgba(10,1,0,.9) 25%,#000 55%,#000 100%);
+  box-shadow:0 0 0 1px rgba(255,100,0,.4),0 0 10px rgba(255,80,0,.55),0 0 22px rgba(200,50,0,.3),inset 0 0 10px rgba(120,15,0,.45);
+  animation:corePulse 2.5s ease-in-out infinite;
+}
+.mini-core-hl{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:26px;height:26px;border-radius:50%;z-index:21;
+  background:radial-gradient(circle at 30% 24%,rgba(255,180,100,.16) 0%,transparent 48%);
   pointer-events:none;
 }
 
-/* 미니 궤도 라인 */
-.mini-ol{
+/* 미니 링 뒤 */
+.mini-ring-system{
   position:absolute;top:50%;left:50%;
-  border-radius:50%;border-style:solid;
-  animation:orbitSpin var(--os) linear infinite;
+  width:180px;height:180px;
+  transform:translate(-50%,-50%);z-index:10;
 }
-.mol1{width:58px;height:58px;border:1px solid rgba(255,32,32,.9);box-shadow:0 0 5px rgba(255,32,32,.7);--os:4s;--tilt:rotateX(90deg);}
-.mol2{width:68px;height:68px;border:1px solid rgba(255,85,0,.88);box-shadow:0 0 5px rgba(255,85,0,.65);--os:5.5s;--tilt:rotateX(75deg) rotateZ(30deg);animation-direction:reverse;}
-.mol3{width:78px;height:78px;border:1px solid rgba(255,136,0,.88);box-shadow:0 0 5px rgba(255,136,0,.65);--os:7s;--tilt:rotateX(60deg) rotateZ(60deg);}
-.mol4{width:88px;height:88px;border:1px solid rgba(204,34,0,.85);box-shadow:0 0 5px rgba(204,34,0,.6);--os:9s;--tilt:rotateX(80deg) rotateZ(100deg);animation-direction:reverse;}
-.mol5{width:98px;height:98px;border:1px solid rgba(120,15,0,.88);box-shadow:0 0 4px rgba(120,15,0,.6);--os:11s;--tilt:rotateX(70deg) rotateZ(130deg);}
-.mol6{width:108px;height:108px;border:1px solid rgba(90,20,0,.85);box-shadow:0 0 4px rgba(90,20,0,.55);--os:13.5s;--tilt:rotateX(85deg) rotateZ(160deg);animation-direction:reverse;}
-
-/* 미니 토성링 뒤 */
-.mini-sr{
-  position:absolute;top:50%;left:50%;
-  border-radius:50%;border-style:solid;
+.m-sr{
+  position:absolute;border-radius:50%;top:50%;left:50%;border-style:solid;
   animation:ringSpin var(--rs) linear infinite;
 }
-.msr1{width:58px;height:58px;border:1px solid rgba(255,32,32,.9);box-shadow:0 0 6px rgba(255,32,32,.7);--rs:4s;}
-.msr2{width:68px;height:68px;border:1px solid rgba(255,85,0,.88);box-shadow:0 0 6px rgba(255,85,0,.65);--rs:5.5s;animation-direction:reverse;}
-.msr3{width:78px;height:78px;border:1px solid rgba(255,136,0,.88);box-shadow:0 0 6px rgba(255,136,0,.65);--rs:7s;}
-.msr4{width:88px;height:88px;border:1px solid rgba(204,34,0,.85);box-shadow:0 0 5px rgba(204,34,0,.6);--rs:9s;animation-direction:reverse;}
-.msr5{width:98px;height:98px;border:1px solid rgba(120,15,0,.88);box-shadow:0 0 5px rgba(120,15,0,.6);--rs:11s;}
-.msr6{width:108px;height:108px;border:1px solid rgba(90,20,0,.85);box-shadow:0 0 4px rgba(90,20,0,.55);--rs:13.5s;animation-direction:reverse;}
+.msr1{width:58px;height:58px;border:1.2px solid rgba(255,32,32,.9);box-shadow:0 0 6px rgba(255,32,32,.7);--rs:4s;}
+.msr2{width:68px;height:68px;border:1.2px solid rgba(255,85,0,.88);box-shadow:0 0 6px rgba(255,85,0,.65);--rs:5.5s;animation-direction:reverse;}
+.msr3{width:78px;height:78px;border:1.2px solid rgba(255,140,0,.88);box-shadow:0 0 6px rgba(255,140,0,.65);--rs:7s;}
+.msr4{width:88px;height:88px;border:1.2px solid rgba(255,106,0,.85);box-shadow:0 0 5px rgba(255,106,0,.6);--rs:9s;animation-direction:reverse;}
+.msr5{width:98px;height:98px;border:1.2px solid rgba(255,190,0,.88);box-shadow:0 0 5px rgba(255,190,0,.65);--rs:11s;}
+.msr6{width:108px;height:108px;border:1.2px solid rgba(255,224,0,.85);box-shadow:0 0 5px rgba(255,224,0,.6);--rs:13.5s;animation-direction:reverse;}
 
-/* 미니 토성링 앞 */
+/* 미니 링 앞 */
 .mini-ring-front{
   position:absolute;top:50%;left:50%;
   width:180px;height:180px;
-  transform:translate(-50%,-50%);
-  z-index:25;pointer-events:none;
+  transform:translate(-50%,-50%);z-index:25;pointer-events:none;
 }
-.mini-srf{
-  position:absolute;top:50%;left:50%;
-  border-radius:50%;
-  animation:ringFrontSpin var(--rfs) linear infinite;
+.m-srf{
+  position:absolute;border-radius:50%;top:50%;left:50%;
+  animation:ringFSpin var(--rfs) linear infinite;
 }
-.msrf1{width:58px;height:58px;border-bottom:1px solid rgba(255,32,32,.9);border-left:1px solid rgba(255,32,32,.45);border-right:1px solid rgba(255,32,32,.45);border-top:1px solid transparent;--rfs:4s;}
-.msrf2{width:68px;height:68px;border-bottom:1px solid rgba(255,85,0,.88);border-left:1px solid rgba(255,85,0,.42);border-right:1px solid rgba(255,85,0,.42);border-top:1px solid transparent;--rfs:5.5s;animation-direction:reverse;}
-.msrf3{width:78px;height:78px;border-bottom:1px solid rgba(255,136,0,.88);border-left:1px solid rgba(255,136,0,.42);border-right:1px solid rgba(255,136,0,.42);border-top:1px solid transparent;--rfs:7s;}
-.msrf4{width:88px;height:88px;border-bottom:1px solid rgba(204,34,0,.85);border-left:1px solid rgba(204,34,0,.38);border-right:1px solid rgba(204,34,0,.38);border-top:1px solid transparent;--rfs:9s;animation-direction:reverse;}
-.msrf5{width:98px;height:98px;border-bottom:1px solid rgba(120,15,0,.88);border-left:1px solid rgba(120,15,0,.35);border-right:1px solid rgba(120,15,0,.35);border-top:1px solid transparent;--rfs:11s;}
-.msrf6{width:108px;height:108px;border-bottom:1px solid rgba(90,20,0,.85);border-left:1px solid rgba(90,20,0,.32);border-right:1px solid rgba(90,20,0,.32);border-top:1px solid transparent;--rfs:13.5s;animation-direction:reverse;}
+.msrf1{width:58px;height:58px;border-bottom:1.2px solid rgba(255,32,32,.9);border-left:1.2px solid rgba(255,32,32,.45);border-right:1.2px solid rgba(255,32,32,.45);border-top:1.2px solid transparent;--rfs:4s;}
+.msrf2{width:68px;height:68px;border-bottom:1.2px solid rgba(255,85,0,.88);border-left:1.2px solid rgba(255,85,0,.42);border-right:1.2px solid rgba(255,85,0,.42);border-top:1.2px solid transparent;--rfs:5.5s;animation-direction:reverse;}
+.msrf3{width:78px;height:78px;border-bottom:1.2px solid rgba(255,140,0,.88);border-left:1.2px solid rgba(255,140,0,.42);border-right:1.2px solid rgba(255,140,0,.42);border-top:1.2px solid transparent;--rfs:7s;}
+.msrf4{width:88px;height:88px;border-bottom:1.2px solid rgba(255,106,0,.85);border-left:1.2px solid rgba(255,106,0,.38);border-right:1.2px solid rgba(255,106,0,.38);border-top:1.2px solid transparent;--rfs:9s;animation-direction:reverse;}
+.msrf5{width:98px;height:98px;border-bottom:1.2px solid rgba(255,190,0,.88);border-left:1.2px solid rgba(255,190,0,.4);border-right:1.2px solid rgba(255,190,0,.4);border-top:1.2px solid transparent;--rfs:11s;}
+.msrf6{width:108px;height:108px;border-bottom:1.2px solid rgba(255,224,0,.85);border-left:1.2px solid rgba(255,224,0,.38);border-right:1.2px solid rgba(255,224,0,.38);border-top:1.2px solid transparent;--rfs:13.5s;animation-direction:reverse;}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <script>
 const bg=document.querySelector('.bg');
-for(let i=0;i<80;i++){
+for(let i=0;i<90;i++){
   const s=document.createElement('div');s.className='star';
   const sz=Math.random()*1.8+.3;
-  const c=['#ff2020','#ff5500','#ff8800','#cc2200','#ff6030','#ffffff','#ffaa60'];
+  const c=['#ff2020','#ff5500','#ff8c00','#ffbe00','#ffe000','#ffffff','#ff6a00'];
   s.style.cssText=`width:${sz}px;height:${sz}px;background:${c[Math.floor(Math.random()*c.length)]};left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${1.5+Math.random()*4}s;--delay:${Math.random()*6}s;`;
   bg.appendChild(s);
 }
 </script>
 
-<!-- ══ 메인 ══ -->
+<!-- ══ 메인 씬 ══ -->
 <div class="scene">
 
-  <div class="outer-radiance"></div>
-
-  <!-- 토성링 뒤 -->
+  <!-- 토성 링 (구체 뒤) -->
   <div class="ring-system">
-    <div class="saturn-ring sr1"></div>
-    <div class="saturn-ring sr2"></div>
-    <div class="saturn-ring sr3"></div>
-    <div class="saturn-ring sr4"></div>
-    <div class="saturn-ring sr5"></div>
-    <div class="saturn-ring sr6"></div>
+    <div class="s-ring sr1"></div>
+    <div class="s-ring sr2"></div>
+    <div class="s-ring sr3"></div>
+    <div class="s-ring sr4"></div>
+    <div class="s-ring sr5"></div>
+    <div class="s-ring sr6"></div>
   </div>
 
-  <!-- 궤도라인 -->
-  <div class="orbit-line ol1" style="z-index:15;"></div>
-  <div class="orbit-line ol2" style="z-index:15;"></div>
-  <div class="orbit-line ol3" style="z-index:15;"></div>
-  <div class="orbit-line ol4" style="z-index:15;"></div>
-  <div class="orbit-line ol5" style="z-index:15;"></div>
-  <div class="orbit-line ol6" style="z-index:15;"></div>
+  <!-- 겹겹이 구체 레이어 (바깥→안) -->
+  <div class="layer l7"></div>
+  <div class="layer l6"></div>
+  <div class="layer l5"></div>
+  <div class="layer l4"></div>
+  <div class="layer l3"></div>
+  <div class="layer l2"></div>
+  <div class="layer l1"></div>
 
-  <!-- 구체 -->
-  <div class="sphere"></div>
-  <div class="sphere-hl"></div>
+  <!-- 코어 블랙 구체 -->
+  <div class="core"></div>
+  <div class="core-hl"></div>
 
-  <!-- 토성링 앞 -->
+  <!-- 토성 링 (구체 앞) -->
   <div class="ring-front">
-    <div class="saturn-ring-front srf1"></div>
-    <div class="saturn-ring-front srf2"></div>
-    <div class="saturn-ring-front srf3"></div>
-    <div class="saturn-ring-front srf4"></div>
-    <div class="saturn-ring-front srf5"></div>
-    <div class="saturn-ring-front srf6"></div>
+    <div class="s-ring-f srf1"></div>
+    <div class="s-ring-f srf2"></div>
+    <div class="s-ring-f srf3"></div>
+    <div class="s-ring-f srf4"></div>
+    <div class="s-ring-f srf5"></div>
+    <div class="s-ring-f srf6"></div>
   </div>
 
 </div>
 
-<!-- ══ 미니 ══ -->
+<!-- ══ 미니 버전 ══ -->
 <div class="mini-scene">
 
-  <div style="position:absolute;top:50%;left:50%;width:180px;height:180px;transform:translate(-50%,-50%);z-index:10;">
-    <div class="mini-sr msr1"></div>
-    <div class="mini-sr msr2"></div>
-    <div class="mini-sr msr3"></div>
-    <div class="mini-sr msr4"></div>
-    <div class="mini-sr msr5"></div>
-    <div class="mini-sr msr6"></div>
+  <!-- 미니 링 뒤 -->
+  <div class="mini-ring-system">
+    <div class="m-sr msr1"></div>
+    <div class="m-sr msr2"></div>
+    <div class="m-sr msr3"></div>
+    <div class="m-sr msr4"></div>
+    <div class="m-sr msr5"></div>
+    <div class="m-sr msr6"></div>
   </div>
 
-  <div class="mini-ol mol1" style="z-index:15;"></div>
-  <div class="mini-ol mol2" style="z-index:15;"></div>
-  <div class="mini-ol mol3" style="z-index:15;"></div>
-  <div class="mini-ol mol4" style="z-index:15;"></div>
-  <div class="mini-ol mol5" style="z-index:15;"></div>
-  <div class="mini-ol mol6" style="z-index:15;"></div>
+  <!-- 미니 구체 레이어 -->
+  <div class="ml ml7"></div>
+  <div class="ml ml6"></div>
+  <div class="ml ml5"></div>
+  <div class="ml ml4"></div>
+  <div class="ml ml3"></div>
+  <div class="ml ml2"></div>
+  <div class="ml ml1"></div>
 
-  <div class="mini-sphere"></div>
-  <div class="mini-sphere-hl"></div>
+  <!-- 미니 코어 -->
+  <div class="mini-core"></div>
+  <div class="mini-core-hl"></div>
 
+  <!-- 미니 링 앞 -->
   <div class="mini-ring-front">
-    <div class="mini-srf msrf1"></div>
-    <div class="mini-srf msrf2"></div>
-    <div class="mini-srf msrf3"></div>
-    <div class="mini-srf msrf4"></div>
-    <div class="mini-srf msrf5"></div>
-    <div class="mini-srf msrf6"></div>
+    <div class="m-srf msrf1"></div>
+    <div class="m-srf msrf2"></div>
+    <div class="m-srf msrf3"></div>
+    <div class="m-srf msrf4"></div>
+    <div class="m-srf msrf5"></div>
+    <div class="m-srf msrf6"></div>
   </div>
 
 </div>
