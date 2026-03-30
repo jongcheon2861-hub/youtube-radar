@@ -5,6 +5,103 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>ALGO</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+
+<!-- 파비콘: Canvas로 동적 생성 -->
+<script>
+(function(){
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 64;
+  const ctx = c.getContext('2d');
+
+  /* 배경 – 검정 원형 */
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0,0,64,64);
+
+  /* 배경 원 */
+  const bgG = ctx.createRadialGradient(32,32,2,32,32,32);
+  bgG.addColorStop(0,'#1a0030');
+  bgG.addColorStop(0.6,'#0a0015');
+  bgG.addColorStop(1,'#000');
+  ctx.fillStyle = bgG;
+  ctx.beginPath();
+  ctx.arc(32,32,32,0,Math.PI*2);
+  ctx.fill();
+
+  /* 글로우 레이어 */
+  const glG = ctx.createRadialGradient(32,32,0,32,32,30);
+  glG.addColorStop(0,'rgba(168,85,247,0.25)');
+  glG.addColorStop(0.5,'rgba(240,201,106,0.12)');
+  glG.addColorStop(1,'transparent');
+  ctx.fillStyle = glG;
+  ctx.beginPath();
+  ctx.arc(32,32,32,0,Math.PI*2);
+  ctx.fill();
+
+  /* "A" 텍스트 – 골드 그라디언트 */
+  const tG = ctx.createLinearGradient(8,8,56,56);
+  tG.addColorStop(0,'#ffe49a');
+  tG.addColorStop(0.35,'#f0c96a');
+  tG.addColorStop(0.7,'#ff8c00');
+  tG.addColorStop(1,'#a855f7');
+
+  ctx.font = 'bold 42px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  /* 글로우 그림자 */
+  ctx.shadowColor = '#f0c96a';
+  ctx.shadowBlur = 14;
+  ctx.fillStyle = tG;
+  ctx.fillText('A', 32, 34);
+
+  /* 외곽 원 테두리 */
+  ctx.shadowBlur = 0;
+  const brdG = ctx.createLinearGradient(0,0,64,64);
+  brdG.addColorStop(0,'#f0c96a');
+  brdG.addColorStop(0.3,'#a855f7');
+  brdG.addColorStop(0.6,'#f5c6d0');
+  brdG.addColorStop(1,'#f0c96a');
+  ctx.strokeStyle = brdG;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.arc(32,32,30,0,Math.PI*2);
+  ctx.stroke();
+
+  /* 하단 데코 라인 */
+  ctx.shadowColor = '#f0c96a';
+  ctx.shadowBlur = 6;
+  const lineG = ctx.createLinearGradient(14,52,50,52);
+  lineG.addColorStop(0,'transparent');
+  lineG.addColorStop(0.3,'#f0c96a');
+  lineG.addColorStop(0.5,'#f5c6d0');
+  lineG.addColorStop(0.7,'#a855f7');
+  lineG.addColorStop(1,'transparent');
+  ctx.strokeStyle = lineG;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(14,52);
+  ctx.lineTo(50,52);
+  ctx.stroke();
+
+  /* 중앙 다이아몬드 */
+  ctx.shadowColor = '#ffe49a';
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = '#ffe49a';
+  ctx.save();
+  ctx.translate(32,52);
+  ctx.rotate(Math.PI/4);
+  ctx.fillRect(-3,-3,6,6);
+  ctx.restore();
+
+  /* link 태그로 주입 */
+  const link = document.createElement('link');
+  link.rel = 'icon';
+  link.type = 'image/png';
+  link.href = c.toDataURL('image/png');
+  document.head.appendChild(link);
+})();
+</script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
@@ -227,7 +324,6 @@ body{
   50%{opacity:.9;}
   100%{transform:translateY(var(--py,-20px)) translateX(var(--px,10px));opacity:.3;}
 }
-
 </style>
 </head>
 <body>
@@ -236,8 +332,6 @@ body{
 
 <div class="logo-wrap">
   <div class="bg-glow"></div>
-
-  <!-- 파티클 -->
   <div class="particles" id="particles"></div>
 
   <!-- ALGO 텍스트 -->
@@ -255,7 +349,7 @@ body{
 </div>
 
 <script>
-// 별 배경
+/* ── 별 배경 ── */
 const bg = document.getElementById('bg');
 const sc = ['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#ff2020','#ffe49a','#e879a0','#fff'];
 for(let i=0;i<80;i++){
@@ -273,7 +367,7 @@ for(let i=0;i<80;i++){
   bg.appendChild(s);
 }
 
-// 파티클
+/* ── 파티클 ── */
 const pc = document.getElementById('particles');
 const pcColors=['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#e879a0'];
 for(let i=0;i<18;i++){
