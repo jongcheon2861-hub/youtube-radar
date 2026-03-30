@@ -3,32 +3,35 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Layered Sphere</title>
+<title>ALGO</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
 :root{
-  --c1:#ff2020;
-  --c2:#ff4e00;
-  --c3:#ff8000;
-  --c4:#ff6200;
-  --c5:#ffb600;
-  --c6:#ffe100;
-  --black:#000000;
-  --deep:#0a0005;
+  --void:#000000;
+  --deep:#05000a;
+  --purple:#7c3aed;
+  --violet:#a855f7;
+  --gold:#f0c96a;
+  --gold-l:#ffe49a;
+  --rose:#f5c6d0;
+  --orange:#ff8c00;
+  --red:#ff2020;
+  --white:#f0eee8;
 }
 
 body{
   background:#000;
   min-height:100vh;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:60px;
   overflow:hidden;
+  font-family:'Cinzel',serif;
 }
 
+/* 별 배경 */
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{
   position:absolute;
@@ -36,319 +39,262 @@ body{
   animation:twinkle var(--d,3s) ease-in-out infinite alternate var(--delay,0s);
 }
 @keyframes twinkle{
-  from{opacity:.2;transform:scale(1);}
-  to{opacity:1;transform:scale(1.4);}
+  from{opacity:.15;transform:scale(1);}
+  to{opacity:.9;transform:scale(1.5);}
 }
 
-/* ── MAIN SCENE ── */
-.scene{
+/* ── 메인 컨테이너 ── */
+.logo-wrap{
   position:relative;
-  width:420px;
-  height:420px;
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+}
+
+/* ── ALGO 텍스트 ── */
+.algo-text{
+  position:relative;
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:1;
+  gap:0;
 }
 
-/* 구체 레이어들 */
-.layers{
+.algo-text span{
+  display:inline-block;
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:140px;
+  line-height:1;
+  letter-spacing:-2px;
+  position:relative;
+  animation:letterFloat var(--lf,6s) ease-in-out infinite alternate var(--ld,0s);
+}
+
+/* 각 글자별 색상 & 그라디언트 */
+.l-a{
+  background:linear-gradient(160deg,#ffe49a 0%,#f0c96a 40%,#ff8c00 80%,#ff2020 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 18px #f0c96a99) drop-shadow(0 0 40px #ff8c0055);
+  --lf:5.8s;--ld:0s;
+}
+.l-l{
+  background:linear-gradient(160deg,#f5c6d0 0%,#e879a0 40%,#a855f7 80%,#7c3aed 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 18px #e879a099) drop-shadow(0 0 40px #a855f755);
+  --lf:6.2s;--ld:.4s;
+}
+.l-g{
+  background:linear-gradient(160deg,#ffe49a 0%,#f0c96a 40%,#ff8c00 80%,#ff2020 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 18px #f0c96a99) drop-shadow(0 0 40px #ff8c0055);
+  --lf:5.5s;--ld:.8s;
+}
+.l-o{
+  background:linear-gradient(160deg,#f5c6d0 0%,#e879a0 40%,#a855f7 80%,#7c3aed 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 0 18px #e879a099) drop-shadow(0 0 40px #a855f755);
+  --lf:6.5s;--ld:1.2s;
+}
+
+@keyframes letterFloat{
+  0%{transform:translateY(0) scale(1);}
+  100%{transform:translateY(-6px) scale(1.03);}
+}
+
+/* 글자 아래 빛 반사 */
+.algo-text span::after{
+  content:attr(data-char);
   position:absolute;
+  bottom:-60%;
+  left:0;
   width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:15;
+  text-align:center;
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:inherit;
+  transform:scaleY(-.45) translateY(-10px);
+  opacity:.12;
+  filter:blur(3px);
+}
+.l-a::after,.l-g::after{
+  background:linear-gradient(160deg,#ffe49a,#f0c96a,#ff8c00,#ff2020);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.l-l::after,.l-o::after{
+  background:linear-gradient(160deg,#f5c6d0,#e879a0,#a855f7,#7c3aed);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
 }
 
-.layer{
+/* ── 언더라인 장식 ── */
+.deco-line{
+  position:relative;
+  width:520px;
+  height:2px;
+  margin-top:8px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    #7c3aed 15%,
+    #f0c96a 35%,
+    #f5c6d0 50%,
+    #f0c96a 65%,
+    #a855f7 85%,
+    transparent 100%
+  );
+  animation:linePulse 4s ease-in-out infinite alternate;
+}
+.deco-line::before,.deco-line::after{
+  content:'';
   position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:6px;height:6px;
   border-radius:50%;
-  animation:layerA var(--lp,5s) ease-in-out infinite alternate;
+  background:#f0c96a;
+  box-shadow:0 0 8px 3px #f0c96a;
 }
+.deco-line::before{left:0;}
+.deco-line::after{right:0;}
 
-/* 10개 레이어 – 색상/블랙 교차로 깊이감 */
-.l10{width:232px;height:232px;
-  background:radial-gradient(circle,#1a0000 0%,#ff2020 40%,#000 100%);
-  box-shadow:0 0 18px 4px #ff202055;
-  --lp:6s;}
-.l9{width:216px;height:216px;
-  background:radial-gradient(circle,#000 0%,#1a0500 30%,#ff4e00 60%,#000 100%);
-  box-shadow:0 0 14px 3px #ff4e0044;
-  --lp:5.5s;}
-.l8{width:200px;height:200px;
-  background:radial-gradient(circle,#0a0000 0%,#ff8000 35%,#000 100%);
-  box-shadow:0 0 12px 3px #ff800044;
-  --lp:5.2s;}
-.l7{width:184px;height:184px;
-  background:radial-gradient(circle,#000 0%,#0d0300 25%,#ff6200 55%,#0a0000 100%);
-  box-shadow:0 0 10px 2px #ff620033;
-  --lp:4.9s;}
-.l6{width:168px;height:168px;
-  background:radial-gradient(circle,#050000 0%,#ffb600 40%,#000 100%);
-  box-shadow:0 0 10px 2px #ffb60033;
-  --lp:4.6s;}
-.l5{width:152px;height:152px;
-  background:radial-gradient(circle,#000 0%,#0a0400 30%,#ffe100 60%,#0a0000 100%);
-  box-shadow:0 0 8px 2px #ffe10033;
-  --lp:4.3s;}
-.l4{width:136px;height:136px;
-  background:radial-gradient(circle,#020000 0%,#ff8000 35%,#050000 100%);
-  box-shadow:0 0 8px 2px #ff800022;
-  --lp:4.0s;}
-.l3{width:120px;height:120px;
-  background:radial-gradient(circle,#000 0%,#030000 20%,#ff4e00 50%,#000 100%);
-  box-shadow:0 0 6px 1px #ff4e0022;
-  --lp:3.7s;}
-.l2{width:104px;height:104px;
-  background:radial-gradient(circle,#010000 0%,#ff2020 40%,#010000 100%);
-  box-shadow:0 0 6px 1px #ff202022;
-  --lp:3.4s;}
-.l1{width:88px;height:88px;
-  background:radial-gradient(circle,#000 0%,#050000 50%,#000 100%);
-  --lp:3.1s;}
-
-@keyframes layerA{
-  0%{opacity:.75;filter:brightness(.85);}
-  100%{opacity:1;filter:brightness(1.15);}
-}
-
-/* 코어 */
-.core{
+/* 다이아몬드 센터 */
+.deco-diamond{
   position:absolute;
-  width:68px;height:68px;
-  border-radius:50%;
-  background:radial-gradient(circle,#000 55%,#050000 80%,#000 100%);
-  box-shadow:
-    0 0 12px 4px #ff202015,
-    inset 0 0 10px 4px #000,
-    inset 0 0 4px 2px #0a0000;
-  z-index:20;
-  animation:corePulse 4s ease-in-out infinite alternate;
-}
-.core-hl{
-  position:absolute;
-  width:26px;height:26px;
-  border-radius:50%;
-  background:radial-gradient(circle,#1a0800 0%,transparent 100%);
-  top:10px;left:12px;
-  z-index:21;
-}
-@keyframes corePulse{
-  0%{box-shadow:0 0 12px 4px #ff202015,inset 0 0 10px 4px #000;}
-  100%{box-shadow:0 0 20px 8px #ff202025,inset 0 0 14px 6px #050000;}
-}
-
-/* ── 토성링 SVG ── */
-.ring-svg{
-  position:absolute;
-  width:340px;
-  height:340px;
   top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;
+  transform:translate(-50%,-50%) rotate(45deg);
+  width:8px;height:8px;
+  background:linear-gradient(135deg,#ffe49a,#f5c6d0);
+  box-shadow:0 0 10px 4px #f0c96a99;
+  animation:diamondPulse 3s ease-in-out infinite alternate;
 }
 
-/* 링 글로우 애니메이션 */
-@keyframes ringGlow{
-  0%{opacity:.7;filter:brightness(.9);}
+@keyframes linePulse{
+  0%{opacity:.6;filter:brightness(.9);}
   100%{opacity:1;filter:brightness(1.3);}
 }
-.rg1{animation:ringGlow 3.0s ease-in-out infinite alternate;}
-.rg2{animation:ringGlow 3.5s ease-in-out infinite alternate .3s;}
-.rg3{animation:ringGlow 4.0s ease-in-out infinite alternate .6s;}
-.rg4{animation:ringGlow 4.5s ease-in-out infinite alternate .9s;}
-.rg5{animation:ringGlow 5.0s ease-in-out infinite alternate 1.2s;}
-.rg6{animation:ringGlow 5.5s ease-in-out infinite alternate 1.5s;}
+@keyframes diamondPulse{
+  0%{transform:translate(-50%,-50%) rotate(45deg) scale(1);}
+  100%{transform:translate(-50%,-50%) rotate(45deg) scale(1.5);}
+}
 
-/* ── MINI SCENE ── */
-.mini-scene{
-  position:relative;
-  width:200px;height:200px;
-  display:flex;align-items:center;justify-content:center;
-  z-index:1;
-}
-.mini-layers{
-  position:absolute;width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-}
-.mlayer{
+/* ── 배경 글로우 ── */
+.bg-glow{
   position:absolute;
+  width:700px;height:300px;
   border-radius:50%;
-  animation:layerA var(--lp,5s) ease-in-out infinite alternate;
+  background:radial-gradient(ellipse,#7c3aed0a 0%,#f0c96a08 40%,transparent 70%);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  animation:bgGlow 6s ease-in-out infinite alternate;
+  pointer-events:none;
+  z-index:-1;
 }
-.ml10{width:110px;height:110px;
-  background:radial-gradient(circle,#1a0000 0%,#ff2020 40%,#000 100%);
-  box-shadow:0 0 10px 2px #ff202055;--lp:6s;}
-.ml9{width:102px;height:102px;
-  background:radial-gradient(circle,#000 0%,#1a0500 30%,#ff4e00 60%,#000 100%);
-  --lp:5.5s;}
-.ml8{width:94px;height:94px;
-  background:radial-gradient(circle,#0a0000 0%,#ff8000 35%,#000 100%);
-  --lp:5.2s;}
-.ml7{width:86px;height:86px;
-  background:radial-gradient(circle,#000 0%,#0d0300 25%,#ff6200 55%,#0a0000 100%);
-  --lp:4.9s;}
-.ml6{width:78px;height:78px;
-  background:radial-gradient(circle,#050000 0%,#ffb600 40%,#000 100%);
-  --lp:4.6s;}
-.ml5{width:70px;height:70px;
-  background:radial-gradient(circle,#000 0%,#0a0400 30%,#ffe100 60%,#0a0000 100%);
-  --lp:4.3s;}
-.ml4{width:62px;height:62px;
-  background:radial-gradient(circle,#020000 0%,#ff8000 35%,#050000 100%);
-  --lp:4.0s;}
-.ml3{width:54px;height:54px;
-  background:radial-gradient(circle,#000 0%,#030000 20%,#ff4e00 50%,#000 100%);
-  --lp:3.7s;}
-.ml2{width:46px;height:46px;
-  background:radial-gradient(circle,#010000 0%,#ff2020 40%,#010000 100%);
-  --lp:3.4s;}
-.ml1{width:38px;height:38px;
-  background:radial-gradient(circle,#000 0%,#050000 50%,#000 100%);
-  --lp:3.1s;}
-.mini-core{
-  position:absolute;width:28px;height:28px;border-radius:50%;
-  background:#000;
-  box-shadow:0 0 6px 2px #ff202015;
-  z-index:20;
+@keyframes bgGlow{
+  0%{opacity:.5;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}
 }
-.mini-ring-svg{
+
+/* ── 파티클 ── */
+.particles{
   position:absolute;
-  width:168px;height:168px;
+  width:600px;height:300px;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
   pointer-events:none;
+  z-index:-1;
 }
+.pt{
+  position:absolute;
+  border-radius:50%;
+  animation:ptFloat var(--pd,8s) ease-in-out infinite alternate var(--pdd,0s);
+}
+@keyframes ptFloat{
+  0%{transform:translateY(0) translateX(0);opacity:.4;}
+  50%{opacity:.9;}
+  100%{transform:translateY(var(--py,-20px)) translateX(var(--px,10px));opacity:.3;}
+}
+
 </style>
 </head>
 <body>
 
 <div class="bg" id="bg"></div>
 
-<!-- ── MAIN ── -->
-<div class="scene">
+<div class="logo-wrap">
+  <div class="bg-glow"></div>
 
-  <!-- 토성링 뒷면 (구체 뒤) z-index:10 -->
-  <svg class="ring-svg" viewBox="0 0 340 340" style="z-index:10;">
-    <defs>
-      <!-- 위쪽 절반만 보이는 clipPath -->
-      <clipPath id="topHalf">
-        <rect x="0" y="0" width="340" height="170"/>
-      </clipPath>
-      <filter id="glow1"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <filter id="glow2"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      <filter id="glow3"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-    <!-- rx 크게, ry 작게 → 좌우 뾰족 효과 -->
-    <!-- 링1 rx=78 ry=12 -->
-    <ellipse class="rg1" cx="170" cy="170" rx="78"  ry="12"  fill="none" stroke="#ff2020" stroke-width="2.2" filter="url(#glow1)" clip-path="url(#topHalf)"/>
-    <!-- 링2 rx=93 ry=14 -->
-    <ellipse class="rg2" cx="170" cy="170" rx="93"  ry="14"  fill="none" stroke="#ff4e00" stroke-width="2.0" filter="url(#glow2)" clip-path="url(#topHalf)"/>
-    <!-- 링3 rx=108 ry=16 -->
-    <ellipse class="rg3" cx="170" cy="170" rx="108" ry="16"  fill="none" stroke="#ff8000" stroke-width="1.8" filter="url(#glow2)" clip-path="url(#topHalf)"/>
-    <!-- 링4 rx=123 ry=18 -->
-    <ellipse class="rg4" cx="170" cy="170" rx="123" ry="18"  fill="none" stroke="#ff6200" stroke-width="1.8" filter="url(#glow3)" clip-path="url(#topHalf)"/>
-    <!-- 링5 rx=138 ry=20 -->
-    <ellipse class="rg5" cx="170" cy="170" rx="138" ry="20"  fill="none" stroke="#ffb600" stroke-width="1.6" filter="url(#glow3)" clip-path="url(#topHalf)"/>
-    <!-- 링6 rx=153 ry=22 -->
-    <ellipse class="rg6" cx="170" cy="170" rx="153" ry="22"  fill="none" stroke="#ffe100" stroke-width="1.5" filter="url(#glow3)" clip-path="url(#topHalf)"/>
-  </svg>
+  <!-- 파티클 -->
+  <div class="particles" id="particles"></div>
 
-  <!-- 구체 레이어 z-index:15 -->
-  <div class="layers">
-    <div class="layer l10"></div>
-    <div class="layer l9"></div>
-    <div class="layer l8"></div>
-    <div class="layer l7"></div>
-    <div class="layer l6"></div>
-    <div class="layer l5"></div>
-    <div class="layer l4"></div>
-    <div class="layer l3"></div>
-    <div class="layer l2"></div>
-    <div class="layer l1"></div>
-    <div class="core"></div>
-    <div class="core-hl"></div>
+  <!-- ALGO 텍스트 -->
+  <div class="algo-text">
+    <span class="l-a" data-char="A">A</span>
+    <span class="l-l" data-char="L">L</span>
+    <span class="l-g" data-char="G">G</span>
+    <span class="l-o" data-char="O">O</span>
   </div>
 
-  <!-- 토성링 앞면 (구체 앞) z-index:25 -->
-  <svg class="ring-svg" viewBox="0 0 340 340" style="z-index:25;">
-    <defs>
-      <!-- 아래쪽 절반만 보이는 clipPath -->
-      <clipPath id="botHalf">
-        <rect x="0" y="170" width="340" height="170"/>
-      </clipPath>
-    </defs>
-    <ellipse class="rg1" cx="170" cy="170" rx="78"  ry="12"  fill="none" stroke="#ff2020" stroke-width="2.2" filter="url(#glow1)" clip-path="url(#botHalf)"/>
-    <ellipse class="rg2" cx="170" cy="170" rx="93"  ry="14"  fill="none" stroke="#ff4e00" stroke-width="2.0" filter="url(#glow2)" clip-path="url(#botHalf)"/>
-    <ellipse class="rg3" cx="170" cy="170" rx="108" ry="16"  fill="none" stroke="#ff8000" stroke-width="1.8" filter="url(#glow2)" clip-path="url(#botHalf)"/>
-    <ellipse class="rg4" cx="170" cy="170" rx="123" ry="18"  fill="none" stroke="#ff6200" stroke-width="1.8" filter="url(#glow3)" clip-path="url(#botHalf)"/>
-    <ellipse class="rg5" cx="170" cy="170" rx="138" ry="20"  fill="none" stroke="#ffb600" stroke-width="1.6" filter="url(#glow3)" clip-path="url(#botHalf)"/>
-    <ellipse class="rg6" cx="170" cy="170" rx="153" ry="22"  fill="none" stroke="#ffe100" stroke-width="1.5" filter="url(#glow3)" clip-path="url(#botHalf)"/>
-  </svg>
-
-</div>
-
-<!-- ── MINI ── -->
-<div class="mini-scene">
-
-  <svg class="mini-ring-svg" viewBox="0 0 168 168" style="z-index:10;">
-    <defs>
-      <clipPath id="mTop"><rect x="0" y="0" width="168" height="84"/></clipPath>
-      <filter id="mg1"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    </defs>
-    <ellipse class="rg1" cx="84" cy="84" rx="38"  ry="6"   fill="none" stroke="#ff2020" stroke-width="1.6" filter="url(#mg1)" clip-path="url(#mTop)"/>
-    <ellipse class="rg2" cx="84" cy="84" rx="46"  ry="7"   fill="none" stroke="#ff4e00" stroke-width="1.4" filter="url(#mg1)" clip-path="url(#mTop)"/>
-    <ellipse class="rg3" cx="84" cy="84" rx="53"  ry="8"   fill="none" stroke="#ff8000" stroke-width="1.3" filter="url(#mg1)" clip-path="url(#mTop)"/>
-    <ellipse class="rg4" cx="84" cy="84" rx="61"  ry="9"   fill="none" stroke="#ff6200" stroke-width="1.3" filter="url(#mg1)" clip-path="url(#mTop)"/>
-    <ellipse class="rg5" cx="84" cy="84" rx="68"  ry="10"  fill="none" stroke="#ffb600" stroke-width="1.2" filter="url(#mg1)" clip-path="url(#mTop)"/>
-    <ellipse class="rg6" cx="84" cy="84" rx="76"  ry="11"  fill="none" stroke="#ffe100" stroke-width="1.1" filter="url(#mg1)" clip-path="url(#mTop)"/>
-  </svg>
-
-  <div class="mini-layers">
-    <div class="mlayer ml10"></div>
-    <div class="mlayer ml9"></div>
-    <div class="mlayer ml8"></div>
-    <div class="mlayer ml7"></div>
-    <div class="mlayer ml6"></div>
-    <div class="mlayer ml5"></div>
-    <div class="mlayer ml4"></div>
-    <div class="mlayer ml3"></div>
-    <div class="mlayer ml2"></div>
-    <div class="mlayer ml1"></div>
-    <div class="mini-core"></div>
+  <!-- 데코 라인 -->
+  <div class="deco-line">
+    <div class="deco-diamond"></div>
   </div>
-
-  <svg class="mini-ring-svg" viewBox="0 0 168 168" style="z-index:25;">
-    <defs>
-      <clipPath id="mBot"><rect x="0" y="84" width="168" height="84"/></clipPath>
-    </defs>
-    <ellipse class="rg1" cx="84" cy="84" rx="38"  ry="6"   fill="none" stroke="#ff2020" stroke-width="1.6" filter="url(#mg1)" clip-path="url(#mBot)"/>
-    <ellipse class="rg2" cx="84" cy="84" rx="46"  ry="7"   fill="none" stroke="#ff4e00" stroke-width="1.4" filter="url(#mg1)" clip-path="url(#mBot)"/>
-    <ellipse class="rg3" cx="84" cy="84" rx="53"  ry="8"   fill="none" stroke="#ff8000" stroke-width="1.3" filter="url(#mg1)" clip-path="url(#mBot)"/>
-    <ellipse class="rg4" cx="84" cy="84" rx="61"  ry="9"   fill="none" stroke="#ff6200" stroke-width="1.3" filter="url(#mg1)" clip-path="url(#mBot)"/>
-    <ellipse class="rg5" cx="84" cy="84" rx="68"  ry="10"  fill="none" stroke="#ffb600" stroke-width="1.2" filter="url(#mg1)" clip-path="url(#mBot)"/>
-    <ellipse class="rg6" cx="84" cy="84" rx="76"  ry="11"  fill="none" stroke="#ffe100" stroke-width="1.1" filter="url(#mg1)" clip-path="url(#mBot)"/>
-  </svg>
-
 </div>
 
 <script>
+// 별 배경
 const bg = document.getElementById('bg');
-const colors = ['#ff2020','#ff5500','#ff8000','#ffb600','#ffe100','#ff6200','#fff','#ffccaa'];
-for(let i=0;i<90;i++){
-  const s = document.createElement('div');
-  s.className = 'star';
-  const sz = (Math.random()*1.8+0.3).toFixed(2);
-  s.style.cssText = `
+const sc = ['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#ff2020','#ffe49a','#e879a0','#fff'];
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=(Math.random()*1.8+0.3).toFixed(2);
+  s.style.cssText=`
     width:${sz}px;height:${sz}px;
-    left:${Math.random()*100}%;top:${Math.random()*100}%;
-    background:${colors[Math.floor(Math.random()*colors.length)]};
+    left:${Math.random()*100}%;
+    top:${Math.random()*100}%;
+    background:${sc[Math.floor(Math.random()*sc.length)]};
     --d:${(Math.random()*4+1.5).toFixed(2)}s;
-    --delay:-${(Math.random()*4).toFixed(2)}s;
+    --delay:-${(Math.random()*5).toFixed(2)}s;
   `;
   bg.appendChild(s);
+}
+
+// 파티클
+const pc = document.getElementById('particles');
+const pcColors=['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#e879a0'];
+for(let i=0;i<18;i++){
+  const p=document.createElement('div');
+  p.className='pt';
+  const sz=(Math.random()*3+1).toFixed(2);
+  const x=Math.random()*600;
+  const y=Math.random()*300;
+  const pyVal=(-(Math.random()*40+10)).toFixed(0);
+  const pxVal=((Math.random()*30-15)).toFixed(0);
+  p.style.cssText=`
+    width:${sz}px;height:${sz}px;
+    left:${x}px;top:${y}px;
+    background:${pcColors[Math.floor(Math.random()*pcColors.length)]};
+    box-shadow:0 0 ${sz*2}px ${pcColors[Math.floor(Math.random()*pcColors.length)]};
+    --pd:${(Math.random()*6+5).toFixed(2)}s;
+    --pdd:-${(Math.random()*5).toFixed(2)}s;
+    --py:${pyVal}px;
+    --px:${pxVal}px;
+  `;
+  pc.appendChild(p);
 }
 </script>
 </body>
