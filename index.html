@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&display=swap" rel="stylesheet"/>
 
 <script>
-/* ── 파비콘 빌더: outputSize + 8× 슈퍼샘플링 ── */
 function buildFavicon(outputSize){
   const SCALE = 8;
   const big   = outputSize * SCALE;
@@ -18,11 +17,9 @@ function buildFavicon(outputSize){
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  /* 배경 – 순수 블랙 */
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, big, big);
 
-  /* 배경 글로우 */
   const bgG = ctx.createRadialGradient(big/2,big/2,0, big/2,big/2, big*0.7);
   bgG.addColorStop(0,   'rgba(124,58,237,0.22)');
   bgG.addColorStop(0.5, 'rgba(240,201,106,0.10)');
@@ -30,7 +27,6 @@ function buildFavicon(outputSize){
   ctx.fillStyle = bgG;
   ctx.fillRect(0, 0, big, big);
 
-  /* ALGO 텍스트 */
   const letters = [
     { ch:'A', g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'], glow:'#f0c96a' },
     { ch:'L', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
@@ -41,7 +37,6 @@ function buildFavicon(outputSize){
   const padX = big * 0.05;
   const maxW = big - padX * 2;
 
-  /* 이진탐색: 폰트 크기 자동 맞춤 */
   let lo = 1, hi = big, fs = hi / 2;
   for(let iter = 0; iter < 32; iter++){
     ctx.font = `900 ${fs}px Cinzel, serif`;
@@ -59,35 +54,49 @@ function buildFavicon(outputSize){
   letters.forEach(({ ch, g, glow }) => {
     const w = ctx.measureText(ch).width;
 
+    /* 깊이감 – 다층 드롭섀도 */
+    for(let d = 6; d >= 1; d--){
+      ctx.shadowColor   = 'rgba(0,0,0,0)';
+      ctx.shadowBlur    = 0;
+      const alpha = 0.55 - d * 0.07;
+      ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+      ctx.fillText(ch, curX + d * big*0.004, textY + d * big*0.005);
+    }
+
+    /* 메인 글자 */
     ctx.shadowColor = glow;
     ctx.shadowBlur  = big * 0.14;
-
     const tG = ctx.createLinearGradient(curX, textY - fs*0.5, curX + w, textY + fs*0.5);
     tG.addColorStop(0,    g[0]);
     tG.addColorStop(0.35, g[1]);
     tG.addColorStop(0.7,  g[2]);
     tG.addColorStop(1,    g[3]);
-
     ctx.fillStyle = tG;
     ctx.fillText(ch, curX, textY);
+
+    /* 상단 하이라이트 */
+    ctx.shadowBlur = 0;
+    const hlG = ctx.createLinearGradient(curX, textY - fs*0.5, curX, textY - fs*0.05);
+    hlG.addColorStop(0,   'rgba(255,255,255,0.55)');
+    hlG.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+    hlG.addColorStop(1,   'rgba(255,255,255,0)');
+    ctx.fillStyle = hlG;
+    ctx.fillText(ch, curX, textY);
+
     curX += w;
   });
 
-  /* 슈퍼샘플 → 출력 크기로 다운샘플 */
   const outC   = document.createElement('canvas');
   outC.width   = outputSize; outC.height = outputSize;
   const outCtx = outC.getContext('2d');
   outCtx.imageSmoothingEnabled = true;
   outCtx.imageSmoothingQuality = 'high';
   outCtx.drawImage(bigC, 0, 0, outputSize, outputSize);
-
   return outC;
 }
 
-/* 파비콘 주입 – 폰트 로드 후 */
 window.addEventListener('DOMContentLoaded', () => {
   document.fonts.ready.then(() => {
-    /* 16, 32, 64, 256 모두 주입 */
     [16, 32, 64, 256].forEach(sz => {
       const canvas = buildFavicon(sz);
       const link   = document.createElement('link');
@@ -107,33 +116,18 @@ function renderPreviews(){
   const container    = document.getElementById('faviconSizes');
   if(!container) return;
   container.innerHTML = '';
-
   sizes.forEach((sz, i) => {
     const canvas = buildFavicon(sz);
-
-    const wrap = document.createElement('div');
+    const wrap   = document.createElement('div');
     wrap.className = 'fav-item';
-
     const cw = document.createElement('div');
     cw.className = 'fav-canvas-wrap';
-    cw.style.cssText = `
-      width:${displaySizes[i]}px;
-      height:${displaySizes[i]}px;
-      border-radius:${8 + i*3}px;
-    `;
-
-    canvas.style.cssText = `
-      width:${displaySizes[i]}px;
-      height:${displaySizes[i]}px;
-      display:block;
-      image-rendering:auto;
-    `;
+    cw.style.cssText = `width:${displaySizes[i]}px;height:${displaySizes[i]}px;border-radius:${8+i*3}px;`;
+    canvas.style.cssText = `width:${displaySizes[i]}px;height:${displaySizes[i]}px;display:block;image-rendering:auto;`;
     cw.appendChild(canvas);
-
     const lbl = document.createElement('div');
-    lbl.className   = 'fav-size-label';
+    lbl.className = 'fav-size-label';
     lbl.textContent = `${sz}×${sz}`;
-
     wrap.appendChild(cw);
     wrap.appendChild(lbl);
     container.appendChild(wrap);
@@ -176,7 +170,7 @@ body{
   to{opacity:.9;transform:scale(1.5);}
 }
 
-/* ── 메인 로고 ── */
+/* ══ 메인 로고 ══ */
 .logo-wrap{
   position:relative;z-index:10;
   display:flex;flex-direction:column;align-items:center;
@@ -184,37 +178,113 @@ body{
 
 .algo-text{
   display:flex;align-items:center;justify-content:center;gap:0;
+  /* 앞으로 튀어나오는 원근감 */
+  transform:perspective(600px) translateZ(0px);
+  animation:popForward 6s ease-in-out infinite alternate;
+  /* 다층 드롭섀도로 두께감 */
+  filter:
+    drop-shadow(0 2px 0px rgba(0,0,0,1))
+    drop-shadow(0 4px 0px rgba(0,0,0,0.95))
+    drop-shadow(0 6px 0px rgba(0,0,0,0.85))
+    drop-shadow(0 8px 0px rgba(0,0,0,0.70))
+    drop-shadow(0 10px 0px rgba(0,0,0,0.50))
+    drop-shadow(0 12px 0px rgba(0,0,0,0.30))
+    drop-shadow(0 16px 28px rgba(0,0,0,0.95))
+    drop-shadow(0 0 40px rgba(240,201,106,0.40))
+    drop-shadow(0 0 80px rgba(168,85,247,0.25));
+}
+
+@keyframes popForward{
+  0%{
+    transform:perspective(600px) translateZ(0px) scale(1);
+    filter:
+      drop-shadow(0 2px 0px rgba(0,0,0,1))
+      drop-shadow(0 4px 0px rgba(0,0,0,0.95))
+      drop-shadow(0 6px 0px rgba(0,0,0,0.85))
+      drop-shadow(0 8px 0px rgba(0,0,0,0.70))
+      drop-shadow(0 10px 0px rgba(0,0,0,0.50))
+      drop-shadow(0 12px 0px rgba(0,0,0,0.30))
+      drop-shadow(0 18px 30px rgba(0,0,0,0.90))
+      drop-shadow(0 0 40px rgba(240,201,106,0.35))
+      drop-shadow(0 0 80px rgba(168,85,247,0.20));
+  }
+  100%{
+    transform:perspective(600px) translateZ(40px) scale(1.04);
+    filter:
+      drop-shadow(0 3px 0px rgba(0,0,0,1))
+      drop-shadow(0 6px 0px rgba(0,0,0,0.95))
+      drop-shadow(0 9px 0px rgba(0,0,0,0.85))
+      drop-shadow(0 12px 0px rgba(0,0,0,0.70))
+      drop-shadow(0 15px 0px rgba(0,0,0,0.50))
+      drop-shadow(0 18px 0px rgba(0,0,0,0.30))
+      drop-shadow(0 28px 40px rgba(0,0,0,0.95))
+      drop-shadow(0 0 55px rgba(240,201,106,0.55))
+      drop-shadow(0 0 100px rgba(168,85,247,0.35));
+  }
 }
 
 .algo-text span{
   display:inline-block;
-  font-family:'Cinzel',serif;font-weight:900;
-  font-size:140px;line-height:1;letter-spacing:-2px;
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:140px;
+  line-height:1;
+  letter-spacing:-2px;
+  position:relative;
   animation:letterFloat var(--lf,6s) ease-in-out infinite alternate var(--ld,0s);
+  /* 개별 글자 text-shadow 두께 레이어 */
+  text-shadow:
+    1px 1px 0 rgba(0,0,0,1),
+    2px 2px 0 rgba(0,0,0,1),
+    3px 3px 0 rgba(0,0,0,0.95),
+    4px 4px 0 rgba(0,0,0,0.85),
+    5px 5px 0 rgba(0,0,0,0.70),
+    6px 6px 0 rgba(0,0,0,0.50),
+    7px 7px 0 rgba(0,0,0,0.30),
+    8px 8px 12px rgba(0,0,0,0.80);
+}
+
+/* 상단 하이라이트 오버레이 – 빛이 위에서 내리쬐는 효과 */
+.algo-text span::before{
+  content: attr(data-ch);
+  position:absolute;
+  left:0;top:0;
+  width:100%;height:50%;
+  overflow:hidden;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,0.18) 0%,
+    rgba(255,255,255,0.06) 60%,
+    rgba(255,255,255,0) 100%
+  );
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:140px;
+  line-height:1;
+  letter-spacing:-2px;
+  pointer-events:none;
 }
 
 .l-a{
   background:linear-gradient(160deg,#ffe49a 0%,#f0c96a 40%,#ff8c00 80%,#ff2020 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #f0c96a99) drop-shadow(0 0 40px #ff8c0055);
   --lf:5.8s;--ld:0s;
 }
 .l-l{
   background:linear-gradient(160deg,#f5c6d0 0%,#e879a0 40%,#a855f7 80%,#7c3aed 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #e879a099) drop-shadow(0 0 40px #a855f755);
   --lf:6.2s;--ld:.4s;
 }
 .l-g{
   background:linear-gradient(160deg,#ffe49a 0%,#f0c96a 40%,#ff8c00 80%,#ff2020 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #f0c96a99) drop-shadow(0 0 40px #ff8c0055);
   --lf:5.5s;--ld:.8s;
 }
 .l-o{
   background:linear-gradient(160deg,#f5c6d0 0%,#e879a0 40%,#a855f7 80%,#7c3aed 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #e879a099) drop-shadow(0 0 40px #a855f755);
   --lf:6.5s;--ld:1.2s;
 }
 
@@ -223,17 +293,22 @@ body{
   100%{transform:translateY(-6px) scale(1.03);}
 }
 
+/* ── 데코 라인 ── */
 .deco-line{
   position:relative;width:520px;height:2px;margin-top:8px;
   background:linear-gradient(90deg,
     transparent 0%,#7c3aed 15%,#f0c96a 35%,
     #f5c6d0 50%,#f0c96a 65%,#a855f7 85%,transparent 100%);
   animation:linePulse 4s ease-in-out infinite alternate;
+  /* 라인도 앞으로 살짝 */
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,0.8)) drop-shadow(0 0 10px rgba(240,201,106,0.5));
+  transform:perspective(600px) translateZ(10px);
 }
 .deco-line::before,.deco-line::after{
   content:'';position:absolute;top:50%;transform:translateY(-50%);
   width:6px;height:6px;border-radius:50%;
-  background:#f0c96a;box-shadow:0 0 8px 3px #f0c96a;
+  background:#f0c96a;
+  box-shadow:0 0 8px 3px #f0c96a, 0 3px 6px rgba(0,0,0,0.8);
 }
 .deco-line::before{left:0;}
 .deco-line::after{right:0;}
@@ -243,13 +318,13 @@ body{
   transform:translate(-50%,-50%) rotate(45deg);
   width:8px;height:8px;
   background:linear-gradient(135deg,#ffe49a,#f5c6d0);
-  box-shadow:0 0 10px 4px #f0c96a99;
+  box-shadow:0 0 10px 4px #f0c96a99, 0 4px 8px rgba(0,0,0,0.8);
   animation:diamondPulse 3s ease-in-out infinite alternate;
 }
 
 @keyframes linePulse{
-  0%{opacity:.6;filter:brightness(.9);}
-  100%{opacity:1;filter:brightness(1.3);}
+  0%{opacity:.6;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.8)) drop-shadow(0 0 8px rgba(240,201,106,0.4)) brightness(.9);}
+  100%{opacity:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.8)) drop-shadow(0 0 14px rgba(240,201,106,0.7)) brightness(1.3);}
 }
 @keyframes diamondPulse{
   0%{transform:translate(-50%,-50%) rotate(45deg) scale(1);}
@@ -328,10 +403,10 @@ body{
   <div class="particles" id="particles"></div>
 
   <div class="algo-text">
-    <span class="l-a">A</span>
-    <span class="l-l">L</span>
-    <span class="l-g">G</span>
-    <span class="l-o">O</span>
+    <span class="l-a" data-ch="A">A</span>
+    <span class="l-l" data-ch="L">L</span>
+    <span class="l-g" data-ch="G">G</span>
+    <span class="l-o" data-ch="O">O</span>
   </div>
 
   <div class="deco-line">
