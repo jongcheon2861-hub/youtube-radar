@@ -7,26 +7,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&display=swap" rel="stylesheet"/>
 
 <script>
-/* ── 파비콘: ALGO 전체 텍스트 + 데코라인 ── */
 function buildFavicon(size){
   const c = document.createElement('canvas');
   c.width = size; c.height = size;
   const ctx = c.getContext('2d');
-  const s = size / 128;
 
-  /* 배경 – 순수 블랙 */
+  /* 배경 */
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, size, size);
 
   /* 배경 글로우 */
-  const bgG = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size*0.6);
-  bgG.addColorStop(0, 'rgba(124,58,237,0.18)');
-  bgG.addColorStop(0.5, 'rgba(240,201,106,0.08)');
+  const bgG = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size*0.7);
+  bgG.addColorStop(0, 'rgba(124,58,237,0.22)');
+  bgG.addColorStop(0.5,'rgba(240,201,106,0.10)');
   bgG.addColorStop(1, 'transparent');
   ctx.fillStyle = bgG;
   ctx.fillRect(0, 0, size, size);
 
-  /* ── ALGO 텍스트 ── */
+  /* ── ALGO 텍스트: 자동 맞춤 ── */
   const letters = [
     { ch:'A', g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'], glow:'#f0c96a' },
     { ch:'L', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
@@ -34,39 +32,51 @@ function buildFavicon(size){
     { ch:'O', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
   ];
 
-  const fs = Math.round(54 * s);
-  ctx.font = `900 ${fs}px serif`;
-  ctx.textBaseline = 'middle';
+  /* 텍스트 영역: 좌우 패딩 6%, 상단 5% ~ 하단 데코라인 위 */
+  const padX   = size * 0.06;
+  const maxW   = size - padX * 2;
+  const lineH  = size * 0.70; /* 데코라인 Y */
+  const textY  = lineH * 0.50; /* 글자 중앙 Y */
 
-  /* 전체 텍스트 너비 측정 */
-  const totalW = letters.reduce((acc, l) => acc + ctx.measureText(l.ch).width, 0);
+  /* 폰트 크기 이진탐색: ALGO 전체가 maxW 안에 들어오도록 */
+  let lo = 1, hi = size * 0.85, fs = hi / 2;
+  for(let iter = 0; iter < 20; iter++){
+    ctx.font = `900 ${fs}px Cinzel, serif`;
+    const tw = letters.reduce((a,l)=>a+ctx.measureText(l.ch).width, 0);
+    if(tw > maxW) hi = fs;
+    else          lo = fs;
+    fs = (lo + hi) / 2;
+  }
+  ctx.font = `900 ${fs}px Cinzel, serif`;
+
+  /* 전체 너비 재측정 → 중앙 정렬 시작 X */
+  const totalW = letters.reduce((a,l)=>a+ctx.measureText(l.ch).width, 0);
   let curX = (size - totalW) / 2;
-  const midY = size * 0.46;
+
+  ctx.textBaseline = 'middle';
 
   letters.forEach(({ ch, g, glow }) => {
     const w = ctx.measureText(ch).width;
 
-    /* 글로우 */
     ctx.shadowColor = glow;
-    ctx.shadowBlur = 10 * s;
+    ctx.shadowBlur  = size * 0.12;
 
-    /* 그라디언트 – 글자 범위 기준 */
-    const tG = ctx.createLinearGradient(curX, midY - fs*0.6, curX + w, midY + fs*0.6);
+    const tG = ctx.createLinearGradient(curX, textY - fs*0.5, curX + w, textY + fs*0.5);
     tG.addColorStop(0,    g[0]);
     tG.addColorStop(0.35, g[1]);
     tG.addColorStop(0.7,  g[2]);
     tG.addColorStop(1,    g[3]);
 
     ctx.fillStyle = tG;
-    ctx.fillText(ch, curX, midY);
+    ctx.fillText(ch, curX, textY);
     curX += w;
   });
 
   /* ── 데코 라인 ── */
   ctx.shadowBlur = 0;
-  const lineY = size * 0.76;
-  const lx1 = size * 0.08;
-  const lx2 = size * 0.92;
+  const lineY = size * 0.82;
+  const lx1   = size * 0.06;
+  const lx2   = size * 0.94;
 
   const lineG = ctx.createLinearGradient(lx1, lineY, lx2, lineY);
   lineG.addColorStop(0,    'transparent');
@@ -78,65 +88,63 @@ function buildFavicon(size){
   lineG.addColorStop(1,    'transparent');
 
   ctx.shadowColor = '#f0c96a';
-  ctx.shadowBlur = 5 * s;
+  ctx.shadowBlur  = size * 0.05;
   ctx.strokeStyle = lineG;
-  ctx.lineWidth = 1.5 * s;
+  ctx.lineWidth   = Math.max(1, size * 0.025);
   ctx.beginPath();
   ctx.moveTo(lx1, lineY);
   ctx.lineTo(lx2, lineY);
   ctx.stroke();
 
-  /* 양끝 원형 점 */
+  /* 양끝 점 */
+  const dotR = Math.max(1, size * 0.038);
   ctx.shadowColor = '#f0c96a';
-  ctx.shadowBlur = 8 * s;
-  ctx.fillStyle = '#f0c96a';
-  const dotR = 2.5 * s;
+  ctx.shadowBlur  = size * 0.08;
+  ctx.fillStyle   = '#f0c96a';
   ctx.beginPath(); ctx.arc(lx1, lineY, dotR, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(lx2, lineY, dotR, 0, Math.PI*2); ctx.fill();
 
   /* 중앙 다이아몬드 */
   ctx.shadowColor = '#ffe49a';
-  ctx.shadowBlur = 8 * s;
-  ctx.fillStyle = '#ffe49a';
+  ctx.shadowBlur  = size * 0.09;
+  ctx.fillStyle   = '#ffe49a';
   ctx.save();
   ctx.translate(size/2, lineY);
   ctx.rotate(Math.PI/4);
-  const d = 3.5 * s;
+  const d = Math.max(1.5, size * 0.05);
   ctx.fillRect(-d, -d, d*2, d*2);
   ctx.restore();
 
   return c;
 }
 
-/* 파비콘 주입 */
+/* 파비콘 주입 – 폰트 로드 후 */
 window.addEventListener('DOMContentLoaded', () => {
-  /* Cinzel 폰트 로드 후 재렌더링 */
   document.fonts.ready.then(() => {
-    const sizes = [16, 32, 64];
-    sizes.forEach(sz => {
+    [16, 32, 64].forEach(sz => {
       const canvas = buildFavicon(sz);
-      const link = document.createElement('link');
-      link.rel = 'icon';
-      link.type = 'image/png';
-      link.sizes = `${sz}x${sz}`;
-      link.href = canvas.toDataURL('image/png');
+      const link   = document.createElement('link');
+      link.rel     = 'icon';
+      link.type    = 'image/png';
+      link.sizes   = `${sz}x${sz}`;
+      link.href    = canvas.toDataURL('image/png');
       document.head.appendChild(link);
     });
-
-    /* 미리보기 렌더링 */
     renderPreviews();
   });
 });
 
 function renderPreviews(){
-  const sizes       = [16, 32, 64, 128];
-  const displaySizes = [64, 96, 128, 160];
-  const container   = document.getElementById('faviconSizes');
+  const sizes        = [16, 32, 64, 128];
+  const displaySizes = [80, 112, 144, 176];
+  const container    = document.getElementById('faviconSizes');
   if(!container) return;
+  container.innerHTML = '';
 
   sizes.forEach((sz, i) => {
     const canvas = buildFavicon(sz);
-    const wrap   = document.createElement('div');
+
+    const wrap = document.createElement('div');
     wrap.className = 'fav-item';
 
     const canvasWrap = document.createElement('div');
@@ -144,7 +152,7 @@ function renderPreviews(){
     canvasWrap.style.cssText = `
       width:${displaySizes[i]}px;
       height:${displaySizes[i]}px;
-      border-radius:${10 + i*3}px;
+      border-radius:${8 + i*3}px;
     `;
 
     canvas.style.cssText = `
@@ -156,7 +164,7 @@ function renderPreviews(){
     canvasWrap.appendChild(canvas);
 
     const label = document.createElement('div');
-    label.className = 'fav-size-label';
+    label.className   = 'fav-size-label';
     label.textContent = `${sz}×${sz}`;
 
     wrap.appendChild(canvasWrap);
@@ -193,8 +201,7 @@ body{
 
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{
-  position:absolute;
-  border-radius:50%;
+  position:absolute;border-radius:50%;
   animation:twinkle var(--d,3s) ease-in-out infinite alternate var(--delay,0s);
 }
 @keyframes twinkle{
@@ -204,27 +211,18 @@ body{
 
 /* ── 메인 로고 ── */
 .logo-wrap{
-  position:relative;
-  z-index:10;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
 }
 
 .algo-text{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:0;
+  display:flex;align-items:center;justify-content:center;gap:0;
 }
 
 .algo-text span{
   display:inline-block;
-  font-family:'Cinzel',serif;
-  font-weight:900;
-  font-size:140px;
-  line-height:1;
-  letter-spacing:-2px;
+  font-family:'Cinzel',serif;font-weight:900;
+  font-size:140px;line-height:1;letter-spacing:-2px;
   animation:letterFloat var(--lf,6s) ease-in-out infinite alternate var(--ld,0s);
 }
 
@@ -259,13 +257,10 @@ body{
 }
 
 .deco-line{
-  position:relative;
-  width:520px;height:2px;
-  margin-top:8px;
+  position:relative;width:520px;height:2px;margin-top:8px;
   background:linear-gradient(90deg,
     transparent 0%,#7c3aed 15%,#f0c96a 35%,
-    #f5c6d0 50%,#f0c96a 65%,#a855f7 85%,transparent 100%
-  );
+    #f5c6d0 50%,#f0c96a 65%,#a855f7 85%,transparent 100%);
   animation:linePulse 4s ease-in-out infinite alternate;
 }
 .deco-line::before,.deco-line::after{
@@ -324,19 +319,17 @@ body{
 /* ── 파비콘 미리보기 ── */
 .favicon-preview{
   position:relative;z-index:10;
-  display:flex;flex-direction:column;
-  align-items:center;gap:16px;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
 }
 
 .favicon-label{
-  font-family:'Cinzel',serif;
-  font-size:11px;font-weight:600;
+  font-family:'Cinzel',serif;font-size:11px;font-weight:600;
   letter-spacing:4px;text-transform:uppercase;
   color:#f0c96a;opacity:.7;
 }
 
 .favicon-sizes{
-  display:flex;align-items:flex-end;gap:28px;
+  display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;justify-content:center;
 }
 
 .fav-item{
@@ -345,12 +338,11 @@ body{
 
 .fav-canvas-wrap{
   overflow:hidden;
-  box-shadow:0 0 0 1px #f0c96a44, 0 0 20px #a855f733;
   animation:favGlow 3s ease-in-out infinite alternate;
 }
 @keyframes favGlow{
-  0%{box-shadow:0 0 0 1px #f0c96a33, 0 0 12px #a855f722;}
-  100%{box-shadow:0 0 0 1px #f0c96a99, 0 0 28px #a855f766;}
+  0%{box-shadow:0 0 0 1px #f0c96a33,0 0 12px #a855f722;}
+  100%{box-shadow:0 0 0 1px #f0c96a99,0 0 28px #a855f766;}
 }
 
 .fav-size-label{
@@ -395,7 +387,7 @@ body{
 </div>
 
 <script>
-/* ── 별 배경 ── */
+/* 별 배경 */
 const bg = document.getElementById('bg');
 const sc = ['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#ff2020','#ffe49a','#e879a0','#fff'];
 for(let i=0;i<80;i++){
@@ -404,8 +396,7 @@ for(let i=0;i<80;i++){
   const sz=(Math.random()*1.8+0.3).toFixed(2);
   s.style.cssText=`
     width:${sz}px;height:${sz}px;
-    left:${Math.random()*100}%;
-    top:${Math.random()*100}%;
+    left:${Math.random()*100}%;top:${Math.random()*100}%;
     background:${sc[Math.floor(Math.random()*sc.length)]};
     --d:${(Math.random()*4+1.5).toFixed(2)}s;
     --delay:-${(Math.random()*5).toFixed(2)}s;
@@ -413,7 +404,7 @@ for(let i=0;i<80;i++){
   bg.appendChild(s);
 }
 
-/* ── 파티클 ── */
+/* 파티클 */
 const pc = document.getElementById('particles');
 const pcColors=['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#e879a0'];
 for(let i=0;i<18;i++){
