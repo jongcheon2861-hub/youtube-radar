@@ -12,7 +12,7 @@ function buildFavicon(size){
   c.width = size; c.height = size;
   const ctx = c.getContext('2d');
 
-  /* 배경 */
+  /* 배경 – 순수 블랙 */
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, size, size);
 
@@ -24,7 +24,7 @@ function buildFavicon(size){
   ctx.fillStyle = bgG;
   ctx.fillRect(0, 0, size, size);
 
-  /* ── ALGO 텍스트: 자동 맞춤 ── */
+  /* ── ALGO 텍스트만 ── */
   const letters = [
     { ch:'A', g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'], glow:'#f0c96a' },
     { ch:'L', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
@@ -32,34 +32,33 @@ function buildFavicon(size){
     { ch:'O', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
   ];
 
-  /* 텍스트 영역: 좌우 패딩 6%, 상단 5% ~ 하단 데코라인 위 */
-  const padX   = size * 0.06;
-  const maxW   = size - padX * 2;
-  const lineH  = size * 0.70; /* 데코라인 Y */
-  const textY  = lineH * 0.50; /* 글자 중앙 Y */
+  /* 좌우 패딩 5%, ALGO가 꽉 차도록 이진탐색 */
+  const padX = size * 0.05;
+  const maxW = size - padX * 2;
 
-  /* 폰트 크기 이진탐색: ALGO 전체가 maxW 안에 들어오도록 */
-  let lo = 1, hi = size * 0.85, fs = hi / 2;
-  for(let iter = 0; iter < 20; iter++){
+  let lo = 1, hi = size, fs = hi / 2;
+  for(let iter = 0; iter < 24; iter++){
     ctx.font = `900 ${fs}px Cinzel, serif`;
-    const tw = letters.reduce((a,l)=>a+ctx.measureText(l.ch).width, 0);
+    const tw = letters.reduce((a, l) => a + ctx.measureText(l.ch).width, 0);
     if(tw > maxW) hi = fs;
     else          lo = fs;
     fs = (lo + hi) / 2;
   }
   ctx.font = `900 ${fs}px Cinzel, serif`;
 
-  /* 전체 너비 재측정 → 중앙 정렬 시작 X */
-  const totalW = letters.reduce((a,l)=>a+ctx.measureText(l.ch).width, 0);
+  /* 전체 너비 → 수평 중앙 정렬 */
+  const totalW = letters.reduce((a, l) => a + ctx.measureText(l.ch).width, 0);
   let curX = (size - totalW) / 2;
 
+  /* 수직 중앙 */
+  const textY = size / 2;
   ctx.textBaseline = 'middle';
 
   letters.forEach(({ ch, g, glow }) => {
     const w = ctx.measureText(ch).width;
 
     ctx.shadowColor = glow;
-    ctx.shadowBlur  = size * 0.12;
+    ctx.shadowBlur  = size * 0.14;
 
     const tG = ctx.createLinearGradient(curX, textY - fs*0.5, curX + w, textY + fs*0.5);
     tG.addColorStop(0,    g[0]);
@@ -71,49 +70,6 @@ function buildFavicon(size){
     ctx.fillText(ch, curX, textY);
     curX += w;
   });
-
-  /* ── 데코 라인 ── */
-  ctx.shadowBlur = 0;
-  const lineY = size * 0.82;
-  const lx1   = size * 0.06;
-  const lx2   = size * 0.94;
-
-  const lineG = ctx.createLinearGradient(lx1, lineY, lx2, lineY);
-  lineG.addColorStop(0,    'transparent');
-  lineG.addColorStop(0.15, '#7c3aed');
-  lineG.addColorStop(0.35, '#f0c96a');
-  lineG.addColorStop(0.5,  '#f5c6d0');
-  lineG.addColorStop(0.65, '#f0c96a');
-  lineG.addColorStop(0.85, '#a855f7');
-  lineG.addColorStop(1,    'transparent');
-
-  ctx.shadowColor = '#f0c96a';
-  ctx.shadowBlur  = size * 0.05;
-  ctx.strokeStyle = lineG;
-  ctx.lineWidth   = Math.max(1, size * 0.025);
-  ctx.beginPath();
-  ctx.moveTo(lx1, lineY);
-  ctx.lineTo(lx2, lineY);
-  ctx.stroke();
-
-  /* 양끝 점 */
-  const dotR = Math.max(1, size * 0.038);
-  ctx.shadowColor = '#f0c96a';
-  ctx.shadowBlur  = size * 0.08;
-  ctx.fillStyle   = '#f0c96a';
-  ctx.beginPath(); ctx.arc(lx1, lineY, dotR, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(lx2, lineY, dotR, 0, Math.PI*2); ctx.fill();
-
-  /* 중앙 다이아몬드 */
-  ctx.shadowColor = '#ffe49a';
-  ctx.shadowBlur  = size * 0.09;
-  ctx.fillStyle   = '#ffe49a';
-  ctx.save();
-  ctx.translate(size/2, lineY);
-  ctx.rotate(Math.PI/4);
-  const d = Math.max(1.5, size * 0.05);
-  ctx.fillRect(-d, -d, d*2, d*2);
-  ctx.restore();
 
   return c;
 }
@@ -321,21 +277,17 @@ body{
   position:relative;z-index:10;
   display:flex;flex-direction:column;align-items:center;gap:16px;
 }
-
 .favicon-label{
   font-family:'Cinzel',serif;font-size:11px;font-weight:600;
   letter-spacing:4px;text-transform:uppercase;
   color:#f0c96a;opacity:.7;
 }
-
 .favicon-sizes{
   display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;justify-content:center;
 }
-
 .fav-item{
   display:flex;flex-direction:column;align-items:center;gap:8px;
 }
-
 .fav-canvas-wrap{
   overflow:hidden;
   animation:favGlow 3s ease-in-out infinite alternate;
@@ -344,12 +296,10 @@ body{
   0%{box-shadow:0 0 0 1px #f0c96a33,0 0 12px #a855f722;}
   100%{box-shadow:0 0 0 1px #f0c96a99,0 0 28px #a855f766;}
 }
-
 .fav-size-label{
   font-family:'Cinzel',serif;font-size:10px;
   color:#a855f7;letter-spacing:2px;opacity:.8;
 }
-
 .divider{
   width:420px;height:1px;
   background:linear-gradient(90deg,transparent,#7c3aed44,#f0c96a44,#a855f744,transparent);
