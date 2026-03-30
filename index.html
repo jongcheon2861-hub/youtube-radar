@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Layered Sphere</title>
+<title>Black Sphere Symbol</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
@@ -16,7 +16,6 @@ body{
   gap:80px;
   overflow:hidden;
 }
-
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{
   position:absolute;border-radius:50%;
@@ -27,213 +26,250 @@ body{
   100%{opacity:.8;transform:scale(2);}
 }
 
-/* ════════════════════════════════
-   메인 씬
-════════════════════════════════ */
+/* ════════════════════════
+   씬
+════════════════════════ */
 .scene{
   position:relative;z-index:1;
-  width:420px;height:420px;
+  width:460px;height:460px;
   display:flex;align-items:center;justify-content:center;
 }
 
-/* ════════════════════════════════
+/* ════════════════════════
    겹겹이 구체 레이어
-   각 구체는 반투명 + 글로우
-   바깥→안으로 갈수록 더 진해짐
-════════════════════════════════ */
-
-/* 공통 구체 스타일 */
+   간격 8px로 촘촘하게
+   코어 160px 기준
+   l1:168 l2:176 l3:184 l4:192
+   l5:200 l6:208 l7:216 l8:224
+   l9:232 l10:240 (외곽헤일로)
+════════════════════════ */
 .layer{
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  animation:layerPulse var(--lp) ease-in-out infinite;
 }
 
-/* ── 레이어 7 (가장 바깥 — 희미한 헤일로) ── */
-.l7{
-  width:360px;height:360px;
+/* 헤일로 — 가장 바깥 확산 */
+.l10{
+  width:340px;height:340px;
   background:radial-gradient(circle,
-    transparent           30%,
-    rgba(255,80,0,.04)    55%,
-    rgba(255,140,0,.06)   70%,
-    rgba(255,50,0,.04)    82%,
-    transparent           95%
+    transparent 36%,
+    rgba(255,70,0,.03) 50%,
+    rgba(255,120,0,.05) 62%,
+    rgba(255,50,0,.03) 74%,
+    transparent 88%
   );
-  box-shadow:
-    0 0 60px rgba(255,100,0,.08),
-    0 0 120px rgba(255,60,0,.05);
-  --lp:6s;
   z-index:3;
-  animation:outerHalo 6s ease-in-out infinite;
+  animation:haloAnim 7s ease-in-out infinite;
 }
-@keyframes outerHalo{
-  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6;}
-  50%{transform:translate(-50%,-50%) scale(1.06);opacity:1;}
+@keyframes haloAnim{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5;}
+  50%{transform:translate(-50%,-50%) scale(1.08);opacity:1;}
 }
 
-/* ── 레이어 6 ── */
+.l9{
+  width:270px;height:270px;
+  background:radial-gradient(circle,
+    transparent 28%,
+    rgba(255,60,0,.05) 44%,
+    rgba(255,110,0,.09) 58%,
+    rgba(220,45,0,.1) 70%,
+    rgba(160,25,0,.06) 82%,
+    transparent 94%
+  );
+  box-shadow:0 0 35px rgba(255,80,0,.08),0 0 70px rgba(200,40,0,.05);
+  z-index:4;
+  animation:layerA 6.5s ease-in-out infinite;
+}
+.l8{
+  width:252px;height:252px;
+  background:radial-gradient(circle,
+    transparent 26%,
+    rgba(255,70,0,.07) 40%,
+    rgba(255,130,0,.13) 55%,
+    rgba(230,55,0,.16) 68%,
+    rgba(175,28,0,.1) 80%,
+    transparent 93%
+  );
+  box-shadow:0 0 28px rgba(255,90,0,.12),0 0 55px rgba(210,50,0,.07);
+  z-index:5;
+  animation:layerA 6s ease-in-out infinite .3s;
+}
+.l7{
+  width:234px;height:234px;
+  background:radial-gradient(circle,
+    transparent 24%,
+    rgba(255,80,0,.09) 38%,
+    rgba(255,145,0,.17) 52%,
+    rgba(240,65,0,.21) 66%,
+    rgba(188,32,0,.14) 78%,
+    rgba(100,12,0,.06) 90%,
+    transparent 100%
+  );
+  box-shadow:0 0 24px rgba(255,100,0,.18),0 0 48px rgba(220,60,0,.09);
+  z-index:6;
+  animation:layerA 5.5s ease-in-out infinite .6s;
+}
 .l6{
-  width:300px;height:300px;
-  background:radial-gradient(circle at 50% 50%,
-    transparent           18%,
-    rgba(255,60,0,.05)    35%,
-    rgba(255,120,0,.1)    52%,
-    rgba(220,50,0,.12)    66%,
-    rgba(180,30,0,.08)    78%,
-    transparent           90%
+  width:216px;height:216px;
+  background:radial-gradient(circle,
+    transparent 22%,
+    rgba(255,90,0,.12) 36%,
+    rgba(255,158,0,.22) 50%,
+    rgba(248,72,0,.27) 64%,
+    rgba(200,38,0,.19) 76%,
+    rgba(120,15,0,.09) 88%,
+    transparent 100%
+  );
+  box-shadow:0 0 20px rgba(255,115,0,.25),0 0 42px rgba(230,65,0,.12);
+  z-index:7;
+  animation:layerA 5s ease-in-out infinite .9s;
+}
+.l5{
+  width:200px;height:200px;
+  background:radial-gradient(circle,
+    transparent 20%,
+    rgba(255,100,0,.15) 34%,
+    rgba(255,170,0,.27) 48%,
+    rgba(252,80,0,.33) 62%,
+    rgba(210,44,0,.25) 74%,
+    rgba(135,18,0,.13) 86%,
+    transparent 100%
+  );
+  box-shadow:0 0 18px rgba(255,130,0,.32),0 0 38px rgba(235,70,0,.16);
+  z-index:8;
+  animation:layerA 4.5s ease-in-out infinite 1.2s;
+}
+.l4{
+  width:184px;height:184px;
+  background:radial-gradient(circle,
+    rgba(8,1,0,.2) 10%,
+    rgba(255,110,0,.18) 28%,
+    rgba(255,182,0,.32) 44%,
+    rgba(255,88,0,.4) 60%,
+    rgba(220,50,0,.32) 72%,
+    rgba(150,22,0,.18) 84%,
+    rgba(60,5,0,.08) 94%,
+    transparent 100%
+  );
+  box-shadow:0 0 16px rgba(255,145,0,.4),0 0 34px rgba(240,78,0,.2);
+  z-index:9;
+  animation:layerA 4s ease-in-out infinite 1.5s;
+}
+.l3{
+  width:168px;height:168px;
+  background:radial-gradient(circle,
+    rgba(12,2,0,.3) 10%,
+    rgba(255,120,0,.22) 26%,
+    rgba(255,195,10,.38) 42%,
+    rgba(255,96,0,.47) 58%,
+    rgba(228,56,0,.4) 70%,
+    rgba(165,26,0,.26) 82%,
+    rgba(75,7,0,.12) 92%,
+    transparent 100%
   );
   box-shadow:
-    0 0 40px rgba(255,80,0,.12),
-    0 0 80px rgba(220,50,0,.07),
-    inset 0 0 30px rgba(255,60,0,.06);
-  --lp:5.5s;
-  z-index:4;
+    0 0 14px rgba(255,160,0,.5),
+    0 0 30px rgba(245,85,0,.26),
+    inset 0 0 18px rgba(255,120,0,.15);
+  z-index:10;
+  animation:layerA 3.5s ease-in-out infinite 1.8s;
 }
-@keyframes layerPulse{
-  0%,100%{opacity:.75;}
+.l2{
+  width:152px;height:152px;
+  background:radial-gradient(circle,
+    rgba(18,3,0,.4) 10%,
+    rgba(10,1,0,.3) 18%,
+    rgba(255,130,0,.26) 30%,
+    rgba(255,208,20,.44) 46%,
+    rgba(255,105,0,.54) 61%,
+    rgba(235,62,0,.48) 73%,
+    rgba(178,30,0,.34) 84%,
+    rgba(90,10,0,.18) 93%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 12px rgba(255,175,0,.6),
+    0 0 26px rgba(250,92,0,.34),
+    inset 0 0 16px rgba(255,135,0,.2);
+  z-index:11;
+  animation:layerA 3s ease-in-out infinite 2.1s;
+}
+/* 코어 바로 바깥 링 */
+.l1{
+  width:140px;height:140px;
+  background:radial-gradient(circle,
+    rgba(0,0,0,.6) 28%,
+    rgba(255,140,10,.3) 38%,
+    rgba(255,220,30,.5) 52%,
+    rgba(255,115,0,.62) 65%,
+    rgba(242,68,0,.56) 76%,
+    rgba(190,35,0,.42) 86%,
+    rgba(105,12,0,.22) 94%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 10px rgba(255,190,0,.7),
+    0 0 22px rgba(255,100,0,.45),
+    0 0 50px rgba(220,65,0,.22),
+    inset 0 0 14px rgba(255,150,0,.28);
+  z-index:12;
+  animation:layerA 2.5s ease-in-out infinite 2.4s;
+}
+@keyframes layerA{
+  0%,100%{opacity:.7;}
   50%{opacity:1;}
 }
 
-/* ── 레이어 5 ── */
-.l5{
-  width:250px;height:250px;
-  background:radial-gradient(circle at 50% 50%,
-    transparent           15%,
-    rgba(255,80,0,.08)    32%,
-    rgba(255,150,0,.16)   50%,
-    rgba(230,60,0,.2)     65%,
-    rgba(180,30,0,.14)    78%,
-    rgba(100,15,0,.06)    90%,
-    transparent           100%
-  );
-  box-shadow:
-    0 0 30px rgba(255,100,0,.2),
-    0 0 65px rgba(220,60,0,.1),
-    inset 0 0 25px rgba(255,80,0,.1);
-  --lp:5s;
-  z-index:5;
-}
-
-/* ── 레이어 4 ── */
-.l4{
-  width:206px;height:206px;
-  background:radial-gradient(circle at 50% 50%,
-    transparent           12%,
-    rgba(255,100,0,.12)   28%,
-    rgba(255,170,0,.22)   46%,
-    rgba(240,80,0,.28)    62%,
-    rgba(200,40,0,.22)    76%,
-    rgba(130,15,0,.12)    88%,
-    transparent           100%
-  );
-  box-shadow:
-    0 0 24px rgba(255,120,0,.3),
-    0 0 55px rgba(230,70,0,.15),
-    inset 0 0 20px rgba(255,100,0,.15);
-  --lp:4.5s;
-  z-index:6;
-}
-
-/* ── 레이어 3 ── */
-.l3{
-  width:168px;height:168px;
-  background:radial-gradient(circle at 50% 50%,
-    transparent           10%,
-    rgba(255,120,0,.16)   26%,
-    rgba(255,190,0,.28)   44%,
-    rgba(250,100,0,.36)   60%,
-    rgba(210,50,0,.3)     74%,
-    rgba(150,20,0,.18)    86%,
-    transparent           100%
-  );
-  box-shadow:
-    0 0 20px rgba(255,140,0,.4),
-    0 0 45px rgba(240,80,0,.2),
-    inset 0 0 18px rgba(255,120,0,.2);
-  --lp:4s;
-  z-index:7;
-}
-
-/* ── 레이어 2 ── */
-.l2{
-  width:136px;height:136px;
-  background:radial-gradient(circle at 50% 50%,
-    rgba(10,2,0,.3)       8%,
-    rgba(255,140,0,.2)    24%,
-    rgba(255,200,20,.35)  42%,
-    rgba(255,110,0,.45)   58%,
-    rgba(220,55,0,.4)     72%,
-    rgba(160,25,0,.28)    84%,
-    rgba(60,5,0,.15)      94%,
-    transparent           100%
-  );
-  box-shadow:
-    0 0 16px rgba(255,160,0,.55),
-    0 0 38px rgba(250,90,0,.28),
-    inset 0 0 16px rgba(255,140,0,.28);
-  --lp:3.5s;
-  z-index:8;
-}
-
-/* ── 레이어 1 (코어 바깥 글로우) ── */
-.l1{
-  width:108px;height:108px;
-  background:radial-gradient(circle at 50% 50%,
-    rgba(5,0,0,.5)        15%,
-    rgba(255,160,10,.25)  30%,
-    rgba(255,210,30,.42)  48%,
-    rgba(255,120,0,.55)   64%,
-    rgba(230,60,0,.5)     78%,
-    rgba(170,25,0,.38)    90%,
-    transparent           100%
-  );
-  box-shadow:
-    0 0 14px rgba(255,180,0,.65),
-    0 0 32px rgba(255,100,0,.38),
-    0 0 60px rgba(220,60,0,.2),
-    inset 0 0 14px rgba(255,160,0,.35);
-  --lp:3s;
-  z-index:9;
-}
-
-/* ── 코어 — 완전 블랙 구체 ── */
+/* ════════════════════════
+   코어 — 다크블랙 구체
+   크기: 120px
+════════════════════════ */
 .core{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:72px;height:72px;
+  width:120px;height:120px;
   border-radius:50%;
   z-index:20;
-  background:radial-gradient(circle at 34% 28%,
-    rgba(30,5,0,.6)     0%,
-    rgba(10,1,0,.9)     25%,
-    rgba(3,0,0,.98)     50%,
-    #000                70%,
-    #000                100%
-  );
+  /*
+    완전한 다크블랙
+    중심부 극도로 어두운 블랙
+    테두리쪽만 미세 다크레드 틴트
+  */
+  background:
+    radial-gradient(circle at 36% 30%,
+      rgba(22,3,0,.55)   0%,
+      rgba(10,1,0,.85)  20%,
+      rgba(4,0,0,.96)   42%,
+      #000              62%,
+      #000              100%
+    );
   box-shadow:
-    0 0 0 1px  rgba(255,100,0,.4),
+    /* 외부 레드오렌지 오라 */
+    0 0 0 1px  rgba(255,90,0,.45),
     0 0 0 3px  rgba(255,60,0,.12),
-    0 0 16px   rgba(255,80,0,.5),
-    0 0 38px   rgba(200,50,0,.3),
-    0 0 70px   rgba(150,30,0,.18),
-    inset 0 0 20px rgba(120,15,0,.45),
-    inset 0 0 40px rgba(60,5,0,.65);
-  animation:corePulse 2.5s ease-in-out infinite;
+    0 0 18px   rgba(255,80,0,.55),
+    0 0 42px   rgba(210,50,0,.35),
+    0 0 85px   rgba(160,28,0,.2),
+    /* 내부 극도 어두움 */
+    inset 0 0 24px rgba(100,10,0,.4),
+    inset 0 0 50px rgba(50,4,0,.7),
+    inset 0 0 80px rgba(10,0,0,.9);
+  animation:corePulse 2.8s ease-in-out infinite;
 }
 @keyframes corePulse{
   0%,100%{
     box-shadow:
-      0 0 0 1px rgba(255,100,0,.4),0 0 0 3px rgba(255,60,0,.12),
-      0 0 16px rgba(255,80,0,.5),0 0 38px rgba(200,50,0,.3),0 0 70px rgba(150,30,0,.18),
-      inset 0 0 20px rgba(120,15,0,.45),inset 0 0 40px rgba(60,5,0,.65);
+      0 0 0 1px rgba(255,90,0,.45),0 0 0 3px rgba(255,60,0,.12),
+      0 0 18px rgba(255,80,0,.55),0 0 42px rgba(210,50,0,.35),0 0 85px rgba(160,28,0,.2),
+      inset 0 0 24px rgba(100,10,0,.4),inset 0 0 50px rgba(50,4,0,.7),inset 0 0 80px rgba(10,0,0,.9);
   }
   50%{
     box-shadow:
-      0 0 0 2px rgba(255,120,0,.65),0 0 0 5px rgba(255,80,0,.2),
-      0 0 26px rgba(255,100,0,.75),0 0 58px rgba(220,60,0,.5),0 0 110px rgba(170,35,0,.3),
-      inset 0 0 28px rgba(140,20,0,.65),inset 0 0 55px rgba(80,8,0,.8);
+      0 0 0 2px rgba(255,110,0,.65),0 0 0 5px rgba(255,80,0,.18),
+      0 0 28px rgba(255,100,0,.78),0 0 65px rgba(230,60,0,.52),0 0 130px rgba(180,35,0,.3),
+      inset 0 0 32px rgba(120,14,0,.55),inset 0 0 65px rgba(65,6,0,.8),inset 0 0 100px rgba(15,0,0,.95);
   }
 }
 
@@ -241,159 +277,159 @@ body{
 .core-hl{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:72px;height:72px;
+  width:120px;height:120px;
   border-radius:50%;z-index:21;
-  background:radial-gradient(circle at 30% 24%,
-    rgba(255,180,100,.16)  0%,
-    rgba(255,120,60,.08)   22%,
-    transparent            48%
+  background:radial-gradient(circle at 30% 25%,
+    rgba(255,160,80,.13)  0%,
+    rgba(255,100,40,.06)  24%,
+    transparent           50%
   );
   pointer-events:none;
 }
 
-/* ════════════════════════════════
-   토성 링 시스템
-   주황·빨강·노랑 계열
-   6개 링, 14px 간격
-   링 직경: 156 184 212 240 268 296
-════════════════════════════════ */
+/* ════════════════════════
+   토성 링
+   ★ 핵심 수정:
+   링을 SVG로 구현해
+   위쪽(구체 뒤) = z:10
+   아래쪽(구체 앞) = z:25
+   clip-path으로 정확히 분리
+════════════════════════ */
 
-/* 색상:
-   r1: 레드          #ff2020
-   r2: 레드오렌지   #ff5500
-   r3: 오렌지       #ff8c00
-   r4: 딥오렌지     #ff6a00
-   r5: 골드옐로우   #ffbe00
-   r6: 옐로우       #ffe000
+/*
+  rotateX(72deg)로 눕힌 타원 링
+  위쪽 절반 → 구체 뒤 (z:10)
+  아래쪽 절반 → 구체 앞 (z:25)
+
+  CSS border로는 정확한 앞/뒤 분리가
+  어렵기 때문에 SVG ellipse를 사용
+
+  각 링의 rx/ry는 rotateX(72deg) 기준:
+  실제 원형 반지름 r → 화면상 rx=r, ry=r*sin(18deg)≈r*0.309
+  r값(px): 78 92 106 120 134 148
+  rx:       78 92 106 120 134 148
+  ry:       24 28  33  37  41  46
 */
-
-/* 링 뒤 레이어 z:10 */
-.ring-system{
+.ring-svg-back{
   position:absolute;top:50%;left:50%;
-  width:400px;height:400px;
   transform:translate(-50%,-50%);
-  z-index:10;
+  width:320px;height:320px;
+  z-index:10; /* 구체 뒤 */
+  pointer-events:none;
+  animation:ringSvgSpin 0s linear infinite; /* 개별 링이 각자 회전 */
 }
-.s-ring{
-  position:absolute;border-radius:50%;top:50%;left:50%;border-style:solid;
-  animation:ringSpin var(--rs) linear infinite;
-}
-@keyframes ringSpin{
-  from{transform:translate(-50%,-50%) rotateX(72deg) rotate(0deg);}
-  to{  transform:translate(-50%,-50%) rotateX(72deg) rotate(360deg);}
-}
-.sr1{width:156px;height:156px;border:2px solid rgba(255,32,32,.9);box-shadow:0 0 10px rgba(255,32,32,.75),0 0 24px rgba(255,32,32,.3);--rs:4s;}
-.sr2{width:184px;height:184px;border:2px solid rgba(255,85,0,.88);box-shadow:0 0 10px rgba(255,85,0,.7),0 0 22px rgba(255,85,0,.3);--rs:5.5s;animation-direction:reverse;}
-.sr3{width:212px;height:212px;border:2px solid rgba(255,140,0,.88);box-shadow:0 0 10px rgba(255,140,0,.72),0 0 24px rgba(255,140,0,.3);--rs:7s;}
-.sr4{width:240px;height:240px;border:2px solid rgba(255,106,0,.85);box-shadow:0 0 10px rgba(255,106,0,.68),0 0 22px rgba(255,106,0,.28);--rs:9s;animation-direction:reverse;}
-.sr5{width:268px;height:268px;border:2px solid rgba(255,190,0,.88);box-shadow:0 0 10px rgba(255,190,0,.72),0 0 24px rgba(255,190,0,.3);--rs:11s;}
-.sr6{width:296px;height:296px;border:2px solid rgba(255,224,0,.85);box-shadow:0 0 10px rgba(255,224,0,.68),0 0 24px rgba(255,224,0,.28);--rs:13.5s;animation-direction:reverse;}
-
-/* 링 앞 레이어 z:25 */
-.ring-front{
+.ring-svg-front{
   position:absolute;top:50%;left:50%;
-  width:400px;height:400px;
   transform:translate(-50%,-50%);
-  z-index:25;pointer-events:none;
+  width:320px;height:320px;
+  z-index:25; /* 구체 앞 */
+  pointer-events:none;
 }
-.s-ring-f{
-  position:absolute;border-radius:50%;top:50%;left:50%;
-  animation:ringFSpin var(--rfs) linear infinite;
-}
-@keyframes ringFSpin{
-  from{transform:translate(-50%,-50%) rotateX(72deg) rotate(0deg);}
-  to{  transform:translate(-50%,-50%) rotateX(72deg) rotate(360deg);}
-}
-.srf1{width:156px;height:156px;border-bottom:2px solid rgba(255,32,32,.9);border-left:2px solid rgba(255,32,32,.55);border-right:2px solid rgba(255,32,32,.55);border-top:2px solid transparent;box-shadow:0 0 9px rgba(255,32,32,.55);--rfs:4s;}
-.srf2{width:184px;height:184px;border-bottom:2px solid rgba(255,85,0,.88);border-left:2px solid rgba(255,85,0,.5);border-right:2px solid rgba(255,85,0,.5);border-top:2px solid transparent;box-shadow:0 0 9px rgba(255,85,0,.5);--rfs:5.5s;animation-direction:reverse;}
-.srf3{width:212px;height:212px;border-bottom:2px solid rgba(255,140,0,.88);border-left:2px solid rgba(255,140,0,.5);border-right:2px solid rgba(255,140,0,.5);border-top:2px solid transparent;box-shadow:0 0 9px rgba(255,140,0,.52);--rfs:7s;}
-.srf4{width:240px;height:240px;border-bottom:2px solid rgba(255,106,0,.85);border-left:2px solid rgba(255,106,0,.46);border-right:2px solid rgba(255,106,0,.46);border-top:2px solid transparent;box-shadow:0 0 8px rgba(255,106,0,.48);--rfs:9s;animation-direction:reverse;}
-.srf5{width:268px;height:268px;border-bottom:2px solid rgba(255,190,0,.88);border-left:2px solid rgba(255,190,0,.48);border-right:2px solid rgba(255,190,0,.48);border-top:2px solid transparent;box-shadow:0 0 8px rgba(255,190,0,.5);--rfs:11s;}
-.srf6{width:296px;height:296px;border-bottom:2px solid rgba(255,224,0,.85);border-left:2px solid rgba(255,224,0,.45);border-right:2px solid rgba(255,224,0,.45);border-top:2px solid transparent;box-shadow:0 0 8px rgba(255,224,0,.45);--rfs:13.5s;animation-direction:reverse;}
 
-/* ════════════════════════════════
+/* SVG 링 공통 */
+.ring-svg-back svg,
+.ring-svg-front svg{
+  width:100%;height:100%;
+  overflow:visible;
+}
+
+/* 각 링 컨테이너 — 개별 회전 */
+.rw{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:320px;height:320px;
+  pointer-events:none;
+}
+/* 뒤 레이어 */
+.rw-back{ z-index:10; }
+/* 앞 레이어 */
+.rw-front{ z-index:25; }
+
+.rw svg{ width:100%;height:100%;overflow:visible; }
+
+/* 링 회전 애니메이션 */
+@keyframes rSpin1{ from{transform:translate(-50%,-50%) rotate(0deg);}   to{transform:translate(-50%,-50%) rotate(360deg);} }
+@keyframes rSpin2{ from{transform:translate(-50%,-50%) rotate(0deg);}   to{transform:translate(-50%,-50%) rotate(-360deg);} }
+@keyframes rSpin3{ from{transform:translate(-50%,-50%) rotate(0deg);}   to{transform:translate(-50%,-50%) rotate(360deg);} }
+@keyframes rSpin4{ from{transform:translate(-50%,-50%) rotate(0deg);}   to{transform:translate(-50%,-50%) rotate(-360deg);} }
+@keyframes rSpin5{ from{transform:translate(-50%,-50%) rotate(0deg);}   to{transform:translate(-50%,-50%) rotate(360deg);} }
+@keyframes rSpin6{ from{transform:translate(-50%,-50%) rotate(0deg);}   to{transform:translate(-50%,-50%) rotate(-360deg);} }
+
+.rw1{ animation:rSpin1  8s linear infinite; }
+.rw2{ animation:rSpin2  11s linear infinite; }
+.rw3{ animation:rSpin3  14s linear infinite; }
+.rw4{ animation:rSpin4  17s linear infinite; }
+.rw5{ animation:rSpin5  21s linear infinite; }
+.rw6{ animation:rSpin6  26s linear infinite; }
+
+/* ════════════════════════
    미니 버전
-════════════════════════════════ */
+════════════════════════ */
 .mini-scene{
   position:relative;z-index:1;
-  width:180px;height:180px;
+  width:200px;height:200px;
   display:flex;align-items:center;justify-content:center;
 }
-
-/* 미니 레이어 */
 .ml{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  animation:layerPulse var(--lp) ease-in-out infinite;
 }
-.ml7{width:130px;height:130px;background:radial-gradient(circle,transparent 30%,rgba(255,80,0,.04) 55%,rgba(255,140,0,.06) 70%,transparent 95%);--lp:6s;z-index:3;}
-.ml6{width:108px;height:108px;background:radial-gradient(circle at 50% 50%,transparent 18%,rgba(255,60,0,.06) 36%,rgba(255,120,0,.12) 54%,rgba(220,50,0,.13) 68%,transparent 90%);box-shadow:0 0 14px rgba(255,80,0,.12);--lp:5.5s;z-index:4;}
-.ml5{width:90px;height:90px;background:radial-gradient(circle at 50% 50%,transparent 15%,rgba(255,80,0,.1) 32%,rgba(255,150,0,.2) 50%,rgba(230,60,0,.24) 66%,transparent 90%);box-shadow:0 0 12px rgba(255,100,0,.2);--lp:5s;z-index:5;}
-.ml4{width:74px;height:74px;background:radial-gradient(circle at 50% 50%,transparent 12%,rgba(255,100,0,.15) 28%,rgba(255,170,0,.28) 46%,rgba(240,80,0,.32) 63%,transparent 90%);box-shadow:0 0 10px rgba(255,120,0,.3);--lp:4.5s;z-index:6;}
-.ml3{width:60px;height:60px;background:radial-gradient(circle at 50% 50%,transparent 10%,rgba(255,120,0,.18) 26%,rgba(255,190,0,.32) 44%,rgba(250,100,0,.4) 62%,transparent 88%);box-shadow:0 0 8px rgba(255,140,0,.4);--lp:4s;z-index:7;}
-.ml2{width:48px;height:48px;background:radial-gradient(circle at 50% 50%,rgba(10,2,0,.3) 8%,rgba(255,140,0,.22) 24%,rgba(255,200,20,.38) 42%,rgba(255,110,0,.48) 58%,transparent 88%);box-shadow:0 0 7px rgba(255,160,0,.55);--lp:3.5s;z-index:8;}
-.ml1{width:38px;height:38px;background:radial-gradient(circle at 50% 50%,rgba(5,0,0,.5) 15%,rgba(255,160,10,.28) 30%,rgba(255,210,30,.45) 48%,rgba(255,120,0,.55) 64%,transparent 90%);box-shadow:0 0 6px rgba(255,180,0,.65),0 0 14px rgba(255,100,0,.38);--lp:3s;z-index:9;}
+/* 미니 레이어 (코어 46px 기준, 간격 4px) */
+.ml10{width:130px;height:130px;background:radial-gradient(circle,transparent 36%,rgba(255,70,0,.04) 55%,rgba(255,120,0,.06) 68%,transparent 88%);z-index:3;animation:haloAnim 7s ease-in-out infinite;}
+.ml9{width:104px;height:104px;background:radial-gradient(circle,transparent 28%,rgba(255,60,0,.06) 44%,rgba(255,110,0,.11) 58%,rgba(220,45,0,.12) 70%,transparent 92%);z-index:4;animation:layerA 6.5s ease-in-out infinite;}
+.ml8{width:96px;height:96px;background:radial-gradient(circle,transparent 26%,rgba(255,70,0,.09) 40%,rgba(255,130,0,.15) 55%,rgba(230,55,0,.18) 68%,transparent 90%);z-index:5;animation:layerA 6s ease-in-out infinite .3s;}
+.ml7{width:88px;height:88px;background:radial-gradient(circle,transparent 24%,rgba(255,80,0,.12) 38%,rgba(255,145,0,.2) 52%,rgba(240,65,0,.24) 66%,transparent 88%);z-index:6;animation:layerA 5.5s ease-in-out infinite .6s;}
+.ml6{width:80px;height:80px;background:radial-gradient(circle,transparent 22%,rgba(255,90,0,.15) 36%,rgba(255,158,0,.26) 50%,rgba(248,72,0,.31) 64%,transparent 86%);z-index:7;animation:layerA 5s ease-in-out infinite .9s;}
+.ml5{width:72px;height:72px;background:radial-gradient(circle,transparent 20%,rgba(255,100,0,.18) 34%,rgba(255,170,0,.3) 48%,rgba(252,80,0,.37) 62%,transparent 84%);z-index:8;animation:layerA 4.5s ease-in-out infinite 1.2s;}
+.ml4{width:64px;height:64px;background:radial-gradient(circle,rgba(8,1,0,.2) 10%,rgba(255,110,0,.22) 28%,rgba(255,182,0,.36) 44%,rgba(255,88,0,.44) 60%,transparent 84%);z-index:9;animation:layerA 4s ease-in-out infinite 1.5s;}
+.ml3{width:58px;height:58px;background:radial-gradient(circle,rgba(12,2,0,.3) 10%,rgba(255,120,0,.26) 26%,rgba(255,195,10,.42) 42%,rgba(255,96,0,.5) 58%,transparent 82%);box-shadow:0 0 6px rgba(255,160,0,.5);z-index:10;animation:layerA 3.5s ease-in-out infinite 1.8s;}
+.ml2{width:52px;height:52px;background:radial-gradient(circle,rgba(18,3,0,.4) 10%,rgba(255,130,0,.3) 30%,rgba(255,208,20,.48) 46%,rgba(255,105,0,.57) 61%,transparent 82%);box-shadow:0 0 5px rgba(255,175,0,.6);z-index:11;animation:layerA 3s ease-in-out infinite 2.1s;}
+.ml1{width:46px;height:46px;background:radial-gradient(circle,rgba(0,0,0,.6) 28%,rgba(255,140,10,.32) 38%,rgba(255,220,30,.52) 52%,rgba(255,115,0,.62) 65%,transparent 84%);box-shadow:0 0 5px rgba(255,190,0,.65);z-index:12;animation:layerA 2.5s ease-in-out infinite 2.4s;}
 
 .mini-core{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:26px;height:26px;border-radius:50%;z-index:20;
-  background:radial-gradient(circle at 34% 28%,rgba(30,5,0,.6) 0%,rgba(10,1,0,.9) 25%,#000 55%,#000 100%);
-  box-shadow:0 0 0 1px rgba(255,100,0,.4),0 0 10px rgba(255,80,0,.55),0 0 22px rgba(200,50,0,.3),inset 0 0 10px rgba(120,15,0,.45);
-  animation:corePulse 2.5s ease-in-out infinite;
+  width:36px;height:36px;border-radius:50%;z-index:20;
+  background:radial-gradient(circle at 36% 30%,rgba(22,3,0,.55) 0%,rgba(10,1,0,.85) 20%,#000 48%,#000 100%);
+  box-shadow:0 0 0 1px rgba(255,90,0,.45),0 0 10px rgba(255,80,0,.55),0 0 24px rgba(210,50,0,.32),inset 0 0 14px rgba(50,4,0,.7);
+  animation:corePulse 2.8s ease-in-out infinite;
 }
 .mini-core-hl{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:26px;height:26px;border-radius:50%;z-index:21;
-  background:radial-gradient(circle at 30% 24%,rgba(255,180,100,.16) 0%,transparent 48%);
+  width:36px;height:36px;border-radius:50%;z-index:21;
+  background:radial-gradient(circle at 30% 25%,rgba(255,160,80,.13) 0%,transparent 50%);
   pointer-events:none;
 }
 
-/* 미니 링 뒤 */
-.mini-ring-system{
+/* 미니 링 래퍼 */
+.mrw{
   position:absolute;top:50%;left:50%;
-  width:180px;height:180px;
-  transform:translate(-50%,-50%);z-index:10;
+  transform:translate(-50%,-50%);
+  width:200px;height:200px;
+  pointer-events:none;
 }
-.m-sr{
-  position:absolute;border-radius:50%;top:50%;left:50%;border-style:solid;
-  animation:ringSpin var(--rs) linear infinite;
-}
-.msr1{width:58px;height:58px;border:1.2px solid rgba(255,32,32,.9);box-shadow:0 0 6px rgba(255,32,32,.7);--rs:4s;}
-.msr2{width:68px;height:68px;border:1.2px solid rgba(255,85,0,.88);box-shadow:0 0 6px rgba(255,85,0,.65);--rs:5.5s;animation-direction:reverse;}
-.msr3{width:78px;height:78px;border:1.2px solid rgba(255,140,0,.88);box-shadow:0 0 6px rgba(255,140,0,.65);--rs:7s;}
-.msr4{width:88px;height:88px;border:1.2px solid rgba(255,106,0,.85);box-shadow:0 0 5px rgba(255,106,0,.6);--rs:9s;animation-direction:reverse;}
-.msr5{width:98px;height:98px;border:1.2px solid rgba(255,190,0,.88);box-shadow:0 0 5px rgba(255,190,0,.65);--rs:11s;}
-.msr6{width:108px;height:108px;border:1.2px solid rgba(255,224,0,.85);box-shadow:0 0 5px rgba(255,224,0,.6);--rs:13.5s;animation-direction:reverse;}
-
-/* 미니 링 앞 */
-.mini-ring-front{
-  position:absolute;top:50%;left:50%;
-  width:180px;height:180px;
-  transform:translate(-50%,-50%);z-index:25;pointer-events:none;
-}
-.m-srf{
-  position:absolute;border-radius:50%;top:50%;left:50%;
-  animation:ringFSpin var(--rfs) linear infinite;
-}
-.msrf1{width:58px;height:58px;border-bottom:1.2px solid rgba(255,32,32,.9);border-left:1.2px solid rgba(255,32,32,.45);border-right:1.2px solid rgba(255,32,32,.45);border-top:1.2px solid transparent;--rfs:4s;}
-.msrf2{width:68px;height:68px;border-bottom:1.2px solid rgba(255,85,0,.88);border-left:1.2px solid rgba(255,85,0,.42);border-right:1.2px solid rgba(255,85,0,.42);border-top:1.2px solid transparent;--rfs:5.5s;animation-direction:reverse;}
-.msrf3{width:78px;height:78px;border-bottom:1.2px solid rgba(255,140,0,.88);border-left:1.2px solid rgba(255,140,0,.42);border-right:1.2px solid rgba(255,140,0,.42);border-top:1.2px solid transparent;--rfs:7s;}
-.msrf4{width:88px;height:88px;border-bottom:1.2px solid rgba(255,106,0,.85);border-left:1.2px solid rgba(255,106,0,.38);border-right:1.2px solid rgba(255,106,0,.38);border-top:1.2px solid transparent;--rfs:9s;animation-direction:reverse;}
-.msrf5{width:98px;height:98px;border-bottom:1.2px solid rgba(255,190,0,.88);border-left:1.2px solid rgba(255,190,0,.4);border-right:1.2px solid rgba(255,190,0,.4);border-top:1.2px solid transparent;--rfs:11s;}
-.msrf6{width:108px;height:108px;border-bottom:1.2px solid rgba(255,224,0,.85);border-left:1.2px solid rgba(255,224,0,.38);border-right:1.2px solid rgba(255,224,0,.38);border-top:1.2px solid transparent;--rfs:13.5s;animation-direction:reverse;}
+.mrw svg{width:100%;height:100%;overflow:visible;}
+.mrw-back{z-index:10;}
+.mrw-front{z-index:25;}
+.mrw1{animation:rSpin1  8s linear infinite;}
+.mrw2{animation:rSpin2 11s linear infinite;}
+.mrw3{animation:rSpin3 14s linear infinite;}
+.mrw4{animation:rSpin4 17s linear infinite;}
+.mrw5{animation:rSpin5 21s linear infinite;}
+.mrw6{animation:rSpin6 26s linear infinite;}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <script>
+/* 별 */
 const bg=document.querySelector('.bg');
-for(let i=0;i<90;i++){
+for(let i=0;i<80;i++){
   const s=document.createElement('div');s.className='star';
   const sz=Math.random()*1.8+.3;
-  const c=['#ff2020','#ff5500','#ff8c00','#ffbe00','#ffe000','#ffffff','#ff6a00'];
+  const c=['#ff2020','#ff5500','#ff8c00','#ffbe00','#ffe000','#fff','#ff6a00'];
   s.style.cssText=`width:${sz}px;height:${sz}px;background:${c[Math.floor(Math.random()*c.length)]};left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${1.5+Math.random()*4}s;--delay:${Math.random()*6}s;`;
   bg.appendChild(s);
 }
@@ -402,17 +438,170 @@ for(let i=0;i<90;i++){
 <!-- ══ 메인 씬 ══ -->
 <div class="scene">
 
-  <!-- 토성 링 (구체 뒤) -->
-  <div class="ring-system">
-    <div class="s-ring sr1"></div>
-    <div class="s-ring sr2"></div>
-    <div class="s-ring sr3"></div>
-    <div class="s-ring sr4"></div>
-    <div class="s-ring sr5"></div>
-    <div class="s-ring sr6"></div>
+  <!-- ▼ 토성 링 뒤쪽 (위쪽 절반만 = 구체 뒤) -->
+  <!--
+    SVG clipPath으로 위쪽 절반(y<center)만 그려서
+    구체(z:20) 뒤에 위치(z:10)시킴
+    → 링의 위쪽이 구체 뒤에 숨어 보이지 않음
+  -->
+
+  <!-- 링1 뒤 -->
+  <div class="rw rw-back rw1">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="topHalf1"><rect x="-160" y="-160" width="320" height="160"/></clipPath>
+        <filter id="gR1"><feGaussianBlur stdDeviation="1.5"/></filter>
+      </defs>
+      <ellipse cx="0" cy="0" rx="78" ry="24"
+        fill="none" stroke="rgba(255,32,32,.9)" stroke-width="2"
+        clip-path="url(#topHalf1)" filter="url(#gR1)"
+        style="filter:drop-shadow(0 0 8px rgba(255,32,32,.8))"/>
+    </svg>
+  </div>
+  <!-- 링1 앞 -->
+  <div class="rw rw-front rw1">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="botHalf1"><rect x="-160" y="0" width="320" height="160"/></clipPath>
+        <filter id="gRF1"><feGaussianBlur stdDeviation="1.5"/></filter>
+      </defs>
+      <ellipse cx="0" cy="0" rx="78" ry="24"
+        fill="none" stroke="rgba(255,32,32,.9)" stroke-width="2"
+        clip-path="url(#botHalf1)" filter="url(#gRF1)"
+        style="filter:drop-shadow(0 0 8px rgba(255,32,32,.8))"/>
+    </svg>
   </div>
 
-  <!-- 겹겹이 구체 레이어 (바깥→안) -->
+  <!-- 링2 뒤 -->
+  <div class="rw rw-back rw2">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="topHalf2"><rect x="-160" y="-160" width="320" height="160"/></clipPath>
+        <filter id="gR2"><feGaussianBlur stdDeviation="1.5"/></filter>
+      </defs>
+      <ellipse cx="0" cy="0" rx="92" ry="28"
+        fill="none" stroke="rgba(255,80,0,.88)" stroke-width="2"
+        clip-path="url(#topHalf2)" filter="url(#gR2)"
+        style="filter:drop-shadow(0 0 8px rgba(255,80,0,.75))"/>
+    </svg>
+  </div>
+  <!-- 링2 앞 -->
+  <div class="rw rw-front rw2">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="botHalf2"><rect x="-160" y="0" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="92" ry="28"
+        fill="none" stroke="rgba(255,80,0,.88)" stroke-width="2"
+        clip-path="url(#botHalf2)"
+        style="filter:drop-shadow(0 0 8px rgba(255,80,0,.75))"/>
+    </svg>
+  </div>
+
+  <!-- 링3 뒤 -->
+  <div class="rw rw-back rw3">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="topHalf3"><rect x="-160" y="-160" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="106" ry="33"
+        fill="none" stroke="rgba(255,130,0,.88)" stroke-width="2"
+        clip-path="url(#topHalf3)"
+        style="filter:drop-shadow(0 0 9px rgba(255,130,0,.72))"/>
+    </svg>
+  </div>
+  <!-- 링3 앞 -->
+  <div class="rw rw-front rw3">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="botHalf3"><rect x="-160" y="0" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="106" ry="33"
+        fill="none" stroke="rgba(255,130,0,.88)" stroke-width="2"
+        clip-path="url(#botHalf3)"
+        style="filter:drop-shadow(0 0 9px rgba(255,130,0,.72))"/>
+    </svg>
+  </div>
+
+  <!-- 링4 뒤 -->
+  <div class="rw rw-back rw4">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="topHalf4"><rect x="-160" y="-160" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="120" ry="37"
+        fill="none" stroke="rgba(255,100,0,.85)" stroke-width="2"
+        clip-path="url(#topHalf4)"
+        style="filter:drop-shadow(0 0 9px rgba(255,100,0,.68))"/>
+    </svg>
+  </div>
+  <!-- 링4 앞 -->
+  <div class="rw rw-front rw4">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="botHalf4"><rect x="-160" y="0" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="120" ry="37"
+        fill="none" stroke="rgba(255,100,0,.85)" stroke-width="2"
+        clip-path="url(#botHalf4)"
+        style="filter:drop-shadow(0 0 9px rgba(255,100,0,.68))"/>
+    </svg>
+  </div>
+
+  <!-- 링5 뒤 -->
+  <div class="rw rw-back rw5">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="topHalf5"><rect x="-160" y="-160" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="134" ry="41"
+        fill="none" stroke="rgba(255,185,0,.88)" stroke-width="2"
+        clip-path="url(#topHalf5)"
+        style="filter:drop-shadow(0 0 9px rgba(255,185,0,.7))"/>
+    </svg>
+  </div>
+  <!-- 링5 앞 -->
+  <div class="rw rw-front rw5">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="botHalf5"><rect x="-160" y="0" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="134" ry="41"
+        fill="none" stroke="rgba(255,185,0,.88)" stroke-width="2"
+        clip-path="url(#botHalf5)"
+        style="filter:drop-shadow(0 0 9px rgba(255,185,0,.7))"/>
+    </svg>
+  </div>
+
+  <!-- 링6 뒤 -->
+  <div class="rw rw-back rw6">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="topHalf6"><rect x="-160" y="-160" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="148" ry="46"
+        fill="none" stroke="rgba(255,228,0,.85)" stroke-width="2"
+        clip-path="url(#topHalf6)"
+        style="filter:drop-shadow(0 0 9px rgba(255,228,0,.68))"/>
+    </svg>
+  </div>
+  <!-- 링6 앞 -->
+  <div class="rw rw-front rw6">
+    <svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="botHalf6"><rect x="-160" y="0" width="320" height="160"/></clipPath>
+      </defs>
+      <ellipse cx="0" cy="0" rx="148" ry="46"
+        fill="none" stroke="rgba(255,228,0,.85)" stroke-width="2"
+        clip-path="url(#botHalf6)"
+        style="filter:drop-shadow(0 0 9px rgba(255,228,0,.68))"/>
+    </svg>
+  </div>
+
+  <!-- 겹겹이 구체 레이어 (z:3~12) -->
+  <div class="layer l10"></div>
+  <div class="layer l9"></div>
+  <div class="layer l8"></div>
   <div class="layer l7"></div>
   <div class="layer l6"></div>
   <div class="layer l5"></div>
@@ -421,19 +610,9 @@ for(let i=0;i<90;i++){
   <div class="layer l2"></div>
   <div class="layer l1"></div>
 
-  <!-- 코어 블랙 구체 -->
+  <!-- 코어 블랙 구체 (z:20~21) -->
   <div class="core"></div>
   <div class="core-hl"></div>
-
-  <!-- 토성 링 (구체 앞) -->
-  <div class="ring-front">
-    <div class="s-ring-f srf1"></div>
-    <div class="s-ring-f srf2"></div>
-    <div class="s-ring-f srf3"></div>
-    <div class="s-ring-f srf4"></div>
-    <div class="s-ring-f srf5"></div>
-    <div class="s-ring-f srf6"></div>
-  </div>
 
 </div>
 
@@ -441,16 +620,88 @@ for(let i=0;i<90;i++){
 <div class="mini-scene">
 
   <!-- 미니 링 뒤 -->
-  <div class="mini-ring-system">
-    <div class="m-sr msr1"></div>
-    <div class="m-sr msr2"></div>
-    <div class="m-sr msr3"></div>
-    <div class="m-sr msr4"></div>
-    <div class="m-sr msr5"></div>
-    <div class="m-sr msr6"></div>
+  <div class="mrw mrw-back mrw1">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mTop1"><rect x="-100" y="-100" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="30" ry="9" fill="none" stroke="rgba(255,32,32,.9)" stroke-width="1.5" clip-path="url(#mTop1)" style="filter:drop-shadow(0 0 5px rgba(255,32,32,.8))"/>
+    </svg>
+  </div>
+  <div class="mrw mrw-front mrw1">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mBot1"><rect x="-100" y="0" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="30" ry="9" fill="none" stroke="rgba(255,32,32,.9)" stroke-width="1.5" clip-path="url(#mBot1)" style="filter:drop-shadow(0 0 5px rgba(255,32,32,.8))"/>
+    </svg>
+  </div>
+
+  <div class="mrw mrw-back mrw2">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mTop2"><rect x="-100" y="-100" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="36" ry="11" fill="none" stroke="rgba(255,80,0,.88)" stroke-width="1.5" clip-path="url(#mTop2)" style="filter:drop-shadow(0 0 5px rgba(255,80,0,.75))"/>
+    </svg>
+  </div>
+  <div class="mrw mrw-front mrw2">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mBot2"><rect x="-100" y="0" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="36" ry="11" fill="none" stroke="rgba(255,80,0,.88)" stroke-width="1.5" clip-path="url(#mBot2)" style="filter:drop-shadow(0 0 5px rgba(255,80,0,.75))"/>
+    </svg>
+  </div>
+
+  <div class="mrw mrw-back mrw3">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mTop3"><rect x="-100" y="-100" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="42" ry="13" fill="none" stroke="rgba(255,130,0,.88)" stroke-width="1.5" clip-path="url(#mTop3)" style="filter:drop-shadow(0 0 5px rgba(255,130,0,.72))"/>
+    </svg>
+  </div>
+  <div class="mrw mrw-front mrw3">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mBot3"><rect x="-100" y="0" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="42" ry="13" fill="none" stroke="rgba(255,130,0,.88)" stroke-width="1.5" clip-path="url(#mBot3)" style="filter:drop-shadow(0 0 5px rgba(255,130,0,.72))"/>
+    </svg>
+  </div>
+
+  <div class="mrw mrw-back mrw4">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mTop4"><rect x="-100" y="-100" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="48" ry="15" fill="none" stroke="rgba(255,100,0,.85)" stroke-width="1.5" clip-path="url(#mTop4)" style="filter:drop-shadow(0 0 5px rgba(255,100,0,.68))"/>
+    </svg>
+  </div>
+  <div class="mrw mrw-front mrw4">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mBot4"><rect x="-100" y="0" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="48" ry="15" fill="none" stroke="rgba(255,100,0,.85)" stroke-width="1.5" clip-path="url(#mBot4)" style="filter:drop-shadow(0 0 5px rgba(255,100,0,.68))"/>
+    </svg>
+  </div>
+
+  <div class="mrw mrw-back mrw5">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mTop5"><rect x="-100" y="-100" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="54" ry="17" fill="none" stroke="rgba(255,185,0,.88)" stroke-width="1.5" clip-path="url(#mTop5)" style="filter:drop-shadow(0 0 5px rgba(255,185,0,.7))"/>
+    </svg>
+  </div>
+  <div class="mrw mrw-front mrw5">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mBot5"><rect x="-100" y="0" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="54" ry="17" fill="none" stroke="rgba(255,185,0,.88)" stroke-width="1.5" clip-path="url(#mBot5)" style="filter:drop-shadow(0 0 5px rgba(255,185,0,.7))"/>
+    </svg>
+  </div>
+
+  <div class="mrw mrw-back mrw6">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mTop6"><rect x="-100" y="-100" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="60" ry="19" fill="none" stroke="rgba(255,228,0,.85)" stroke-width="1.5" clip-path="url(#mTop6)" style="filter:drop-shadow(0 0 5px rgba(255,228,0,.68))"/>
+    </svg>
+  </div>
+  <div class="mrw mrw-front mrw6">
+    <svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="mBot6"><rect x="-100" y="0" width="200" height="100"/></clipPath></defs>
+      <ellipse cx="0" cy="0" rx="60" ry="19" fill="none" stroke="rgba(255,228,0,.85)" stroke-width="1.5" clip-path="url(#mBot6)" style="filter:drop-shadow(0 0 5px rgba(255,228,0,.68))"/>
+    </svg>
   </div>
 
   <!-- 미니 구체 레이어 -->
+  <div class="ml ml10"></div>
+  <div class="ml ml9"></div>
+  <div class="ml ml8"></div>
   <div class="ml ml7"></div>
   <div class="ml ml6"></div>
   <div class="ml ml5"></div>
@@ -463,17 +714,6 @@ for(let i=0;i<90;i++){
   <div class="mini-core"></div>
   <div class="mini-core-hl"></div>
 
-  <!-- 미니 링 앞 -->
-  <div class="mini-ring-front">
-    <div class="m-srf msrf1"></div>
-    <div class="m-srf msrf2"></div>
-    <div class="m-srf msrf3"></div>
-    <div class="m-srf msrf4"></div>
-    <div class="m-srf msrf5"></div>
-    <div class="m-srf msrf6"></div>
-  </div>
-
 </div>
-
 </body>
 </html>
