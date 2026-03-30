@@ -12,32 +12,31 @@ function buildFavicon(size){
   c.width = size; c.height = size;
   const ctx = c.getContext('2d');
 
-  /* 배경 – 순수 블랙 */
+  /* 배경 */
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, size, size);
 
   /* 배경 글로우 */
   const bgG = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size*0.7);
-  bgG.addColorStop(0, 'rgba(124,58,237,0.22)');
-  bgG.addColorStop(0.5,'rgba(240,201,106,0.10)');
+  bgG.addColorStop(0, 'rgba(100,0,255,0.30)');
+  bgG.addColorStop(0.5,'rgba(255,140,0,0.12)');
   bgG.addColorStop(1, 'transparent');
   ctx.fillStyle = bgG;
   ctx.fillRect(0, 0, size, size);
 
-  /* ── ALGO 텍스트만 ── */
   const letters = [
-    { ch:'A', g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'], glow:'#f0c96a' },
-    { ch:'L', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
-    { ch:'G', g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'], glow:'#f0c96a' },
-    { ch:'O', g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'], glow:'#e879a0' },
+    { ch:'A', top:'#fff5c0', mid:'#FFD700', bot:'#B8400A', glow:'#FFD700' },
+    { ch:'L', top:'#f0d0ff', mid:'#9B30FF', bot:'#3A007A', glow:'#9B30FF' },
+    { ch:'G', top:'#fff5c0', mid:'#FFD700', bot:'#B8400A', glow:'#FFD700' },
+    { ch:'O', top:'#f0d0ff', mid:'#9B30FF', bot:'#3A007A', glow:'#9B30FF' },
   ];
 
-  /* 좌우 패딩 5%, ALGO가 꽉 차도록 이진탐색 */
-  const padX = size * 0.05;
+  const padX = size * 0.04;
   const maxW = size - padX * 2;
 
+  /* 이진탐색: 폰트 크기 자동 맞춤 */
   let lo = 1, hi = size, fs = hi / 2;
-  for(let iter = 0; iter < 24; iter++){
+  for(let iter = 0; iter < 28; iter++){
     ctx.font = `900 ${fs}px Cinzel, serif`;
     const tw = letters.reduce((a, l) => a + ctx.measureText(l.ch).width, 0);
     if(tw > maxW) hi = fs;
@@ -46,38 +45,62 @@ function buildFavicon(size){
   }
   ctx.font = `900 ${fs}px Cinzel, serif`;
 
-  /* 전체 너비 → 수평 중앙 정렬 */
   const totalW = letters.reduce((a, l) => a + ctx.measureText(l.ch).width, 0);
   let curX = (size - totalW) / 2;
-
-  /* 수직 중앙 */
   const textY = size / 2;
   ctx.textBaseline = 'middle';
 
-  letters.forEach(({ ch, g, glow }) => {
+  letters.forEach(({ ch, top, mid, bot, glow }) => {
     const w = ctx.measureText(ch).width;
+    const cx = curX + w / 2;
 
+    /* ── 입체 그림자 (뒤에 먼저) ── */
+    ctx.shadowColor = 'rgba(0,0,0,0.9)';
+    ctx.shadowBlur  = size * 0.04;
+    ctx.shadowOffsetX = size * 0.025;
+    ctx.shadowOffsetY = size * 0.030;
+
+    const shadowG = ctx.createLinearGradient(curX, textY - fs*0.5, curX + w, textY + fs*0.5);
+    shadowG.addColorStop(0, 'rgba(0,0,0,0.7)');
+    shadowG.addColorStop(1, 'rgba(0,0,0,0.3)');
+    ctx.fillStyle = shadowG;
+    ctx.fillText(ch, curX, textY);
+
+    /* ── 메인 글자 ── */
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
     ctx.shadowColor = glow;
-    ctx.shadowBlur  = size * 0.14;
+    ctx.shadowBlur  = size * 0.18;
 
-    const tG = ctx.createLinearGradient(curX, textY - fs*0.5, curX + w, textY + fs*0.5);
-    tG.addColorStop(0,    g[0]);
-    tG.addColorStop(0.35, g[1]);
-    tG.addColorStop(0.7,  g[2]);
-    tG.addColorStop(1,    g[3]);
+    /* 상→하 입체 그라디언트 */
+    const tG = ctx.createLinearGradient(cx, textY - fs*0.52, cx, textY + fs*0.52);
+    tG.addColorStop(0,    top);   /* 하이라이트 */
+    tG.addColorStop(0.25, mid);   /* 원색 */
+    tG.addColorStop(0.55, mid);   /* 원색 유지 */
+    tG.addColorStop(0.80, bot);   /* 어두운 면 */
+    tG.addColorStop(1,    '#000');/* 바닥 */
 
     ctx.fillStyle = tG;
     ctx.fillText(ch, curX, textY);
+
+    /* ── 상단 하이라이트 오버레이 ── */
+    ctx.shadowBlur = 0;
+    const hlG = ctx.createLinearGradient(cx, textY - fs*0.52, cx, textY);
+    hlG.addColorStop(0,   'rgba(255,255,255,0.55)');
+    hlG.addColorStop(0.3, 'rgba(255,255,255,0.15)');
+    hlG.addColorStop(1,   'rgba(255,255,255,0)');
+    ctx.fillStyle = hlG;
+    ctx.fillText(ch, curX, textY);
+
     curX += w;
   });
 
   return c;
 }
 
-/* 파비콘 주입 – 폰트 로드 후 */
 window.addEventListener('DOMContentLoaded', () => {
   document.fonts.ready.then(() => {
-    [16, 32, 64].forEach(sz => {
+    [16, 32, 64, 128].forEach(sz => {
       const canvas = buildFavicon(sz);
       const link   = document.createElement('link');
       link.rel     = 'icon';
@@ -92,15 +115,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function renderPreviews(){
   const sizes        = [16, 32, 64, 128];
-  const displaySizes = [80, 112, 144, 176];
+  const displaySizes = [80, 112, 148, 180];
   const container    = document.getElementById('faviconSizes');
   if(!container) return;
   container.innerHTML = '';
 
   sizes.forEach((sz, i) => {
     const canvas = buildFavicon(sz);
-
-    const wrap = document.createElement('div');
+    const wrap   = document.createElement('div');
     wrap.className = 'fav-item';
 
     const canvasWrap = document.createElement('div');
@@ -108,7 +130,7 @@ function renderPreviews(){
     canvasWrap.style.cssText = `
       width:${displaySizes[i]}px;
       height:${displaySizes[i]}px;
-      border-radius:${8 + i*3}px;
+      border-radius:${6 + i*3}px;
     `;
 
     canvas.style.cssText = `
@@ -134,13 +156,15 @@ function renderPreviews(){
 *{margin:0;padding:0;box-sizing:border-box;}
 
 :root{
-  --purple:#7c3aed;
-  --violet:#a855f7;
-  --gold:#f0c96a;
-  --gold-l:#ffe49a;
-  --rose:#f5c6d0;
-  --orange:#ff8c00;
-  --red:#ff2020;
+  --gold:      #FFD700;
+  --gold-l:    #FFF0A0;
+  --gold-d:    #B8400A;
+  --purple:    #7700EE;
+  --purple-l:  #CC66FF;
+  --purple-d:  #3A007A;
+  --crimson:   #CC0022;
+  --orange:    #FF6600;
+  --white:     #FFFFFF;
 }
 
 body{
@@ -152,7 +176,7 @@ body{
   justify-content:center;
   overflow:hidden;
   font-family:'Cinzel',serif;
-  gap:56px;
+  gap:60px;
 }
 
 .bg{position:fixed;inset:0;pointer-events:none;z-index:0;}
@@ -161,68 +185,123 @@ body{
   animation:twinkle var(--d,3s) ease-in-out infinite alternate var(--delay,0s);
 }
 @keyframes twinkle{
-  from{opacity:.15;transform:scale(1);}
-  to{opacity:.9;transform:scale(1.5);}
+  from{opacity:.1;transform:scale(1);}
+  to{opacity:1;transform:scale(1.6);}
 }
 
-/* ── 메인 로고 ── */
+/* ══ 메인 로고 ══ */
 .logo-wrap{
   position:relative;z-index:10;
   display:flex;flex-direction:column;align-items:center;
 }
 
 .algo-text{
-  display:flex;align-items:center;justify-content:center;gap:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:0;
+  /* 전체 글자 그룹 드롭섀도 */
+  filter:
+    drop-shadow(0 6px 18px rgba(0,0,0,0.9))
+    drop-shadow(0 0 40px rgba(255,215,0,0.35))
+    drop-shadow(0 0 80px rgba(119,0,238,0.25));
 }
 
 .algo-text span{
   display:inline-block;
-  font-family:'Cinzel',serif;font-weight:900;
-  font-size:140px;line-height:1;letter-spacing:-2px;
+  font-family:'Cinzel',serif;
+  font-weight:900;
+  font-size:148px;
+  line-height:1;
+  letter-spacing:-3px;
+  position:relative;
   animation:letterFloat var(--lf,6s) ease-in-out infinite alternate var(--ld,0s);
+  /* 개별 텍스트 섀도로 두께감 */
+  text-shadow:
+    2px 3px 0px rgba(0,0,0,0.95),
+    4px 6px 0px rgba(0,0,0,0.7),
+    6px 9px 0px rgba(0,0,0,0.4),
+    0 0 30px currentColor;
 }
 
+/* A – 딥 골드 */
 .l-a{
-  background:linear-gradient(160deg,#ffe49a 0%,#f0c96a 40%,#ff8c00 80%,#ff2020 100%);
+  background:linear-gradient(175deg,
+    #FFFACD 0%,
+    #FFD700 20%,
+    #FFA500 45%,
+    #CC5500 70%,
+    #7A2200 90%,
+    #1a0800 100%
+  );
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #f0c96a99) drop-shadow(0 0 40px #ff8c0055);
   --lf:5.8s;--ld:0s;
 }
+/* L – 딥 퍼플 */
 .l-l{
-  background:linear-gradient(160deg,#f5c6d0 0%,#e879a0 40%,#a855f7 80%,#7c3aed 100%);
+  background:linear-gradient(175deg,
+    #F0D0FF 0%,
+    #CC66FF 20%,
+    #9900FF 45%,
+    #6600BB 70%,
+    #330066 90%,
+    #0a0015 100%
+  );
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #e879a099) drop-shadow(0 0 40px #a855f755);
   --lf:6.2s;--ld:.4s;
 }
+/* G – 딥 골드 */
 .l-g{
-  background:linear-gradient(160deg,#ffe49a 0%,#f0c96a 40%,#ff8c00 80%,#ff2020 100%);
+  background:linear-gradient(175deg,
+    #FFFACD 0%,
+    #FFD700 20%,
+    #FFA500 45%,
+    #CC5500 70%,
+    #7A2200 90%,
+    #1a0800 100%
+  );
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #f0c96a99) drop-shadow(0 0 40px #ff8c0055);
   --lf:5.5s;--ld:.8s;
 }
+/* O – 딥 퍼플 */
 .l-o{
-  background:linear-gradient(160deg,#f5c6d0 0%,#e879a0 40%,#a855f7 80%,#7c3aed 100%);
+  background:linear-gradient(175deg,
+    #F0D0FF 0%,
+    #CC66FF 20%,
+    #9900FF 45%,
+    #6600BB 70%,
+    #330066 90%,
+    #0a0015 100%
+  );
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 18px #e879a099) drop-shadow(0 0 40px #a855f755);
   --lf:6.5s;--ld:1.2s;
 }
 
 @keyframes letterFloat{
   0%{transform:translateY(0) scale(1);}
-  100%{transform:translateY(-6px) scale(1.03);}
+  100%{transform:translateY(-7px) scale(1.03);}
 }
 
+/* ── 데코 라인 ── */
 .deco-line{
-  position:relative;width:520px;height:2px;margin-top:8px;
+  position:relative;
+  width:540px;height:2px;
+  margin-top:10px;
   background:linear-gradient(90deg,
-    transparent 0%,#7c3aed 15%,#f0c96a 35%,
-    #f5c6d0 50%,#f0c96a 65%,#a855f7 85%,transparent 100%);
+    transparent 0%,
+    #6600BB 12%,
+    #FFD700 30%,
+    #FF6600 50%,
+    #FFD700 70%,
+    #9900FF 88%,
+    transparent 100%
+  );
+  box-shadow:0 0 12px #FFD70066, 0 0 24px #9900FF44;
   animation:linePulse 4s ease-in-out infinite alternate;
 }
 .deco-line::before,.deco-line::after{
   content:'';position:absolute;top:50%;transform:translateY(-50%);
-  width:6px;height:6px;border-radius:50%;
-  background:#f0c96a;box-shadow:0 0 8px 3px #f0c96a;
+  width:7px;height:7px;border-radius:50%;
+  background:#FFD700;
+  box-shadow:0 0 10px 4px #FFD700, 0 0 20px #FF6600;
 }
 .deco-line::before{left:0;}
 .deco-line::after{right:0;}
@@ -230,35 +309,40 @@ body{
 .deco-diamond{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%) rotate(45deg);
-  width:8px;height:8px;
-  background:linear-gradient(135deg,#ffe49a,#f5c6d0);
-  box-shadow:0 0 10px 4px #f0c96a99;
+  width:10px;height:10px;
+  background:linear-gradient(135deg,#FFFACD,#FF6600,#9900FF);
+  box-shadow:0 0 14px 5px #FFD70099, 0 0 28px #9900FF66;
   animation:diamondPulse 3s ease-in-out infinite alternate;
 }
 
 @keyframes linePulse{
-  0%{opacity:.6;filter:brightness(.9);}
-  100%{opacity:1;filter:brightness(1.3);}
+  0%{opacity:.5;filter:brightness(.8);}
+  100%{opacity:1;filter:brightness(1.4);}
 }
 @keyframes diamondPulse{
   0%{transform:translate(-50%,-50%) rotate(45deg) scale(1);}
-  100%{transform:translate(-50%,-50%) rotate(45deg) scale(1.5);}
+  100%{transform:translate(-50%,-50%) rotate(45deg) scale(1.7);}
 }
 
+/* 배경 글로우 */
 .bg-glow{
-  position:absolute;width:700px;height:300px;border-radius:50%;
-  background:radial-gradient(ellipse,#7c3aed0a 0%,#f0c96a08 40%,transparent 70%);
+  position:absolute;width:760px;height:320px;border-radius:50%;
+  background:radial-gradient(ellipse,
+    rgba(119,0,238,0.08) 0%,
+    rgba(255,215,0,0.06) 40%,
+    transparent 70%);
   top:50%;left:50%;transform:translate(-50%,-50%);
   animation:bgGlow 6s ease-in-out infinite alternate;
   pointer-events:none;z-index:-1;
 }
 @keyframes bgGlow{
-  0%{opacity:.5;transform:translate(-50%,-50%) scale(1);}
-  100%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}
+  0%{opacity:.4;transform:translate(-50%,-50%) scale(1);}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1.12);}
 }
 
+/* 파티클 */
 .particles{
-  position:absolute;width:600px;height:300px;
+  position:absolute;width:640px;height:320px;
   top:50%;left:50%;transform:translate(-50%,-50%);
   pointer-events:none;z-index:-1;
 }
@@ -267,20 +351,20 @@ body{
   animation:ptFloat var(--pd,8s) ease-in-out infinite alternate var(--pdd,0s);
 }
 @keyframes ptFloat{
-  0%{transform:translateY(0) translateX(0);opacity:.4;}
-  50%{opacity:.9;}
-  100%{transform:translateY(var(--py,-20px)) translateX(var(--px,10px));opacity:.3;}
+  0%{transform:translateY(0) translateX(0);opacity:.3;}
+  50%{opacity:1;}
+  100%{transform:translateY(var(--py,-20px)) translateX(var(--px,10px));opacity:.2;}
 }
 
-/* ── 파비콘 미리보기 ── */
+/* ══ 파비콘 미리보기 ══ */
 .favicon-preview{
   position:relative;z-index:10;
-  display:flex;flex-direction:column;align-items:center;gap:16px;
+  display:flex;flex-direction:column;align-items:center;gap:18px;
 }
 .favicon-label{
   font-family:'Cinzel',serif;font-size:11px;font-weight:600;
-  letter-spacing:4px;text-transform:uppercase;
-  color:#f0c96a;opacity:.7;
+  letter-spacing:5px;text-transform:uppercase;
+  color:#FFD700;opacity:.75;
 }
 .favicon-sizes{
   display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap;justify-content:center;
@@ -293,16 +377,19 @@ body{
   animation:favGlow 3s ease-in-out infinite alternate;
 }
 @keyframes favGlow{
-  0%{box-shadow:0 0 0 1px #f0c96a33,0 0 12px #a855f722;}
-  100%{box-shadow:0 0 0 1px #f0c96a99,0 0 28px #a855f766;}
+  0%{box-shadow:0 0 0 1px #FFD70044,0 0 14px #9900FF33;}
+  100%{box-shadow:0 0 0 1px #FFD700BB,0 0 30px #9900FF77;}
 }
 .fav-size-label{
   font-family:'Cinzel',serif;font-size:10px;
-  color:#a855f7;letter-spacing:2px;opacity:.8;
+  color:#9900FF;letter-spacing:2px;opacity:.85;
 }
+
+/* 구분선 */
 .divider{
-  width:420px;height:1px;
-  background:linear-gradient(90deg,transparent,#7c3aed44,#f0c96a44,#a855f744,transparent);
+  width:440px;height:1px;
+  background:linear-gradient(90deg,
+    transparent,#6600BB55,#FFD70055,#FF660055,#9900FF55,transparent);
   position:relative;z-index:10;
 }
 </style>
@@ -339,15 +426,16 @@ body{
 <script>
 /* 별 배경 */
 const bg = document.getElementById('bg');
-const sc = ['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#ff2020','#ffe49a','#e879a0','#fff'];
-for(let i=0;i<80;i++){
-  const s=document.createElement('div');
-  s.className='star';
-  const sz=(Math.random()*1.8+0.3).toFixed(2);
-  s.style.cssText=`
+const sc = ['#FFD700','#9900FF','#FF6600','#CC66FF','#FFA500','#CC0022','#ffffff','#FFFACD'];
+for(let i = 0; i < 90; i++){
+  const s  = document.createElement('div');
+  s.className = 'star';
+  const sz = (Math.random()*2+0.3).toFixed(2);
+  s.style.cssText = `
     width:${sz}px;height:${sz}px;
     left:${Math.random()*100}%;top:${Math.random()*100}%;
     background:${sc[Math.floor(Math.random()*sc.length)]};
+    box-shadow:0 0 ${sz*2}px ${sc[Math.floor(Math.random()*sc.length)]};
     --d:${(Math.random()*4+1.5).toFixed(2)}s;
     --delay:-${(Math.random()*5).toFixed(2)}s;
   `;
@@ -355,21 +443,23 @@ for(let i=0;i<80;i++){
 }
 
 /* 파티클 */
-const pc = document.getElementById('particles');
-const pcColors=['#f0c96a','#a855f7','#f5c6d0','#ff8c00','#e879a0'];
-for(let i=0;i<18;i++){
-  const p=document.createElement('div');
-  p.className='pt';
-  const sz=(Math.random()*3+1).toFixed(2);
-  p.style.cssText=`
+const pc       = document.getElementById('particles');
+const pcColors = ['#FFD700','#9900FF','#FF6600','#CC66FF','#FFA500'];
+for(let i = 0; i < 22; i++){
+  const p  = document.createElement('div');
+  p.className = 'pt';
+  const sz = (Math.random()*3.5+1).toFixed(2);
+  const c1 = pcColors[Math.floor(Math.random()*pcColors.length)];
+  const c2 = pcColors[Math.floor(Math.random()*pcColors.length)];
+  p.style.cssText = `
     width:${sz}px;height:${sz}px;
-    left:${Math.random()*600}px;top:${Math.random()*300}px;
-    background:${pcColors[Math.floor(Math.random()*pcColors.length)]};
-    box-shadow:0 0 ${sz*2}px ${pcColors[Math.floor(Math.random()*pcColors.length)]};
+    left:${Math.random()*640}px;top:${Math.random()*320}px;
+    background:${c1};
+    box-shadow:0 0 ${sz*3}px ${sz}px ${c2};
     --pd:${(Math.random()*6+5).toFixed(2)}s;
     --pdd:-${(Math.random()*5).toFixed(2)}s;
-    --py:${(-(Math.random()*40+10)).toFixed(0)}px;
-    --px:${((Math.random()*30-15)).toFixed(0)}px;
+    --py:${(-(Math.random()*50+10)).toFixed(0)}px;
+    --px:${((Math.random()*40-20)).toFixed(0)}px;
   `;
   pc.appendChild(p);
 }
