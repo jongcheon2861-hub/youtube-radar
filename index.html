@@ -273,17 +273,13 @@
 <script>
 /* ================================================================
    YTAnalytics Pro
-   ★ 핵심 변경: 분류 로직 통일
+   ★ 변경사항: 롱폼 분류 기준 수정
    ─────────────────────────────────────────────────────────────
-   [쇼츠 조건]  재생시간 ≤ 180초  AND  쇼츠 키워드 있음
-   [롱폼 조건]  재생시간 > 180초  OR   (≤180초이지만 쇼츠 키워드 없음)
-
-   쇼츠 키워드 감지 위치: 제목, 태그 배열, 설명 첫 300자
-   감지 키워드: 'shorts', '#shorts', 'short', '#short', 'shortvideo',
-               'shortsvideo', 'reels', 'tiktok', '쇼츠', '숏츠',
-               '#쇼츠', '#숏츠'
+   [쇼츠 조건] 재생시간 < 180초  AND  쇼츠 키워드 있음
+   [롱폼 조건] 재생시간 >= 180초  (키워드 무관, 180초 이상이면 무조건 롱폼)
+               OR 재생시간 < 180초이지만 쇼츠 키워드 없음 → 롱폼
    ─────────────────────────────────────────────────────────────
-   인기영상 탭(isShorts)과 키워드검색(smartClassify) 모두 동일 규칙 적용
+   즉, 180초 이상이면 키워드와 상관없이 항상 롱폼으로 분류
 ================================================================ */
 
 const API_KEYS = [
@@ -291,10 +287,10 @@ const API_KEYS = [
 ];
 let keyIdx = 0;
 
-/* ★ 기준 상수 */
-const SHORTS_MAX_SEC = 180;
+/* ★ 롱폼 최소 기준: 180초 이상이면 무조건 롱폼 */
+const LONGS_MIN_SEC = 180;
 
-/* ★ 쇼츠 키워드 목록 */
+/* 쇼츠 키워드 목록 */
 const SHORTS_KEYWORDS = [
   'shorts','#shorts','short','#short',
   'shortvideo','shortsvideo','reels','tiktok',
@@ -370,32 +366,36 @@ function hideGlobalError(){
 }
 
 /* ================================================================
-   ★ 핵심 분류 함수
-   hasShortKeyword(item): 제목·태그·설명에 쇼츠 키워드 존재 여부
-   isShorts(item)       : 180초 이하 AND 쇼츠 키워드 있음  → 쇼츠
-   isLongs(item)        : 위 조건 불만족 (180초 초과 OR 키워드 없음) → 롱폼
+   ★ 분류 함수
+
+   hasShortKeyword : 쇼츠 키워드 감지
+   isShorts        : 재생시간 < 180초  AND  쇼츠 키워드 있음
+   isLongs         : 재생시간 >= 180초 (키워드 무관)
+                     OR 재생시간 < 180초이지만 쇼츠 키워드 없음
 ================================================================ */
 function hasShortKeyword(item){
-  const sn   = item.snippet || {};
+  const sn    = item.snippet || {};
   const title = (sn.title       || '').toLowerCase();
-  const desc  = (sn.description || '').slice(0, 300).toLowerCase();
-  const tags  = (sn.tags        || []).map(t => t.toLowerCase());
-  const haystack = title + ' ' + desc + ' ' + tags.join(' ');
-  return SHORTS_KEYWORDS.some(kw => haystack.includes(kw));
+  const desc  = (sn.description || '').slice(0,300).toLowerCase();
+  const tags  = (sn.tags        || []).map(t=>t.toLowerCase());
+  const hay   = title + ' ' + desc + ' ' + tags.join(' ');
+  return SHORTS_KEYWORDS.some(kw => hay.includes(kw));
 }
 
-/* 쇼츠: 180초 이하 AND 쇼츠 키워드 있음 */
+/* 쇼츠: 180초 미만 AND 쇼츠 키워드 있음 */
 function isShorts(item){
   const sec = parseDurSec(item.contentDetails?.duration || '');
-  return sec > 0 && sec <= SHORTS_MAX_SEC && hasShortKeyword(item);
+  if(sec <= 0) return false;
+  return sec < LONGS_MIN_SEC && hasShortKeyword(item);
 }
 
-/* 롱폼: 180초 초과 OR (180초 이하이지만 쇼츠 키워드 없음) */
+/* ★ 롱폼: 180초 이상이면 무조건 롱폼
+          180초 미만이더라도 쇼츠 키워드 없으면 롱폼 */
 function isLongs(item){
   const sec = parseDurSec(item.contentDetails?.duration || '');
-  if(sec <= 0) return false;           // 시간 정보 없는 영상 제외
-  if(sec > SHORTS_MAX_SEC) return true; // 180초 초과 → 무조건 롱폼
-  return !hasShortKeyword(item);        // 180초 이하이지만 쇼츠 키워드 없음 → 롱폼
+  if(sec <= 0) return false;
+  if(sec >= LONGS_MIN_SEC) return true;   // ★ 180초 이상 → 무조건 롱폼
+  return !hasShortKeyword(item);           // 180초 미만 + 키워드 없음 → 롱폼
 }
 
 /* ================================================================
@@ -543,7 +543,6 @@ function showHotError(msg){
 
 /* ================================================================
    키워드 검색
-   ★ 모든 검색 결과를 한 번에 받아 isShorts/isLongs 로 분류
 ================================================================ */
 async function doHotSearch(){
   const q=document.getElementById('hot-kw-input').value.trim();
@@ -556,7 +555,6 @@ async function doHotSearch(){
   showHotLoader();
 
   try{
-    /* API 요청: short / medium / long 세 구간 동시 수집 */
     const fetchIds = async (durParam) => {
       const r = await apiFetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
@@ -572,11 +570,9 @@ async function doHotSearch(){
       fetchIds('long'),
     ]);
 
-    /* 중복 제거 후 영상 상세 정보 일괄 조회 */
     const allIds = [...new Set([...sIds, ...mIds, ...lIds])];
     const collected = [];
 
-    /* API URL 길이 제한으로 50개씩 분할 요청 */
     for(let i=0; i<allIds.length; i+=50){
       const chunk = allIds.slice(i, i+50);
       try{
@@ -589,11 +585,10 @@ async function doHotSearch(){
 
     /* ★ isShorts / isLongs 로 분류 */
     collected.forEach(item=>{
-      if(isShorts(item))      searchShorts.push(item);
-      else if(isLongs(item))  searchLongs.push(item);
+      if(isShorts(item))     searchShorts.push(item);
+      else if(isLongs(item)) searchLongs.push(item);
     });
 
-    /* 바이럴 점수 정렬 */
     const byViral = arr => arr.sort((a,b)=>viralOf(b)-viralOf(a));
     searchShorts = byViral(searchShorts);
     searchLongs  = byViral(searchLongs);
@@ -644,7 +639,7 @@ function clearHotSearch(){
 }
 
 /* ================================================================
-   인기영상 로드 – isShorts / isLongs 동일 규칙 적용
+   인기영상 로드
 ================================================================ */
 async function loadHot(){
   buildCatTabs(); showHotLoader();
@@ -666,14 +661,12 @@ async function loadUntilFull(cat){
       `&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50`+
       (cfg.categoryId?`&videoCategoryId=${cfg.categoryId}`:'')
     );
-    /* ★ isShorts / isLongs 로 분류 */
     (d.items||[]).forEach(it=>{
       if(isShorts(it))     shorts.push(it);
       else if(isLongs(it)) longs.push(it);
     });
   }catch(e){ console.warn('[mostPopular]',cat,e.message); }
 
-  /* 쇼츠 보완 */
   if(shorts.length<12){
     for(const kw of cfg.shortsKw||[]){
       if(shorts.length>=24)break;
@@ -692,7 +685,6 @@ async function loadUntilFull(cat){
     }
   }
 
-  /* 롱폼 보완 */
   if(longs.length<12){
     for(const kw of cfg.keywords||[]){
       if(longs.length>=24)break;
