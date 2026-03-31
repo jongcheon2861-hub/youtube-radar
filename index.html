@@ -11,54 +11,55 @@
 
   <!-- ══ 파비콘 생성 ══ -->
   <script>
-  function buildFavicon(outputSize) {
-    const c = document.createElement('canvas');
-    c.width = c.height = outputSize;
-    const ctx = c.getContext('2d');
-
-    /* ── 1. 둥근 모서리 클리핑 ── */
-    const r = outputSize * 0.22;
-    ctx.beginPath();
-    ctx.moveTo(r, 0);
-    ctx.lineTo(outputSize - r, 0);
-    ctx.arcTo(outputSize, 0,        outputSize, r,              r);
-    ctx.lineTo(outputSize, outputSize - r);
-    ctx.arcTo(outputSize, outputSize, outputSize - r, outputSize, r);
-    ctx.lineTo(r, outputSize);
-    ctx.arcTo(0, outputSize, 0, outputSize - r,                 r);
-    ctx.lineTo(0, r);
-    ctx.arcTo(0, 0, r, 0,                                       r);
-    ctx.closePath();
-    ctx.clip();
-
-    /* ── 2. 보라→주황 대각선 배경 ── */
-    const bg = ctx.createLinearGradient(0, 0, outputSize, outputSize);
-    bg.addColorStop(0,   '#9b59f5');
-    bg.addColorStop(0.5, '#8b44e8');
-    bg.addColorStop(1,   '#e8922a');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, outputSize, outputSize);
-
-    /* ── 3. 흰색 A ── */
-    const fontSize = Math.round(outputSize * 0.60);
-    ctx.fillStyle    = '#ffffff';
-    ctx.font         = `700 ${fontSize}px -apple-system, "Helvetica Neue", Arial, sans-serif`;
-    ctx.textAlign    = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('A', outputSize / 2, outputSize / 2 - outputSize * 0.01);
-
-    return c;
+  function buildFavicon(outputSize){
+    const SCALE=8,big=outputSize*SCALE;
+    const bigC=document.createElement('canvas');
+    bigC.width=big;bigC.height=big;
+    const ctx=bigC.getContext('2d');
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    const bgBase=ctx.createRadialGradient(big/2,big/2,0,big/2,big/2,big*0.85);
+    bgBase.addColorStop(0,'#1a0a2e');bgBase.addColorStop(0.5,'#0e0520');bgBase.addColorStop(1,'#080012');
+    ctx.fillStyle=bgBase;ctx.fillRect(0,0,big,big);
+    const bgG=ctx.createRadialGradient(big/2,big/2,0,big/2,big/2,big*0.7);
+    bgG.addColorStop(0,'rgba(124,58,237,0.30)');bgG.addColorStop(0.5,'rgba(240,201,106,0.12)');bgG.addColorStop(1,'transparent');
+    ctx.fillStyle=bgG;ctx.fillRect(0,0,big,big);
+    const letters=[
+      {ch:'A',g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'],glow:'#f0c96a'},
+      {ch:'L',g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'],glow:'#e879a0'},
+      {ch:'G',g:['#ffe49a','#f0c96a','#ff8c00','#ff2020'],glow:'#f0c96a'},
+      {ch:'O',g:['#f5c6d0','#e879a0','#a855f7','#7c3aed'],glow:'#e879a0'},
+    ];
+    const padX=big*0.05,maxW=big-padX*2;
+    let lo=1,hi=big,fs=hi/2;
+    for(let iter=0;iter<32;iter++){
+      ctx.font=`900 ${fs}px Cinzel, serif`;
+      const tw=letters.reduce((a,l)=>a+ctx.measureText(l.ch).width,0);
+      if(tw>maxW)hi=fs;else lo=fs;fs=(lo+hi)/2;
+    }
+    ctx.font=`900 ${fs}px Cinzel, serif`;ctx.textBaseline='middle';
+    const totalW=letters.reduce((a,l)=>a+ctx.measureText(l.ch).width,0);
+    let curX=(big-totalW)/2;const textY=big/2;
+    letters.forEach(({ch,g,glow})=>{
+      const w=ctx.measureText(ch).width;
+      ctx.shadowColor=glow;ctx.shadowBlur=big*0.14;
+      const tG=ctx.createLinearGradient(curX,textY-fs*0.5,curX+w,textY+fs*0.5);
+      tG.addColorStop(0,g[0]);tG.addColorStop(0.35,g[1]);tG.addColorStop(0.7,g[2]);tG.addColorStop(1,g[3]);
+      ctx.fillStyle=tG;ctx.fillText(ch,curX,textY);curX+=w;
+    });
+    const outC=document.createElement('canvas');
+    outC.width=outputSize;outC.height=outputSize;
+    const outCtx=outC.getContext('2d');
+    outCtx.imageSmoothingEnabled=true;outCtx.imageSmoothingQuality='high';
+    outCtx.drawImage(bigC,0,0,outputSize,outputSize);
+    return outC;
   }
-
-  window.addEventListener('DOMContentLoaded', () => {
-    document.fonts.ready.then(() => {
-      [16, 32, 64, 256].forEach(sz => {
-        const canvas = buildFavicon(sz);
-        const link   = document.createElement('link');
-        link.rel   = 'icon';
-        link.type  = 'image/png';
-        link.sizes = `${sz}x${sz}`;
-        link.href  = canvas.toDataURL('image/png');
+  window.addEventListener('DOMContentLoaded',()=>{
+    document.fonts.ready.then(()=>{
+      [16,32,64,256].forEach(sz=>{
+        const canvas=buildFavicon(sz);
+        const link=document.createElement('link');
+        link.rel='icon';link.type='image/png';link.sizes=`${sz}x${sz}`;
+        link.href=canvas.toDataURL('image/png');
         document.head.appendChild(link);
       });
     });
@@ -80,13 +81,11 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 
+    /* ══ HEADER ══ */
     .header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,0,22,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(124,58,237,0.25);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
     .logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none}
-    .logo-canvas-wrap{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 0 10px rgba(155,89,245,0.5),0 0 20px rgba(232,146,42,0.3);animation:logoGlow 4s ease-in-out infinite alternate;}
-    @keyframes logoGlow{
-      0%  {box-shadow:0 0 8px rgba(155,89,245,0.4), 0 0 16px rgba(232,146,42,0.2)}
-      100%{box-shadow:0 0 18px rgba(155,89,245,0.8),0 0 32px rgba(232,146,42,0.5)}
-    }
+    .logo-canvas-wrap{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 0 10px rgba(240,201,106,0.4),0 0 20px rgba(124,58,237,0.3);animation:logoGlow 4s ease-in-out infinite alternate}
+    @keyframes logoGlow{0%{box-shadow:0 0 8px rgba(240,201,106,0.35),0 0 16px rgba(124,58,237,0.25)}100%{box-shadow:0 0 18px rgba(240,201,106,0.7),0 0 32px rgba(168,85,247,0.5)}}
     #header-logo-canvas{display:block;width:40px;height:40px}
     .logo-text-wrap{display:flex;flex-direction:column;line-height:1}
     .logo-algo{font-family:'Cinzel',serif;font-weight:900;font-size:22px;letter-spacing:2px;line-height:1;background:linear-gradient(135deg,#ffe49a 0%,#f0c96a 25%,#e879a0 55%,#a855f7 80%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(240,201,106,0.5))}
@@ -96,6 +95,8 @@
     #global-error-banner{display:none;position:fixed;top:60px;left:0;right:0;z-index:99;background:rgba(255,71,87,0.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:500;text-align:center}
 
     .app-layout{display:flex;padding-top:60px;min-height:100vh}
+
+    /* ══ SIDEBAR ══ */
     .sidebar{width:220px;background:linear-gradient(180deg,rgba(26,10,46,0.98) 0%,rgba(26,26,46,0.98) 100%);border-right:1px solid rgba(124,58,237,0.2);padding:20px 12px;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto}
     .nav-section-title{font-size:11px;font-weight:600;color:var(--algo-violet);opacity:0.6;text-transform:uppercase;letter-spacing:1px;padding:0 8px 8px;margin-top:16px}
     .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:500;color:var(--text-secondary);transition:all 0.2s;border:none;background:none;width:100%;text-align:left}
@@ -110,6 +111,7 @@
     .section-title{font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px}
     .section-subtitle{font-size:14px;color:var(--text-secondary);margin-top:6px}
 
+    /* ══ 인기영상 ══ */
     .hot-search-box{display:flex;gap:10px;margin-bottom:16px}
     .hot-search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
     .hot-search-input:focus{border-color:var(--algo-violet)}
@@ -148,6 +150,7 @@
     .no-data-icon{font-size:48px;margin-bottom:12px}
     .error-card{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:var(--radius);padding:20px;color:var(--accent)}
 
+    /* ══ 채널 분석 ══ */
     .channel-search-box{display:flex;gap:10px;margin-bottom:24px}
     .search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
     .search-input:focus{border-color:var(--algo-violet)}
@@ -163,24 +166,92 @@
     .stat-value{font-size:22px;font-weight:700;color:var(--algo-gold)}
     .stat-label{font-size:12px;color:var(--text-secondary);margin-top:4px}
 
+    /* ══ 수익 계산기 ══ */
     .rev-wrap{display:flex;flex-direction:column;gap:16px}
-    .rev-input-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;transition:border-color 0.2s}
+    .rev-input-card{
+      background:var(--bg-secondary);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:16px 20px;
+      transition:border-color 0.2s;
+    }
     .rev-input-card:hover{border-color:rgba(124,58,237,0.4)}
     .rev-label{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px}
     .rev-gauge-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-    .rev-gauge-btn{width:44px;height:44px;min-width:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:1.3rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;user-select:none;}
+    .rev-gauge-btn{
+      width:44px;height:44px;min-width:44px;
+      border-radius:50%;
+      border:1.5px solid var(--border);
+      background:var(--bg-card);
+      color:var(--text-primary);
+      font-size:1.3rem;font-weight:700;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.15s;
+      flex-shrink:0;
+      user-select:none;
+    }
     .rev-gauge-btn:hover{background:var(--algo-purple);border-color:var(--algo-violet);color:#fff}
     .rev-gauge-btn:active{transform:scale(0.93)}
-    .rev-gauge-track{flex:1;height:28px;border-radius:14px;background:rgba(255,255,255,0.07);border:1px solid var(--border);position:relative;cursor:pointer;overflow:hidden;touch-action:none;}
-    .rev-gauge-fill{height:100%;border-radius:14px;background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));transition:width 0.08s;pointer-events:none;}
-    .rev-gauge-val{font-size:14px;font-weight:700;color:var(--algo-gold);text-align:right}
-    .rev-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:4px}
-    .rev-result-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;transition:border-color 0.2s}
-    .rev-result-card:first-child{border-color:rgba(240,201,106,0.4);background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(240,201,106,0.08))}
-    .rev-result-val{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--algo-gold),var(--algo-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .rev-gauge-track{
+      flex:1;height:28px;
+      background:rgba(255,255,255,0.07);
+      border-radius:14px;
+      position:relative;
+      cursor:pointer;
+      overflow:hidden;
+      touch-action:none;
+      border:1px solid var(--border);
+    }
+    .rev-gauge-fill{
+      height:100%;
+      background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));
+      border-radius:14px;
+      transition:width 0.08s;
+      pointer-events:none;
+    }
+    .rev-gauge-val{
+      font-size:14px;font-weight:700;
+      color:var(--algo-gold);
+      text-align:right;
+    }
+    .rev-results-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+      gap:14px;
+      margin-top:4px;
+    }
+    .rev-result-card{
+      background:var(--bg-secondary);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      text-align:center;
+      transition:border-color 0.2s;
+    }
+    .rev-result-card:first-child{
+      border-color:rgba(240,201,106,0.4);
+      background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(240,201,106,0.08));
+    }
+    .rev-result-val{
+      font-size:22px;font-weight:800;
+      background:linear-gradient(135deg,var(--algo-gold),var(--algo-violet));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-bottom:6px;
+    }
     .rev-result-lbl{font-size:12px;color:var(--text-secondary)}
-    .rev-tip{margin-top:8px;padding:12px 16px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);text-align:center}
+    .rev-tip{
+      margin-top:8px;
+      padding:12px 16px;
+      background:rgba(124,58,237,0.1);
+      border:1px solid rgba(124,58,237,0.25);
+      border-radius:var(--radius-sm);
+      font-size:13px;
+      color:var(--text-secondary);
+      text-align:center;
+    }
 
+    /* ══ AI 아이디어 ══ */
     .ai-form{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:24px}
     .ai-idea-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
     .ai-idea-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:16px;cursor:pointer;transition:all 0.2s}
@@ -194,6 +265,7 @@
     .form-input:focus{border-color:var(--algo-violet)}
     .calc-btn{padding:12px 28px;background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700}
 
+    /* ══ 도구 섹션 ══ */
     .tool-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
     .tool-tab{padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:all 0.2s}
     .tool-tab:hover{border-color:var(--algo-violet);color:var(--algo-violet)}
@@ -219,6 +291,7 @@
     .tool-modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1}
     .tool-modal-close:hover{background:var(--bg-hover);color:var(--text-primary)}
 
+    /* ══ 장비 쇼핑 ══ */
     .shop-notice{font-size:0.75rem;color:var(--text-secondary);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:20px;text-align:center}
     .shop-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
     .shop-cat-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px 16px 22px;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;text-decoration:none;cursor:pointer;transition:transform 0.22s ease,box-shadow 0.22s ease,border-color 0.22s ease;position:relative;overflow:hidden;text-align:center}
@@ -232,6 +305,7 @@
     .shop-cat-cta{margin-top:6px;font-size:0.82rem;font-weight:600;color:var(--cat-color);background:rgba(255,255,255,0.06);border:1px solid var(--cat-color);border-radius:20px;padding:5px 16px;transition:background 0.18s ease,color 0.18s ease}
     .shop-cat-card:hover .shop-cat-cta{background:var(--cat-color);color:#fff}
 
+    /* ══ 영상 모달 ══ */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     .modal-overlay.open{display:flex}
     .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid rgba(124,58,237,0.25);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
@@ -265,7 +339,7 @@
 <header class="header">
   <div class="logo" onclick="showSec('hot')">
     <div class="logo-canvas-wrap">
-      <canvas id="header-logo-canvas" width="80" height="80"></canvas>
+      <canvas id="header-logo-canvas" width="40" height="40"></canvas>
     </div>
     <div class="logo-text-wrap">
       <span class="logo-algo">ALGO</span>
@@ -291,7 +365,7 @@
 
   <main class="main-content">
 
-    <!-- 인기영상 -->
+    <!-- ── 인기영상 ── -->
     <section class="section-page active" id="section-hot">
       <div class="section-header">
         <div class="section-title">🔥 인기영상</div>
@@ -322,7 +396,7 @@
       <button class="more-btn" id="longs-more-btn" onclick="loadMoreLongs()">롱폼 더 보기 ▼</button>
     </section>
 
-    <!-- 채널 분석 -->
+    <!-- ── 채널 분석 ── -->
     <section class="section-page" id="section-channel">
       <div class="section-header">
         <div class="section-title">📊 채널 분석</div>
@@ -335,7 +409,7 @@
       <div id="channel-result"></div>
     </section>
 
-    <!-- 수익 계산기 -->
+    <!-- ── 수익 계산기 ── -->
     <section class="section-page" id="section-revenue">
       <div class="section-header">
         <div class="section-title">💰 수익 계산기</div>
@@ -348,7 +422,7 @@
       </div>
     </section>
 
-    <!-- AI 아이디어 -->
+    <!-- ── AI 아이디어 ── -->
     <section class="section-page" id="section-ai">
       <div class="section-header">
         <div class="section-title">🤖 AI 아이디어</div>
@@ -364,7 +438,7 @@
       <div id="ai-ideas-list" class="ai-idea-list"></div>
     </section>
 
-    <!-- 유튜버 도구 -->
+    <!-- ── 유튜버 도구 ── -->
     <section class="section-page" id="section-tools">
       <div class="section-header">
         <div class="section-title">🛠️ 유튜버 도구</div>
@@ -374,8 +448,10 @@
       <div class="tool-grid" id="toolGrid"></div>
     </section>
 
-    <!-- 장비 쇼핑 -->
-    <section class="section-page" id="section-shop"></section>
+    <!-- ── 장비 쇼핑 ── -->
+    <section class="section-page" id="section-shop">
+      <!-- buildShop()이 자동으로 채웁니다 -->
+    </section>
 
   </main>
 </div>
@@ -416,18 +492,14 @@
 
 <script>
 /* ================================================================
-   헤더 로고 렌더 + 파비콘 (보라→주황 그라디언트 배경 + 흰 A)
+   헤더 로고 캔버스 렌더
 ================================================================ */
-function renderHeaderLogo() {
-  const target = document.getElementById('header-logo-canvas');
-  if (!target) return;
-  const src = buildFavicon(80);
-  target.width  = 80;
-  target.height = 80;
-  target.getContext('2d').drawImage(src, 0, 0, 80, 80);
-  document.fonts.ready.then(() => {
-    target.getContext('2d').clearRect(0, 0, 80, 80);
-    target.getContext('2d').drawImage(buildFavicon(80), 0, 0, 80, 80);
+function renderHeaderLogo(){
+  document.fonts.ready.then(()=>{
+    const canvas=buildFavicon(40);
+    const target=document.getElementById('header-logo-canvas');
+    if(!target)return;
+    target.getContext('2d').drawImage(canvas,0,0,40,40);
   });
 }
 
@@ -469,24 +541,66 @@ const GRADES=[
   {min:0,         label:'D', color:'#9898b0',bg:'rgba(152,152,176,0.15)'},
 ];
 
-function fmt(n){n=parseInt(n,10)||0;if(n>=100_000_000)return(n/100_000_000).toFixed(1).replace(/\.0$/,'')+'억';if(n>=10_000)return(n/10_000).toFixed(1).replace(/\.0$/,'')+'만';if(n>=1_000)return(n/1_000).toFixed(1).replace(/\.0$/,'')+'천';return n.toLocaleString('ko-KR');}
-function parseDurSec(iso){if(!iso)return 0;const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return 0;return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);}
-function fmtDur(iso){const s=parseDurSec(iso);if(!s)return'--:--';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`;}
+function fmt(n){
+  n=parseInt(n,10)||0;
+  if(n>=100_000_000)return(n/100_000_000).toFixed(1).replace(/\.0$/,'')+'억';
+  if(n>=10_000)return(n/10_000).toFixed(1).replace(/\.0$/,'')+'만';
+  if(n>=1_000)return(n/1_000).toFixed(1).replace(/\.0$/,'')+'천';
+  return n.toLocaleString('ko-KR');
+}
+function parseDurSec(iso){
+  if(!iso)return 0;
+  const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if(!m)return 0;
+  return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);
+}
+function fmtDur(iso){
+  const s=parseDurSec(iso);if(!s)return'--:--';
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
+  return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`;
+}
 function viralOf(item){const s=item.statistics||{};return(parseInt(s.viewCount||0))+(parseInt(s.likeCount||0)*30)+(parseInt(s.commentCount||0)*60);}
 function gradeOf(sub){const n=parseInt(sub||0);return GRADES.find(g=>n>=g.min)||GRADES[GRADES.length-1];}
-function showGlobalError(msg){document.getElementById('global-error-banner').textContent=msg;document.getElementById('global-error-banner').style.display='block';document.getElementById('api-status').className='api-status error';document.getElementById('api-status').textContent='● API 오류';}
-function hideGlobalError(){document.getElementById('global-error-banner').style.display='none';document.getElementById('api-status').className='api-status';document.getElementById('api-status').textContent='● API 연결됨';}
+function showGlobalError(msg){
+  document.getElementById('global-error-banner').textContent=msg;
+  document.getElementById('global-error-banner').style.display='block';
+  document.getElementById('api-status').className='api-status error';
+  document.getElementById('api-status').textContent='● API 오류';
+}
+function hideGlobalError(){
+  document.getElementById('global-error-banner').style.display='none';
+  document.getElementById('api-status').className='api-status';
+  document.getElementById('api-status').textContent='● API 연결됨';
+}
 
-function hasShortKeyword(item){const sn=item.snippet||{};const hay=(sn.title||'').toLowerCase()+' '+(sn.description||'').slice(0,300).toLowerCase()+' '+(sn.tags||[]).join(' ').toLowerCase();return SHORTS_KEYWORDS.some(kw=>hay.includes(kw));}
+function hasShortKeyword(item){
+  const sn=item.snippet||{};
+  const hay=(sn.title||'').toLowerCase()+' '+(sn.description||'').slice(0,300).toLowerCase()+' '+(sn.tags||[]).join(' ').toLowerCase();
+  return SHORTS_KEYWORDS.some(kw=>hay.includes(kw));
+}
 function isShorts(item){const sec=parseDurSec(item.contentDetails?.duration||'');return sec>0&&sec<LONGS_MIN_SEC&&hasShortKeyword(item);}
 function isLongs(item){return parseDurSec(item.contentDetails?.duration||'')>=LONGS_MIN_SEC;}
 function hardFilterLongs(arr){return arr.filter(item=>parseDurSec(item.contentDetails?.duration||'')>=LONGS_MIN_SEC);}
-function matchesCat(item,cat){const cfg=CAT_CFG[cat];if(!cfg)return true;const sn=item.snippet||{};const hay=[(sn.title||'').toLowerCase(),(sn.description||'').slice(0,200).toLowerCase(),(sn.tags||[]).join(' ').toLowerCase()].join(' ');return cfg.matchKeywords.some(kw=>hay.includes(kw.toLowerCase()));}
+function matchesCat(item,cat){
+  const cfg=CAT_CFG[cat];if(!cfg)return true;
+  const sn=item.snippet||{};
+  const hay=[(sn.title||'').toLowerCase(),(sn.description||'').slice(0,200).toLowerCase(),(sn.tags||[]).join(' ').toLowerCase()].join(' ');
+  return cfg.matchKeywords.some(kw=>hay.includes(kw.toLowerCase()));
+}
 
 let _adPushed=false;
-function initModalAd(){if(_adPushed)return;try{const ins=document.querySelector('#modal-ads-top ins.adsbygoogle');if(ins){(window.adsbygoogle=window.adsbygoogle||[]).push({});_adPushed=true;}}catch(e){}}
+function initModalAd(){
+  if(_adPushed)return;
+  try{const ins=document.querySelector('#modal-ads-top ins.adsbygoogle');if(ins){(window.adsbygoogle=window.adsbygoogle||[]).push({});_adPushed=true;}}catch(e){}
+}
 
-function closeVideoModal(){const pw=document.getElementById('player-wrap');const iframe=pw.querySelector('iframe');if(iframe){iframe.src='';pw.removeChild(iframe);}document.getElementById('video-modal').classList.remove('open');}
+/* ── 영상 모달 ── */
+function closeVideoModal(){
+  const pw=document.getElementById('player-wrap');
+  const iframe=pw.querySelector('iframe');
+  if(iframe){iframe.src='';pw.removeChild(iframe);}
+  document.getElementById('video-modal').classList.remove('open');
+}
 async function openVideoModal(vid){
   const overlay=document.getElementById('video-modal');
   const pw=document.getElementById('player-wrap');
@@ -517,6 +631,7 @@ async function openVideoModal(vid){
   }catch(e){statsEl.innerHTML=`<div class="error-card"><h3>불러오기 실패</h3><p>${e.message}</p></div>`;}
 }
 
+/* ── API ── */
 async function apiFetch(url){
   const validKeys=API_KEYS.filter(k=>k&&k.length>20&&!k.startsWith('YOUR_'));
   if(!validKeys.length)throw new Error('유효한 API 키가 없습니다.');
@@ -530,7 +645,10 @@ async function apiFetch(url){
       if(data.error){
         const code=data.error.code||0,reason=data.error.errors?.[0]?.reason||'';
         if([403,429].includes(code)||['quotaExceeded','keyInvalid','forbidden','dailyLimitExceeded'].includes(reason)){keyIdx=(keyIdx+i+1)%validKeys.length;continue;}
-        if(['invalidSearchFilter','invalidVideoFilter','invalidFilter'].includes(reason)){const cleaned=url.replace(/[&?]videoCategoryId=[^&]*/g,'').replace(/[&?]videoDuration=[^&]*/g,'');return apiFetch(cleaned);}
+        if(['invalidSearchFilter','invalidVideoFilter','invalidFilter'].includes(reason)){
+          const cleaned=url.replace(/[&?]videoCategoryId=[^&]*/g,'').replace(/[&?]videoDuration=[^&]*/g,'');
+          return apiFetch(cleaned);
+        }
         throw new Error(`API 오류 [${code}] ${reason}`);
       }
       if(!r.ok)throw new Error('HTTP '+r.status);
@@ -540,6 +658,7 @@ async function apiFetch(url){
   throw new Error('모든 API 키 소진');
 }
 
+/* ── 네비게이션 ── */
 const sectionLoaded={};
 function showSec(id){
   document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
@@ -555,6 +674,7 @@ function showSec(id){
   }
 }
 
+/* ── 인기영상 ── */
 function buildCatTabs(){
   const wrap=document.getElementById('cat-tabs');wrap.innerHTML='';
   CAT_KEYS.forEach(cat=>{
@@ -574,7 +694,13 @@ function switchCat(cat){
     loadUntilFull(cat).then(()=>{hideHotLoader();renderHotSplit();}).catch(e=>{hideHotLoader();showHotError(e.message);});
   }
 }
-function showHotLoader(){document.getElementById('hot-loader').style.display='block';document.getElementById('shorts-grid').innerHTML='';document.getElementById('longs-grid').innerHTML='';document.getElementById('shorts-more-btn').style.display='none';document.getElementById('longs-more-btn').style.display='none';}
+function showHotLoader(){
+  document.getElementById('hot-loader').style.display='block';
+  document.getElementById('shorts-grid').innerHTML='';
+  document.getElementById('longs-grid').innerHTML='';
+  document.getElementById('shorts-more-btn').style.display='none';
+  document.getElementById('longs-more-btn').style.display='none';
+}
 function hideHotLoader(){document.getElementById('hot-loader').style.display='none';}
 function showHotError(msg){document.getElementById(activeType==='shorts'?'shorts-grid':'longs-grid').innerHTML=`<div class="error-card" style="grid-column:1/-1"><h3>⚠️ 로드 실패</h3><p>${msg}</p></div>`;}
 
@@ -708,6 +834,7 @@ function makeVideoCard(item,type){
   </div>`;
 }
 
+/* ── 채널 분석 ── */
 async function doChannelSearch(){
   const q=document.getElementById('ch-input').value.trim();
   const out=document.getElementById('channel-result');
@@ -745,7 +872,9 @@ async function doChannelSearch(){
   }catch(e){out.innerHTML=`<div class="error-card"><h3>분석 실패</h3><p>${e.message}</p></div>`;}
 }
 
-/* ── 수익 계산기 ── */
+/* ================================================================
+   수익 계산기 — 월 예상 조회수 / 예상 RPM / CTR / CPC 만
+================================================================ */
 const REV_INPUTS=[
   {id:'views', label:'월 예상 조회수',    unit:'회', min:1000,  max:50000000, step:10000, val:100000, fmt:n=>n.toLocaleString()},
   {id:'rpm',   label:'예상 RPM',          unit:'원', min:100,   max:30000,    step:100,   val:2500,   fmt:n=>n.toLocaleString()},
@@ -808,9 +937,12 @@ function updateRevGauge(inp){
 }
 function calcRevenue(){
   const{views,rpm,ctr,cpc}=revVals;
+  /* RPM 기반 광고 수익 */
   const rpmRev=Math.round(views/1000*rpm);
+  /* CTR 기반 예상 클릭 수 × CPC */
   const ctrClicks=Math.round(views*(ctr/100));
   const cpcRev=Math.round(ctrClicks*cpc);
+  /* 월 수익 = RPM 수익 + CPC 수익 평균 */
   const monthly=Math.round((rpmRev+cpcRev)/2);
   const fmtW=n=>n.toLocaleString('ko-KR')+'원';
   document.getElementById('revResults').innerHTML=`
@@ -846,68 +978,70 @@ function genAiIdeas(){
   }).join('');
 }
 
-/* ── 유튜버 도구 ── */
+/* ================================================================
+   유튜버 도구
+================================================================ */
 const TOOLS_DATA={
   '영상편집':[
-    {name:'Vrew',           url:'https://vrew.voyagerx.com',                               desc:'AI 자막 자동 생성 영상 편집 툴.',tag:'freemium'},
-    {name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve', desc:'프로 수준 무료 영상 편집 소프트웨어.',tag:'free'},
-    {name:'Premiere Pro',   url:'https://www.adobe.com/kr/products/premiere.html',         desc:'어도비 프리미어 프로. 유튜버 표준 편집 툴.',tag:'paid'},
-    {name:'CapCut',         url:'https://www.capcut.com',                                  desc:'모바일·PC 지원 무료 편집 앱. 쇼츠 특화.',tag:'free'},
-    {name:'Final Cut Pro',  url:'https://www.apple.com/final-cut-pro',                    desc:'Mac 전용 프로급 편집 소프트웨어.',tag:'paid'},
-    {name:'iMovie',         url:'https://www.apple.com/imovie',                           desc:'Mac·iOS 기본 탑재 무료 편집 앱.',tag:'free'},
-    {name:'Clipchamp',      url:'https://clipchamp.com',                                  desc:'Microsoft 무료 브라우저 기반 편집기.',tag:'free'},
-    {name:'Filmora',        url:'https://filmora.wondershare.com',                        desc:'직관적 UI 입문·중급 편집 툴.',tag:'freemium'},
-    {name:'Adobe Express',  url:'https://www.adobe.com/express',                          desc:'어도비의 쉬운 영상·SNS 콘텐츠 제작 툴.',tag:'freemium'},
-    {name:'InShot',         url:'https://inshot.com',                                     desc:'모바일 전용 쇼츠·릴스 제작 앱.',tag:'freemium'},
+    {name:'Vrew',           url:'https://vrew.voyagerx.com',                              desc:'AI 자막 자동 생성 영상 편집 툴.',tag:'freemium'},
+    {name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve',desc:'프로 수준 무료 영상 편집 소프트웨어.',tag:'free'},
+    {name:'Premiere Pro',   url:'https://www.adobe.com/kr/products/premiere.html',        desc:'어도비 프리미어 프로. 유튜버 표준 편집 툴.',tag:'paid'},
+    {name:'CapCut',         url:'https://www.capcut.com',                                 desc:'모바일·PC 지원 무료 편집 앱. 쇼츠 특화.',tag:'free'},
+    {name:'Final Cut Pro',  url:'https://www.apple.com/final-cut-pro',                   desc:'Mac 전용 프로급 편집 소프트웨어.',tag:'paid'},
+    {name:'iMovie',         url:'https://www.apple.com/imovie',                          desc:'Mac·iOS 기본 탑재 무료 편집 앱.',tag:'free'},
+    {name:'Clipchamp',      url:'https://clipchamp.com',                                 desc:'Microsoft 무료 브라우저 기반 편집기.',tag:'free'},
+    {name:'Filmora',        url:'https://filmora.wondershare.com',                       desc:'직관적 UI 입문·중급 편집 툴.',tag:'freemium'},
+    {name:'Adobe Express',  url:'https://www.adobe.com/express',                         desc:'어도비의 쉬운 영상·SNS 콘텐츠 제작 툴.',tag:'freemium'},
+    {name:'InShot',         url:'https://inshot.com',                                    desc:'모바일 전용 쇼츠·릴스 제작 앱.',tag:'freemium'},
   ],
   '썸네일':[
-    {name:'Canva',         url:'https://www.canva.com',                                   desc:'드래그앤드롭 온라인 디자인 툴.',tag:'freemium'},
-    {name:'Photoshop',     url:'https://www.adobe.com/kr/products/photoshop.html',        desc:'전문가용 이미지 편집.',tag:'paid'},
-    {name:'Adobe Firefly', url:'https://firefly.adobe.com',                              desc:'AI 이미지 생성 툴.',tag:'freemium'},
-    {name:'Remove.bg',     url:'https://www.remove.bg',                                  desc:'AI 배경 제거 툴.',tag:'freemium'},
-    {name:'Snappa',        url:'https://snappa.com',                                     desc:'썸네일 전용 템플릿 디자인 툴.',tag:'freemium'},
-    {name:'Fotor',         url:'https://www.fotor.com',                                  desc:'AI 기반 이미지 편집 원스톱 툴.',tag:'freemium'},
-    {name:'PicsArt',       url:'https://picsart.com',                                    desc:'모바일 썸네일 제작 앱.',tag:'freemium'},
-    {name:'Pixlr',         url:'https://pixlr.com',                                      desc:'브라우저 기반 무료 포토샵 대체.',tag:'freemium'},
+    {name:'Canva',          url:'https://www.canva.com',                                  desc:'드래그앤드롭 온라인 디자인 툴.',tag:'freemium'},
+    {name:'Photoshop',      url:'https://www.adobe.com/kr/products/photoshop.html',       desc:'전문가용 이미지 편집.',tag:'paid'},
+    {name:'Adobe Firefly',  url:'https://firefly.adobe.com',                             desc:'AI 이미지 생성 툴.',tag:'freemium'},
+    {name:'Remove.bg',      url:'https://www.remove.bg',                                 desc:'AI 배경 제거 툴.',tag:'freemium'},
+    {name:'Snappa',         url:'https://snappa.com',                                    desc:'썸네일 전용 템플릿 디자인 툴.',tag:'freemium'},
+    {name:'Fotor',          url:'https://www.fotor.com',                                 desc:'AI 기반 이미지 편집 원스톱 툴.',tag:'freemium'},
+    {name:'PicsArt',        url:'https://picsart.com',                                   desc:'모바일 썸네일 제작 앱.',tag:'freemium'},
+    {name:'Pixlr',          url:'https://pixlr.com',                                     desc:'브라우저 기반 무료 포토샵 대체.',tag:'freemium'},
   ],
   '음향·음악':[
-    {name:'Audacity',      url:'https://www.audacityteam.org',                           desc:'무료 오픈소스 오디오 편집.',tag:'free'},
-    {name:'Adobe Audition',url:'https://www.adobe.com/kr/products/audition.html',        desc:'전문 오디오 편집.',tag:'paid'},
-    {name:'Epidemic Sound',url:'https://www.epidemicsound.com',                          desc:'저작권 프리 BGM 라이브러리.',tag:'paid'},
-    {name:'Artlist',       url:'https://artlist.io',                                     desc:'무제한 음악·효과음 라이선스.',tag:'paid'},
-    {name:'Pixabay Music', url:'https://pixabay.com/music',                              desc:'무료 CC0 음악 라이브러리.',tag:'free'},
-    {name:'YT 오디오 보관함',url:'https://studio.youtube.com',                            desc:'YouTube 스튜디오 무료 저작권 프리 음악.',tag:'free'},
-    {name:'AIVA',          url:'https://www.aiva.ai',                                    desc:'AI 작곡 플랫폼.',tag:'freemium'},
-    {name:'Suno AI',       url:'https://suno.com',                                       desc:'텍스트로 완성된 노래를 생성하는 AI.',tag:'freemium'},
+    {name:'Audacity',       url:'https://www.audacityteam.org',                          desc:'무료 오픈소스 오디오 편집.',tag:'free'},
+    {name:'Adobe Audition', url:'https://www.adobe.com/kr/products/audition.html',       desc:'전문 오디오 편집.',tag:'paid'},
+    {name:'Epidemic Sound', url:'https://www.epidemicsound.com',                         desc:'저작권 프리 BGM 라이브러리.',tag:'paid'},
+    {name:'Artlist',        url:'https://artlist.io',                                    desc:'무제한 음악·효과음 라이선스.',tag:'paid'},
+    {name:'Pixabay Music',  url:'https://pixabay.com/music',                             desc:'무료 CC0 음악 라이브러리.',tag:'free'},
+    {name:'YT 오디오 보관함',url:'https://studio.youtube.com',                           desc:'YouTube 스튜디오 무료 저작권 프리 음악.',tag:'free'},
+    {name:'AIVA',           url:'https://www.aiva.ai',                                   desc:'AI 작곡 플랫폼.',tag:'freemium'},
+    {name:'Suno AI',        url:'https://suno.com',                                      desc:'텍스트로 완성된 노래를 생성하는 AI.',tag:'freemium'},
   ],
   'AI 도구':[
-    {name:'ChatGPT',    url:'https://chat.openai.com',         desc:'스크립트·제목·설명란 작성 AI.',tag:'freemium'},
-    {name:'Claude',     url:'https://claude.ai',               desc:'긴 스크립트 작성 및 아이디어 발굴.',tag:'freemium'},
-    {name:'Runway',     url:'https://runwayml.com',            desc:'AI 영상 생성·편집.',tag:'freemium'},
-    {name:'ElevenLabs', url:'https://elevenlabs.io',           desc:'고품질 AI 음성 생성.',tag:'freemium'},
-    {name:'HeyGen',     url:'https://www.heygen.com',          desc:'AI 아바타 영상 자동 생성.',tag:'freemium'},
-    {name:'Synthesia',  url:'https://www.synthesia.io',        desc:'AI 아바타 영상 제작 플랫폼.',tag:'paid'},
-    {name:'Pictory',    url:'https://pictory.ai',              desc:'스크립트를 AI로 영상 변환.',tag:'freemium'},
-    {name:'Descript',   url:'https://www.descript.com',        desc:'텍스트 기반 영상 편집.',tag:'freemium'},
-    {name:'Opus Clip',  url:'https://www.opus.pro',            desc:'긴 영상을 AI가 쇼츠로 자동 분리.',tag:'freemium'},
-    {name:'Captions',   url:'https://www.captions.ai',         desc:'AI 자막·번역·편집 모바일 앱.',tag:'freemium'},
+    {name:'ChatGPT',        url:'https://chat.openai.com',                               desc:'스크립트·제목·설명란 작성 AI.',tag:'freemium'},
+    {name:'Claude',         url:'https://claude.ai',                                     desc:'긴 스크립트 작성 및 아이디어 발굴.',tag:'freemium'},
+    {name:'Runway',         url:'https://runwayml.com',                                  desc:'AI 영상 생성·편집.',tag:'freemium'},
+    {name:'ElevenLabs',     url:'https://elevenlabs.io',                                 desc:'고품질 AI 음성 생성.',tag:'freemium'},
+    {name:'HeyGen',         url:'https://www.heygen.com',                                desc:'AI 아바타 영상 자동 생성.',tag:'freemium'},
+    {name:'Synthesia',      url:'https://www.synthesia.io',                              desc:'AI 아바타 영상 제작 플랫폼.',tag:'paid'},
+    {name:'Pictory',        url:'https://pictory.ai',                                    desc:'스크립트를 AI로 영상 변환.',tag:'freemium'},
+    {name:'Descript',       url:'https://www.descript.com',                              desc:'텍스트 기반 영상 편집.',tag:'freemium'},
+    {name:'Opus Clip',      url:'https://www.opus.pro',                                  desc:'긴 영상을 AI가 쇼츠로 자동 분리.',tag:'freemium'},
+    {name:'Captions',       url:'https://www.captions.ai',                               desc:'AI 자막·번역·편집 모바일 앱.',tag:'freemium'},
   ],
   '방송·스트리밍':[
-    {name:'OBS Studio', url:'https://obsproject.com',                      desc:'무료 오픈소스 방송·녹화 소프트웨어.',tag:'free'},
-    {name:'Streamlabs', url:'https://streamlabs.com',                      desc:'OBS 기반 방송 툴 + 채팅봇 통합.',tag:'freemium'},
-    {name:'StreamYard', url:'https://streamyard.com',                      desc:'브라우저 기반 라이브 방송 툴.',tag:'freemium'},
-    {name:'Ecamm Live', url:'https://www.ecamm.com/mac/ecammlive',         desc:'Mac 전용 라이브 방송 소프트웨어.',tag:'paid'},
-    {name:'Restream',   url:'https://restream.io',                         desc:'다중 동시 방송 플랫폼.',tag:'freemium'},
+    {name:'OBS Studio',     url:'https://obsproject.com',                                desc:'무료 오픈소스 방송·녹화 소프트웨어.',tag:'free'},
+    {name:'Streamlabs',     url:'https://streamlabs.com',                                desc:'OBS 기반 방송 툴 + 채팅봇 통합.',tag:'freemium'},
+    {name:'StreamYard',     url:'https://streamyard.com',                                desc:'브라우저 기반 라이브 방송 툴.',tag:'freemium'},
+    {name:'Ecamm Live',     url:'https://www.ecamm.com/mac/ecammlive',                   desc:'Mac 전용 라이브 방송 소프트웨어.',tag:'paid'},
+    {name:'Restream',       url:'https://restream.io',                                   desc:'다중 동시 방송 플랫폼.',tag:'freemium'},
   ],
   '영상·이미지 소스':[
-    {name:'Pexels',      url:'https://www.pexels.com/videos',  desc:'무료 HD/4K 스톡 영상.',tag:'free'},
-    {name:'Pixabay',     url:'https://pixabay.com/videos',     desc:'CC0 라이선스 영상·이미지·음악.',tag:'free'},
-    {name:'Mixkit',      url:'https://mixkit.co',              desc:'무료 스톡 영상·애니메이션·음악.',tag:'free'},
-    {name:'Unsplash',    url:'https://unsplash.com',           desc:'고해상도 무료 사진 라이브러리.',tag:'free'},
-    {name:'Freepik',     url:'https://www.freepik.com',        desc:'무료 벡터·PSD·아이콘·이미지.',tag:'freemium'},
-    {name:'Storyblocks', url:'https://www.storyblocks.com',    desc:'구독제 스톡 영상·음악·이미지.',tag:'paid'},
-    {name:'Shutterstock',url:'https://www.shutterstock.com',   desc:'세계 최대 스톡 이미지·영상 플랫폼.',tag:'paid'},
-    {name:'Flaticon',    url:'https://www.flaticon.com',       desc:'수백만 개 무료 아이콘.',tag:'freemium'},
+    {name:'Pexels',         url:'https://www.pexels.com/videos',                         desc:'무료 HD/4K 스톡 영상.',tag:'free'},
+    {name:'Pixabay',        url:'https://pixabay.com/videos',                            desc:'CC0 라이선스 영상·이미지·음악.',tag:'free'},
+    {name:'Mixkit',         url:'https://mixkit.co',                                     desc:'무료 스톡 영상·애니메이션·음악.',tag:'free'},
+    {name:'Unsplash',       url:'https://unsplash.com',                                  desc:'고해상도 무료 사진 라이브러리.',tag:'free'},
+    {name:'Freepik',        url:'https://www.freepik.com',                               desc:'무료 벡터·PSD·아이콘·이미지.',tag:'freemium'},
+    {name:'Storyblocks',    url:'https://www.storyblocks.com',                           desc:'구독제 스톡 영상·음악·이미지.',tag:'paid'},
+    {name:'Shutterstock',   url:'https://www.shutterstock.com',                          desc:'세계 최대 스톡 이미지·영상 플랫폼.',tag:'paid'},
+    {name:'Flaticon',       url:'https://www.flaticon.com',                              desc:'수백만 개 무료 아이콘.',tag:'freemium'},
   ],
 };
 let currentToolCat=Object.keys(TOOLS_DATA)[0];
@@ -938,16 +1072,20 @@ function openToolModal(name,url,desc,tag){
   document.getElementById('toolModal').classList.add('open');
 }
 
-/* ── 장비 쇼핑 ── */
+/* ================================================================
+   장비 쇼핑
+================================================================ */
 const COUPANG_ID='YOUR_COUPANG_ID';
 const SHOP_CATS=[
-  {id:'camera', icon:'📷',label:'카메라',       desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠', color:'#ff6b35',keyword:'유튜브 카메라 미러리스',coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
-  {id:'mic',    icon:'🎙️',label:'마이크',       desc:'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크',color:'#a855f7',keyword:'유튜브 마이크 콘덴서',   coupangCatUrl:'https://www.coupang.com/np/categories/205258'},
-  {id:'light',  icon:'💡', label:'조명',        desc:'링라이트, 소프트박스, 스트림 패널 조명',   color:'#f59e0b',keyword:'유튜브 조명 링라이트',   coupangCatUrl:'https://www.coupang.com/np/categories/685718'},
-  {id:'editing',icon:'🖥️',label:'편집·스트리밍',desc:'캡처보드, 스트림덱, 고성능 편집용 주변기기',color:'#06b6d4',keyword:'유튜브 캡처보드 스트림덱',coupangCatUrl:'https://www.coupang.com/np/categories/194525'},
-  {id:'acc',    icon:'🎒', label:'액세서리',    desc:'삼각대, 짐벌, SD카드, 카메라 가방',        color:'#10b981',keyword:'유튜브 삼각대 짐벌',     coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+  {id:'camera', icon:'📷',label:'카메라',      desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠',  color:'#ff6b35',keyword:'유튜브 카메라 미러리스', coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+  {id:'mic',    icon:'🎙️',label:'마이크',      desc:'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크', color:'#a855f7',keyword:'유튜브 마이크 콘덴서',    coupangCatUrl:'https://www.coupang.com/np/categories/205258'},
+  {id:'light',  icon:'💡', label:'조명',       desc:'링라이트, 소프트박스, 스트림 패널 조명',    color:'#f59e0b',keyword:'유튜브 조명 링라이트',    coupangCatUrl:'https://www.coupang.com/np/categories/685718'},
+  {id:'editing',icon:'🖥️',label:'편집·스트리밍',desc:'캡처보드, 스트림덱, 고성능 편집용 주변기기',color:'#06b6d4',keyword:'유튜브 캡처보드 스트림덱', coupangCatUrl:'https://www.coupang.com/np/categories/194525'},
+  {id:'acc',    icon:'🎒', label:'액세서리',   desc:'삼각대, 짐벌, SD카드, 카메라 가방',         color:'#10b981',keyword:'유튜브 삼각대 짐벌',      coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
 ];
-function coupangCatLink(cat){return(cat.coupangCatUrl||'https://www.coupang.com/np/search?q='+encodeURIComponent(cat.keyword)+'&channel=user')+'?subId='+COUPANG_ID;}
+function coupangCatLink(cat){
+  return(cat.coupangCatUrl||'https://www.coupang.com/np/search?q='+encodeURIComponent(cat.keyword)+'&channel=user')+'?subId='+COUPANG_ID;
+}
 function buildShop(){
   const section=document.getElementById('section-shop');if(!section)return;
   section.innerHTML=`
@@ -968,23 +1106,23 @@ function buildShop(){
 }
 
 /* ── 초기화 ── */
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded',()=>{
   renderHeaderLogo();
 
-  document.querySelectorAll('.hot-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeType = btn.dataset.type;
-      shortsPage = 0; longsPage = 0; searchShortsPage = 0; searchLongsPage = 0;
-      document.querySelectorAll('.hot-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.hot-tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      activeType=btn.dataset.type;
+      shortsPage=0;longsPage=0;searchShortsPage=0;searchLongsPage=0;
+      document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
-      hotSearchMode ? renderSearchResult() : renderHotSplit();
+      hotSearchMode?renderSearchResult():renderHotSplit();
     });
   });
-  document.getElementById('modal-close-btn').addEventListener('click', closeVideoModal);
-  document.getElementById('video-modal').addEventListener('click', function(e) { if (e.target === this) closeVideoModal(); });
-  document.getElementById('toolModal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+  document.getElementById('modal-close-btn').addEventListener('click',closeVideoModal);
+  document.getElementById('video-modal').addEventListener('click',function(e){if(e.target===this)closeVideoModal();});
+  document.getElementById('toolModal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
 
-  sectionLoaded['hot'] = true;
+  sectionLoaded['hot']=true;
   loadHot();
 });
 </script>
