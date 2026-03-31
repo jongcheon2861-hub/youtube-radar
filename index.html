@@ -273,10 +273,17 @@
 <script>
 /* ================================================================
    YTAnalytics Pro
-   ★ 변경사항: 쇼츠/롱폼 재생시간 기준 변경
-      - 쇼츠: 180초(3분) 이하
-      - 롱폼: 180초(3분) 초과
-      - SHORTS_MAX_SEC 상수 하나만 바꾸면 전체 적용되도록 통일
+   ★ 핵심 변경: 분류 로직 통일
+   ─────────────────────────────────────────────────────────────
+   [쇼츠 조건]  재생시간 ≤ 180초  AND  쇼츠 키워드 있음
+   [롱폼 조건]  재생시간 > 180초  OR   (≤180초이지만 쇼츠 키워드 없음)
+
+   쇼츠 키워드 감지 위치: 제목, 태그 배열, 설명 첫 300자
+   감지 키워드: 'shorts', '#shorts', 'short', '#short', 'shortvideo',
+               'shortsvideo', 'reels', 'tiktok', '쇼츠', '숏츠',
+               '#쇼츠', '#숏츠'
+   ─────────────────────────────────────────────────────────────
+   인기영상 탭(isShorts)과 키워드검색(smartClassify) 모두 동일 규칙 적용
 ================================================================ */
 
 const API_KEYS = [
@@ -284,8 +291,15 @@ const API_KEYS = [
 ];
 let keyIdx = 0;
 
-/* ★ 쇼츠 최대 재생시간 기준 (초) – 이 값 하나로 전체 필터 통일 */
+/* ★ 기준 상수 */
 const SHORTS_MAX_SEC = 180;
+
+/* ★ 쇼츠 키워드 목록 */
+const SHORTS_KEYWORDS = [
+  'shorts','#shorts','short','#short',
+  'shortvideo','shortsvideo','reels','tiktok',
+  '쇼츠','숏츠','#쇼츠','#숏츠'
+];
 
 let hotSearchMode = false, hotSearchQuery = '';
 let searchShorts = [], searchLongs = [];
@@ -356,56 +370,32 @@ function hideGlobalError(){
 }
 
 /* ================================================================
-   ★ 쇼츠/롱폼 판별 함수 – SHORTS_MAX_SEC(180초) 기준으로 통일
-
-   isShorts()          – 인기영상 탭용 (느슨, 빠름)
-   strictShortsFilter()– 키워드 검색용 (엄격: 시간 + 롱폼 키워드 제외)
-   strictLongsFilter() – 키워드 검색용 (180초 초과만 통과)
+   ★ 핵심 분류 함수
+   hasShortKeyword(item): 제목·태그·설명에 쇼츠 키워드 존재 여부
+   isShorts(item)       : 180초 이하 AND 쇼츠 키워드 있음  → 쇼츠
+   isLongs(item)        : 위 조건 불만족 (180초 초과 OR 키워드 없음) → 롱폼
 ================================================================ */
+function hasShortKeyword(item){
+  const sn   = item.snippet || {};
+  const title = (sn.title       || '').toLowerCase();
+  const desc  = (sn.description || '').slice(0, 300).toLowerCase();
+  const tags  = (sn.tags        || []).map(t => t.toLowerCase());
+  const haystack = title + ' ' + desc + ' ' + tags.join(' ');
+  return SHORTS_KEYWORDS.some(kw => haystack.includes(kw));
+}
 
-/* 인기영상 탭: 180초 이하 */
+/* 쇼츠: 180초 이하 AND 쇼츠 키워드 있음 */
 function isShorts(item){
-  const s = parseDurSec(item.contentDetails?.duration||'');
-  return s > 0 && s <= SHORTS_MAX_SEC;
+  const sec = parseDurSec(item.contentDetails?.duration || '');
+  return sec > 0 && sec <= SHORTS_MAX_SEC && hasShortKeyword(item);
 }
 
-/* 키워드 검색 쇼츠 필터: 180초 이하 + 명백한 롱폼 키워드 제외 */
-function strictShortsFilter(items){
-  return items.filter(item=>{
-    const sec = parseDurSec(item.contentDetails?.duration||'');
-
-    /* ① 180초 초과는 즉시 제외 */
-    if(sec <= 0 || sec > SHORTS_MAX_SEC) return false;
-
-    const tags  = (item.snippet?.tags||[]).map(t=>t.toLowerCase());
-    const title = (item.snippet?.title||'').toLowerCase();
-    const desc  = (item.snippet?.description||'').toLowerCase();
-
-    /* ② #shorts 태그 있으면 확실한 쇼츠 */
-    const hasShortTag =
-      tags.some(t=> t==='shorts' || t==='#shorts' || t==='short') ||
-      title.includes('#shorts') ||
-      desc.includes('#shorts');
-    if(hasShortTag) return true;
-
-    /* ③ 명백한 롱폼 키워드 포함 시 제외 */
-    const longFormKeywords = [
-      'full version','풀버전','full episode','전체영상',
-      'live stream','라이브','스트리밍'
-    ];
-    if(longFormKeywords.some(kw=>title.includes(kw))) return false;
-
-    /* ④ 180초 이하 & 롱폼 키워드 없음 → 쇼츠 허용 */
-    return true;
-  });
-}
-
-/* 키워드 검색 롱폼 필터: 180초 초과만 통과 */
-function strictLongsFilter(items){
-  return items.filter(item=>{
-    const sec = parseDurSec(item.contentDetails?.duration||'');
-    return sec > SHORTS_MAX_SEC;
-  });
+/* 롱폼: 180초 초과 OR (180초 이하이지만 쇼츠 키워드 없음) */
+function isLongs(item){
+  const sec = parseDurSec(item.contentDetails?.duration || '');
+  if(sec <= 0) return false;           // 시간 정보 없는 영상 제외
+  if(sec > SHORTS_MAX_SEC) return true; // 180초 초과 → 무조건 롱폼
+  return !hasShortKeyword(item);        // 180초 이하이지만 쇼츠 키워드 없음 → 롱폼
 }
 
 /* ================================================================
@@ -424,11 +414,10 @@ function initModalAd(){
    모달
 ================================================================ */
 function closeVideoModal(){
-  const overlay=document.getElementById('video-modal');
   const playerWrap=document.getElementById('player-wrap');
   const iframe=playerWrap.querySelector('iframe');
   if(iframe){ iframe.src=''; playerWrap.removeChild(iframe); }
-  overlay.classList.remove('open');
+  document.getElementById('video-modal').classList.remove('open');
 }
 
 async function openVideoModal(vid){
@@ -455,13 +444,10 @@ async function openVideoModal(vid){
     iframe.allowFullscreen=true;
     iframe.loading='lazy';
     playerWrap.appendChild(iframe);
-    const views=st.viewCount!=null?fmt(st.viewCount):'-';
-    const likes=st.likeCount!=null?fmt(st.likeCount):'-';
-    const comments=st.commentCount!=null?fmt(st.commentCount):'-';
     statsEl.innerHTML=`
-      <div class="modal-stat"><div class="modal-stat-value">${views}</div><div class="modal-stat-label">조회수</div></div>
-      <div class="modal-stat"><div class="modal-stat-value">${likes}</div><div class="modal-stat-label">좋아요</div></div>
-      <div class="modal-stat"><div class="modal-stat-value">${comments}</div><div class="modal-stat-label">댓글</div></div>
+      <div class="modal-stat"><div class="modal-stat-value">${st.viewCount!=null?fmt(st.viewCount):'-'}</div><div class="modal-stat-label">조회수</div></div>
+      <div class="modal-stat"><div class="modal-stat-value">${st.likeCount!=null?fmt(st.likeCount):'-'}</div><div class="modal-stat-label">좋아요</div></div>
+      <div class="modal-stat"><div class="modal-stat-value">${st.commentCount!=null?fmt(st.commentCount):'-'}</div><div class="modal-stat-label">댓글</div></div>
       <div class="modal-stat"><div class="modal-stat-value">${fmtDur(cd.duration)}</div><div class="modal-stat-label">길이</div></div>`;
     linkEl.href=`https://www.youtube.com/watch?v=${vid}`;
   }catch(e){
@@ -557,6 +543,7 @@ function showHotError(msg){
 
 /* ================================================================
    키워드 검색
+   ★ 모든 검색 결과를 한 번에 받아 isShorts/isLongs 로 분류
 ================================================================ */
 async function doHotSearch(){
   const q=document.getElementById('hot-kw-input').value.trim();
@@ -567,51 +554,50 @@ async function doHotSearch(){
   document.getElementById('search-kw-label').textContent=`"${q}"`;
   document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('active');b.style.opacity='0.4';});
   showHotLoader();
+
   try{
-    /* 쇼츠 검색 */
-    const sr=await apiFetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
-      `&videoDuration=short&regionCode=KR&relevanceLanguage=ko`+
-      `&q=${encodeURIComponent(q)}&maxResults=50&order=viewCount`
-    );
-    const sIds=(sr.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    if(sIds.length){
-      const d=await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${sIds.join(',')}`
+    /* API 요청: short / medium / long 세 구간 동시 수집 */
+    const fetchIds = async (durParam) => {
+      const r = await apiFetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
+        `&videoDuration=${durParam}&regionCode=KR&relevanceLanguage=ko`+
+        `&q=${encodeURIComponent(q)}&maxResults=50&order=viewCount`
       );
-      /* ★ strictShortsFilter: 180초 이하 */
-      searchShorts = strictShortsFilter(d.items||[]);
+      return (r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
+    };
+
+    const [sIds, mIds, lIds] = await Promise.all([
+      fetchIds('short'),
+      fetchIds('medium'),
+      fetchIds('long'),
+    ]);
+
+    /* 중복 제거 후 영상 상세 정보 일괄 조회 */
+    const allIds = [...new Set([...sIds, ...mIds, ...lIds])];
+    const collected = [];
+
+    /* API URL 길이 제한으로 50개씩 분할 요청 */
+    for(let i=0; i<allIds.length; i+=50){
+      const chunk = allIds.slice(i, i+50);
+      try{
+        const d = await apiFetch(
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${chunk.join(',')}`
+        );
+        (d.items||[]).forEach(v=>collected.push(v));
+      }catch(e){ console.warn('[search detail]', e.message); }
     }
-    /* 롱폼 검색 (medium) */
-    const mr=await apiFetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
-      `&videoDuration=medium&regionCode=KR&relevanceLanguage=ko`+
-      `&q=${encodeURIComponent(q)}&maxResults=25&order=viewCount`
-    );
-    const mIds=(mr.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    if(mIds.length){
-      const d=await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${mIds.join(',')}`
-      );
-      /* ★ strictLongsFilter: 180초 초과 */
-      searchLongs = strictLongsFilter(d.items||[]);
-    }
-    /* 롱폼 검색 (long) */
-    const lr=await apiFetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
-      `&videoDuration=long&regionCode=KR&relevanceLanguage=ko`+
-      `&q=${encodeURIComponent(q)}&maxResults=25&order=viewCount`
-    );
-    const lIds=(lr.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    if(lIds.length){
-      const d=await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${lIds.join(',')}`
-      );
-      /* ★ strictLongsFilter: 180초 초과 + 중복 제거 */
-      strictLongsFilter(d.items||[]).forEach(v=>{
-        if(!searchLongs.find(l=>l.id===v.id)) searchLongs.push(v);
-      });
-    }
+
+    /* ★ isShorts / isLongs 로 분류 */
+    collected.forEach(item=>{
+      if(isShorts(item))      searchShorts.push(item);
+      else if(isLongs(item))  searchLongs.push(item);
+    });
+
+    /* 바이럴 점수 정렬 */
+    const byViral = arr => arr.sort((a,b)=>viralOf(b)-viralOf(a));
+    searchShorts = byViral(searchShorts);
+    searchLongs  = byViral(searchLongs);
+
     hideHotLoader();
     renderSearchResult();
   }catch(e){
@@ -658,7 +644,7 @@ function clearHotSearch(){
 }
 
 /* ================================================================
-   인기영상 로드
+   인기영상 로드 – isShorts / isLongs 동일 규칙 적용
 ================================================================ */
 async function loadHot(){
   buildCatTabs(); showHotLoader();
@@ -673,16 +659,21 @@ async function loadHot(){
 async function loadUntilFull(cat){
   const cfg=CAT_CFG[cat]; if(!cfg)return;
   let shorts=[],longs=[];
+
   try{
     const d=await apiFetch(
       `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics`+
       `&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50`+
       (cfg.categoryId?`&videoCategoryId=${cfg.categoryId}`:'')
     );
-    /* ★ isShorts(): 180초 이하 */
-    (d.items||[]).forEach(it=>(isShorts(it)?shorts:longs).push(it));
+    /* ★ isShorts / isLongs 로 분류 */
+    (d.items||[]).forEach(it=>{
+      if(isShorts(it))     shorts.push(it);
+      else if(isLongs(it)) longs.push(it);
+    });
   }catch(e){ console.warn('[mostPopular]',cat,e.message); }
 
+  /* 쇼츠 보완 */
   if(shorts.length<12){
     for(const kw of cfg.shortsKw||[]){
       if(shorts.length>=24)break;
@@ -695,12 +686,13 @@ async function loadUntilFull(cat){
         const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
         if(ids.length){
           const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);
-          /* ★ isShorts(): 180초 이하 */
           (d.items||[]).forEach(it=>{ if(isShorts(it)&&!shorts.find(s=>s.id===it.id)) shorts.push(it); });
         }
       }catch(e){ console.warn('[쇼츠보완]',kw,e.message); }
     }
   }
+
+  /* 롱폼 보완 */
   if(longs.length<12){
     for(const kw of cfg.keywords||[]){
       if(longs.length>=24)break;
@@ -713,12 +705,12 @@ async function loadUntilFull(cat){
         const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
         if(ids.length){
           const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);
-          /* ★ !isShorts(): 180초 초과 */
-          (d.items||[]).forEach(it=>{ if(!isShorts(it)&&!longs.find(l=>l.id===it.id)) longs.push(it); });
+          (d.items||[]).forEach(it=>{ if(isLongs(it)&&!longs.find(l=>l.id===it.id)) longs.push(it); });
         }
       }catch(e){ console.warn('[롱폼보완]',kw,e.message); }
     }
   }
+
   const byViral=arr=>arr.slice().sort((a,b)=>viralOf(b)-viralOf(a));
   catShortsCache[cat]=byViral(shorts);
   catLongCache[cat]  =byViral(longs);
