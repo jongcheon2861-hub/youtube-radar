@@ -15,7 +15,6 @@
       --text-primary:#e8e8f0; --text-secondary:#9898b0; --text-muted:#606078;
       --border:#2a2a3e; --gradient:linear-gradient(135deg,#ff4757,#ff6b81);
       --shadow:0 8px 32px rgba(0,0,0,0.4); --radius:12px; --radius-sm:8px;
-      /* 장비쇼핑 카드용 surface 변수 (기존 테마에 맞게 매핑) */
       --surface: var(--bg-secondary);
     }
     *{margin:0;padding:0;box-sizing:border-box}
@@ -109,32 +108,159 @@
     .ai-idea-card:hover{border-color:var(--accent3);transform:translateY(-1px)}
     .ai-idea-title{font-size:14px;font-weight:600;margin-bottom:6px}
     .ai-idea-desc{font-size:12px;color:var(--text-secondary)}
-    .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-    .tool-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:20px;cursor:pointer;transition:all 0.2s;text-align:center}
-    .tool-card:hover{border-color:var(--accent4);transform:translateY(-2px)}
-    .tool-icon{font-size:36px;margin-bottom:10px}
-    .tool-name{font-size:15px;font-weight:700;margin-bottom:6px}
-    .tool-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
-    .modal-overlay.open{display:flex}
-    .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
-    .modal-ads-top{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center}
-    .modal-ads-top ins{display:block;width:100%;min-height:90px}
-    .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-    .modal-title{font-size:17px;font-weight:700;line-height:1.4;flex:1}
-    .modal-close{background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
-    .modal-close:hover{color:var(--text-primary);background:var(--bg-hover)}
-    .player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:var(--radius-sm);overflow:hidden}
-    .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:var(--radius-sm)}
-    .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .modal-stat{background:var(--bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--border);padding:12px;text-align:center}
-    .modal-stat-value{font-size:18px;font-weight:700;color:var(--accent)}
-    .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
-    .modal-yt-btn{display:inline-block;padding:8px 22px;background:var(--accent);color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
-    @media(max-width:700px){.modal{width:100%;max-width:100%;padding:14px 14px 20px}.modal-stats{grid-template-columns:repeat(2,1fr)}}
 
     /* ══════════════════════════════════════════
-       Section: 장비 쇼핑
+       도구 섹션 스타일
+    ══════════════════════════════════════════ */
+    .tool-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .tool-tab {
+      padding: 7px 18px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tool-tab:hover { border-color: var(--accent4); color: var(--accent4); }
+    .tool-tab.active {
+      background: rgba(30,144,255,0.15);
+      border-color: var(--accent4);
+      color: var(--accent4);
+    }
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .tool-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .tool-card:hover {
+      border-color: var(--accent4);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(30,144,255,0.15);
+    }
+    .tool-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: contain;
+      background: var(--bg-card);
+      padding: 4px;
+    }
+    .tool-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .tool-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.3px;
+    }
+    .tb-free     { background: rgba(46,213,115,0.15); color: var(--accent3); border: 1px solid rgba(46,213,115,0.3); }
+    .tb-paid     { background: rgba(255,71,87,0.15);  color: var(--accent);  border: 1px solid rgba(255,71,87,0.3); }
+    .tb-freemium { background: rgba(255,165,2,0.15);  color: var(--accent2); border: 1px solid rgba(255,165,2,0.3); }
+
+    /* 도구 모달 */
+    .tool-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .tool-modal-overlay.open { display: flex; }
+    .tool-modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+    }
+    .tool-modal-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .tool-modal-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      object-fit: contain;
+      background: var(--bg-secondary);
+      padding: 6px;
+      flex-shrink: 0;
+    }
+    .tool-modal-name {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .tool-modal-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .tool-modal-link {
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--accent4);
+      color: #fff;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+    .tool-modal-link:hover { opacity: 0.85; }
+    .tool-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+    .tool-modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+    /* ══════════════════════════════════════════
+       장비 쇼핑 섹션
     ══════════════════════════════════════════ */
     .shop-notice {
       font-size: 0.75rem;
@@ -188,9 +314,7 @@
       filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
       transition: transform 0.22s ease;
     }
-    .shop-cat-card:hover .shop-cat-icon {
-      transform: scale(1.15) rotate(-4deg);
-    }
+    .shop-cat-card:hover .shop-cat-icon { transform: scale(1.15) rotate(-4deg); }
     .shop-cat-label {
       font-size: 1.05rem;
       font-weight: 700;
@@ -220,6 +344,29 @@
       .shop-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .shop-cat-card { padding: 20px 10px 16px; }
       .shop-cat-icon { font-size: 2.2rem; }
+      .tool-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    }
+
+    /* 기존 모달 */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
+    .modal-ads-top{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .modal-ads-top ins{display:block;width:100%;min-height:90px}
+    .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .modal-title{font-size:17px;font-weight:700;line-height:1.4;flex:1}
+    .modal-close{background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
+    .modal-close:hover{color:var(--text-primary);background:var(--bg-hover)}
+    .player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:var(--radius-sm);overflow:hidden}
+    .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:var(--radius-sm)}
+    .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .modal-stat{background:var(--bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--border);padding:12px;text-align:center}
+    .modal-stat-value{font-size:18px;font-weight:700;color:var(--accent)}
+    .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
+    .modal-yt-btn{display:inline-block;padding:8px 22px;background:var(--accent);color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
+    @media(max-width:700px){
+      .modal{width:100%;max-width:100%;padding:14px 14px 20px}
+      .modal-stats{grid-template-columns:repeat(2,1fr)}
     }
   </style>
 </head>
@@ -248,6 +395,8 @@
   </nav>
 
   <main class="main-content">
+
+    <!-- ── 인기영상 ── -->
     <section class="section-page active" id="section-hot">
       <div class="section-header">
         <div class="section-title">🔥 인기영상</div>
@@ -278,6 +427,7 @@
       <button class="more-btn" id="longs-more-btn" onclick="loadMoreLongs()">롱폼 더 보기 ▼</button>
     </section>
 
+    <!-- ── 채널 분석 ── -->
     <section class="section-page" id="section-channel">
       <div class="section-header">
         <div class="section-title">📊 채널 분석</div>
@@ -290,6 +440,7 @@
       <div id="channel-result"></div>
     </section>
 
+    <!-- ── 수익 계산기 ── -->
     <section class="section-page" id="section-revenue">
       <div class="section-header">
         <div class="section-title">💰 수익 계산기</div>
@@ -306,6 +457,7 @@
       <div id="rev-result" class="result-grid"></div>
     </section>
 
+    <!-- ── AI 아이디어 ── -->
     <section class="section-page" id="section-ai">
       <div class="section-header">
         <div class="section-title">🤖 AI 아이디어</div>
@@ -321,12 +473,14 @@
       <div id="ai-ideas-list" class="ai-idea-list"></div>
     </section>
 
+    <!-- ── 유튜버 도구 ── -->
     <section class="section-page" id="section-tools">
       <div class="section-header">
         <div class="section-title">🛠️ 유튜버 도구</div>
-        <div class="section-subtitle">채널 성장을 위한 필수 도구 모음</div>
+        <div class="section-subtitle">카테고리별 채널 성장 필수 도구 모음</div>
       </div>
-      <div class="tools-grid" id="tools-grid"></div>
+      <div class="tool-tabs" id="toolTabs"></div>
+      <div class="tool-grid" id="toolGrid"></div>
     </section>
 
     <!-- ── 장비 쇼핑 ── -->
@@ -337,6 +491,7 @@
   </main>
 </div>
 
+<!-- ── 영상 모달 ── -->
 <div class="modal-overlay" id="video-modal">
   <div class="modal">
     <div class="modal-ads-top" id="modal-ads-top">
@@ -354,6 +509,19 @@
     <div class="player-wrap" id="player-wrap"></div>
     <div class="modal-stats" id="modal-stats"></div>
     <a id="modal-yt-link" href="#" target="_blank" rel="noopener" class="modal-yt-btn">▶ YouTube에서 보기</a>
+  </div>
+</div>
+
+<!-- ── 도구 상세 모달 ── -->
+<div class="tool-modal-overlay" id="toolModal">
+  <div class="tool-modal">
+    <button class="tool-modal-close" onclick="document.getElementById('toolModal').classList.remove('open')">✕</button>
+    <div class="tool-modal-header">
+      <img class="tool-modal-icon" id="tmIcon" src="" alt="" />
+      <div class="tool-modal-name" id="tmName"></div>
+    </div>
+    <div class="tool-modal-desc" id="tmDesc"></div>
+    <a class="tool-modal-link" id="tmLink" href="#" target="_blank" rel="noopener">🔗 사이트 바로가기</a>
   </div>
 </div>
 
@@ -504,7 +672,7 @@ function hardFilterLongs(arr){
 }
 
 /* ── 카테고리 매칭 ── */
-function matchesCat(item, cat){
+function matchesCat(item,cat){
   const cfg=CAT_CFG[cat];
   if(!cfg)return true;
   const sn=item.snippet||{};
@@ -609,7 +777,7 @@ function showSec(id){
   if(!sectionLoaded[id]){
     sectionLoaded[id]=true;
     if(id==='hot')loadHot();
-    if(id==='tools')buildTools();
+    if(id==='tools')renderTools();
     if(id==='shop')buildShop();
   }
 }
@@ -677,8 +845,8 @@ async function loadUntilFull(cat){
       );
       (d.items||[]).forEach(it=>{
         if(!matchesCat(it,cat))return;
-        if(isShorts(it))       shorts.push(it);
-        else if(isLongs(it))   longs.push(it);
+        if(isShorts(it))     shorts.push(it);
+        else if(isLongs(it)) longs.push(it);
       });
     }catch(e){console.warn('[mostPopular]',cat,e.message);}
   }
@@ -761,8 +929,8 @@ async function doHotSearch(){
       }catch(e){console.warn('[search detail]',e.message);}
     }
     collected.forEach(item=>{
-      if(isShorts(item))       searchShorts.push(item);
-      else if(isLongs(item))   searchLongs.push(item);
+      if(isShorts(item))     searchShorts.push(item);
+      else if(isLongs(item)) searchLongs.push(item);
     });
     const byViral=arr=>arr.sort((a,b)=>viralOf(b)-viralOf(a));
     searchShorts=byViral(searchShorts);
@@ -957,24 +1125,112 @@ function genAiIdeas(){
   }).join('');
 }
 
-/* ── 도구 ── */
-const TOOLS_DATA=[
-  {icon:'🎨',name:'Canva',          desc:'썸네일 & 그래픽 디자인',   url:'https://canva.com'},
-  {icon:'📝',name:'TubeBuddy',      desc:'SEO 최적화 & 키워드 분석', url:'https://tubebuddy.com'},
-  {icon:'🎵',name:'Epidemic Sound', desc:'저작권 프리 배경음악',      url:'https://epidemicsound.com'},
-  {icon:'✂️',name:'CapCut',         desc:'모바일/PC 영상 편집',       url:'https://capcut.com'},
-  {icon:'📊',name:'Social Blade',   desc:'채널 통계 & 성장 추적',     url:'https://socialblade.com'},
-  {icon:'🔍',name:'VidIQ',          desc:'경쟁 분석 & 트렌드 탐색',   url:'https://vidiq.com'},
-  {icon:'🎤',name:'Descript',       desc:'AI 음성 편집 & 자막',       url:'https://descript.com'},
-  {icon:'🌐',name:'Later',          desc:'SNS 예약 & 분석',           url:'https://later.com'},
-];
-function buildTools(){
-  document.getElementById('tools-grid').innerHTML=TOOLS_DATA.map(t=>`
-    <div class="tool-card" onclick="window.open('${t.url}','_blank')">
-      <div class="tool-icon">${t.icon}</div>
-      <div class="tool-name">${t.name}</div>
-      <div class="tool-desc">${t.desc}</div>
-    </div>`).join('');
+/* ================================================================
+   유튜버 도구 — 카테고리 탭 + 파비콘 카드 + 상세 모달
+================================================================ */
+const TOOLS_DATA = {
+  '영상편집':[
+    {name:'Vrew',          url:'https://vrew.voyagerx.com',                           desc:'AI 자막 자동 생성 영상 편집 툴. 음성 인식으로 자막을 자동으로 달아줍니다.',tag:'freemium'},
+    {name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve',desc:'프로 수준 무료 영상 편집 소프트웨어. 색보정·사운드·VFX 올인원.',tag:'free'},
+    {name:'Premiere Pro',  url:'https://www.adobe.com/kr/products/premiere.html',     desc:'어도비 프리미어 프로. 유튜버 및 방송국 표준 편집 툴.',tag:'paid'},
+    {name:'CapCut',        url:'https://www.capcut.com',                              desc:'모바일·PC 모두 지원하는 무료 편집 앱. 쇼츠/릴스 특화.',tag:'free'},
+    {name:'Final Cut Pro', url:'https://www.apple.com/final-cut-pro',                desc:'Mac 전용 프로급 편집 소프트웨어. 렌더링 속도 최강.',tag:'paid'},
+    {name:'iMovie',        url:'https://www.apple.com/imovie',                       desc:'Mac·iOS 기본 탑재 무료 편집 앱. 입문자에게 최적.',tag:'free'},
+    {name:'Clipchamp',     url:'https://clipchamp.com',                              desc:'Microsoft 제공 무료 브라우저 기반 영상 편집기. Windows 기본 탑재.',tag:'free'},
+    {name:'Filmora',       url:'https://filmora.wondershare.com',                    desc:'직관적 UI의 입문·중급 영상 편집 툴. 다양한 이펙트 내장.',tag:'freemium'},
+    {name:'Adobe Express', url:'https://www.adobe.com/express',                      desc:'어도비의 쉬운 영상·이미지·SNS 콘텐츠 제작 툴.',tag:'freemium'},
+    {name:'InShot',        url:'https://inshot.com',                                 desc:'모바일 전용 인기 편집 앱. 쇼츠·릴스 제작에 최적화.',tag:'freemium'},
+  ],
+  '썸네일':[
+    {name:'Canva',         url:'https://www.canva.com',                              desc:'드래그 앤 드롭으로 썸네일·채널아트를 만드는 온라인 디자인 툴.',tag:'freemium'},
+    {name:'Photoshop',     url:'https://www.adobe.com/kr/products/photoshop.html',   desc:'전문가용 이미지 편집. 섬세한 합성·리터칭 가능.',tag:'paid'},
+    {name:'Adobe Firefly', url:'https://firefly.adobe.com',                         desc:'AI 이미지 생성 툴. 텍스트로 원하는 이미지를 즉시 생성.',tag:'freemium'},
+    {name:'Remove.bg',     url:'https://www.remove.bg',                             desc:'AI 배경 제거 툴. 썸네일 인물 배경 제거에 필수.',tag:'freemium'},
+    {name:'Snappa',        url:'https://snappa.com',                                desc:'유튜브 썸네일 전용 템플릿이 풍부한 온라인 디자인 툴.',tag:'freemium'},
+    {name:'Fotor',         url:'https://www.fotor.com',                             desc:'AI 기반 이미지 편집·배경제거·업스케일링 원스톱 툴.',tag:'freemium'},
+    {name:'PicsArt',       url:'https://picsart.com',                               desc:'AI 스티커·배경·효과 편집 앱. 모바일 썸네일 제작에 인기.',tag:'freemium'},
+    {name:'Pixlr',         url:'https://pixlr.com',                                 desc:'브라우저 기반 무료 포토샵 대체 툴. 설치 없이 사용 가능.',tag:'freemium'},
+  ],
+  '음향·음악':[
+    {name:'Audacity',      url:'https://www.audacityteam.org',                      desc:'무료 오픈소스 오디오 편집. 잡음 제거·이퀄라이저·믹싱 지원.',tag:'free'},
+    {name:'Adobe Audition',url:'https://www.adobe.com/kr/products/audition.html',   desc:'전문 오디오 편집. 노이즈 리덕션 품질이 탁월합니다.',tag:'paid'},
+    {name:'Epidemic Sound',url:'https://www.epidemicsound.com',                     desc:'저작권 프리 BGM 라이브러리. 유튜브 수익화 안전.',tag:'paid'},
+    {name:'Artlist',       url:'https://artlist.io',                                desc:'무제한 음악·효과음 라이선스. 연간 구독제 인기 플랫폼.',tag:'paid'},
+    {name:'Pixabay Music', url:'https://pixabay.com/music',                         desc:'무료 CC0 음악 라이브러리. 상업 이용 가능.',tag:'free'},
+    {name:'YT 오디오 보관함',url:'https://studio.youtube.com',                     desc:'YouTube 스튜디오 내 무료 저작권 프리 음악·효과음.',tag:'free'},
+    {name:'AIVA',          url:'https://www.aiva.ai',                               desc:'AI 작곡 플랫폼. 원하는 분위기의 BGM을 자동으로 생성.',tag:'freemium'},
+    {name:'Suno AI',       url:'https://suno.com',                                  desc:'텍스트 입력만으로 완성된 노래를 생성하는 AI 음악 툴.',tag:'freemium'},
+  ],
+  'AI 도구':[
+    {name:'ChatGPT',       url:'https://chat.openai.com',                           desc:'스크립트·제목·설명란 작성에 활용할 수 있는 AI 챗봇.',tag:'freemium'},
+    {name:'Claude',        url:'https://claude.ai',                                desc:'Anthropic AI. 긴 스크립트 작성 및 아이디어 발굴에 탁월.',tag:'freemium'},
+    {name:'Runway',        url:'https://runwayml.com',                             desc:'AI 영상 생성·편집. 텍스트→영상, 배경 제거, 인페인팅.',tag:'freemium'},
+    {name:'ElevenLabs',    url:'https://elevenlabs.io',                            desc:'고품질 AI 음성 생성. 내레이션 영상 제작에 필수.',tag:'freemium'},
+    {name:'HeyGen',        url:'https://www.heygen.com',                           desc:'AI 아바타로 영상을 자동 생성. 다국어 더빙·번역 지원.',tag:'freemium'},
+    {name:'Synthesia',     url:'https://www.synthesia.io',                         desc:'AI 아바타 영상 제작 플랫폼. 텍스트→영상 변환.',tag:'paid'},
+    {name:'Pictory',       url:'https://pictory.ai',                               desc:'블로그·스크립트를 AI로 영상으로 자동 변환.',tag:'freemium'},
+    {name:'Descript',      url:'https://www.descript.com',                         desc:'텍스트 기반 영상 편집. 대본 수정하듯 영상을 편집.',tag:'freemium'},
+    {name:'Opus Clip',     url:'https://www.opus.pro',                             desc:'긴 영상을 AI가 자동으로 숏클립·쇼츠로 분리 편집.',tag:'freemium'},
+    {name:'Captions',      url:'https://www.captions.ai',                          desc:'AI 자막·번역·영상 편집 모바일 앱. 쇼츠 제작 특화.',tag:'freemium'},
+  ],
+  '방송·스트리밍':[
+    {name:'OBS Studio',    url:'https://obsproject.com',                           desc:'무료 오픈소스 방송·녹화 소프트웨어. 라이브 스트리밍 표준.',tag:'free'},
+    {name:'Streamlabs',    url:'https://streamlabs.com',                           desc:'OBS 기반 방송 툴 + 경고창·채팅봇 통합. 초보자 추천.',tag:'freemium'},
+    {name:'StreamYard',    url:'https://streamyard.com',                           desc:'브라우저 기반 라이브 방송 툴. 게스트 초대·자막 삽입.',tag:'freemium'},
+    {name:'Ecamm Live',    url:'https://www.ecamm.com/mac/ecammlive',              desc:'Mac 전용 인기 라이브 방송 소프트웨어.',tag:'paid'},
+    {name:'Restream',      url:'https://restream.io',                              desc:'유튜브·트위치 등 다중 동시 방송 플랫폼.',tag:'freemium'},
+  ],
+  '영상·이미지 소스':[
+    {name:'Pexels',        url:'https://www.pexels.com/videos',                    desc:'무료 HD/4K 스톡 영상. 상업 이용 무료.',tag:'free'},
+    {name:'Pixabay',       url:'https://pixabay.com/videos',                       desc:'CC0 라이선스 영상·이미지·음악.',tag:'free'},
+    {name:'Mixkit',        url:'https://mixkit.co',                                desc:'무료 스톡 영상·애니메이션·음악. 유튜브 영상 내 무료 사용.',tag:'free'},
+    {name:'Unsplash',      url:'https://unsplash.com',                             desc:'고해상도 무료 사진 라이브러리. 상업 사용 가능.',tag:'free'},
+    {name:'Freepik',       url:'https://www.freepik.com',                          desc:'무료 벡터·PSD·아이콘·이미지. 썸네일 제작에 유용.',tag:'freemium'},
+    {name:'Storyblocks',   url:'https://www.storyblocks.com',                      desc:'구독제 스톡 영상·음악·이미지 라이브러리.',tag:'paid'},
+    {name:'Shutterstock',  url:'https://www.shutterstock.com',                     desc:'세계 최대 스톡 이미지·영상 플랫폼.',tag:'paid'},
+    {name:'Flaticon',      url:'https://www.flaticon.com',                         desc:'수백만 개 무료 아이콘. 썸네일·인포그래픽 활용.',tag:'freemium'},
+  ],
+};
+let currentToolCat = Object.keys(TOOLS_DATA)[0];
+
+function renderTools(){
+  /* 탭 렌더 */
+  document.getElementById('toolTabs').innerHTML = Object.keys(TOOLS_DATA).map(k =>
+    `<button class="tool-tab${k === currentToolCat ? ' active' : ''}"
+             onclick="selectToolCat('${k}')">${k}</button>`
+  ).join('');
+
+  /* 카드 렌더 */
+  const tools = TOOLS_DATA[currentToolCat] || [];
+  document.getElementById('toolGrid').innerHTML = tools.map(t => {
+    const domain = new URL(t.url).hostname;
+    const icon   = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+    const esc    = s => s.replace(/'/g, "\\'");
+    return `
+      <div class="tool-card"
+           onclick="openToolModal('${esc(t.name)}','${t.url}','${esc(t.desc)}','${t.tag}')">
+        <img class="tool-icon" src="${icon}" alt="${t.name}"
+             onerror="this.style.background='var(--bg-card)'" />
+        <div class="tool-name">${t.name}</div>
+        <span class="tool-badge tb-${t.tag}">
+          ${t.tag === 'free' ? '무료' : t.tag === 'paid' ? '유료' : '무료+유료'}
+        </span>
+      </div>`;
+  }).join('');
+}
+
+function selectToolCat(cat){
+  currentToolCat = cat;
+  renderTools();
+}
+
+function openToolModal(name, url, desc, tag){
+  const domain = new URL(url).hostname;
+  document.getElementById('tmIcon').src = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+  document.getElementById('tmName').textContent = name;
+  document.getElementById('tmDesc').textContent = desc;
+  document.getElementById('tmLink').href = url;
+  document.getElementById('toolModal').classList.add('open');
 }
 
 /* ================================================================
@@ -983,64 +1239,21 @@ function buildTools(){
 const COUPANG_ID = 'YOUR_COUPANG_ID'; // ← 본인 파트너스 ID로 교체
 
 const SHOP_CATS = [
-  {
-    id: 'camera',
-    icon: '📷',
-    label: '카메라',
-    desc: '유튜브·브이로그용 미러리스, 액션캠, 웹캠',
-    color: '#ff6b35',
-    keyword: '유튜브 카메라 미러리스',
-    coupangCatUrl: 'https://www.coupang.com/np/categories/393760'
-  },
-  {
-    id: 'mic',
-    icon: '🎙️',
-    label: '마이크',
-    desc: 'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크',
-    color: '#a855f7',
-    keyword: '유튜브 마이크 콘덴서',
-    coupangCatUrl: 'https://www.coupang.com/np/categories/205258'
-  },
-  {
-    id: 'light',
-    icon: '💡',
-    label: '조명',
-    desc: '링라이트, 소프트박스, 스트림 패널 조명',
-    color: '#f59e0b',
-    keyword: '유튜브 조명 링라이트',
-    coupangCatUrl: 'https://www.coupang.com/np/categories/685718'
-  },
-  {
-    id: 'editing',
-    icon: '🖥️',
-    label: '편집·스트리밍',
-    desc: '캡처보드, 스트림덱, 고성능 편집용 주변기기',
-    color: '#06b6d4',
-    keyword: '유튜브 캡처보드 스트림덱',
-    coupangCatUrl: 'https://www.coupang.com/np/categories/194525'
-  },
-  {
-    id: 'acc',
-    icon: '🎒',
-    label: '액세서리',
-    desc: '삼각대, 짐벌, SD카드, 카메라 가방',
-    color: '#10b981',
-    keyword: '유튜브 삼각대 짐벌',
-    coupangCatUrl: 'https://www.coupang.com/np/categories/393760'
-  }
+  {id:'camera', icon:'📷', label:'카메라',     desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠', color:'#ff6b35', keyword:'유튜브 카메라 미러리스', coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+  {id:'mic',    icon:'🎙️', label:'마이크',     desc:'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크', color:'#a855f7', keyword:'유튜브 마이크 콘덴서',    coupangCatUrl:'https://www.coupang.com/np/categories/205258'},
+  {id:'light',  icon:'💡', label:'조명',       desc:'링라이트, 소프트박스, 스트림 패널 조명',    color:'#f59e0b', keyword:'유튜브 조명 링라이트',    coupangCatUrl:'https://www.coupang.com/np/categories/685718'},
+  {id:'editing',icon:'🖥️', label:'편집·스트리밍',desc:'캡처보드, 스트림덱, 고성능 편집용 주변기기',color:'#06b6d4',keyword:'유튜브 캡처보드 스트림덱', coupangCatUrl:'https://www.coupang.com/np/categories/194525'},
+  {id:'acc',    icon:'🎒', label:'액세서리',   desc:'삼각대, 짐벌, SD카드, 카메라 가방',         color:'#10b981', keyword:'유튜브 삼각대 짐벌',      coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
 ];
 
-function coupangCatLink(cat) {
-  if (cat.coupangCatUrl)
-    return cat.coupangCatUrl + '?subId=' + COUPANG_ID;
-  return 'https://www.coupang.com/np/search?q='
-    + encodeURIComponent(cat.keyword)
-    + '&channel=user&subId=' + COUPANG_ID;
+function coupangCatLink(cat){
+  if(cat.coupangCatUrl) return cat.coupangCatUrl + '?subId=' + COUPANG_ID;
+  return 'https://www.coupang.com/np/search?q=' + encodeURIComponent(cat.keyword) + '&channel=user&subId=' + COUPANG_ID;
 }
 
-function buildShop() {
+function buildShop(){
   const section = document.getElementById('section-shop');
-  if (!section) return;
+  if(!section) return;
   section.innerHTML = `
     <div class="section-header">
       <div class="section-title">🛒 장비 쇼핑</div>
@@ -1066,21 +1279,28 @@ function buildShop() {
 }
 
 /* ── 초기화 ── */
-window.addEventListener('DOMContentLoaded',()=>{
-  document.querySelectorAll('.hot-tab-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      activeType=btn.dataset.type;
-      shortsPage=0;longsPage=0;searchShortsPage=0;searchLongsPage=0;
-      document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.remove('active'));
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.hot-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeType = btn.dataset.type;
+      shortsPage = 0; longsPage = 0; searchShortsPage = 0; searchLongsPage = 0;
+      document.querySelectorAll('.hot-tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      hotSearchMode?renderSearchResult():renderHotSplit();
+      hotSearchMode ? renderSearchResult() : renderHotSplit();
     });
   });
-  document.getElementById('modal-close-btn').addEventListener('click',closeVideoModal);
-  document.getElementById('video-modal').addEventListener('click',function(e){
-    if(e.target===this)closeVideoModal();
+
+  document.getElementById('modal-close-btn').addEventListener('click', closeVideoModal);
+  document.getElementById('video-modal').addEventListener('click', function(e){
+    if(e.target === this) closeVideoModal();
   });
-  sectionLoaded['hot']=true;
+
+  /* 도구 모달 배경 클릭 닫기 */
+  document.getElementById('toolModal').addEventListener('click', function(e){
+    if(e.target === this) this.classList.remove('open');
+  });
+
+  sectionLoaded['hot'] = true;
   loadHot();
 });
 </script>
