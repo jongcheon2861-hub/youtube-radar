@@ -6,7 +6,7 @@
   <title>ALGO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Cinzel:wght@900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Cinzel:wght@900&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-AF8853448" crossorigin="anonymous"></script>
 
   <!-- ══ 파비콘 생성 ══ -->
@@ -15,53 +15,43 @@
     const c = document.createElement('canvas');
     c.width = c.height = outputSize;
     const ctx = c.getContext('2d');
-
-    /* ── 1. 둥근 모서리 클리핑 (iOS 스타일) ── */
     const r = outputSize * 0.22;
     ctx.beginPath();
     ctx.moveTo(r, 0);
     ctx.lineTo(outputSize - r, 0);
-    ctx.arcTo(outputSize, 0,        outputSize, r,              r);
+    ctx.arcTo(outputSize, 0, outputSize, r, r);
     ctx.lineTo(outputSize, outputSize - r);
     ctx.arcTo(outputSize, outputSize, outputSize - r, outputSize, r);
     ctx.lineTo(r, outputSize);
-    ctx.arcTo(0, outputSize, 0,     outputSize - r,             r);
+    ctx.arcTo(0, outputSize, 0, outputSize - r, r);
     ctx.lineTo(0, r);
-    ctx.arcTo(0, 0, r, 0,                                       r);
+    ctx.arcTo(0, 0, r, 0, r);
     ctx.closePath();
     ctx.clip();
-
-    /* ── 2. 보라 → 핫핑크 대각선 배경 ── */
     const bg = ctx.createLinearGradient(0, 0, outputSize, outputSize);
-    bg.addColorStop(0,    '#7b2ff7');
+    bg.addColorStop(0, '#7b2ff7');
     bg.addColorStop(0.55, '#a044f5');
-    bg.addColorStop(1,    '#e040aa');
+    bg.addColorStop(1, '#e040aa');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, outputSize, outputSize);
-
-    /* ── 3. 흰색 A (serif, 굵게, 그림자) ── */
     const fontSize = Math.round(outputSize * 0.63);
-    ctx.shadowColor   = 'rgba(0,0,0,0.25)';
-    ctx.shadowBlur    = outputSize * 0.06;
+    ctx.shadowColor = 'rgba(0,0,0,0.25)';
+    ctx.shadowBlur = outputSize * 0.06;
     ctx.shadowOffsetY = outputSize * 0.04;
-    ctx.fillStyle     = '#ffffff';
-    ctx.font          = `700 ${fontSize}px Georgia, "Times New Roman", serif`;
-    ctx.textAlign     = 'center';
-    ctx.textBaseline  = 'middle';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `700 ${fontSize}px Georgia, "Times New Roman", serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText('A', outputSize / 2, outputSize / 2 - outputSize * 0.01);
-
     return c;
   }
-
   window.addEventListener('DOMContentLoaded', () => {
     document.fonts.ready.then(() => {
       [16, 32, 64, 256].forEach(sz => {
         const canvas = buildFavicon(sz);
-        const link   = document.createElement('link');
-        link.rel   = 'icon';
-        link.type  = 'image/png';
-        link.sizes = `${sz}x${sz}`;
-        link.href  = canvas.toDataURL('image/png');
+        const link = document.createElement('link');
+        link.rel = 'icon'; link.type = 'image/png'; link.sizes = `${sz}x${sz}`;
+        link.href = canvas.toDataURL('image/png');
         document.head.appendChild(link);
       });
     });
@@ -69,6 +59,9 @@
   </script>
 
   <style>
+    /* ══════════════════════════════════════════════════
+       ALGO 기본 CSS 변수 & 리셋
+    ══════════════════════════════════════════════════ */
     :root {
       --bg-primary:#0f0f1a; --bg-secondary:#1a1a2e; --bg-card:#1e1e2e; --bg-hover:#252535;
       --accent:#ff4757; --accent2:#ffa502; --accent3:#2ed573; --accent4:#1e90ff;
@@ -83,17 +76,11 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 
+    /* ══ 헤더 ══ */
     .header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,0,22,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(124,58,237,0.25);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
     .logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none}
-    .logo-canvas-wrap{
-      width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;
-      box-shadow:0 0 10px rgba(123,47,247,0.5),0 0 20px rgba(224,64,170,0.3);
-      animation:logoGlow 4s ease-in-out infinite alternate;
-    }
-    @keyframes logoGlow{
-      0%  {box-shadow:0 0 8px rgba(123,47,247,0.4), 0 0 16px rgba(224,64,170,0.2)}
-      100%{box-shadow:0 0 20px rgba(123,47,247,0.9),0 0 36px rgba(224,64,170,0.6)}
-    }
+    .logo-canvas-wrap{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 0 10px rgba(123,47,247,0.5),0 0 20px rgba(224,64,170,0.3);animation:logoGlow 4s ease-in-out infinite alternate;}
+    @keyframes logoGlow{0%{box-shadow:0 0 8px rgba(123,47,247,0.4),0 0 16px rgba(224,64,170,0.2)}100%{box-shadow:0 0 20px rgba(123,47,247,0.9),0 0 36px rgba(224,64,170,0.6)}}
     #header-logo-canvas{display:block;width:40px;height:40px}
     .logo-text-wrap{display:flex;flex-direction:column;line-height:1}
     .logo-algo{font-family:'Cinzel',serif;font-weight:900;font-size:22px;letter-spacing:2px;line-height:1;background:linear-gradient(135deg,#ffe49a 0%,#f0c96a 25%,#e879a0 55%,#a855f7 80%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(240,201,106,0.5))}
@@ -102,6 +89,7 @@
     .api-status.error{background:rgba(255,71,87,0.15);color:var(--accent);border-color:rgba(255,71,87,0.3)}
     #global-error-banner{display:none;position:fixed;top:60px;left:0;right:0;z-index:99;background:rgba(255,71,87,0.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:500;text-align:center}
 
+    /* ══ 레이아웃 ══ */
     .app-layout{display:flex;padding-top:60px;min-height:100vh}
     .sidebar{width:220px;background:linear-gradient(180deg,rgba(26,10,46,0.98) 0%,rgba(26,26,46,0.98) 100%);border-right:1px solid rgba(124,58,237,0.2);padding:20px 12px;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto}
     .nav-section-title{font-size:11px;font-weight:600;color:var(--algo-violet);opacity:0.6;text-transform:uppercase;letter-spacing:1px;padding:0 8px 8px;margin-top:16px}
@@ -109,7 +97,6 @@
     .nav-item:hover{background:rgba(124,58,237,0.12);color:var(--algo-gold)}
     .nav-item.active{background:rgba(124,58,237,0.18);color:var(--algo-gold);border-left:2px solid var(--algo-gold)}
     .nav-item .nav-icon{font-size:18px;width:24px;text-align:center}
-
     .main-content{margin-left:220px;flex:1;padding:24px;min-width:0}
     .section-page{display:none}
     .section-page.active{display:block}
@@ -117,6 +104,7 @@
     .section-title{font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px}
     .section-subtitle{font-size:14px;color:var(--text-secondary);margin-top:6px}
 
+    /* ══ 인기영상 ══ */
     .hot-search-box{display:flex;gap:10px;margin-bottom:16px}
     .hot-search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
     .hot-search-input:focus{border-color:var(--algo-violet)}
@@ -155,6 +143,7 @@
     .no-data-icon{font-size:48px;margin-bottom:12px}
     .error-card{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:var(--radius);padding:20px;color:var(--accent)}
 
+    /* ══ 채널 검색 (공통) ══ */
     .channel-search-box{display:flex;gap:10px;margin-bottom:24px}
     .search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
     .search-input:focus{border-color:var(--algo-violet)}
@@ -170,16 +159,17 @@
     .stat-value{font-size:22px;font-weight:700;color:var(--algo-gold)}
     .stat-label{font-size:12px;color:var(--text-secondary);margin-top:4px}
 
+    /* ══ 수익 계산기 ══ */
     .rev-wrap{display:flex;flex-direction:column;gap:16px}
     .rev-input-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;transition:border-color 0.2s}
     .rev-input-card:hover{border-color:rgba(124,58,237,0.4)}
     .rev-label{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px}
     .rev-gauge-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-    .rev-gauge-btn{width:44px;height:44px;min-width:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:1.3rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;user-select:none;}
+    .rev-gauge-btn{width:44px;height:44px;min-width:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:1.3rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;user-select:none}
     .rev-gauge-btn:hover{background:var(--algo-purple);border-color:var(--algo-violet);color:#fff}
     .rev-gauge-btn:active{transform:scale(0.93)}
-    .rev-gauge-track{flex:1;height:28px;border-radius:14px;background:rgba(255,255,255,0.07);border:1px solid var(--border);position:relative;cursor:pointer;overflow:hidden;touch-action:none;}
-    .rev-gauge-fill{height:100%;border-radius:14px;background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));transition:width 0.08s;pointer-events:none;}
+    .rev-gauge-track{flex:1;height:28px;border-radius:14px;background:rgba(255,255,255,0.07);border:1px solid var(--border);position:relative;cursor:pointer;overflow:hidden;touch-action:none}
+    .rev-gauge-fill{height:100%;border-radius:14px;background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));transition:width 0.08s;pointer-events:none}
     .rev-gauge-val{font-size:14px;font-weight:700;color:var(--algo-gold);text-align:right}
     .rev-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:4px}
     .rev-result-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;transition:border-color 0.2s}
@@ -188,6 +178,7 @@
     .rev-result-lbl{font-size:12px;color:var(--text-secondary)}
     .rev-tip{margin-top:8px;padding:12px 16px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);text-align:center}
 
+    /* ══ AI 아이디어 ══ */
     .ai-form{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:24px}
     .ai-idea-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
     .ai-idea-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:16px;cursor:pointer;transition:all 0.2s}
@@ -201,6 +192,7 @@
     .form-input:focus{border-color:var(--algo-violet)}
     .calc-btn{padding:12px 28px;background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700}
 
+    /* ══ 유튜버 도구 ══ */
     .tool-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
     .tool-tab{padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:all 0.2s}
     .tool-tab:hover{border-color:var(--algo-violet);color:var(--algo-violet)}
@@ -211,8 +203,8 @@
     .tool-icon{width:48px;height:48px;border-radius:12px;object-fit:contain;background:var(--bg-card);padding:4px}
     .tool-name{font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.3}
     .tool-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.3px}
-    .tb-free    {background:rgba(46,213,115,0.15);color:var(--accent3);border:1px solid rgba(46,213,115,0.3)}
-    .tb-paid    {background:rgba(255,71,87,0.15); color:var(--accent); border:1px solid rgba(255,71,87,0.3)}
+    .tb-free{background:rgba(46,213,115,0.15);color:var(--accent3);border:1px solid rgba(46,213,115,0.3)}
+    .tb-paid{background:rgba(255,71,87,0.15);color:var(--accent);border:1px solid rgba(255,71,87,0.3)}
     .tb-freemium{background:rgba(240,201,106,0.15);color:var(--algo-gold);border:1px solid rgba(240,201,106,0.3)}
     .tool-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;padding:20px}
     .tool-modal-overlay.open{display:flex}
@@ -226,6 +218,7 @@
     .tool-modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1}
     .tool-modal-close:hover{background:var(--bg-hover);color:var(--text-primary)}
 
+    /* ══ 장비 쇼핑 ══ */
     .shop-notice{font-size:0.75rem;color:var(--text-secondary);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:20px;text-align:center}
     .shop-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
     .shop-cat-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px 16px 22px;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;text-decoration:none;cursor:pointer;transition:transform 0.22s ease,box-shadow 0.22s ease,border-color 0.22s ease;position:relative;overflow:hidden;text-align:center}
@@ -239,6 +232,7 @@
     .shop-cat-cta{margin-top:6px;font-size:0.82rem;font-weight:600;color:var(--cat-color);background:rgba(255,255,255,0.06);border:1px solid var(--cat-color);border-radius:20px;padding:5px 16px;transition:background 0.18s ease,color 0.18s ease}
     .shop-cat-card:hover .shop-cat-cta{background:var(--cat-color);color:#fff}
 
+    /* ══ 영상 모달 ══ */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     .modal-overlay.open{display:flex}
     .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid rgba(124,58,237,0.25);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
@@ -256,6 +250,430 @@
     .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
     .modal-yt-btn{display:inline-block;padding:8px 22px;background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
 
+    /* ══════════════════════════════════════════════════
+       3D 레벨 카드 CSS (채널 분석 섹션 전용)
+    ══════════════════════════════════════════════════ */
+    .algo-channel-wrap{
+      background:transparent;
+      padding:0;
+    }
+    .algo-channel-intro{
+      display:flex;flex-direction:column;gap:6px;
+      margin-bottom:32px;
+      padding:20px 24px;
+      background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(168,85,247,0.06));
+      border:1px solid rgba(124,58,237,0.25);
+      border-radius:var(--radius);
+    }
+    .algo-channel-intro h3{font-size:16px;font-weight:700;color:var(--algo-gold)}
+    .algo-channel-intro p{font-size:13px;color:var(--text-secondary);line-height:1.7}
+
+    /* 카드 그리드 */
+    .algo-cards-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+      gap:90px 40px;
+      padding:40px 20px 60px;
+    }
+
+    /* 카드 씬 */
+    .algo-card-scene{
+      width:230px;height:340px;perspective:900px;
+      position:relative;cursor:pointer;margin:auto;
+    }
+    .algo-card-tilt{
+      position:absolute;inset:0;transform-style:preserve-3d;
+      transform:rotateX(0deg) rotateY(0deg);
+      transition:transform .1s ease;will-change:transform;
+    }
+    .algo-card-frame{
+      position:absolute;inset:-3px;border-radius:21px;z-index:1;pointer-events:none;
+    }
+    .algo-card-frame::after{
+      content:'';position:absolute;inset:2px;border-radius:19px;
+      background:var(--bg-primary);
+    }
+
+    /* 빔 */
+    .algo-beam-container{
+      position:absolute;inset:-3px;border-radius:21px;overflow:hidden;
+      z-index:2;pointer-events:none;
+    }
+    .algo-beam-ring{
+      position:absolute;width:400%;height:400%;
+      top:50%;left:50%;margin-top:-200%;margin-left:-200%;
+      animation:algoBeamSpin var(--beam-speed,3s) linear infinite;
+      transform-origin:center center;
+    }
+    @keyframes algoBeamSpin{from{rotate:0deg;}to{rotate:360deg;}}
+
+    /* 카드 바디 */
+    .algo-card-body{
+      position:absolute;inset:0;border-radius:18px;z-index:3;
+      transition:box-shadow .3s ease;
+    }
+    .algo-card-face{
+      position:absolute;inset:0;border-radius:18px;overflow:hidden;
+    }
+    .algo-card-face::before{
+      content:'';position:absolute;inset:0;border-radius:18px;
+      background:repeating-linear-gradient(-45deg,transparent 0px,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);
+      pointer-events:none;z-index:1;
+    }
+    .algo-card-shine{
+      position:absolute;inset:0;border-radius:18px;
+      background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+                 linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%);
+      pointer-events:none;z-index:5;mix-blend-mode:screen;transition:background .08s ease;
+    }
+    .algo-card-top-band{
+      position:absolute;top:0;left:0;right:0;height:44%;
+      border-radius:18px 18px 0 0;z-index:2;pointer-events:none;
+    }
+    .algo-card-bot-band{
+      position:absolute;bottom:0;left:0;right:0;height:40%;
+      border-radius:0 0 18px 18px;z-index:2;pointer-events:none;
+    }
+
+    /* 헤더 */
+    .algo-card-header{
+      position:absolute;top:0;left:0;right:0;
+      padding:13px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;
+      z-index:10;
+    }
+    .algo-card-lv-label{
+      font-size:11px;font-weight:900;letter-spacing:.08em;
+      padding:3px 10px;border-radius:7px;
+      border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);
+      color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);backdrop-filter:blur(4px);
+    }
+    .algo-card-badge{
+      color:#fff;padding:4px 11px;border-radius:8px;
+      font-size:10px;font-weight:900;letter-spacing:.05em;
+      box-shadow:0 2px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.2);
+    }
+
+    /* 파티클 */
+    .algo-card-bokeh{
+      position:absolute;inset:0;z-index:3;pointer-events:none;
+      overflow:hidden;border-radius:18px;
+    }
+    .algo-bokeh-dot{
+      position:absolute;border-radius:50%;
+      filter:blur(var(--bblur,5px));opacity:var(--bop,.35);
+      animation:algoBokehDrift var(--bdur,7s) ease-in-out infinite;
+      animation-delay:var(--bdel,0s);
+    }
+    @keyframes algoBokehDrift{
+      0%,100%{transform:translate(0,0) scale(1);}
+      25%{transform:translate(7px,-9px) scale(1.12);}
+      50%{transform:translate(-6px,7px) scale(.91);}
+      75%{transform:translate(9px,4px) scale(1.06);}
+    }
+    .algo-card-sparkles{
+      position:absolute;inset:0;z-index:4;pointer-events:none;
+      overflow:hidden;border-radius:18px;
+    }
+    .algo-sparkle-dot{
+      position:absolute;font-size:var(--ssz,11px);
+      animation:algoSparklePop var(--sdur,2.2s) ease-in-out infinite;
+      animation-delay:var(--sdel,0s);
+    }
+    @keyframes algoSparklePop{
+      0%,100%{opacity:.08;transform:scale(.45) rotate(-12deg);}
+      40%{opacity:1;transform:scale(1.25) rotate(12deg);}
+      65%{opacity:.75;transform:scale(1.05) rotate(5deg);}
+    }
+
+    /* 메인 점수 */
+    .algo-card-main-wrap{
+      position:absolute;top:37%;left:50%;transform:translate(-50%,-50%);
+      z-index:8;display:flex;flex-direction:column;align-items:center;
+      width:100%;text-align:center;
+    }
+    .algo-card-main-icon{
+      font-size:2.4rem;margin-bottom:4px;
+      animation:algoIconHover 3.5s ease-in-out infinite;
+    }
+    @keyframes algoIconHover{
+      0%,100%{transform:translateY(0) rotateY(0deg);}
+      30%{transform:translateY(-5px) rotateY(9deg);}
+      70%{transform:translateY(-2px) rotateY(-6deg);}
+    }
+    .algo-card-score{
+      font-size:2.6rem;font-weight:900;line-height:1;
+      letter-spacing:-0.02em;margin-bottom:2px;
+    }
+    .algo-card-score-label{
+      font-size:9px;font-weight:700;color:rgba(255,255,255,.6);
+      letter-spacing:.1em;margin-bottom:4px;text-transform:uppercase;
+    }
+    .algo-card-trend{
+      font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;
+      background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);
+      backdrop-filter:blur(4px);
+    }
+
+    /* 핵심 지표 */
+    .algo-card-metrics-mini{
+      position:absolute;bottom:75px;left:14px;right:14px;
+      display:flex;justify-content:space-between;z-index:10;gap:4px;
+    }
+    .algo-mini-metric{
+      flex:1;display:flex;flex-direction:column;align-items:center;
+      background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);
+      border-radius:8px;padding:5px 2px;backdrop-filter:blur(4px);
+      transition:transform .2s ease;
+    }
+    .algo-mini-metric:hover{transform:translateY(-2px);}
+    .algo-metric-icon{font-size:11px;margin-bottom:2px;opacity:0.9;}
+    .algo-metric-val{font-size:10px;font-weight:800;color:#fff;line-height:1;}
+    .algo-metric-name{font-size:7px;color:rgba(255,255,255,.5);margin-top:2px;letter-spacing:0.05em;}
+    .algo-status-good{color:#66ffdd !important;}
+    .algo-status-warn{color:#ffaa44 !important;}
+    .algo-status-danger{color:#ff6680 !important;}
+
+    /* 비네트 & XP 바 */
+    .algo-card-vignette{
+      position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;
+      background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);
+    }
+    .algo-card-xp-wrap{
+      position:absolute;bottom:42px;left:14px;right:14px;z-index:10;
+    }
+    .algo-card-xp-label{
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;
+    }
+    .algo-xp-title{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.5);}
+    .algo-xp-range{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);}
+    .algo-xp-bar-bg{
+      width:100%;height:5px;border-radius:4px;
+      background:rgba(255,255,255,.1);overflow:hidden;position:relative;
+    }
+    .algo-xp-bar-fill{
+      height:100%;border-radius:4px;position:relative;transition:width .6s ease;
+    }
+    .algo-xp-bar-fill::after{
+      content:'';position:absolute;top:0;left:0;right:0;bottom:0;
+      background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);
+      animation:algoXpShine 2s linear infinite;
+    }
+    @keyframes algoXpShine{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
+
+    /* 푸터 */
+    .algo-card-footer{
+      position:absolute;bottom:0;left:0;right:0;padding:0 14px;
+      display:flex;justify-content:space-between;align-items:center;
+      height:36px;z-index:10;border-radius:0 0 18px 18px;
+      border-top:1px solid rgba(255,255,255,.15);
+    }
+    .algo-footer-meta{
+      font-size:9px;color:rgba(255,255,255,.6);
+      letter-spacing:0.02em;display:flex;align-items:center;gap:4px;
+    }
+    .algo-footer-rank{
+      font-size:10px;font-weight:800;color:#fff;
+      background:rgba(0,0,0,.3);padding:3px 8px;border-radius:6px;
+      border:1px solid rgba(255,255,255,.15);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    /* 글로우 효과 */
+    .algo-card-scene::before,.algo-card-scene::after{
+      content:'';position:absolute;left:50%;transform:translateX(-50%);
+      width:60%;border-radius:50%;pointer-events:none;z-index:0;
+    }
+    .algo-card-scene::before{
+      top:-18px;height:36px;filter:blur(14px);
+      animation:algoTopGlow 3s ease-in-out infinite;
+    }
+    .algo-card-scene::after{
+      bottom:-18px;height:36px;filter:blur(14px);
+      animation:algoBotGlow 3s ease-in-out infinite;
+    }
+    @keyframes algoTopGlow{
+      0%,100%{opacity:.55;transform:translateX(-50%) scaleX(1);}
+      50%{opacity:.88;transform:translateX(-50%) scaleX(1.14);}
+    }
+    @keyframes algoBotGlow{
+      0%,100%{opacity:.50;transform:translateX(-50%) scaleX(1);}
+      50%{opacity:.82;transform:translateX(-50%) scaleX(1.12);}
+    }
+    @keyframes algoFogPulse{
+      0%,100%{opacity:.55;transform:scale(1);}
+      50%{opacity:.88;transform:scale(1.07);}
+    }
+    @keyframes algoLevelShift{
+      0%,100%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+    }
+    @keyframes algoMaxLvPulse{
+      from{text-shadow:0 0 8px rgba(160,80,255,.8);}
+      to{text-shadow:0 0 16px rgba(220,150,255,1);}
+    }
+    @keyframes algoMaxGlow{
+      0%,100%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 70px rgba(123,47,255,.58),0 0 0 1px rgba(192,132,252,.45);}
+      50%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 100px rgba(150,80,255,.75),0 0 0 1px rgba(220,160,255,.65);}
+    }
+    @keyframes algoMaxNamePulse{
+      from{text-shadow:0 0 14px rgba(160,80,255,.8);}
+      to{text-shadow:0 0 26px rgba(220,150,255,1);}
+    }
+    @keyframes algoMaxXpShine{
+      0%{background-position:0% 50%;}100%{background-position:200% 50%;}
+    }
+
+    /* ─── 레벨별 테마 (LV1~LV9, MAX) ─── */
+    /* LV1 아이스 블루 */
+    .algo-card-scene[data-lv="1"]::before,.algo-card-scene[data-lv="1"]::after{background:radial-gradient(ellipse,rgba(180,230,255,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="1"] .algo-card-lv-label{color:#b0e8ff;border-color:rgba(128,208,240,.45);text-shadow:0 0 8px rgba(128,208,240,.8);}
+    .algo-card-scene[data-lv="1"] .algo-card-frame{background:linear-gradient(135deg,#0a1a2e,#2a6080,#80d0f0,#ffffff,#80d0f0,#2a6080,#0a1a2e);background-size:300% 300%;animation:algoLevelShift 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="1"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1a4060 2%,#3a90c0 4%,#90dff8 5.5%,#ffffff 6.5%,#90dff8 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="1"] .algo-card-body{background:linear-gradient(160deg,#060f18 0%,#04090f 55%,#060f18 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(128,208,240,.35),0 0 0 1px rgba(128,208,240,.38);}
+    .algo-card-scene[data-lv="1"] .algo-card-top-band{background:linear-gradient(180deg,rgba(128,208,240,.45) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="1"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(128,208,240,.38) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="1"] .algo-card-score{color:#b0e8ff;text-shadow:0 0 14px rgba(128,208,240,.9),0 0 32px rgba(100,180,220,.6);}
+    .algo-card-scene[data-lv="1"] .algo-card-trend{color:#80d0f0;}
+    .algo-card-scene[data-lv="1"] .algo-card-badge{background:linear-gradient(135deg,#1a4060,#3a90c0);}
+    .algo-card-scene[data-lv="1"] .algo-card-footer{background:linear-gradient(135deg,#06101c 0%,#0a1a2a 100%);}
+    .algo-card-scene[data-lv="1"] .algo-xp-bar-fill{background:linear-gradient(90deg,#1a4060,#3a90c0,#90dff8);box-shadow:0 0 6px rgba(128,208,240,.7);}
+
+    /* LV2 스틸 블루 */
+    .algo-card-scene[data-lv="2"]::before,.algo-card-scene[data-lv="2"]::after{background:radial-gradient(ellipse,rgba(100,149,220,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="2"] .algo-card-lv-label{color:#a8c8f0;border-color:rgba(74,127,193,.45);text-shadow:0 0 8px rgba(74,127,193,.8);}
+    .algo-card-scene[data-lv="2"] .algo-card-frame{background:linear-gradient(135deg,#1c2e4a,#4a7fc1,#a8c8f0,#4a7fc1,#1c2e4a);background-size:300% 300%;animation:algoLevelShift 4s ease-in-out infinite;}
+    .algo-card-scene[data-lv="2"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1c3a5e 2%,#4a7fc1 4%,#a8c8f0 5.5%,#4a7fc1 7%,#1c3a5e 9%,transparent 11%,transparent 100%);}
+    .algo-card-scene[data-lv="2"] .algo-card-body{background:linear-gradient(160deg,#0d1a2e 0%,#0a0f1a 55%,#0d1a2e 100%);box-shadow:0 20px 55px rgba(0,0,0,.7),0 0 30px rgba(74,127,193,.25),0 0 0 1px rgba(74,127,193,.3);}
+    .algo-card-scene[data-lv="2"] .algo-card-top-band{background:linear-gradient(180deg,rgba(74,127,193,.35) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="2"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(74,127,193,.30) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="2"] .algo-card-score{color:#a8c8f0;text-shadow:0 0 12px rgba(74,127,193,.9),0 0 24px rgba(74,127,193,.5);}
+    .algo-card-scene[data-lv="2"] .algo-card-trend{color:#7ba8e0;}
+    .algo-card-scene[data-lv="2"] .algo-card-badge{background:linear-gradient(135deg,#1c3a5e,#4a7fc1);}
+    .algo-card-scene[data-lv="2"] .algo-card-footer{background:linear-gradient(135deg,#0d1e36 0%,#162a45 100%);}
+    .algo-card-scene[data-lv="2"] .algo-xp-bar-fill{background:linear-gradient(90deg,#1c3a5e,#4a7fc1,#a8c8f0);box-shadow:0 0 6px rgba(74,127,193,.7);}
+
+    /* LV3 코발트 블루 */
+    .algo-card-scene[data-lv="3"]::before,.algo-card-scene[data-lv="3"]::after{background:radial-gradient(ellipse,rgba(0,160,255,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="3"] .algo-fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,160,255,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="3"] .algo-card-lv-label{color:#66ccff;border-color:rgba(0,153,255,.45);text-shadow:0 0 8px rgba(0,153,255,.8);}
+    .algo-card-scene[data-lv="3"] .algo-card-frame{background:linear-gradient(135deg,#001a33,#0055aa,#00aaff,#ffffff,#00aaff,#0055aa,#001a33);background-size:300% 300%;animation:algoLevelShift 3.5s ease-in-out infinite;}
+    .algo-card-scene[data-lv="3"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#003366 2%,#0077cc 4%,#00aaff 5.5%,#ffffff 6.5%,#00aaff 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="3"] .algo-card-body{background:linear-gradient(160deg,#00091a 0%,#000d22 55%,#00091a 100%);box-shadow:0 22px 58px rgba(0,0,0,.75),0 0 35px rgba(0,153,255,.28),0 0 0 1px rgba(0,153,255,.32);}
+    .algo-card-scene[data-lv="3"] .algo-card-top-band{background:linear-gradient(180deg,rgba(0,153,255,.4) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="3"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(0,153,255,.35) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="3"] .algo-card-score{color:#66ccff;text-shadow:0 0 14px rgba(0,170,255,.9),0 0 30px rgba(0,153,255,.55);}
+    .algo-card-scene[data-lv="3"] .algo-card-trend{color:#33aaff;}
+    .algo-card-scene[data-lv="3"] .algo-card-badge{background:linear-gradient(135deg,#003366,#0077cc);}
+    .algo-card-scene[data-lv="3"] .algo-card-footer{background:linear-gradient(135deg,#00091f 0%,#001433 100%);}
+    .algo-card-scene[data-lv="3"] .algo-xp-bar-fill{background:linear-gradient(90deg,#003366,#0077cc,#00aaff);box-shadow:0 0 6px rgba(0,153,255,.7);}
+
+    /* LV4 에메랄드 */
+    .algo-card-scene[data-lv="4"]::before,.algo-card-scene[data-lv="4"]::after{background:radial-gradient(ellipse,rgba(0,200,120,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="4"] .algo-fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,200,120,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="4"] .algo-card-lv-label{color:#66ffaa;border-color:rgba(0,204,102,.45);text-shadow:0 0 8px rgba(0,204,102,.8);}
+    .algo-card-scene[data-lv="4"] .algo-card-frame{background:linear-gradient(135deg,#001a0d,#006633,#00cc66,#aaffcc,#00cc66,#006633,#001a0d);background-size:300% 300%;animation:algoLevelShift 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="4"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004422 2%,#009944 4%,#00cc66 5.5%,#aaffcc 6.5%,#00cc66 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="4"] .algo-card-body{background:linear-gradient(160deg,#001a0a 0%,#000f06 55%,#001a0a 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,200,100,.35),0 0 0 1px rgba(0,200,100,.38);}
+    .algo-card-scene[data-lv="4"] .algo-card-top-band{background:linear-gradient(180deg,rgba(0,204,102,.45) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="4"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(0,204,102,.38) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="4"] .algo-card-score{color:#66ffaa;text-shadow:0 0 14px rgba(0,204,102,.9),0 0 32px rgba(0,170,80,.6);}
+    .algo-card-scene[data-lv="4"] .algo-card-trend{color:#33ee88;}
+    .algo-card-scene[data-lv="4"] .algo-card-badge{background:linear-gradient(135deg,#004422,#009944);}
+    .algo-card-scene[data-lv="4"] .algo-card-footer{background:linear-gradient(135deg,#001508 0%,#002a12 100%);}
+    .algo-card-scene[data-lv="4"] .algo-xp-bar-fill{background:linear-gradient(90deg,#004422,#009944,#00cc66);box-shadow:0 0 6px rgba(0,204,102,.7);}
+
+    /* LV5 틸 */
+    .algo-card-scene[data-lv="5"]::before,.algo-card-scene[data-lv="5"]::after{background:radial-gradient(ellipse,rgba(0,180,160,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="5"] .algo-fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,180,160,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="5"] .algo-card-lv-label{color:#66ffdd;border-color:rgba(0,204,170,.45);text-shadow:0 0 8px rgba(0,204,170,.8);}
+    .algo-card-scene[data-lv="5"] .algo-card-frame{background:linear-gradient(135deg,#001a18,#006655,#00ccaa,#ffd700,#00ccaa,#006655,#001a18);background-size:300% 300%;animation:algoLevelShift 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="5"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004433 2%,#009977 4%,#00ccaa 5.5%,#ffd700 6.5%,#00ccaa 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="5"] .algo-card-body{background:linear-gradient(160deg,#001a16 0%,#000f0d 55%,#001a16 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,180,150,.35),0 0 0 1px rgba(0,180,150,.38);}
+    .algo-card-scene[data-lv="5"] .algo-card-top-band{background:linear-gradient(180deg,rgba(0,204,170,.45) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="5"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(0,204,170,.38) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="5"] .algo-card-score{color:#66ffdd;text-shadow:0 0 14px rgba(0,204,170,.9),0 0 32px rgba(0,170,140,.6);}
+    .algo-card-scene[data-lv="5"] .algo-card-trend{color:#33eebb;}
+    .algo-card-scene[data-lv="5"] .algo-card-badge{background:linear-gradient(135deg,#004433,#009977);}
+    .algo-card-scene[data-lv="5"] .algo-card-footer{background:linear-gradient(135deg,#001512 0%,#002a22 100%);}
+    .algo-card-scene[data-lv="5"] .algo-xp-bar-fill{background:linear-gradient(90deg,#004433,#009977,#00ccaa);box-shadow:0 0 6px rgba(0,204,170,.7);}
+
+    /* LV6 앰버 골드 */
+    .algo-card-scene[data-lv="6"]::before,.algo-card-scene[data-lv="6"]::after{background:radial-gradient(ellipse,rgba(220,150,0,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="6"] .algo-fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,150,0,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="6"] .algo-card-lv-label{color:#ffd166;border-color:rgba(232,160,0,.45);text-shadow:0 0 8px rgba(232,160,0,.8);}
+    .algo-card-scene[data-lv="6"] .algo-card-frame{background:linear-gradient(135deg,#1a0d00,#7a4400,#e8a000,#fff3cc,#e8a000,#7a4400,#1a0d00);background-size:300% 300%;animation:algoLevelShift 2.8s ease-in-out infinite;}
+    .algo-card-scene[data-lv="6"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#4a2200 2%,#aa6600 4%,#e8a000 5.5%,#fff3cc 6.5%,#e8a000 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="6"] .algo-card-body{background:linear-gradient(160deg,#1a0900 0%,#0f0500 55%,#1a0900 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,150,0,.45),0 0 0 1px rgba(220,150,0,.42);}
+    .algo-card-scene[data-lv="6"] .algo-card-top-band{background:linear-gradient(180deg,rgba(232,160,0,.50) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="6"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(232,160,0,.45) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="6"] .algo-card-score{color:#ffd166;text-shadow:0 0 16px rgba(232,160,0,.9),0 0 36px rgba(200,130,0,.65);}
+    .algo-card-scene[data-lv="6"] .algo-card-trend{color:#ffb733;}
+    .algo-card-scene[data-lv="6"] .algo-card-badge{background:linear-gradient(135deg,#4a2200,#aa6600);}
+    .algo-card-scene[data-lv="6"] .algo-card-footer{background:linear-gradient(135deg,#1a0a00 0%,#2e1500 100%);}
+    .algo-card-scene[data-lv="6"] .algo-xp-bar-fill{background:linear-gradient(90deg,#4a2200,#aa6600,#e8a000);box-shadow:0 0 6px rgba(232,160,0,.7);}
+
+    /* LV7 솔라 오렌지 */
+    .algo-card-scene[data-lv="7"]::before,.algo-card-scene[data-lv="7"]::after{background:radial-gradient(ellipse,rgba(255,120,0,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="7"] .algo-fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(255,120,0,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="7"] .algo-card-lv-label{color:#ffaa44;border-color:rgba(255,102,0,.45);text-shadow:0 0 8px rgba(255,102,0,.8);}
+    .algo-card-scene[data-lv="7"] .algo-card-frame{background:linear-gradient(135deg,#1a0500,#882200,#ff6600,#ffdd88,#ff6600,#882200,#1a0500);background-size:300% 300%;animation:algoLevelShift 2.5s ease-in-out infinite;}
+    .algo-card-scene[data-lv="7"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551100 2%,#cc4400 4%,#ff6600 5.5%,#ffdd88 6.5%,#ff6600 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="7"] .algo-card-body{background:linear-gradient(160deg,#1a0500 0%,#0f0200 55%,#1a0500 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(255,100,0,.50),0 0 0 1px rgba(255,100,0,.45);}
+    .algo-card-scene[data-lv="7"] .algo-card-top-band{background:linear-gradient(180deg,rgba(255,102,0,.52) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="7"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(255,102,0,.46) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="7"] .algo-card-score{color:#ffaa44;text-shadow:0 0 16px rgba(255,102,0,.9),0 0 38px rgba(220,60,0,.7);}
+    .algo-card-scene[data-lv="7"] .algo-card-trend{color:#ff8822;}
+    .algo-card-scene[data-lv="7"] .algo-card-badge{background:linear-gradient(135deg,#551100,#cc4400);}
+    .algo-card-scene[data-lv="7"] .algo-card-footer{background:linear-gradient(135deg,#1a0400 0%,#2e0800 100%);}
+    .algo-card-scene[data-lv="7"] .algo-xp-bar-fill{background:linear-gradient(90deg,#551100,#cc4400,#ff6600);box-shadow:0 0 6px rgba(255,102,0,.7);}
+
+    /* LV8 루비 레드 */
+    .algo-card-scene[data-lv="8"]::before,.algo-card-scene[data-lv="8"]::after{background:radial-gradient(ellipse,rgba(200,0,40,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="8"] .algo-fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(200,0,40,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="8"] .algo-card-lv-label{color:#ff6680;border-color:rgba(204,0,51,.45);text-shadow:0 0 8px rgba(204,0,51,.8);}
+    .algo-card-scene[data-lv="8"] .algo-card-frame{background:linear-gradient(135deg,#1a0008,#770011,#cc0033,#ffaabb,#cc0033,#770011,#1a0008);background-size:300% 300%;animation:algoLevelShift 2.5s ease-in-out infinite;}
+    .algo-card-scene[data-lv="8"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#440008 2%,#aa0022 4%,#cc0033 5.5%,#ffaabb 6.5%,#cc0033 8%,transparent 10%,transparent 100%);}
+    .algo-card-scene[data-lv="8"] .algo-card-body{background:linear-gradient(160deg,#1a0006 0%,#0f0003 55%,#1a0006 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(200,0,40,.50),0 0 0 1px rgba(200,0,40,.45);}
+    .algo-card-scene[data-lv="8"] .algo-card-top-band{background:linear-gradient(180deg,rgba(204,0,51,.52) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="8"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(204,0,51,.46) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="8"] .algo-card-score{color:#ff6680;text-shadow:0 0 16px rgba(204,0,51,.9),0 0 38px rgba(160,0,30,.7);}
+    .algo-card-scene[data-lv="8"] .algo-card-trend{color:#ff3355;}
+    .algo-card-scene[data-lv="8"] .algo-card-badge{background:linear-gradient(135deg,#440008,#aa0022);}
+    .algo-card-scene[data-lv="8"] .algo-card-footer{background:linear-gradient(135deg,#1a0005 0%,#2e000a 100%);}
+    .algo-card-scene[data-lv="8"] .algo-xp-bar-fill{background:linear-gradient(90deg,#440008,#aa0022,#cc0033);box-shadow:0 0 6px rgba(204,0,51,.7);}
+
+    /* LV9 로즈 골드 */
+    .algo-card-scene[data-lv="9"]::before,.algo-card-scene[data-lv="9"]::after{background:radial-gradient(ellipse,rgba(220,100,150,.9) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="9"] .algo-fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,100,150,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:algoFogPulse 3s ease-in-out infinite;}
+    .algo-card-scene[data-lv="9"] .algo-card-lv-label{color:#ffaacc;border-color:rgba(204,68,136,.45);text-shadow:0 0 8px rgba(204,68,136,.8);}
+    .algo-card-scene[data-lv="9"] .algo-card-frame{background:linear-gradient(135deg,#1a0010,#882255,#cc4488,#ffccdd,#ffd700,#ffccdd,#cc4488,#882255,#1a0010);background-size:300% 300%;animation:algoLevelShift 2.5s ease-in-out infinite;}
+    .algo-card-scene[data-lv="9"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551133 2%,#aa3366 4%,#cc4488 5.5%,#ffccdd 6.5%,#ffd700 7.5%,#cc4488 9%,transparent 11%,transparent 100%);}
+    .algo-card-scene[data-lv="9"] .algo-card-body{background:linear-gradient(160deg,#1a0010 0%,#0f0008 55%,#1a0010 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,80,140,.50),0 0 0 1px rgba(220,80,140,.45);}
+    .algo-card-scene[data-lv="9"] .algo-card-top-band{background:linear-gradient(180deg,rgba(204,68,136,.52) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="9"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(204,68,136,.46) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="9"] .algo-card-score{color:#ffaacc;text-shadow:0 0 16px rgba(220,80,140,.9),0 0 38px rgba(180,50,110,.7);}
+    .algo-card-scene[data-lv="9"] .algo-card-trend{color:#ff77aa;}
+    .algo-card-scene[data-lv="9"] .algo-card-badge{background:linear-gradient(135deg,#551133,#aa3366);}
+    .algo-card-scene[data-lv="9"] .algo-card-footer{background:linear-gradient(135deg,#1a000e 0%,#2e0018 100%);}
+    .algo-card-scene[data-lv="9"] .algo-xp-bar-fill{background:linear-gradient(90deg,#551133,#aa3366,#cc4488,#ffd700);box-shadow:0 0 6px rgba(220,80,140,.7);}
+
+    /* LV MAX 레전드 퍼플 */
+    .algo-card-scene[data-lv="MAX"]::before,.algo-card-scene[data-lv="MAX"]::after{background:radial-gradient(ellipse,rgba(160,60,255,.95) 0%,transparent 70%);}
+    .algo-card-scene[data-lv="MAX"] .algo-fog-wrap{position:absolute;inset:-58px;border-radius:26px;background:radial-gradient(ellipse at center,rgba(140,40,255,.58) 0%,transparent 70%);filter:blur(32px);z-index:0;animation:algoFogPulse 2.5s ease-in-out infinite;}
+    .algo-card-scene[data-lv="MAX"] .algo-card-lv-label{color:#e0aaff;border-color:rgba(192,132,252,.55);text-shadow:0 0 10px rgba(180,100,255,.9),0 0 20px rgba(140,60,255,.6);animation:algoMaxLvPulse 2s ease-in-out infinite alternate;}
+    .algo-card-scene[data-lv="MAX"] .algo-card-frame{background:linear-gradient(135deg,#0d0020,#3d00a0,#7b2fff,#c084fc,#ffd700,#c084fc,#7b2fff,#3d00a0,#0d0020);background-size:300% 300%;animation:algoLevelShift 2s ease-in-out infinite;}
+    .algo-card-scene[data-lv="MAX"] .algo-beam-ring{background:conic-gradient(from 0deg,transparent 0%,#220055 2%,#6600cc 3.5%,#9933ff 5%,#c084fc 6%,#ffd700 7%,#c084fc 8%,#6600cc 9.5%,transparent 11%,transparent 100%);}
+    .algo-card-scene[data-lv="MAX"] .algo-card-body{background:linear-gradient(160deg,#0d0020 0%,#07000f 55%,#0d0020 100%);box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 80px rgba(123,47,255,.65),0 0 0 1px rgba(192,132,252,.5);animation:algoMaxGlow 2s ease-in-out infinite;}
+    .algo-card-scene[data-lv="MAX"] .algo-card-top-band{background:linear-gradient(180deg,rgba(123,47,255,.60) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="MAX"] .algo-card-bot-band{background:linear-gradient(0deg,rgba(123,47,255,.46) 0%,transparent 100%);}
+    .algo-card-scene[data-lv="MAX"] .algo-card-score{color:#e0aaff;text-shadow:0 0 18px rgba(180,100,255,.9),0 0 40px rgba(140,60,255,.7);animation:algoMaxNamePulse 2s ease-in-out infinite alternate;}
+    .algo-card-scene[data-lv="MAX"] .algo-card-trend{color:#c084fc;}
+    .algo-card-scene[data-lv="MAX"] .algo-card-badge{background:linear-gradient(135deg,#3d00a0,#7b2fff,#c084fc,#ffd700);border-color:rgba(255,215,0,.45);}
+    .algo-card-scene[data-lv="MAX"] .algo-card-footer{background:linear-gradient(135deg,#0d0020 0%,#1a0040 100%);border-top:1px solid rgba(192,132,252,.3);}
+    .algo-card-scene[data-lv="MAX"] .algo-xp-bar-fill{background:linear-gradient(90deg,#3d00a0,#6600cc,#9933ff,#c084fc);background-size:200% 100%;animation:algoMaxXpShine 1.5s linear infinite;box-shadow:0 0 8px rgba(160,80,255,.9),0 0 16px rgba(123,47,255,.6);}
+
+    /* ══ 반응형 ══ */
     @media(max-width:700px){
       .modal{width:100%;max-width:100%;padding:14px 14px 20px}
       .modal-stats{grid-template-columns:repeat(2,1fr)}
@@ -264,6 +682,18 @@
       .shop-cat-icon{font-size:2.2rem}
       .tool-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
       .rev-results-grid{grid-template-columns:repeat(2,1fr)}
+      .algo-cards-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:60px 30px;}
+      .algo-card-scene{width:200px;height:300px;}
+      .algo-card-metrics-mini{bottom:66px;gap:2px;}
+      .algo-mini-metric{padding:4px 1px;}
+      .algo-metric-val{font-size:9px;}
+      .algo-metric-name{font-size:6px;}
+      .algo-card-xp-wrap{bottom:36px;}
+    }
+    @media(max-width:480px){
+      .algo-card-scene{width:180px;height:270px;}
+      .algo-card-score{font-size:2.2rem;}
+      .algo-card-main-icon{font-size:2rem;}
     }
   </style>
 </head>
@@ -297,7 +727,8 @@
   </nav>
 
   <main class="main-content">
-    <!-- 인기영상 -->
+
+    <!-- ═══════════════════════ 인기영상 ═══════════════════════ -->
     <section class="section-page active" id="section-hot">
       <div class="section-header">
         <div class="section-title">🔥 인기영상</div>
@@ -328,20 +759,35 @@
       <button class="more-btn" id="longs-more-btn" onclick="loadMoreLongs()">롱폼 더 보기 ▼</button>
     </section>
 
-    <!-- 채널 분석 -->
+    <!-- ═══════════════════════ 채널 분석 (3D 레벨 카드) ═══════════════════════ -->
     <section class="section-page" id="section-channel">
       <div class="section-header">
         <div class="section-title">📊 채널 분석</div>
-        <div class="section-subtitle">YouTube 채널 성과 및 등급 분석</div>
+        <div class="section-subtitle">유튜브 알고리즘 레벨 시스템 — 내 채널의 등급을 확인하세요</div>
       </div>
+
+      <!-- 채널 검색 (기존 기능 유지) -->
       <div class="channel-search-box">
-        <input class="search-input" id="ch-input" placeholder="채널명 또는 핸들 (@채널명) 입력" onkeydown="if(event.key==='Enter') doChannelSearch()" />
+        <input class="search-input" id="ch-input"
+          placeholder="채널명 또는 핸들 (@채널명) 입력"
+          onkeydown="if(event.key==='Enter') doChannelSearch()" />
         <button class="search-btn" onclick="doChannelSearch()">분석</button>
       </div>
       <div id="channel-result"></div>
+
+      <!-- 3D 레벨 카드 소개 -->
+      <div class="algo-channel-intro" style="margin-top:32px">
+        <h3>⚡ 알고리즘 레벨 시스템이란?</h3>
+        <p>유튜브 알고리즘은 CTR(클릭률), 시청 유지율, 참여율 등 핵심 지표를 기반으로 채널에 점수를 부여합니다.
+        LV1(심폐소생술)부터 LV.MAX(레전드)까지 — 아래 10단계 카드에서 각 레벨의 기준 지표와 알고리즘 점수를 확인하고,
+        내 채널이 현재 어느 단계에 있는지 파악해 보세요.</p>
+      </div>
+
+      <!-- 3D 카드 그리드 -->
+      <div class="algo-cards-grid" id="algo-cards-grid"></div>
     </section>
 
-    <!-- 수익 계산기 -->
+    <!-- ═══════════════════════ 수익 계산기 ═══════════════════════ -->
     <section class="section-page" id="section-revenue">
       <div class="section-header">
         <div class="section-title">💰 수익 계산기</div>
@@ -354,7 +800,7 @@
       </div>
     </section>
 
-    <!-- AI 아이디어 -->
+    <!-- ═══════════════════════ AI 아이디어 ═══════════════════════ -->
     <section class="section-page" id="section-ai">
       <div class="section-header">
         <div class="section-title">🤖 AI 아이디어</div>
@@ -362,8 +808,12 @@
       </div>
       <div class="ai-form">
         <div class="form-row">
-          <div class="form-group"><label class="form-label">채널 주제</label><input class="form-input" id="ai-topic" placeholder="예: 요리, 게임, 여행, 뷰티" /></div>
-          <div class="form-group"><label class="form-label">영상 형식</label>
+          <div class="form-group">
+            <label class="form-label">채널 주제</label>
+            <input class="form-input" id="ai-topic" placeholder="예: 요리, 게임, 여행, 뷰티" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">영상 형식</label>
             <select class="form-input" id="ai-format">
               <option value="shorts">쇼츠 (60초)</option>
               <option value="tutorial">튜토리얼</option>
@@ -378,18 +828,19 @@
       <div id="ai-ideas-list" class="ai-idea-list"></div>
     </section>
 
-    <!-- 유튜버 도구 -->
+    <!-- ═══════════════════════ 유튜버 도구 ═══════════════════════ -->
     <section class="section-page" id="section-tools">
       <div class="section-header">
         <div class="section-title">🛠️ 유튜버 도구</div>
         <div class="section-subtitle">카테고리별 채널 성장 필수 도구 모음</div>
       </div>
       <div class="tool-tabs" id="toolTabs"></div>
-      <div class="tool-grid" id="toolGrid"></div>
+      <div class="tool-grid"  id="toolGrid"></div>
     </section>
 
-    <!-- 장비 쇼핑 -->
+    <!-- ═══════════════════════ 장비 쇼핑 ═══════════════════════ -->
     <section class="section-page" id="section-shop"></section>
+
   </main>
 </div>
 
@@ -429,7 +880,7 @@
 
 <script>
 /* ================================================================
-   헤더 로고 렌더  +  파비콘
+   헤더 로고 렌더 + 파비콘
 ================================================================ */
 function renderHeaderLogo() {
   const target = document.getElementById('header-logo-canvas');
@@ -553,6 +1004,7 @@ function showSec(id){
   if(!sectionLoaded[id]){
     sectionLoaded[id]=true;
     if(id==='hot')loadHot();
+    if(id==='channel')renderAlgoCards();
     if(id==='revenue'){buildRevInputs();calcRevenue();}
     if(id==='tools')renderTools();
     if(id==='shop')buildShop();
@@ -692,7 +1144,171 @@ async function doChannelSearch(){
   }catch(e){out.innerHTML=`<div class="error-card"><h3>분석 실패</h3><p>${e.message}</p></div>`;}
 }
 
-/* ── 수익 계산기 ── */
+/* ================================================================
+   3D 레벨 카드 — 데이터 & 렌더
+================================================================ */
+const ALGO_XP_RANGES = {
+  1:  {min:1,   max:10,  current:5},
+  2:  {min:11,  max:20,  current:15},
+  3:  {min:21,  max:30,  current:24},
+  4:  {min:31,  max:40,  current:35},
+  5:  {min:41,  max:50,  current:46},
+  6:  {min:51,  max:60,  current:55},
+  7:  {min:61,  max:70,  current:65},
+  8:  {min:71,  max:80,  current:75},
+  9:  {min:81,  max:90,  current:87},
+  MAX:{min:91,  max:100, current:100}
+};
+
+const ALGO_LEVEL_DATA = [
+  {lv:1,   icon:'🚨', badge:'심폐소생술', score:12,  trend:'-3 ↘',  ctr:{val:'0.8%', status:'danger'}, retention:{val:'12%', status:'danger'}, engagement:{val:'0.1%',status:'danger'}, rank:'하위 5%',   meta:'최근 30일 평균', beamCount:1, beamSpeed:'4.2s', bokeh:[{w:30,h:30,l:15,t:20,blur:6,op:.25,dur:6,del:0},{w:20,h:20,l:70,t:60,blur:4,op:.2,dur:8,del:1}], sparkles:[{l:25,t:35,sz:9,dur:'2.5s',del:'0s'},{l:65,t:15,sz:8,dur:'3s',del:'.5s'}]},
+  {lv:2,   icon:'⚠️', badge:'위험신호',  score:24,  trend:'+8 ↗',  ctr:{val:'1.9%', status:'danger'}, retention:{val:'18%', status:'danger'}, engagement:{val:'0.3%',status:'danger'}, rank:'하위 15%',  meta:'최근 30일 평균', beamCount:1, beamSpeed:'3.8s', bokeh:[{w:32,h:32,l:12,t:18,blur:6,op:.28,dur:6.5,del:0},{w:22,h:22,l:68,t:55,blur:4,op:.22,dur:8.5,del:1.2}], sparkles:[{l:22,t:32,sz:9,dur:'2.3s',del:'0s'},{l:68,t:12,sz:8,dur:'2.8s',del:'.4s'}]},
+  {lv:3,   icon:'🔍', badge:'테스트 중', score:38,  trend:'+14 ↗', ctr:{val:'3.2%', status:'warn'},   retention:{val:'25%', status:'warn'},   engagement:{val:'0.7%',status:'warn'},   rank:'하위 30%',  meta:'최근 30일 평균', beamCount:2, beamSpeed:'3.4s', bokeh:[{w:35,h:35,l:10,t:15,blur:7,op:.3,dur:6,del:0},{w:25,h:25,l:65,t:50,blur:5,op:.25,dur:7.5,del:1},{w:15,h:15,l:40,t:75,blur:3,op:.2,dur:9,del:2}], sparkles:[{l:18,t:28,sz:10,dur:'2.1s',del:'0s'},{l:62,t:8,sz:9,dur:'2.6s',del:'.3s'},{l:45,t:65,sz:8,dur:'2.4s',del:'.6s'}]},
+  {lv:4,   icon:'🌱', badge:'성장 시동', score:45,  trend:'+7 ↗',  ctr:{val:'4.8%', status:'warn'},   retention:{val:'32%', status:'warn'},   engagement:{val:'1.1%',status:'warn'},   rank:'하위 45%',  meta:'최근 30일 평균', beamCount:2, beamSpeed:'3.2s', bokeh:[{w:38,h:38,l:8,t:12,blur:7,op:.32,dur:5.8,del:0},{w:28,h:28,l:62,t:45,blur:5,op:.27,dur:7.2,del:1.1},{w:18,h:18,l:35,t:70,blur:4,op:.22,dur:8.5,del:2.2}], sparkles:[{l:15,t:25,sz:10,dur:'2s',del:'0s'},{l:58,t:5,sz:10,dur:'2.4s',del:'.25s'},{l:42,t:60,sz:9,dur:'2.2s',del:'.5s'}]},
+  {lv:5,   icon:'📈', badge:'성장궤도',  score:58,  trend:'+13 ↗', ctr:{val:'6.3%', status:'good'},   retention:{val:'38%', status:'warn'},   engagement:{val:'1.8%',status:'warn'},   rank:'상위 45%',  meta:'최근 30일 평균', beamCount:2, beamSpeed:'3.0s', bokeh:[{w:40,h:40,l:6,t:10,blur:8,op:.35,dur:5.5,del:0},{w:30,h:30,l:60,t:40,blur:6,op:.3,dur:6.8,del:1},{w:20,h:20,l:32,t:65,blur:4,op:.25,dur:8,del:2}], sparkles:[{l:12,t:22,sz:11,dur:'1.9s',del:'0s'},{l:55,t:2,sz:10,dur:'2.2s',del:'.2s'},{l:38,t:55,sz:9,dur:'2s',del:'.4s'}]},
+  {lv:6,   icon:'🎯', badge:'추천 노출', score:67,  trend:'+9 ↗',  ctr:{val:'7.8%', status:'good'},   retention:{val:'45%', status:'good'},   engagement:{val:'2.4%',status:'warn'},   rank:'상위 35%',  meta:'최근 30일 평균', beamCount:3, beamSpeed:'2.8s', bokeh:[{w:42,h:42,l:5,t:8,blur:9,op:.38,dur:5.2,del:0},{w:32,h:32,l:58,t:35,blur:6,op:.32,dur:6.5,del:.9},{w:22,h:22,l:30,t:60,blur:5,op:.27,dur:7.8,del:1.8}], sparkles:[{l:10,t:18,sz:11,dur:'1.8s',del:'0s'},{l:52,t:0,sz:11,dur:'2.1s',del:'.15s'},{l:35,t:50,sz:10,dur:'1.9s',del:'.3s'}]},
+  {lv:7,   icon:'🚀', badge:'급상승',    score:78,  trend:'+11 ↗', ctr:{val:'9.4%', status:'good'},   retention:{val:'52%', status:'good'},   engagement:{val:'3.2%',status:'good'},   rank:'상위 20%',  meta:'최근 30일 평균', beamCount:3, beamSpeed:'2.5s', bokeh:[{w:45,h:45,l:4,t:6,blur:10,op:.4,dur:4.9,del:0},{w:35,h:35,l:56,t:30,blur:7,op:.35,dur:6.2,del:.8},{w:25,h:25,l:28,t:55,blur:5,op:.3,dur:7.5,del:1.6}], sparkles:[{l:8,t:15,sz:12,dur:'1.7s',del:'0s'},{l:50,t:-2,sz:11,dur:'2s',del:'.12s'},{l:32,t:45,sz:10,dur:'1.8s',del:'.25s'}]},
+  {lv:8,   icon:'🏆', badge:'상위권',    score:85,  trend:'+7 ↗',  ctr:{val:'11.8%',status:'good'},   retention:{val:'58%', status:'good'},   engagement:{val:'4.6%',status:'good'},   rank:'상위 10%',  meta:'최근 30일 평균', beamCount:3, beamSpeed:'2.3s', bokeh:[{w:48,h:48,l:3,t:4,blur:11,op:.42,dur:4.6,del:0},{w:38,h:38,l:54,t:25,blur:8,op:.37,dur:5.9,del:.7},{w:28,h:28,l:26,t:50,blur:6,op:.32,dur:7.2,del:1.4}], sparkles:[{l:6,t:12,sz:12,dur:'1.6s',del:'0s'},{l:48,t:-4,sz:12,dur:'1.9s',del:'.1s'},{l:30,t:40,sz:11,dur:'1.7s',del:'.2s'}]},
+  {lv:9,   icon:'💎', badge:'최상위',    score:94,  trend:'+9 ↗',  ctr:{val:'14.2%',status:'good'},   retention:{val:'65%', status:'good'},   engagement:{val:'6.8%',status:'good'},   rank:'상위 3%',   meta:'최근 30일 평균', beamCount:4, beamSpeed:'2.1s', bokeh:[{w:50,h:50,l:2,t:2,blur:12,op:.45,dur:4.3,del:0},{w:40,h:40,l:52,t:20,blur:9,op:.4,dur:5.6,del:.6},{w:30,h:30,l:24,t:45,blur:7,op:.35,dur:6.9,del:1.2}], sparkles:[{l:4,t:8,sz:13,dur:'1.5s',del:'0s'},{l:46,t:-6,sz:12,dur:'1.8s',del:'.08s'},{l:28,t:35,sz:11,dur:'1.6s',del:'.16s'}]},
+  {lv:'MAX',icon:'👑',badge:'레전드',   score:99,  trend:'MAX',   ctr:{val:'20.5%',status:'good'},   retention:{val:'78%', status:'good'},   engagement:{val:'12.8%',status:'good'},  rank:'상위 0.1%', meta:'최근 30일 평균', beamCount:4, beamSpeed:'1.8s', bokeh:[{w:55,h:55,l:0,t:0,blur:15,op:.5,dur:3.8,del:0},{w:45,h:45,l:48,t:10,blur:12,op:.45,dur:5,del:.4},{w:35,h:35,l:20,t:35,blur:9,op:.4,dur:6.2,del:.8}], sparkles:[{l:0,t:2,sz:14,dur:'1.3s',del:'0s'},{l:42,t:-10,sz:13,dur:'1.6s',del:'.06s'},{l:24,t:25,sz:12,dur:'1.4s',del:'.12s'}]},
+];
+
+function algoCard3D(e, el) {
+  const r = el.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  const ry = ((x - r.width/2) / (r.width/2)) * 15;
+  const rx = -((y - r.height/2) / (r.height/2)) * 15;
+  const mx = (x / r.width * 100).toFixed(1) + '%';
+  const my = (y / r.height * 100).toFixed(1) + '%';
+  const tilt = el.querySelector('.algo-card-tilt');
+  if(tilt) tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
+  const shine = el.querySelector('.algo-card-shine');
+  if(shine) shine.style.background = `
+    linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),
+    radial-gradient(ellipse 50% 40% at ${mx} ${my},rgba(255,255,255,.25) 0%,rgba(255,255,255,.06) 50%,transparent 75%)`;
+}
+function algoCardReset(el) {
+  const tilt = el.querySelector('.algo-card-tilt');
+  if(tilt) tilt.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+  const shine = el.querySelector('.algo-card-shine');
+  if(shine) shine.style.background = `
+    linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+    linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)`;
+}
+
+function buildAlgoBeams(data) {
+  let html = '';
+  const speed = parseFloat(data.beamSpeed);
+  for(let i = 0; i < data.beamCount; i++) {
+    const delay = '-' + ((speed / data.beamCount) * i).toFixed(3) + 's';
+    html += `<div class="algo-beam-container"><div class="algo-beam-ring" style="animation-duration:${data.beamSpeed};animation-delay:${delay};"></div></div>`;
+  }
+  return html;
+}
+function buildAlgoFog(data) {
+  if(data.lv === 1 || data.lv === 2) return '';
+  return `<div class="algo-fog-wrap"></div>`;
+}
+function buildAlgoXP(data) {
+  const xp = ALGO_XP_RANGES[data.lv];
+  const isMax = data.lv === 'MAX';
+  const pct = isMax ? 100 : Math.round(((xp.current - xp.min) / (xp.max - xp.min)) * 100);
+  const currentText = isMax ? '✦ MAX ✦' : `${xp.current} / ${xp.max}`;
+  return `<div class="algo-card-xp-wrap">
+    <div class="algo-card-xp-label">
+      <span class="algo-xp-title">⚡ EXP</span>
+      <span class="algo-xp-range">${currentText}</span>
+    </div>
+    <div class="algo-xp-bar-bg">
+      <div class="algo-xp-bar-fill" style="width:${pct}%;"></div>
+    </div>
+  </div>`;
+}
+function buildAlgoCardHTML(data) {
+  const lvLabel = data.lv === 'MAX' ? 'LV.MAX' : `LV.${data.lv}`;
+  const bokehHTML = data.bokeh.map(b =>
+    `<div class="algo-bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${b.dur}s;--bdel:${b.del}s;background:currentColor;"></div>`
+  ).join('');
+  const sparklesHTML = data.sparkles.map(s =>
+    `<span class="algo-sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${s.sz}px;--sdur:${s.dur};--sdel:${s.del};">✦</span>`
+  ).join('');
+  return `<div class="algo-card-scene" data-lv="${data.lv}"
+      onmousemove="algoCard3D(event,this)" onmouseleave="algoCardReset(this)">
+    ${buildAlgoFog(data)}
+    <div class="algo-card-tilt">
+      <div class="algo-card-frame"></div>
+      ${buildAlgoBeams(data)}
+      <div class="algo-card-body">
+        <div class="algo-card-face">
+          <div class="algo-card-bokeh">${bokehHTML}</div>
+          <div class="algo-card-sparkles">${sparklesHTML}</div>
+          <div class="algo-card-header">
+            <div class="algo-card-lv-label">${lvLabel}</div>
+            <div class="algo-card-badge">${data.badge}</div>
+          </div>
+          <div class="algo-card-main-wrap">
+            <div class="algo-card-main-icon">${data.icon}</div>
+            <div class="algo-card-score">${data.score}</div>
+            <div class="algo-card-score-label">Algorithm Score</div>
+            <div class="algo-card-trend">${data.trend}</div>
+          </div>
+          <div class="algo-card-metrics-mini">
+            <div class="algo-mini-metric">
+              <span class="algo-metric-icon">👁️</span>
+              <span class="algo-metric-val algo-status-${data.ctr.status}">${data.ctr.val}</span>
+              <span class="algo-metric-name">클릭률</span>
+            </div>
+            <div class="algo-mini-metric">
+              <span class="algo-metric-icon">⏱️</span>
+              <span class="algo-metric-val algo-status-${data.retention.status}">${data.retention.val}</span>
+              <span class="algo-metric-name">시청유지</span>
+            </div>
+            <div class="algo-mini-metric">
+              <span class="algo-metric-icon">💬</span>
+              <span class="algo-metric-val algo-status-${data.engagement.status}">${data.engagement.val}</span>
+              <span class="algo-metric-name">참여율</span>
+            </div>
+          </div>
+          <div class="algo-card-top-band"></div>
+          <div class="algo-card-bot-band"></div>
+          <div class="algo-card-vignette"></div>
+          <div class="algo-card-shine"></div>
+          ${buildAlgoXP(data)}
+          <div class="algo-card-footer">
+            <span class="algo-footer-meta">📊 ${data.meta}</span>
+            <span class="algo-footer-rank">${data.rank}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAlgoCards() {
+  const grid = document.getElementById('algo-cards-grid');
+  if(!grid) return;
+  grid.innerHTML = ALGO_LEVEL_DATA.map(data => buildAlgoCardHTML(data)).join('');
+  /* 페이드인 애니메이션 */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, {threshold: 0.1});
+  grid.querySelectorAll('.algo-card-scene').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(24px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(card);
+  });
+}
+
+/* ================================================================
+   수익 계산기
+================================================================ */
 const REV_INPUTS=[
   {id:'views', label:'월 예상 조회수',    unit:'회', min:1000,  max:50000000, step:10000, val:100000, fmt:n=>n.toLocaleString()},
   {id:'rpm',   label:'예상 RPM',          unit:'원', min:100,   max:30000,    step:100,   val:2500,   fmt:n=>n.toLocaleString()},
@@ -733,7 +1349,9 @@ function calcRevenue(){
   document.getElementById('revTip').textContent=monthly>=5000000?'🔥 상위 1% 수준! 정말 대단해요!':monthly>=1000000?'💪 월 100만원 이상! 전업 유튜버 가능한 수준이에요.':monthly>=300000?'📈 성장 중! 조금만 더 하면 큰 수익이 기다려요.':'🌱 아직 시작 단계예요. 꾸준함이 핵심입니다!';
 }
 
-/* ── AI 아이디어 ── */
+/* ================================================================
+   AI 아이디어
+================================================================ */
 const AI_TEMPLATES={
   shorts:   ['${t} 30초 꿀팁','${t} 이것만 알면 됨','${t} 충격 비하인드','${t} 1분 도전','${t} 공감 상황'],
   tutorial: ['${t} 완전 처음부터','${t} 프로 핵심 노하우','${t} 실수 없이 배우기','${t} 하루 마스터'],
@@ -746,7 +1364,9 @@ function genAiIdeas(){
   document.getElementById('ai-ideas-list').innerHTML=tpls.map(t=>{const title=t.replace(/\${t}/g,topic);return`<div class="ai-idea-card" onclick="this.style.borderColor='var(--accent3)'"><div class="ai-idea-title">💡 ${title}</div><div class="ai-idea-desc">#${topic} #YouTube${format==='shorts'?'Shorts':''} #trending</div></div>`;}).join('');
 }
 
-/* ── 유튜버 도구 ── */
+/* ================================================================
+   유튜버 도구
+================================================================ */
 const TOOLS_DATA={
   '영상편집':[
     {name:'Vrew',url:'https://vrew.voyagerx.com',desc:'AI 자막 자동 생성 영상 편집 툴.',tag:'freemium'},
@@ -819,7 +1439,9 @@ function renderTools(){
 function selectToolCat(cat){currentToolCat=cat;renderTools();}
 function openToolModal(name,url,desc,tag){const domain=new URL(url).hostname;document.getElementById('tmIcon').src=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;document.getElementById('tmName').textContent=name;document.getElementById('tmDesc').textContent=desc;document.getElementById('tmLink').href=url;document.getElementById('toolModal').classList.add('open');}
 
-/* ── 장비 쇼핑 ── */
+/* ================================================================
+   장비 쇼핑
+================================================================ */
 const COUPANG_ID='YOUR_COUPANG_ID';
 const SHOP_CATS=[
   {id:'camera', icon:'📷',label:'카메라',       desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠', color:'#ff6b35',keyword:'유튜브 카메라 미러리스',coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
@@ -835,7 +1457,9 @@ function buildShop(){
   document.getElementById('shop-cat-grid').innerHTML=SHOP_CATS.map(cat=>`<a class="shop-cat-card" href="${coupangCatLink(cat)}" target="_blank" rel="noopener sponsored" style="--cat-color:${cat.color}"><div class="shop-cat-icon">${cat.icon}</div><div class="shop-cat-label">${cat.label}</div><div class="shop-cat-desc">${cat.desc}</div><div class="shop-cat-cta">쿠팡에서 보기 →</div></a>`).join('');
 }
 
-/* ── 초기화 ── */
+/* ================================================================
+   초기화
+================================================================ */
 window.addEventListener('DOMContentLoaded', () => {
   renderHeaderLogo();
   document.querySelectorAll('.hot-tab-btn').forEach(btn => {
