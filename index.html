@@ -6,7 +6,7 @@
   <title>YTAnalytics Pro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+R:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-AF8853448" crossorigin="anonymous"></script>
   <style>
     :root {
@@ -114,46 +114,173 @@
     .tool-name{font-size:15px;font-weight:700;margin-bottom:6px}
     .tool-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
 
-    /* ── ★ 장비 쇼핑 새 스타일 ── */
-    .shop-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-    .shop-filter-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s}
-    .shop-filter-btn:hover{border-color:var(--accent2);color:var(--accent2)}
-    .shop-filter-btn.active{background:rgba(255,165,2,0.15);border-color:var(--accent2);color:var(--accent2)}
-    .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
-    .shop-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;transition:all 0.2s}
-    .shop-card:hover{transform:translateY(-3px);border-color:var(--accent2);box-shadow:0 8px 24px rgba(255,165,2,0.15)}
-    .shop-card-thumb{position:relative;width:100%;aspect-ratio:1/1;background:var(--bg-card);display:flex;align-items:center;justify-content:center;font-size:64px;overflow:hidden}
-    .shop-card-thumb img{width:100%;height:100%;object-fit:contain;padding:12px}
-    .shop-card-thumb .shop-badge{position:absolute;top:8px;left:8px;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700}
-    .shop-badge.best{background:rgba(255,71,87,0.9);color:#fff}
-    .shop-badge.new{background:rgba(46,213,115,0.9);color:#fff}
-    .shop-badge.sale{background:rgba(255,165,2,0.9);color:#fff}
-    .shop-card-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:6px}
-    .shop-card-cat{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
-    .shop-card-name{font-size:14px;font-weight:700;line-height:1.4;color:var(--text-primary)}
-    .shop-card-desc{font-size:12px;color:var(--text-secondary);line-height:1.5;flex:1}
-    .shop-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-    .shop-card-price{font-size:16px;font-weight:700;color:var(--accent2)}
-    .shop-card-price span{font-size:11px;font-weight:400;color:var(--text-muted);margin-left:2px}
-    .shop-card-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;background:rgba(255,165,2,0.15);color:var(--accent2);border:1px solid rgba(255,165,2,0.3);border-radius:20px;font-size:12px;font-weight:600;text-decoration:none;transition:all 0.2s;cursor:pointer;white-space:nowrap}
-    .shop-card-btn:hover{background:var(--accent2);color:#000}
-    .shop-notice{font-size:11px;color:var(--text-muted);margin-bottom:16px;padding:10px 14px;background:rgba(255,165,2,0.05);border:1px solid rgba(255,165,2,0.15);border-radius:var(--radius-sm);line-height:1.6}
+    /* ════════════════════════════════
+       ★ 장비 쇼핑 전체 스타일
+    ════════════════════════════════ */
 
-    /* ── 모달 ── */
+    /* 카테고리 탭 */
+    .shop-cat-tabs{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+    .shop-cat-tab{
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      padding:14px 22px;border-radius:16px;
+      border:1.5px solid var(--border);
+      background:var(--bg-secondary);
+      color:var(--text-secondary);
+      cursor:pointer;font-family:inherit;
+      font-size:13px;font-weight:600;
+      transition:all 0.25s;
+      min-width:96px;
+    }
+    .shop-cat-tab .sct-icon{font-size:26px;line-height:1;transition:transform 0.25s}
+    .shop-cat-tab:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(255,165,2,0.06);transform:translateY(-2px)}
+    .shop-cat-tab:hover .sct-icon{transform:scale(1.18)}
+    .shop-cat-tab.active{
+      background:linear-gradient(135deg,rgba(255,165,2,0.18),rgba(255,165,2,0.06));
+      border-color:var(--accent2);color:var(--accent2);
+      box-shadow:0 4px 20px rgba(255,165,2,0.18);
+      transform:translateY(-2px);
+    }
+    .shop-cat-tab.active .sct-icon{transform:scale(1.18)}
+
+    /* 순위 헤더 */
+    .shop-rank-header{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .shop-rank-title{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+    .shop-rank-badge{
+      font-size:11px;font-weight:600;padding:3px 10px;
+      border-radius:20px;background:rgba(255,165,2,0.15);
+      color:var(--accent2);border:1px solid rgba(255,165,2,0.3);
+    }
+    .shop-notice{
+      font-size:11px;color:var(--text-muted);
+      padding:8px 14px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      line-height:1.7;
+      margin-bottom:20px;
+    }
+
+    /* 상품 카드 리스트 */
+    .shop-list{display:flex;flex-direction:column;gap:14px}
+
+    .shop-item{
+      display:flex;align-items:stretch;gap:0;
+      background:var(--bg-secondary);
+      border-radius:16px;
+      border:1.5px solid var(--border);
+      overflow:hidden;
+      transition:all 0.25s;
+      cursor:pointer;
+      text-decoration:none;
+      color:inherit;
+      position:relative;
+    }
+    .shop-item:hover{
+      border-color:var(--accent2);
+      transform:translateY(-2px);
+      box-shadow:0 8px 32px rgba(255,165,2,0.12);
+    }
+
+    /* 순위 번호 띠 */
+    .shop-item-rank{
+      display:flex;align-items:center;justify-content:center;
+      min-width:52px;
+      font-size:22px;font-weight:900;
+      background:var(--bg-card);
+      border-right:1.5px solid var(--border);
+      flex-shrink:0;
+      transition:all 0.25s;
+    }
+    .shop-item:hover .shop-item-rank{background:rgba(255,165,2,0.08)}
+    .rank-1 .shop-item-rank{color:#ffd700;font-size:26px}
+    .rank-2 .shop-item-rank{color:#c0c0c0;font-size:24px}
+    .rank-3 .shop-item-rank{color:#cd7f32;font-size:23px}
+    .rank-other .shop-item-rank{color:var(--text-muted);font-size:18px}
+
+    /* 아이콘 영역 */
+    .shop-item-icon{
+      display:flex;align-items:center;justify-content:center;
+      width:80px;flex-shrink:0;
+      font-size:38px;
+      background:linear-gradient(135deg,rgba(255,165,2,0.07),rgba(255,165,2,0.02));
+      border-right:1.5px solid var(--border);
+      transition:all 0.25s;
+    }
+    .shop-item:hover .shop-item-icon{background:linear-gradient(135deg,rgba(255,165,2,0.14),rgba(255,165,2,0.05))}
+
+    /* 본문 */
+    .shop-item-body{
+      flex:1;padding:14px 16px;
+      display:flex;flex-direction:column;justify-content:center;gap:5px;
+      min-width:0;
+    }
+    .shop-item-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .shop-item-name{font-size:15px;font-weight:700;color:var(--text-primary)}
+    .shop-item-badge{
+      font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;
+      white-space:nowrap;flex-shrink:0;
+    }
+    .badge-best{background:linear-gradient(90deg,#ff4757,#ff6b81);color:#fff}
+    .badge-hot {background:linear-gradient(90deg,#ffa502,#ffcc02);color:#000}
+    .badge-new {background:linear-gradient(90deg,#2ed573,#1abc9c);color:#fff}
+    .badge-sale{background:linear-gradient(90deg,#1e90ff,#74b9ff);color:#fff}
+    .shop-item-desc{font-size:12px;color:var(--text-secondary);line-height:1.55;margin-top:2px}
+    .shop-item-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+    .shop-item-tag{
+      font-size:10px;padding:2px 8px;border-radius:6px;
+      background:rgba(255,255,255,0.05);color:var(--text-muted);
+      border:1px solid var(--border);
+    }
+
+    /* 가격·버튼 영역 */
+    .shop-item-right{
+      display:flex;flex-direction:column;align-items:flex-end;
+      justify-content:center;gap:8px;
+      padding:14px 18px;flex-shrink:0;
+      min-width:140px;
+    }
+    .shop-item-price{
+      font-size:17px;font-weight:800;
+      background:linear-gradient(90deg,var(--accent2),#ffcc02);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      white-space:nowrap;
+    }
+    .shop-item-ref{font-size:10px;color:var(--text-muted);margin-top:-4px;text-align:right}
+    .shop-item-btn{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:8px 16px;
+      background:linear-gradient(135deg,var(--accent2),#ffcc02);
+      color:#1a1a00;
+      border-radius:20px;
+      font-size:12px;font-weight:700;
+      white-space:nowrap;
+      transition:all 0.2s;
+      box-shadow:0 3px 12px rgba(255,165,2,0.3);
+    }
+    .shop-item:hover .shop-item-btn{
+      box-shadow:0 5px 20px rgba(255,165,2,0.5);
+      transform:scale(1.04);
+    }
+
+    /* 모달 */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     .modal-overlay.open{display:flex}
     .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:0 24px 28px;width:91.2vw;max-width:1330px;margin:auto;display:flex;flex-direction:column;gap:10px}
-    .modal-ads-top{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius) var(--radius) 0 0;margin:0 -24px;width:calc(100% + 48px);overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .modal-ads-top{width:calc(100% + 48px);min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius) var(--radius) 0 0;margin:0 -24px;overflow:hidden;display:flex;align-items:center;justify-content:center}
     .modal-ads-top ins{display:block;width:100%;min-height:90px}
     .player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:var(--radius-sm);overflow:hidden}
     .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:var(--radius-sm)}
-    .modal-close{position:absolute;top:10px;right:10px;z-index:10;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:#fff;font-size:16px;cursor:pointer;line-height:1;transition:all 0.2s}
+    .modal-close{position:absolute;top:10px;right:10px;z-index:10;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:#fff;font-size:16px;cursor:pointer;transition:all 0.2s}
     .modal-close:hover{background:var(--accent);border-color:var(--accent)}
     .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
     .modal-stat{background:var(--bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--border);padding:12px;text-align:center}
     .modal-stat-value{font-size:18px;font-weight:700;color:var(--accent)}
     .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
-    .modal-info-tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);padding-bottom:0}
+    .modal-info-tabs{display:flex;gap:6px;border-bottom:1px solid var(--border)}
     .modal-info-tab{padding:8px 18px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;border:1px solid transparent;border-bottom:none;background:none;color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:all 0.2s;margin-bottom:-1px}
     .modal-info-tab:hover{color:var(--text-primary)}
     .modal-info-tab.active{background:var(--bg-secondary);border-color:var(--border);color:var(--accent)}
@@ -166,13 +293,24 @@
     .modal-desc-text{font-size:13px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap;word-break:break-word}
     .modal-desc-more{display:inline-block;margin-top:10px;color:var(--accent4);font-size:12px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
     .modal-yt-btn{display:inline-block;padding:8px 22px;background:var(--accent);color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
+
+    @media(max-width:900px){
+      .shop-item-icon{width:60px;font-size:28px}
+      .shop-item-right{min-width:120px;padding:12px 14px}
+      .shop-item-price{font-size:15px}
+    }
     @media(max-width:700px){
       .modal{width:100%;max-width:100%;padding:0 14px 20px}
       .modal-ads-top{margin:0 -14px;width:calc(100% + 28px)}
       .modal-stats{grid-template-columns:repeat(2,1fr)}
       .modal-info-tab{padding:6px 12px;font-size:12px}
       .modal-close{width:32px;height:32px;font-size:14px;top:8px;right:8px}
-      .shop-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+      .shop-cat-tab{min-width:72px;padding:12px 14px;font-size:12px}
+      .shop-cat-tab .sct-icon{font-size:22px}
+      .shop-item-icon{display:none}
+      .shop-item-right{min-width:100px;padding:10px 12px}
+      .shop-item-price{font-size:13px}
+      .shop-item-btn{padding:6px 12px;font-size:11px}
     }
   </style>
 </head>
@@ -200,6 +338,7 @@
   </nav>
 
   <main class="main-content">
+
     <!-- 인기영상 -->
     <section class="section-page active" id="section-hot">
       <div class="section-header">
@@ -212,8 +351,8 @@
       </div>
       <div class="cat-tabs" id="cat-tabs"></div>
       <div class="hot-tab-bar">
-        <button class="hot-tab-btn active" data-type="shorts" id="tab-shorts">🎬 쇼츠</button>
-        <button class="hot-tab-btn" data-type="longs" id="tab-longs">📹 롱폼</button>
+        <button class="hot-tab-btn active" data-type="shorts">🎬 쇼츠</button>
+        <button class="hot-tab-btn" data-type="longs">📹 롱폼</button>
       </div>
       <div id="search-result-header" style="display:none" class="search-result-header">
         <span>검색 결과: <strong id="search-kw-label"></strong></span>
@@ -285,15 +424,17 @@
     <section class="section-page" id="section-shop">
       <div class="section-header">
         <div class="section-title">🛒 장비 쇼핑</div>
-        <div class="section-subtitle">유튜버 추천 장비 — 쿠팡 파트너스 연동</div>
+        <div class="section-subtitle">유튜버 인기 장비 TOP 순위 — 쿠팡 파트너스 연동</div>
       </div>
-      <p class="shop-notice">
-        💡 아래 링크는 쿠팡 파트너스 제휴 링크입니다. 링크를 통해 구매하시면 수수료가 발생할 수 있으며,
-        실제 가격·재고는 쿠팡 페이지에서 확인해 주세요. 카테고리 버튼으로 원하는 장비를 빠르게 찾을 수 있습니다.
-      </p>
-      <div class="shop-filter-bar" id="shop-filter-bar"></div>
-      <div class="shop-grid" id="shop-grid"></div>
+      <div class="shop-cat-tabs" id="shop-cat-tabs"></div>
+      <div class="shop-rank-header">
+        <div class="shop-rank-title" id="shop-rank-title">📷 카메라 인기 순위</div>
+        <span class="shop-rank-badge">🔥 실시간 인기</span>
+      </div>
+      <p class="shop-notice">※ 쿠팡 파트너스 제휴 링크입니다. 링크 클릭 후 구매 시 수수료가 발생할 수 있으며, 표시 가격은 참고가입니다. 실제 가격·재고는 쿠팡에서 확인해 주세요.</p>
+      <div class="shop-list" id="shop-list"></div>
     </section>
+
   </main>
 </div>
 
@@ -327,123 +468,192 @@
 <script>
 /* ════════════════════════════════════════════
    ★ 쿠팡 파트너스 설정
-   - COUPANG_ID : 본인 파트너스 추적 ID로 교체
-   - 각 상품의 keyword : 쿠팡 검색 키워드
-   - url : 쿠팡 딥링크 (파트너스 가입 후 생성한 링크로 교체 권장)
 ════════════════════════════════════════════ */
-const COUPANG_ID = 'YOUR_COUPANG_ID'; // ← 파트너스 ID로 교체
+const COUPANG_ID = 'YOUR_COUPANG_ID'; // ← 본인 파트너스 ID로 교체
 
-/* 쿠팡 검색 딥링크 생성 함수 */
-function coupangSearchUrl(keyword) {
-  const encoded = encodeURIComponent(keyword);
-  // 파트너스 검색 딥링크 형식
-  return `https://www.coupang.com/np/search?q=${encoded}&channel=user&subId=${COUPANG_ID}`;
+function coupangUrl(keyword) {
+  return `https://www.coupang.com/np/search?q=${encodeURIComponent(keyword)}&channel=user&subId=${COUPANG_ID}`;
 }
 
-/* ★ 장비 데이터 – 카테고리 / 배지 / 예상가 포함 */
-const SHOP_DATA = [
-  /* 📷 카메라 */
-  { cat:'카메라', badge:'BEST', icon:'📷', name:'소니 ZV-E10 II',     desc:'유튜버 최애 브이로그 미러리스, 4K 영상·뒤집히는 터치스크린', price:'약 ₩899,000~', keyword:'소니 ZV-E10 II' },
-  { cat:'카메라', badge:'NEW',  icon:'📷', name:'캐논 EOS R50',       desc:'입문용 미러리스, 뛰어난 AF와 가벼운 무게', price:'약 ₩849,000~', keyword:'캐논 EOS R50' },
-  { cat:'카메라', badge:'BEST', icon:'🎥', name:'GoPro HERO 13',      desc:'방수 액션캠, 브이로그·스포츠 촬영 최적', price:'약 ₩499,000~', keyword:'고프로 HERO 13' },
-  { cat:'카메라', badge:'',     icon:'🎥', name:'DJI Osmo Pocket 3', desc:'3축 짐벌 내장 4K 카메라, 1인 크리에이터 필수템', price:'약 ₩549,000~', keyword:'DJI Osmo Pocket 3' },
-
-  /* 🎙️ 마이크 */
-  { cat:'마이크', badge:'BEST', icon:'🎙️', name:'Rode NT-USB Mini',  desc:'USB 플러그앤플레이, 스튜디오급 콘덴서 마이크', price:'약 ₩129,000~', keyword:'Rode NT-USB Mini' },
-  { cat:'마이크', badge:'',     icon:'🎙️', name:'Blue Yeti X',       desc:'다지향성 전환·게인 조절 가능한 스트리머용 마이크', price:'약 ₩189,000~', keyword:'Blue Yeti X 마이크' },
-  { cat:'마이크', badge:'NEW',  icon:'🎙️', name:'DJI Mic 2',         desc:'무선 핀마이크, 유튜브·인터뷰 촬영 이동 편의성 최고', price:'약 ₩349,000~', keyword:'DJI Mic 2 무선마이크' },
-  { cat:'마이크', badge:'SALE', icon:'🎙️', name:'Rode VideoMicro II',desc:'카메라 장착형 초소형 샷건마이크, 야외 브이로그 필수', price:'약 ₩99,000~', keyword:'Rode VideoMicro II' },
-
-  /* 💡 조명 */
-  { cat:'조명', badge:'BEST', icon:'💡', name:'Elgato Key Light Air',desc:'앱 제어 LED 패널, 스트리머·유튜버 표준 조명', price:'약 ₩159,000~', keyword:'Elgato Key Light Air' },
-  { cat:'조명', badge:'',     icon:'💡', name:'Godox SL60W',         desc:'60W COB LED, 전문 유튜브 스튜디오 주조명', price:'약 ₩89,000~', keyword:'Godox SL60W LED조명' },
-  { cat:'조명', badge:'SALE', icon:'💡', name:'링라이트 18인치',      desc:'셀카·뷰티·인터뷰 촬영용 링라이트+삼각대 세트', price:'약 ₩39,000~', keyword:'링라이트 18인치 유튜버' },
-
-  /* 🖥️ 편집·스트리밍 */
-  { cat:'편집·스트리밍', badge:'BEST', icon:'🖥️', name:'Elgato 4K X 캡처카드', desc:'4K60fps 캡처, 스트리밍·콘솔 게임 녹화 최강', price:'약 ₩259,000~', keyword:'Elgato 4K X 캡처카드' },
-  { cat:'편집·스트리밍', badge:'',     icon:'🖥️', name:'로지텍 StreamCam',      desc:'1080p 60fps 웹캠, 자동 AI 프레이밍', price:'약 ₩149,000~', keyword:'로지텍 StreamCam 웹캠' },
-  { cat:'편집·스트리밍', badge:'NEW',  icon:'💾', name:'삼성 T9 포터블 SSD',    desc:'4TB USB 3.2 Gen2, 영상 편집 외장 스토리지', price:'약 ₩179,000~', keyword:'삼성 T9 포터블 SSD' },
-
-  /* 🎒 액세서리 */
-  { cat:'액세서리', badge:'BEST', icon:'🎒', name:'조이트론 퀵슈 삼각대',  desc:'유튜버 입문용 경량 알루미늄 삼각대+볼헤드', price:'약 ₩49,000~', keyword:'유튜버 삼각대 퀵슈' },
-  { cat:'액세서리', badge:'',     icon:'🔋', name:'Anker 충전기 65W GaN', desc:'3포트 고속충전, 촬영 장비 한 번에 충전', price:'약 ₩39,000~', keyword:'Anker 65W GaN 충전기' },
-  { cat:'액세서리', badge:'SALE', icon:'🎧', name:'소니 WH-1000XM5',      desc:'업계 최강 노이즈캔슬링, 편집·모니터링 헤드폰', price:'약 ₩349,000~', keyword:'소니 WH-1000XM5' },
+/* ════════════════════════════════════════════
+   ★ 장비 데이터 (카테고리별 인기 순위)
+════════════════════════════════════════════ */
+const SHOP_CATS = [
+  { id:'camera',  label:'카메라',     icon:'📷' },
+  { id:'mic',     label:'마이크',     icon:'🎙️' },
+  { id:'light',   label:'조명',       icon:'💡' },
+  { id:'editing', label:'편집·스트리밍', icon:'🖥️' },
+  { id:'acc',     label:'액세서리',   icon:'🎒' },
 ];
 
-const SHOP_CATS = ['전체', ...new Set(SHOP_DATA.map(s => s.cat))];
-let activeShopCat = '전체';
+const SHOP_DATA = {
+  camera: [
+    { rank:1, badge:'BEST', icon:'📷', name:'소니 ZV-E10 II', price:'약 ₩899,000~',
+      desc:'브이로그 특화 미러리스 최신형. 4K 고화질·뒤집히는 터치스크린·실시간 트래킹 AF',
+      tags:['4K','브이로그','미러리스'], keyword:'소니 ZV-E10 II 카메라' },
+    { rank:2, badge:'HOT',  icon:'📷', name:'캐논 EOS R50',   price:'약 ₩849,000~',
+      desc:'가성비 입문 미러리스. 듀얼픽셀 AF·24.2MP·콤팩트 바디로 유튜브 입문자에 최적',
+      tags:['입문용','AF','경량'], keyword:'캐논 EOS R50' },
+    { rank:3, badge:'BEST', icon:'🎥', name:'GoPro HERO 13',  price:'약 ₩499,000~',
+      desc:'방수 5.3K 액션캠. 하이퍼스무스 6.0 손떨림 보정, 브이로그·스포츠 모두 커버',
+      tags:['액션캠','방수','손떨림보정'], keyword:'고프로 HERO 13' },
+    { rank:4, badge:'NEW',  icon:'🎥', name:'DJI Osmo Pocket 3', price:'약 ₩549,000~',
+      desc:'3축 짐벌 내장 4K/120fps. 1인 크리에이터를 위한 올인원 촬영 솔루션',
+      tags:['짐벌내장','4K','1인크리에이터'], keyword:'DJI Osmo Pocket 3' },
+    { rank:5, badge:'',     icon:'📷', name:'소니 ZV-1 II',   price:'약 ₩629,000~',
+      desc:'18-50mm 광각 줌렌즈 내장 컴팩트 카메라. 셀피 화면·소프트스킨 효과 탑재',
+      tags:['컴팩트','광각줌','셀피'], keyword:'소니 ZV-1 II' },
+  ],
+  mic: [
+    { rank:1, badge:'BEST', icon:'🎙️', name:'Rode NT-USB Mini', price:'약 ₩129,000~',
+      desc:'플러그앤플레이 USB 콘덴서 마이크. 스튜디오급 음질을 즉시 사용 가능',
+      tags:['USB','콘덴서','플러그앤플레이'], keyword:'Rode NT-USB Mini' },
+    { rank:2, badge:'HOT',  icon:'🎙️', name:'DJI Mic 2',        price:'약 ₩349,000~',
+      desc:'무선 핀마이크 2세대. 250m 전송 거리·32비트 플로트 녹음·노이즈 캔슬링 내장',
+      tags:['무선','핀마이크','노캔'], keyword:'DJI Mic 2 무선마이크' },
+    { rank:3, badge:'BEST', icon:'🎙️', name:'Blue Yeti X',      price:'약 ₩189,000~',
+      desc:'4가지 지향성 전환 가능 USB 마이크. 게이밍·팟캐스트·스트리밍 전방위 활용',
+      tags:['4지향성','스트리밍','팟캐스트'], keyword:'Blue Yeti X 마이크' },
+    { rank:4, badge:'SALE', icon:'🎙️', name:'Rode VideoMicro II', price:'약 ₩99,000~',
+      desc:'카메라 장착형 초소형 샷건마이크. 야외 브이로그·인터뷰 촬영 필수 아이템',
+      tags:['샷건','카메라장착','야외'], keyword:'Rode VideoMicro II' },
+    { rank:5, badge:'NEW',  icon:'🎙️', name:'Sony ECM-M1',     price:'약 ₩249,000~',
+      desc:'소니 신형 멀티 인터페이스 마이크. 8방향 집음·노이즈 리덕션 탑재',
+      tags:['소니정품','8방향','노이즈리덕션'], keyword:'Sony ECM-M1 마이크' },
+  ],
+  light: [
+    { rank:1, badge:'BEST', icon:'💡', name:'Elgato Key Light Air', price:'약 ₩159,000~',
+      desc:'앱·스트림덱 제어 LED 패널. 스트리머·유튜버 업계 표준 조명, 색온도·밝기 자유 조절',
+      tags:['앱제어','LED','스트리머'], keyword:'Elgato Key Light Air' },
+    { rank:2, badge:'HOT',  icon:'💡', name:'Godox SL60IID',   price:'약 ₩109,000~',
+      desc:'60W 데이라이트 LED 스튜디오 조명. 조용한 팬·선명한 연색성(CRI≥96) 전문가용',
+      tags:['스튜디오','CRI96','전문가'], keyword:'Godox SL60IID LED조명' },
+    { rank:3, badge:'BEST', icon:'💡', name:'Neewer 링라이트 18인치', price:'약 ₩49,000~',
+      desc:'18인치 48W 링라이트+삼각대+폰홀더 세트. 뷰티·뮤직비디오·인터뷰 촬영 최적',
+      tags:['링라이트','뷰티','세트구성'], keyword:'Neewer 18인치 링라이트' },
+    { rank:4, badge:'NEW',  icon:'💡', name:'Elgato Key Light Mini', price:'약 ₩89,000~',
+      desc:'Key Light의 미니 버전. 책상 공간이 좁은 홈오피스·소형 스튜디오에 딱 맞는 사이즈',
+      tags:['미니사이즈','홈오피스','앱제어'], keyword:'Elgato Key Light Mini' },
+    { rank:5, badge:'',     icon:'💡', name:'Aputure MC Pro',  price:'약 ₩189,000~',
+      desc:'RGBWW 미니 LED 패널. 자석 내장으로 어디든 부착·13가지 조명 FX 효과 내장',
+      tags:['RGBWW','자석','FX조명'], keyword:'Aputure MC Pro 미니LED' },
+  ],
+  editing: [
+    { rank:1, badge:'BEST', icon:'🖥️', name:'Elgato 4K X 캡처카드', price:'약 ₩259,000~',
+      desc:'4K60fps HDR 캡처·패스스루 8K. 스트리밍+녹화 동시 가능, 게이머·크리에이터 필수',
+      tags:['4K60fps','HDR','패스스루'], keyword:'Elgato 4K X 캡처카드' },
+    { rank:2, badge:'HOT',  icon:'🖥️', name:'로지텍 StreamCam', price:'약 ₩149,000~',
+      desc:'1080p 60fps 웹캠. AI 자동 프레이밍·USB-C·세로 모드 지원으로 스트리밍 최적화',
+      tags:['1080p60fps','AI프레임','USB-C'], keyword:'로지텍 StreamCam 웹캠' },
+    { rank:3, badge:'BEST', icon:'💾', name:'삼성 T9 포터블 SSD 2TB', price:'약 ₩139,000~',
+      desc:'USB 3.2 Gen2×2 최대 2,000MB/s. 4K RAW 영상 편집도 끊김없는 초고속 외장SSD',
+      tags:['2000MB/s','외장SSD','4K편집'], keyword:'삼성 T9 포터블 SSD 2TB' },
+    { rank:4, badge:'NEW',  icon:'🖥️', name:'ASUS ProArt 27인치 모니터', price:'약 ₩489,000~',
+      desc:'4K IPS·Delta E<2·Calman 인증. 색 정확도가 중요한 영상 편집자 전용 모니터',
+      tags:['4K','색보정','DeltaE<2'], keyword:'ASUS ProArt 27인치 편집모니터' },
+    { rank:5, badge:'SALE', icon:'⌨️', name:'Stream Deck MK.2', price:'약 ₩189,000~',
+      desc:'15개 LCD 키 스트림덱. 장면 전환·BGM·알림 등 원터치 방송 자동화 필수템',
+      tags:['스트림덱','자동화','OBS연동'], keyword:'Elgato Stream Deck MK2' },
+  ],
+  acc: [
+    { rank:1, badge:'BEST', icon:'🎒', name:'맨프로토 BeFree GT 삼각대', price:'약 ₩289,000~',
+      desc:'카본 4섹션 트래블 삼각대. 최대 10kg 지지·접이식 경량으로 야외 촬영 1위',
+      tags:['카본','경량','트래블'], keyword:'맨프로토 BeFree GT 삼각대' },
+    { rank:2, badge:'HOT',  icon:'🔋', name:'Anker 727 충전기 100W', price:'약 ₩49,000~',
+      desc:'4포트 100W GaN 충전기. 카메라·노트북·스마트폰 동시 고속충전 크리에이터 필수품',
+      tags:['GaN','100W','4포트'], keyword:'Anker 727 100W GaN 충전기' },
+    { rank:3, badge:'BEST', icon:'🎧', name:'소니 WH-1000XM5',    price:'약 ₩349,000~',
+      desc:'업계 최강 노이즈캔슬링 헤드폰. 영상 편집·모니터링·이동 중 집중 모두 완벽',
+      tags:['노이즈캔슬링','편집','모니터링'], keyword:'소니 WH-1000XM5 헤드폰' },
+    { rank:4, badge:'NEW',  icon:'🎒', name:'픽스처 카메라 숄더백', price:'약 ₩79,000~',
+      desc:'카메라+렌즈+노트북 수납 가능 방수 숄더백. 1일 촬영 장비를 한 번에 정리',
+      tags:['방수','숄더백','수납력'], keyword:'픽스처 카메라 숄더백' },
+    { rank:5, badge:'SALE', icon:'🔌', name:'Ulanzi MT-44 미니 삼각대', price:'약 ₩29,000~',
+      desc:'360° 볼헤드·고릴라포드 형태. 테이블·난간·나무 어디든 고정 가능한 유연 삼각대',
+      tags:['미니삼각대','고릴라포드','휴대성'], keyword:'Ulanzi MT-44 미니삼각대' },
+  ],
+};
+
+let activeShopCat = 'camera';
 
 function buildShop() {
-  /* 필터 버튼 */
-  const filterBar = document.getElementById('shop-filter-bar');
-  filterBar.innerHTML = SHOP_CATS.map(c =>
-    `<button class="shop-filter-btn${c === activeShopCat ? ' active' : ''}"
-      onclick="filterShop('${c}')">${c}</button>`
-  ).join('');
+  const tabWrap = document.getElementById('shop-cat-tabs');
+  tabWrap.innerHTML = SHOP_CATS.map(c => `
+    <button class="shop-cat-tab${c.id === activeShopCat ? ' active' : ''}"
+      onclick="switchShopCat('${c.id}')">
+      <span class="sct-icon">${c.icon}</span>
+      <span>${c.label}</span>
+    </button>`).join('');
   renderShop();
 }
 
-function filterShop(cat) {
-  activeShopCat = cat;
-  document.querySelectorAll('.shop-filter-btn').forEach(b =>
-    b.classList.toggle('active', b.textContent === cat)
+function switchShopCat(id) {
+  activeShopCat = id;
+  document.querySelectorAll('.shop-cat-tab').forEach((b,i) =>
+    b.classList.toggle('active', SHOP_CATS[i].id === id)
   );
+  const cfg = SHOP_CATS.find(c => c.id === id);
+  document.getElementById('shop-rank-title').textContent =
+    `${cfg.icon} ${cfg.label} 인기 순위`;
   renderShop();
 }
 
 function renderShop() {
-  const list = activeShopCat === '전체'
-    ? SHOP_DATA
-    : SHOP_DATA.filter(s => s.cat === activeShopCat);
-
-  document.getElementById('shop-grid').innerHTML = list.map(s => {
+  const items = SHOP_DATA[activeShopCat] || [];
+  document.getElementById('shop-list').innerHTML = items.map(s => {
+    const rankClass = s.rank <= 3 ? `rank-${s.rank}` : 'rank-other';
+    const rankNum   = s.rank <= 3
+      ? ['🥇','🥈','🥉'][s.rank-1]
+      : s.rank;
+    const badgeMap  = { BEST:'badge-best', HOT:'badge-hot', NEW:'badge-new', SALE:'badge-sale' };
     const badgeHtml = s.badge
-      ? `<span class="shop-badge ${s.badge.toLowerCase()}">${s.badge}</span>` : '';
-    const url = coupangSearchUrl(s.keyword);
+      ? `<span class="shop-item-badge ${badgeMap[s.badge]||''}">${s.badge}</span>` : '';
+    const tagsHtml  = s.tags.map(t => `<span class="shop-item-tag">${t}</span>`).join('');
+    const url = coupangUrl(s.keyword);
     return `
-      <div class="shop-card">
-        <div class="shop-card-thumb">
-          ${badgeHtml}
-          <span style="font-size:56px">${s.icon}</span>
-        </div>
-        <div class="shop-card-body">
-          <div class="shop-card-cat">${s.cat}</div>
-          <div class="shop-card-name">${s.name}</div>
-          <div class="shop-card-desc">${s.desc}</div>
-          <div class="shop-card-footer">
-            <div class="shop-card-price">${s.price}<span>참고가</span></div>
-            <a class="shop-card-btn" href="${url}" target="_blank" rel="noopener sponsored">
-              🛒 쿠팡 검색
-            </a>
+      <a class="shop-item ${rankClass}" href="${url}" target="_blank" rel="noopener sponsored">
+        <div class="shop-item-rank">${rankNum}</div>
+        <div class="shop-item-icon">${s.icon}</div>
+        <div class="shop-item-body">
+          <div class="shop-item-top">
+            <span class="shop-item-name">${s.name}</span>
+            ${badgeHtml}
           </div>
+          <div class="shop-item-desc">${s.desc}</div>
+          <div class="shop-item-tags">${tagsHtml}</div>
         </div>
-      </div>`;
+        <div class="shop-item-right">
+          <div class="shop-item-price">${s.price}</div>
+          <div class="shop-item-ref">참고가</div>
+          <span class="shop-item-btn">🛒 쿠팡 검색</span>
+        </div>
+      </a>`;
   }).join('');
 }
 
 /* ════════════════════════════════════════
-   이하 기존 코드 전체 유지
+   기존 코드
 ════════════════════════════════════════ */
 const API_KEYS = ['AIzaSyAYi9B4vIFjl75uYBS56GbTSMJfV_TLuzE'];
-let keyIdx = 0;
-const LONGS_MIN_SEC = 180;
-const SHORTS_KEYWORDS = ['shorts','#shorts','short','#short','shortvideo','shortsvideo','reels','tiktok','쇼츠','숏츠','#쇼츠','#숏츠'];
-const CAT_CFG = {
-  '음악':   {categoryId:'10',matchKeywords:['kpop','k-pop','음악','뮤직','노래','mv','뮤직비디오','singer','가수','아이돌','idol','ost','cover','커버','발라드'],shortsKw:['kpop shorts','음악 쇼츠','뮤직 shorts'],longsKw:['K-POP 뮤직비디오','음악 커버','아이돌 무대']},
-  '게임':   {categoryId:'20',matchKeywords:['게임','gaming','game','플레이','gameplay','공략','리그오브레전드','롤','배틀그라운드','마인크래프트','스타크래프트','overwatch','오버워치','fifa','브롤스타즈'],shortsKw:['게임 shorts','게임 쇼츠'],longsKw:['게임 공략','게임 플레이','롤 공략']},
-  '엔터':   {categoryId:'24',matchKeywords:['예능','재미','웃긴','유머','comedy','개그','버라이어티','리액션','reaction','몰래카메라','장난','콩트','드라마','연예인'],shortsKw:['예능 shorts','웃긴 쇼츠','유머 shorts'],longsKw:['예능 프로그램','웃긴 영상','코미디']},
-  '스포츠': {categoryId:'17',matchKeywords:['스포츠','sport','축구','야구','농구','배구','골프','테니스','수영','육상','올림픽','월드컵','손흥민','류현진','킥복싱','격투기','mma'],shortsKw:['스포츠 shorts','축구 쇼츠','야구 shorts'],longsKw:['스포츠 하이라이트','축구 경기','야구 경기']},
-  '교육':   {categoryId:'27',matchKeywords:['교육','강의','공부','학습','튜토리얼','tutorial','how to','영어','수학','과학','역사','코딩','programming','자격증','취업'],shortsKw:['교육 shorts','공부 쇼츠','강의 shorts'],longsKw:['교육 강의','공부법','튜토리얼']},
-  '요리':   {categoryId:'26',matchKeywords:['요리','먹방','레시피','음식','cooking','food','맛집','mukbang','먹스타그램','맛있','식당','chef','요식','베이킹','baking','라면','삼겹살','치킨'],shortsKw:['먹방 shorts','요리 쇼츠','레시피 shorts'],longsKw:['먹방','요리 레시피','맛집 탐방']},
-  '여행':   {categoryId:'19',matchKeywords:['여행','travel','브이로그','vlog','일상','관광','vacation','trip','해외','국내여행','캠핑','등산','드라이브','자동차','여행기'],shortsKw:['여행 shorts','브이로그 쇼츠','vlog shorts'],longsKw:['여행 브이로그','해외여행','국내여행']},
-  '뷰티':   {categoryId:'',  matchKeywords:['뷰티','beauty','메이크업','makeup','화장','패션','fashion','스킨케어','skincare','헤어','hair','네일','nail','코디','ootd','옷','향수'],shortsKw:['뷰티 shorts','메이크업 쇼츠','패션 shorts'],longsKw:['메이크업 튜토리얼','패션 코디','뷰티 리뷰']},
+let keyIdx=0;
+const LONGS_MIN_SEC=180;
+const SHORTS_KEYWORDS=['shorts','#shorts','short','#short','shortvideo','shortsvideo','reels','tiktok','쇼츠','숏츠','#쇼츠','#숏츠'];
+const CAT_CFG={
+  '음악':{categoryId:'10',matchKeywords:['kpop','k-pop','음악','뮤직','노래','mv','뮤직비디오','singer','가수','아이돌','idol','ost','cover','커버','발라드'],shortsKw:['kpop shorts','음악 쇼츠','뮤직 shorts'],longsKw:['K-POP 뮤직비디오','음악 커버','아이돌 무대']},
+  '게임':{categoryId:'20',matchKeywords:['게임','gaming','game','플레이','gameplay','공략','리그오브레전드','롤','배틀그라운드','마인크래프트','스타크래프트','overwatch','오버워치','fifa','브롤스타즈'],shortsKw:['게임 shorts','게임 쇼츠'],longsKw:['게임 공략','게임 플레이','롤 공략']},
+  '엔터':{categoryId:'24',matchKeywords:['예능','재미','웃긴','유머','comedy','개그','버라이어티','리액션','reaction','몰래카메라','장난','콩트','드라마','연예인'],shortsKw:['예능 shorts','웃긴 쇼츠','유머 shorts'],longsKw:['예능 프로그램','웃긴 영상','코미디']},
+  '스포츠':{categoryId:'17',matchKeywords:['스포츠','sport','축구','야구','농구','배구','골프','테니스','수영','육상','올림픽','월드컵','손흥민','류현진','킥복싱','격투기','mma'],shortsKw:['스포츠 shorts','축구 쇼츠','야구 shorts'],longsKw:['스포츠 하이라이트','축구 경기','야구 경기']},
+  '교육':{categoryId:'27',matchKeywords:['교육','강의','공부','학습','튜토리얼','tutorial','how to','영어','수학','과학','역사','코딩','programming','자격증','취업'],shortsKw:['교육 shorts','공부 쇼츠','강의 shorts'],longsKw:['교육 강의','공부법','튜토리얼']},
+  '요리':{categoryId:'26',matchKeywords:['요리','먹방','레시피','음식','cooking','food','맛집','mukbang','먹스타그램','맛있','식당','chef','요식','베이킹','baking','라면','삼겹살','치킨'],shortsKw:['먹방 shorts','요리 쇼츠','레시피 shorts'],longsKw:['먹방','요리 레시피','맛집 탐방']},
+  '여행':{categoryId:'19',matchKeywords:['여행','travel','브이로그','vlog','일상','관광','vacation','trip','해외','국내여행','캠핑','등산','드라이브','자동차','여행기'],shortsKw:['여행 shorts','브이로그 쇼츠','vlog shorts'],longsKw:['여행 브이로그','해외여행','국내여행']},
+  '뷰티':{categoryId:'',matchKeywords:['뷰티','beauty','메이크업','makeup','화장','패션','fashion','스킨케어','skincare','헤어','hair','네일','nail','코디','ootd','옷','향수'],shortsKw:['뷰티 shorts','메이크업 쇼츠','패션 shorts'],longsKw:['메이크업 튜토리얼','패션 코디','뷰티 리뷰']},
 };
-const CAT_KEYS = Object.keys(CAT_CFG);
-let activeCat=CAT_KEYS[0], activeType='shorts';
-let hotSearchMode=false, hotSearchQuery='';
-let searchShorts=[], searchLongs=[], searchShortsPage=0, searchLongsPage=0;
-const catShortsCache={}, catLongCache={};
-let shortsPage=0, longsPage=0;
+const CAT_KEYS=Object.keys(CAT_CFG);
+let activeCat=CAT_KEYS[0],activeType='shorts';
+let hotSearchMode=false,hotSearchQuery='';
+let searchShorts=[],searchLongs=[],searchShortsPage=0,searchLongsPage=0;
+const catShortsCache={},catLongCache={};
+let shortsPage=0,longsPage=0;
 const PAGE=12;
 const GRADES=[
   {min:10_000_000,label:'S+',color:'#ffd700',bg:'rgba(255,215,0,0.15)'},
@@ -487,7 +697,7 @@ function searchHashtag(tag){closeVideoModal();document.getElementById('hot-kw-in
 function closeVideoModal(){const pw=document.getElementById('player-wrap');const iframe=pw.querySelector('iframe');if(iframe){iframe.src='';pw.removeChild(iframe);}document.getElementById('video-modal').classList.remove('open');}
 async function openVideoModal(vid){
   const overlay=document.getElementById('video-modal'),pw=document.getElementById('player-wrap'),statsEl=document.getElementById('modal-stats'),linkEl=document.getElementById('modal-yt-link');
-  const oldIframe=pw.querySelector('iframe');if(oldIframe){oldIframe.src='';pw.removeChild(oldIframe);}
+  const old=pw.querySelector('iframe');if(old){old.src='';pw.removeChild(old);}
   statsEl.innerHTML='<div class="loader-wrap" style="padding:20px"><div class="spinner"></div></div>';
   document.getElementById('modal-full-title').textContent='—';document.getElementById('modal-hashtag-wrap').innerHTML='—';document.getElementById('modal-desc-text').textContent='—';document.getElementById('modal-desc-more').style.display='none';
   switchModalInfoTab('title');linkEl.href=`https://www.youtube.com/watch?v=${vid}`;overlay.classList.add('open');initModalAd();
@@ -608,7 +818,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.hot-tab-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       activeType=btn.dataset.type;shortsPage=0;longsPage=0;searchShortsPage=0;searchLongsPage=0;
-      document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+      document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
       hotSearchMode?renderSearchResult():renderHotSplit();
     });
   });
