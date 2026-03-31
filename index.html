@@ -1,1015 +1,666 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YTAnalytics Pro</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-AF8853448" crossorigin="anonymous"></script>
-  <style>
-    :root {
-      --bg-primary:#0f0f1a; --bg-secondary:#1a1a2e; --bg-card:#1e1e2e; --bg-hover:#252535;
-      --accent:#ff4757; --accent2:#ffa502; --accent3:#2ed573; --accent4:#1e90ff;
-      --text-primary:#e8e8f0; --text-secondary:#9898b0; --text-muted:#606078;
-      --border:#2a2a3e; --gradient:linear-gradient(135deg,#ff4757,#ff6b81);
-      --shadow:0 8px 32px rgba(0,0,0,0.4); --radius:12px; --radius-sm:8px;
-    }
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
-    .header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,15,26,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
-    .logo{display:flex;align-items:center;gap:10px;cursor:pointer}
-    .logo-icon{width:36px;height:36px;background:var(--gradient);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
-    .logo-text{font-size:18px;font-weight:700}
-    .logo-text span{color:var(--accent)}
-    .api-status{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(46,213,115,0.15);color:var(--accent3);border:1px solid rgba(46,213,115,0.3)}
-    .api-status.error{background:rgba(255,71,87,0.15);color:var(--accent);border-color:rgba(255,71,87,0.3)}
-    #global-error-banner{display:none;position:fixed;top:60px;left:0;right:0;z-index:99;background:rgba(255,71,87,0.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:500;text-align:center}
-    .app-layout{display:flex;padding-top:60px;min-height:100vh}
-    .sidebar{width:220px;background:var(--bg-secondary);border-right:1px solid var(--border);padding:20px 12px;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto}
-    .nav-section-title{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;padding:0 8px 8px;margin-top:16px}
-    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:500;color:var(--text-secondary);transition:all 0.2s;border:none;background:none;width:100%;text-align:left}
-    .nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
-    .nav-item.active{background:rgba(255,71,87,0.15);color:var(--accent)}
-    .nav-item .nav-icon{font-size:18px;width:24px;text-align:center}
-    .main-content{margin-left:220px;flex:1;padding:24px;min-width:0}
-    .section-page{display:none}
-    .section-page.active{display:block}
-    .section-header{margin-bottom:24px}
-    .section-title{font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px}
-    .section-subtitle{font-size:14px;color:var(--text-secondary);margin-top:6px}
-    .hot-search-box{display:flex;gap:10px;margin-bottom:16px}
-    .hot-search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
-    .hot-search-input:focus{border-color:var(--accent)}
-    .hot-search-btn{padding:10px 20px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600;white-space:nowrap}
-    .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-    .cat-btn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.2s}
-    .cat-btn:hover{border-color:var(--accent);color:var(--accent)}
-    .cat-btn.active{background:rgba(255,71,87,0.15);border-color:var(--accent);color:var(--accent)}
-    .hot-tab-bar{display:flex;gap:8px;margin-bottom:16px}
-    .hot-tab-btn{padding:8px 20px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:14px;font-weight:500;transition:all 0.2s}
-    .hot-tab-btn.active{background:rgba(255,71,87,0.15);border-color:var(--accent);color:var(--accent)}
-    .search-result-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:14px;color:var(--text-secondary)}
-    .search-clear-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-secondary);cursor:pointer;font-size:12px}
-    .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:16px}
-    .video-card{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.2s}
-    .video-card:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:var(--shadow)}
-    .thumb-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#111}
-    .thumb-wrap img{width:100%;height:100%;object-fit:cover}
-    .shorts-badge{position:absolute;top:6px;left:6px;background:var(--accent);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
-    .duration-badge{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.8);color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600}
-    .video-info{padding:12px}
-    .video-title{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .video-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-    .video-channel{font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%}
-    .video-stats{display:flex;gap:10px;font-size:12px;color:var(--text-secondary)}
-    .viral-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
-    .viral-badge.hot{background:rgba(255,71,87,0.15);color:var(--accent)}
-    .viral-badge.warm{background:rgba(255,165,2,0.15);color:var(--accent2)}
-    .viral-badge.cool{background:rgba(46,213,115,0.15);color:var(--accent3)}
-    .more-btn{display:none;width:100%;padding:12px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-secondary);cursor:pointer;font-size:14px;margin-bottom:16px;transition:all 0.2s}
-    .more-btn:hover{border-color:var(--accent);color:var(--accent)}
-    .loader-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:60px 20px}
-    .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .no-data{text-align:center;padding:60px 20px;color:var(--text-secondary)}
-    .no-data-icon{font-size:48px;margin-bottom:12px}
-    .error-card{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:var(--radius);padding:20px;color:var(--accent)}
-    .channel-search-box{display:flex;gap:10px;margin-bottom:24px}
-    .search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
-    .search-input:focus{border-color:var(--accent)}
-    .search-btn{padding:12px 24px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600}
-    .channel-result-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px}
-    .channel-header{display:flex;align-items:center;gap:20px;margin-bottom:20px}
-    .channel-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover}
-    .channel-name{font-size:20px;font-weight:700}
-    .channel-handle{font-size:14px;color:var(--text-secondary);margin-top:4px}
-    .grade-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:14px;font-weight:700;border:2px solid}
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px}
-    .stat-card{background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);padding:16px;text-align:center}
-    .stat-value{font-size:22px;font-weight:700;color:var(--accent)}
-    .stat-label{font-size:12px;color:var(--text-secondary);margin-top:4px}
-    .calc-form{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:24px}
-    .form-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:16px}
-    .form-group{display:flex;flex-direction:column;gap:6px}
-    .form-label{font-size:13px;color:var(--text-secondary);font-weight:500}
-    .form-input{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
-    .form-input:focus{border-color:var(--accent)}
-    .calc-btn{padding:12px 28px;background:var(--gradient);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700}
-    .result-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-    .result-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:20px;text-align:center}
-    .result-value{font-size:26px;font-weight:700;color:var(--accent2)}
-    .result-label{font-size:13px;color:var(--text-secondary);margin-top:6px}
-    .ai-form{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:24px}
-    .ai-idea-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-    .ai-idea-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:16px;cursor:pointer;transition:all 0.2s}
-    .ai-idea-card:hover{border-color:var(--accent3);transform:translateY(-1px)}
-    .ai-idea-title{font-size:14px;font-weight:600;margin-bottom:6px}
-    .ai-idea-desc{font-size:12px;color:var(--text-secondary)}
-    .tools-grid,.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-    .tool-card,.shop-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:20px;cursor:pointer;transition:all 0.2s;text-align:center}
-    .tool-card:hover,.shop-card:hover{border-color:var(--accent4);transform:translateY(-2px)}
-    .tool-icon{font-size:36px;margin-bottom:10px}
-    .tool-name{font-size:15px;font-weight:700;margin-bottom:6px}
-    .tool-desc,.shop-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
-    .shop-price{font-size:16px;font-weight:700;color:var(--accent2);margin-top:8px}
-    .shop-link{display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(255,165,2,0.15);color:var(--accent2);border-radius:20px;font-size:12px;text-decoration:none}
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
-    .modal-overlay.open{display:flex}
-    .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
-    .modal-ads-top{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center}
-    .modal-ads-top ins{display:block;width:100%;min-height:90px}
-    .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-    .modal-title{font-size:17px;font-weight:700;line-height:1.4;flex:1}
-    .modal-close{background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
-    .modal-close:hover{color:var(--text-primary);background:var(--bg-hover)}
-    .player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:var(--radius-sm);overflow:hidden}
-    .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:var(--radius-sm)}
-    .modal-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-    .modal-stat{background:var(--bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--border);padding:12px;text-align:center}
-    .modal-stat-value{font-size:18px;font-weight:700;color:var(--accent)}
-    .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
-    .modal-yt-btn{display:inline-block;padding:8px 22px;background:var(--accent);color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
-    @media(max-width:700px){.modal{width:100%;max-width:100%;padding:14px 14px 20px}.modal-stats{grid-template-columns:repeat(2,1fr)}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>유튜브 알고리즘 분석 3D 레벨 카드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070f;--text:#e8e8f0;--sub:#7777aa;--accent:#6c63ff;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;padding:48px 24px 80px;}
+
+/* ═══════════════════════════════════════════════════════════════
+   페이지 헤더 및 기본 레이아웃
+═══════════════════════════════════════════════════════════════ */
+.page-title{text-align:center;font-size:2rem;font-weight:900;background:linear-gradient(90deg,#6c63ff,#a78bfa,#6c63ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:titleSlide 3s linear infinite;margin-bottom:8px;}
+@keyframes titleSlide{to{background-position:200% center;}}
+.page-sub{text-align:center;color:var(--sub);font-size:.88rem;margin-bottom:48px;}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:90px 40px;padding:40px 20px 60px;max-width:1400px;margin:0 auto;}
+
+/* ═══════════════════════════════════════════════════════════════
+   카드 기본 구조 (최적화된 230×340px)
+═══════════════════════════════════════════════════════════════ */
+.card-scene{width:230px;height:340px;perspective:900px;position:relative;cursor:pointer;margin:auto;}
+.card-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(0deg) rotateY(0deg);transition:transform .1s ease;will-change:transform;}
+.card-frame{position:absolute;inset:-3px;border-radius:21px;z-index:1;pointer-events:none;}
+.card-frame::after{content:'';position:absolute;inset:2px;border-radius:19px;background:var(--bg);}
+
+/* 빔 효과 */
+.beam-container{position:absolute;inset:-3px;border-radius:21px;overflow:hidden;z-index:2;pointer-events:none;}
+.beam-ring{position:absolute;width:400%;height:400%;top:50%;left:50%;margin-top:-200%;margin-left:-200%;animation:beamRingSpin var(--beam-speed,3s) linear infinite;transform-origin:center center;}
+@keyframes beamRingSpin{from{rotate:0deg;}to{rotate:360deg;}}
+
+/* 카드 바디 */
+.card-body{position:absolute;inset:0;border-radius:18px;z-index:3;transition:box-shadow .3s ease;}
+.card-face{position:absolute;inset:0;border-radius:18px;overflow:hidden;}
+.card-face::before{content:'';position:absolute;inset:0;border-radius:18px;background:repeating-linear-gradient(-45deg,transparent 0px,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);pointer-events:none;z-index:1;}
+.card-shine{position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none;z-index:5;mix-blend-mode:screen;transition:background .08s ease;}
+.card-top-band{position:absolute;top:0;left:0;right:0;height:44%;border-radius:18px 18px 0 0;z-index:2;pointer-events:none;}
+.card-bot-band{position:absolute;bottom:0;left:0;right:0;height:40%;border-radius:0 0 18px 18px;z-index:2;pointer-events:none;}
+
+/* ═══════════════════════════════════════════════════════════════
+   1영역: 헤더 - 레벨 정보
+═══════════════════════════════════════════════════════════════ */
+.card-header{position:absolute;top:0;left:0;right:0;padding:13px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;z-index:10;}
+.card-lv-label{font-size:11px;font-weight:900;letter-spacing:.08em;padding:3px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);backdrop-filter:blur(4px);}
+.card-badge{color:#fff;padding:4px 11px;border-radius:8px;font-size:10px;font-weight:900;letter-spacing:.05em;box-shadow:0 2px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.2);}
+
+/* ═══════════════════════════════════════════════════════════════
+   파티클 및 보케 효과 (원본 유지)
+═══════════════════════════════════════════════════════════════ */
+.card-bokeh{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:18px;}
+.bokeh-dot{position:absolute;border-radius:50%;filter:blur(var(--bblur,5px));opacity:var(--bop,.35);animation:bokehDrift var(--bdur,7s) ease-in-out infinite;animation-delay:var(--bdel,0s);}
+@keyframes bokehDrift{0%,100%{transform:translate(0,0) scale(1);}25%{transform:translate(7px,-9px) scale(1.12);}50%{transform:translate(-6px,7px) scale(.91);}75%{transform:translate(9px,4px) scale(1.06);}}
+.card-sparkles{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;border-radius:18px;}
+.sparkle-dot{position:absolute;font-size:var(--ssz,11px);animation:sparklePop var(--sdur,2.2s) ease-in-out infinite;animation-delay:var(--sdel,0s);}
+@keyframes sparklePop{0%,100%{opacity:.08;transform:scale(.45) rotate(-12deg);}40%{opacity:1;transform:scale(1.25) rotate(12deg);}65%{opacity:.75;transform:scale(1.05) rotate(5deg);}}
+
+/* ═══════════════════════════════════════════════════════════════
+   2영역: 메인 알고리즘 점수 (최적화된 배치)
+═══════════════════════════════════════════════════════════════ */
+.card-main-wrap{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);z-index:8;display:flex;flex-direction:column;align-items:center;width:100%;text-align:center;}
+.card-main-icon{font-size:2.2rem;margin-bottom:4px;animation:iconHover 3.5s ease-in-out infinite;}
+@keyframes iconHover{0%,100%{transform:translateY(0) rotateY(0deg);}30%{transform:translateY(-5px) rotateY(9deg);}70%{transform:translateY(-2px) rotateY(-6deg);}}
+.card-score{font-size:2.6rem;font-weight:900;line-height:1;letter-spacing:-0.02em;margin-bottom:2px;}
+.card-score-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.1em;margin-bottom:4px;text-transform:uppercase;}
+.card-trend{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(4px);}
+
+/* ═══════════════════════════════════════════════════════════════
+   3영역: 핵심 지표 미니 대시보드 (신규 추가)
+═══════════════════════════════════════════════════════════════ */
+.card-metrics-mini{position:absolute;bottom:85px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:10;gap:4px;}
+.mini-metric{flex:1;display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 2px;backdrop-filter:blur(4px);transition:transform .2s ease;}
+.mini-metric:hover{transform:translateY(-2px);}
+.metric-icon{font-size:11px;margin-bottom:2px;opacity:0.9;}
+.metric-val{font-size:10px;font-weight:800;color:#fff;line-height:1;}
+.metric-name{font-size:7px;color:rgba(255,255,255,.5);margin-top:2px;letter-spacing:0.05em;}
+
+/* 상태별 색상 */
+.status-good{color:#66ffdd !important;}
+.status-warn{color:#ffaa44 !important;}
+.status-danger{color:#ff6680 !important;}
+
+/* ═══════════════════════════════════════════════════════════════
+   XP 바 및 비네트 효과
+═══════════════════════════════════════════════════════════════ */
+.card-vignette{position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);}
+.card-xp-wrap{position:absolute;bottom:52px;left:14px;right:14px;z-index:10;}
+.card-xp-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.xp-title{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.5);}
+.xp-range{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);}
+.xp-bar-bg{width:100%;height:5px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;position:relative;}
+.xp-bar-fill{height:100%;border-radius:4px;position:relative;transition:width .6s ease;}
+.xp-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);animation:xpShine 2s linear infinite;}
+@keyframes xpShine{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
+
+/* ═══════════════════════════════════════════════════════════════
+   4영역: 확장된 푸터 (AI 진단 메시지 포함)
+═══════════════════════════════════════════════════════════════ */
+.card-footer{position:absolute;bottom:0;left:0;right:0;padding:8px 14px;display:flex;flex-direction:column;justify-content:center;gap:3px;height:46px;z-index:10;border-radius:0 0 18px 18px;border-top:1px solid rgba(255,255,255,.15);}
+.footer-top{display:flex;justify-content:space-between;align-items:center;width:100%;}
+.footer-name{font-size:11px;font-weight:800;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);}
+.footer-rank{font-size:9px;color:rgba(255,255,255,.7);font-weight:600;}
+.footer-diagnosis{font-size:8px;color:rgba(255,255,255,.85);text-align:center;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0.02em;line-height:1.2;}
+
+/* ═══════════════════════════════════════════════════════════════
+   배경 글로우 효과
+═══════════════════════════════════════════════════════════════ */
+.card-scene::before,.card-scene::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:60%;border-radius:50%;pointer-events:none;z-index:0;}
+.card-scene::before{top:-18px;height:36px;filter:blur(14px);animation:topGlow 3s ease-in-out infinite;}
+.card-scene::after{bottom:-18px;height:36px;filter:blur(14px);animation:botGlow 3s ease-in-out infinite;}
+@keyframes topGlow{0%,100%{opacity:.55;transform:translateX(-50%) scaleX(1);}50%{opacity:.88;transform:translateX(-50%) scaleX(1.14);}}
+@keyframes botGlow{0%,100%{opacity:.50;transform:translateX(-50%) scaleX(1);}50%{opacity:.82;transform:translateX(-50%) scaleX(1.12);}}
+@keyframes fogPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:.88;transform:scale(1.07);}}
+
+/* ═══════════════════════════════════════════════════════════════
+   레벨별 시각적 테마 (전체 10레벨 + MAX)
+═══════════════════════════════════════════════════════════════ */
+
+/* LV1 - 아이스 블루 */
+.card-scene[data-lv="1"]::before,.card-scene[data-lv="1"]::after{background:radial-gradient(ellipse,rgba(180,230,255,.9) 0%,transparent 70%);}
+.card-scene[data-lv="1"] .card-lv-label{color:#b0e8ff;border-color:rgba(128,208,240,.45);text-shadow:0 0 8px rgba(128,208,240,.8);}
+.card-scene[data-lv="1"] .card-frame{background:linear-gradient(135deg,#0a1a2e,#2a6080,#80d0f0,#ffffff,#80d0f0,#2a6080,#0a1a2e);background-size:300% 300%;animation:levelShift 3s ease-in-out infinite;}
+.card-scene[data-lv="1"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1a4060 2%,#3a90c0 4%,#90dff8 5.5%,#ffffff 6.5%,#90dff8 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="1"] .card-body{background:linear-gradient(160deg,#060f18 0%,#04090f 55%,#060f18 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(128,208,240,.35),0 0 0 1px rgba(128,208,240,.38);}
+.card-scene[data-lv="1"] .card-top-band{background:linear-gradient(180deg,rgba(128,208,240,.45) 0%,transparent 100%);}
+.card-scene[data-lv="1"] .card-bot-band{background:linear-gradient(0deg,rgba(128,208,240,.38) 0%,transparent 100%);}
+.card-scene[data-lv="1"] .card-score{color:#b0e8ff;text-shadow:0 0 14px rgba(128,208,240,.9),0 0 32px rgba(100,180,220,.6);}
+.card-scene[data-lv="1"] .card-trend{color:#80d0f0;}
+.card-scene[data-lv="1"] .card-badge{background:linear-gradient(135deg,#1a4060,#3a90c0);}
+.card-scene[data-lv="1"] .card-footer{background:linear-gradient(135deg,#06101c 0%,#0a1a2a 100%);}
+.card-scene[data-lv="1"] .xp-bar-fill{background:linear-gradient(90deg,#1a4060,#3a90c0,#90dff8);box-shadow:0 0 6px rgba(128,208,240,.7);}
+
+/* LV2 - 스틸 블루 */
+.card-scene[data-lv="2"]::before,.card-scene[data-lv="2"]::after{background:radial-gradient(ellipse,rgba(100,149,220,.9) 0%,transparent 70%);}
+.card-scene[data-lv="2"] .card-lv-label{color:#a8c8f0;border-color:rgba(74,127,193,.45);text-shadow:0 0 8px rgba(74,127,193,.8);}
+.card-scene[data-lv="2"] .card-frame{background:linear-gradient(135deg,#1c2e4a,#4a7fc1,#a8c8f0,#4a7fc1,#1c2e4a);background-size:300% 300%;animation:levelShift 4s ease-in-out infinite;}
+.card-scene[data-lv="2"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1c3a5e 2%,#4a7fc1 4%,#a8c8f0 5.5%,#4a7fc1 7%,#1c3a5e 9%,transparent 11%,transparent 100%);}
+.card-scene[data-lv="2"] .card-body{background:linear-gradient(160deg,#0d1a2e 0%,#0a0f1a 55%,#0d1a2e 100%);box-shadow:0 20px 55px rgba(0,0,0,.7),0 0 30px rgba(74,127,193,.25),0 0 0 1px rgba(74,127,193,.3);}
+.card-scene[data-lv="2"] .card-top-band{background:linear-gradient(180deg,rgba(74,127,193,.35) 0%,transparent 100%);}
+.card-scene[data-lv="2"] .card-bot-band{background:linear-gradient(0deg,rgba(74,127,193,.30) 0%,transparent 100%);}
+.card-scene[data-lv="2"] .card-score{color:#a8c8f0;text-shadow:0 0 12px rgba(74,127,193,.9),0 0 24px rgba(74,127,193,.5);}
+.card-scene[data-lv="2"] .card-trend{color:#7ba8e0;}
+.card-scene[data-lv="2"] .card-badge{background:linear-gradient(135deg,#1c3a5e,#4a7fc1);}
+.card-scene[data-lv="2"] .card-footer{background:linear-gradient(135deg,#0d1e36 0%,#162a45 100%);}
+.card-scene[data-lv="2"] .xp-bar-fill{background:linear-gradient(90deg,#1c3a5e,#4a7fc1,#a8c8f0);box-shadow:0 0 6px rgba(74,127,193,.7);}
+
+/* LV3 - 코발트 블루 */
+.card-scene[data-lv="3"]::before,.card-scene[data-lv="3"]::after{background:radial-gradient(ellipse,rgba(0,160,255,.9) 0%,transparent 70%);}
+.card-scene[data-lv="3"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,160,255,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="3"] .card-lv-label{color:#66ccff;border-color:rgba(0,153,255,.45);text-shadow:0 0 8px rgba(0,153,255,.8);}
+.card-scene[data-lv="3"] .card-frame{background:linear-gradient(135deg,#001a33,#0055aa,#00aaff,#ffffff,#00aaff,#0055aa,#001a33);background-size:300% 300%;animation:levelShift 3.5s ease-in-out infinite;}
+.card-scene[data-lv="3"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#003366 2%,#0077cc 4%,#00aaff 5.5%,#ffffff 6.5%,#00aaff 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="3"] .card-body{background:linear-gradient(160deg,#00091a 0%,#000d22 55%,#00091a 100%);box-shadow:0 22px 58px rgba(0,0,0,.75),0 0 35px rgba(0,153,255,.28),0 0 0 1px rgba(0,153,255,.32);}
+.card-scene[data-lv="3"] .card-top-band{background:linear-gradient(180deg,rgba(0,153,255,.4) 0%,transparent 100%);}
+.card-scene[data-lv="3"] .card-bot-band{background:linear-gradient(0deg,rgba(0,153,255,.35) 0%,transparent 100%);}
+.card-scene[data-lv="3"] .card-score{color:#66ccff;text-shadow:0 0 14px rgba(0,170,255,.9),0 0 30px rgba(0,153,255,.55);}
+.card-scene[data-lv="3"] .card-trend{color:#33aaff;}
+.card-scene[data-lv="3"] .card-badge{background:linear-gradient(135deg,#003366,#0077cc);}
+.card-scene[data-lv="3"] .card-footer{background:linear-gradient(135deg,#00091f 0%,#001433 100%);}
+.card-scene[data-lv="3"] .xp-bar-fill{background:linear-gradient(90deg,#003366,#0077cc,#00aaff);box-shadow:0 0 6px rgba(0,153,255,.7);}
+
+/* LV4 - 에메랄드 */
+.card-scene[data-lv="4"]::before,.card-scene[data-lv="4"]::after{background:radial-gradient(ellipse,rgba(0,200,120,.9) 0%,transparent 70%);}
+.card-scene[data-lv="4"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,200,120,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="4"] .card-lv-label{color:#66ffaa;border-color:rgba(0,204,102,.45);text-shadow:0 0 8px rgba(0,204,102,.8);}
+.card-scene[data-lv="4"] .card-frame{background:linear-gradient(135deg,#001a0d,#006633,#00cc66,#aaffcc,#00cc66,#006633,#001a0d);background-size:300% 300%;animation:levelShift 3s ease-in-out infinite;}
+.card-scene[data-lv="4"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004422 2%,#009944 4%,#00cc66 5.5%,#aaffcc 6.5%,#00cc66 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="4"] .card-body{background:linear-gradient(160deg,#001a0a 0%,#000f06 55%,#001a0a 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,200,100,.35),0 0 0 1px rgba(0,200,100,.38);}
+.card-scene[data-lv="4"] .card-top-band{background:linear-gradient(180deg,rgba(0,204,102,.45) 0%,transparent 100%);}
+.card-scene[data-lv="4"] .card-bot-band{background:linear-gradient(0deg,rgba(0,204,102,.38) 0%,transparent 100%);}
+.card-scene[data-lv="4"] .card-score{color:#66ffaa;text-shadow:0 0 14px rgba(0,204,102,.9),0 0 32px rgba(0,170,80,.6);}
+.card-scene[data-lv="4"] .card-trend{color:#33ee88;}
+.card-scene[data-lv="4"] .card-badge{background:linear-gradient(135deg,#004422,#009944);}
+.card-scene[data-lv="4"] .card-footer{background:linear-gradient(135deg,#001508 0%,#002a12 100%);}
+.card-scene[data-lv="4"] .xp-bar-fill{background:linear-gradient(90deg,#004422,#009944,#00cc66);box-shadow:0 0 6px rgba(0,204,102,.7);}
+
+/* LV5 - 틸 */
+.card-scene[data-lv="5"]::before,.card-scene[data-lv="5"]::after{background:radial-gradient(ellipse,rgba(0,180,160,.9) 0%,transparent 70%);}
+.card-scene[data-lv="5"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,180,160,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="5"] .card-lv-label{color:#66ffdd;border-color:rgba(0,204,170,.45);text-shadow:0 0 8px rgba(0,204,170,.8);}
+.card-scene[data-lv="5"] .card-frame{background:linear-gradient(135deg,#001a18,#006655,#00ccaa,#ffd700,#00ccaa,#006655,#001a18);background-size:300% 300%;animation:levelShift 3s ease-in-out infinite;}
+.card-scene[data-lv="5"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004433 2%,#009977 4%,#00ccaa 5.5%,#ffd700 6.5%,#00ccaa 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="5"] .card-body{background:linear-gradient(160deg,#001a16 0%,#000f0d 55%,#001a16 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,180,150,.35),0 0 0 1px rgba(0,180,150,.38);}
+.card-scene[data-lv="5"] .card-top-band{background:linear-gradient(180deg,rgba(0,204,170,.45) 0%,transparent 100%);}
+.card-scene[data-lv="5"] .card-bot-band{background:linear-gradient(0deg,rgba(0,204,170,.38) 0%,transparent 100%);}
+.card-scene[data-lv="5"] .card-score{color:#66ffdd;text-shadow:0 0 14px rgba(0,204,170,.9),0 0 32px rgba(0,170,140,.6);}
+.card-scene[data-lv="5"] .card-trend{color:#33eebb;}
+.card-scene[data-lv="5"] .card-badge{background:linear-gradient(135deg,#004433,#009977);}
+.card-scene[data-lv="5"] .card-footer{background:linear-gradient(135deg,#001512 0%,#002a22 100%);}
+.card-scene[data-lv="5"] .xp-bar-fill{background:linear-gradient(90deg,#004433,#009977,#00ccaa);box-shadow:0 0 6px rgba(0,204,170,.7);}
+
+/* LV6 - 앰버 골드 */
+.card-scene[data-lv="6"]::before,.card-scene[data-lv="6"]::after{background:radial-gradient(ellipse,rgba(220,150,0,.9) 0%,transparent 70%);}
+.card-scene[data-lv="6"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,150,0,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="6"] .card-lv-label{color:#ffd166;border-color:rgba(232,160,0,.45);text-shadow:0 0 8px rgba(232,160,0,.8);}
+.card-scene[data-lv="6"] .card-frame{background:linear-gradient(135deg,#1a0d00,#7a4400,#e8a000,#fff3cc,#e8a000,#7a4400,#1a0d00);background-size:300% 300%;animation:levelShift 2.8s ease-in-out infinite;}
+.card-scene[data-lv="6"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#4a2200 2%,#aa6600 4%,#e8a000 5.5%,#fff3cc 6.5%,#e8a000 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="6"] .card-body{background:linear-gradient(160deg,#1a0900 0%,#0f0500 55%,#1a0900 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,150,0,.45),0 0 0 1px rgba(220,150,0,.42);}
+.card-scene[data-lv="6"] .card-top-band{background:linear-gradient(180deg,rgba(232,160,0,.50) 0%,transparent 100%);}
+.card-scene[data-lv="6"] .card-bot-band{background:linear-gradient(0deg,rgba(232,160,0,.45) 0%,transparent 100%);}
+.card-scene[data-lv="6"] .card-score{color:#ffd166;text-shadow:0 0 16px rgba(232,160,0,.9),0 0 36px rgba(200,130,0,.65);}
+.card-scene[data-lv="6"] .card-trend{color:#ffb733;}
+.card-scene[data-lv="6"] .card-badge{background:linear-gradient(135deg,#4a2200,#aa6600);}
+.card-scene[data-lv="6"] .card-footer{background:linear-gradient(135deg,#1a0a00 0%,#2e1500 100%);}
+.card-scene[data-lv="6"] .xp-bar-fill{background:linear-gradient(90deg,#4a2200,#aa6600,#e8a000);box-shadow:0 0 6px rgba(232,160,0,.7);}
+
+/* LV7 - 솔라 오렌지 */
+.card-scene[data-lv="7"]::before,.card-scene[data-lv="7"]::after{background:radial-gradient(ellipse,rgba(255,120,0,.9) 0%,transparent 70%);}
+.card-scene[data-lv="7"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(255,120,0,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="7"] .card-lv-label{color:#ffaa44;border-color:rgba(255,102,0,.45);text-shadow:0 0 8px rgba(255,102,0,.8);}
+.card-scene[data-lv="7"] .card-frame{background:linear-gradient(135deg,#1a0500,#882200,#ff6600,#ffdd88,#ff6600,#882200,#1a0500);background-size:300% 300%;animation:levelShift 2.5s ease-in-out infinite;}
+.card-scene[data-lv="7"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551100 2%,#cc4400 4%,#ff6600 5.5%,#ffdd88 6.5%,#ff6600 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="7"] .card-body{background:linear-gradient(160deg,#1a0500 0%,#0f0200 55%,#1a0500 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(255,100,0,.50),0 0 0 1px rgba(255,100,0,.45);}
+.card-scene[data-lv="7"] .card-top-band{background:linear-gradient(180deg,rgba(255,102,0,.52) 0%,transparent 100%);}
+.card-scene[data-lv="7"] .card-bot-band{background:linear-gradient(0deg,rgba(255,102,0,.46) 0%,transparent 100%);}
+.card-scene[data-lv="7"] .card-score{color:#ffaa44;text-shadow:0 0 16px rgba(255,102,0,.9),0 0 38px rgba(220,60,0,.7);}
+.card-scene[data-lv="7"] .card-trend{color:#ff8822;}
+.card-scene[data-lv="7"] .card-badge{background:linear-gradient(135deg,#551100,#cc4400);}
+.card-scene[data-lv="7"] .card-footer{background:linear-gradient(135deg,#1a0400 0%,#2e0800 100%);}
+.card-scene[data-lv="7"] .xp-bar-fill{background:linear-gradient(90deg,#551100,#cc4400,#ff6600);box-shadow:0 0 6px rgba(255,102,0,.7);}
+
+/* LV8 - 루비 레드 */
+.card-scene[data-lv="8"]::before,.card-scene[data-lv="8"]::after{background:radial-gradient(ellipse,rgba(200,0,40,.9) 0%,transparent 70%);}
+.card-scene[data-lv="8"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(200,0,40,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="8"] .card-lv-label{color:#ff6680;border-color:rgba(204,0,51,.45);text-shadow:0 0 8px rgba(204,0,51,.8);}
+.card-scene[data-lv="8"] .card-frame{background:linear-gradient(135deg,#1a0008,#770011,#cc0033,#ffaabb,#cc0033,#770011,#1a0008);background-size:300% 300%;animation:levelShift 2.5s ease-in-out infinite;}
+.card-scene[data-lv="8"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#440008 2%,#aa0022 4%,#cc0033 5.5%,#ffaabb 6.5%,#cc0033 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="8"] .card-body{background:linear-gradient(160deg,#1a0006 0%,#0f0003 55%,#1a0006 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(200,0,40,.50),0 0 0 1px rgba(200,0,40,.45);}
+.card-scene[data-lv="8"] .card-top-band{background:linear-gradient(180deg,rgba(204,0,51,.52) 0%,transparent 100%);}
+.card-scene[data-lv="8"] .card-bot-band{background:linear-gradient(0deg,rgba(204,0,51,.46) 0%,transparent 100%);}
+.card-scene[data-lv="8"] .card-score{color:#ff6680;text-shadow:0 0 16px rgba(204,0,51,.9),0 0 38px rgba(160,0,30,.7);}
+.card-scene[data-lv="8"] .card-trend{color:#ff3355;}
+.card-scene[data-lv="8"] .card-badge{background:linear-gradient(135deg,#440008,#aa0022);}
+.card-scene[data-lv="8"] .card-footer{background:linear-gradient(135deg,#1a0005 0%,#2e000a 100%);}
+.card-scene[data-lv="8"] .xp-bar-fill{background:linear-gradient(90deg,#440008,#aa0022,#cc0033);box-shadow:0 0 6px rgba(204,0,51,.7);}
+
+/* LV9 - 로즈 골드 */
+.card-scene[data-lv="9"]::before,.card-scene[data-lv="9"]::after{background:radial-gradient(ellipse,rgba(220,100,150,.9) 0%,transparent 70%);}
+.card-scene[data-lv="9"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,100,150,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
+.card-scene[data-lv="9"] .card-lv-label{color:#ffaacc;border-color:rgba(204,68,136,.45);text-shadow:0 0 8px rgba(204,68,136,.8);}
+.card-scene[data-lv="9"] .card-frame{background:linear-gradient(135deg,#1a0010,#882255,#cc4488,#ffccdd,#ffd700,#ffccdd,#cc4488,#882255,#1a0010);background-size:300% 300%;animation:levelShift 2.5s ease-in-out infinite;}
+.card-scene[data-lv="9"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551133 2%,#aa3366 4%,#cc4488 5.5%,#ffccdd 6.5%,#ffd700 7.5%,#cc4488 9%,transparent 11%,transparent 100%);}
+.card-scene[data-lv="9"] .card-body{background:linear-gradient(160deg,#1a0010 0%,#0f0008 55%,#1a0010 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,80,140,.50),0 0 0 1px rgba(220,80,140,.45);}
+.card-scene[data-lv="9"] .card-top-band{background:linear-gradient(180deg,rgba(204,68,136,.52) 0%,transparent 100%);}
+.card-scene[data-lv="9"] .card-bot-band{background:linear-gradient(0deg,rgba(204,68,136,.46) 0%,transparent 100%);}
+.card-scene[data-lv="9"] .card-score{color:#ffaacc;text-shadow:0 0 16px rgba(220,80,140,.9),0 0 38px rgba(180,50,110,.7);}
+.card-scene[data-lv="9"] .card-trend{color:#ff77aa;}
+.card-scene[data-lv="9"] .card-badge{background:linear-gradient(135deg,#551133,#aa3366);}
+.card-scene[data-lv="9"] .card-footer{background:linear-gradient(135deg,#1a000e 0%,#2e0018 100%);}
+.card-scene[data-lv="9"] .xp-bar-fill{background:linear-gradient(90deg,#551133,#aa3366,#cc4488,#ffd700);box-shadow:0 0 6px rgba(220,80,140,.7);}
+
+/* LV10 - 다이아몬드 화이트 */
+.card-scene[data-lv="10"]::before,.card-scene[data-lv="10"]::after{background:radial-gradient(ellipse,rgba(220,220,255,.95) 0%,transparent 70%);}
+.card-scene[data-lv="10"] .fog-wrap{position:absolute;inset:-48px;border-radius:25px;background:radial-gradient(ellipse at center,rgba(220,220,255,.45) 0%,transparent 70%);filter:blur(28px);z-index:0;animation:fogPulse 2.8s ease-in-out infinite;}
+.card-scene[data-lv="10"] .card-lv-label{color:#f0f0ff;border-color:rgba(220,220,255,.55);text-shadow:0 0 12px rgba(220,220,255,.9),0 0 24px rgba(200,200,255,.7);animation:diamondPulse 2.2s ease-in-out infinite alternate;}
+.card-scene[data-lv="10"] .card-frame{background:linear-gradient(135deg,#1a1a20,#4a4a60,#8a8aaa,#dcdcff,#ffffff,#dcdcff,#8a8aaa,#4a4a60,#1a1a20);background-size:300% 300%;animation:levelShift 2.2s ease-in-out infinite;}
+.card-scene[data-lv="10"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#3a3a50 2%,#7a7aa0 4%,#bababf 5.5%,#ffffff 6.5%,#bababf 8%,transparent 10%,transparent 100%);}
+.card-scene[data-lv="10"] .card-body{background:linear-gradient(160deg,#0f0f18 0%,#0a0a12 55%,#0f0f18 100%);box-shadow:0 26px 70px rgba(0,0,0,.85),0 0 70px rgba(220,220,255,.55),0 0 0 1px rgba(220,220,255,.5);animation:diamondGlow 2.2s ease-in-out infinite;}
+.card-scene[data-lv="10"] .card-top-band{background:linear-gradient(180deg,rgba(220,220,255,.55) 0%,transparent 100%);}
+.card-scene[data-lv="10"] .card-bot-band{background:linear-gradient(0deg,rgba(220,220,255,.48) 0%,transparent 100%);}
+.card-scene[data-lv="10"] .card-score{color:#f0f0ff;text-shadow:0 0 18px rgba(220,220,255,.9),0 0 38px rgba(200,200,255,.7);animation:diamondPulse 2.2s ease-in-out infinite alternate;}
+.card-scene[data-lv="10"] .card-trend{color:#dcdcff;}
+.card-scene[data-lv="10"] .card-badge{background:linear-gradient(135deg,#4a4a60,#8a8aaa,#dcdcff);}
+.card-scene[data-lv="10"] .card-footer{background:linear-gradient(135deg,#0f0f18 0%,#1a1a25 100%);}
+.card-scene[data-lv="10"] .xp-bar-fill{background:linear-gradient(90deg,#4a4a60,#8a8aaa,#dcdcff,#ffffff);background-size:200% 100%;animation:diamondXpShine 1.8s linear infinite;box-shadow:0 0 8px rgba(220,220,255,.8);}
+
+@keyframes diamondPulse{from{text-shadow:0 0 12px rgba(220,220,255,.8);}to{text-shadow:0 0 20px rgba(240,240,255,1);}}
+@keyframes diamondGlow{0%,100%{box-shadow:0 26px 70px rgba(0,0,0,.85),0 0 60px rgba(220,220,255,.45),0 0 0 1px rgba(220,220,255,.4);}50%{box-shadow:0 26px 70px rgba(0,0,0,.85),0 0 90px rgba(240,240,255,.65),0 0 0 1px rgba(240,240,255,.6);}}
+@keyframes diamondXpShine{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+
+/* LV MAX - 레전드 퍼플 */
+.card-scene[data-lv="MAX"]::before,.card-scene[data-lv="MAX"]::after{background:radial-gradient(ellipse,rgba(160,60,255,.95) 0%,transparent 70%);}
+.card-scene[data-lv="MAX"] .fog-wrap{position:absolute;inset:-58px;border-radius:26px;background:radial-gradient(ellipse at center,rgba(140,40,255,.58) 0%,transparent 70%);filter:blur(32px);z-index:0;animation:fogPulse 2.5s ease-in-out infinite;}
+.card-scene[data-lv="MAX"] .card-lv-label{color:#e0aaff;border-color:rgba(192,132,252,.55);text-shadow:0 0 10px rgba(180,100,255,.9),0 0 20px rgba(140,60,255,.6);animation:maxLvPulse 2s ease-in-out infinite alternate;}
+.card-scene[data-lv="MAX"] .card-frame{background:linear-gradient(135deg,#0d0020,#3d00a0,#7b2fff,#c084fc,#ffd700,#c084fc,#7b2fff,#3d00a0,#0d0020);background-size:300% 300%;animation:levelShift 2s ease-in-out infinite;}
+.card-scene[data-lv="MAX"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#220055 2%,#6600cc 3.5%,#9933ff 5%,#c084fc 6%,#ffd700 7%,#c084fc 8%,#6600cc 9.5%,transparent 11%,transparent 100%);}
+.card-scene[data-lv="MAX"] .card-body{background:linear-gradient(160deg,#0d0020 0%,#07000f 55%,#0d0020 100%);box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 80px rgba(123,47,255,.65),0 0 0 1px rgba(192,132,252,.5);animation:maxGlow 2s ease-in-out infinite;}
+.card-scene[data-lv="MAX"] .card-top-band{background:linear-gradient(180deg,rgba(123,47,255,.60) 0%,transparent 100%);}
+.card-scene[data-lv="MAX"] .card-bot-band{background:linear-gradient(0deg,rgba(123,47,255,.46) 0%,transparent 100%);}
+.card-scene[data-lv="MAX"] .card-score{color:#e0aaff;text-shadow:0 0 18px rgba(180,100,255,.9),0 0 40px rgba(140,60,255,.7);animation:maxNamePulse 2s ease-in-out infinite alternate;}
+.card-scene[data-lv="MAX"] .card-trend{color:#c084fc;}
+.card-scene[data-lv="MAX"] .card-badge{background:linear-gradient(135deg,#3d00a0,#7b2fff,#c084fc,#ffd700);border-color:rgba(255,215,0,.45);}
+.card-scene[data-lv="MAX"] .card-footer{background:linear-gradient(135deg,#0d0020 0%,#1a0040 100%);border-top:1px solid rgba(192,132,252,.3);}
+.card-scene[data-lv="MAX"] .xp-bar-fill{background:linear-gradient(90deg,#3d00a0,#6600cc,#9933ff,#c084fc);background-size:200% 100%;animation:maxXpShine 1.5s linear infinite;box-shadow:0 0 8px rgba(160,80,255,.9),0 0 16px rgba(123,47,255,.6);}
+
+@keyframes levelShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+@keyframes maxLvPulse{from{text-shadow:0 0 8px rgba(160,80,255,.8);}to{text-shadow:0 0 16px rgba(220,150,255,1);}}
+@keyframes maxGlow{0%,100%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 70px rgba(123,47,255,.58),0 0 0 1px rgba(192,132,252,.45);}50%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 100px rgba(150,80,255,.75),0 0 0 1px rgba(220,160,255,.65);}}
+@keyframes maxNamePulse{from{text-shadow:0 0 14px rgba(160,80,255,.8);}to{text-shadow:0 0 26px rgba(220,150,255,1);}}
+@keyframes maxXpShine{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+
+/* ═══════════════════════════════════════════════════════════════
+   반응형 최적화
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .cards-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:60px 30px;}
+    .card-scene{width:200px;height:300px;}
+    .card-metrics-mini{bottom:78px;gap:2px;}
+    .mini-metric{padding:4px 1px;}
+    .metric-val{font-size:9px;}
+    .metric-name{font-size:6px;}
+    .footer-diagnosis{font-size:7px;}
+}
+
+@media (max-width: 480px) {
+    .card-scene{width:180px;height:270px;}
+    .card-score{font-size:2.2rem;}
+    .card-main-icon{font-size:1.8rem;}
+}
+</style>
 </head>
 <body>
-
-<header class="header">
-  <div class="logo" onclick="showSec('hot')">
-    <div class="logo-icon">▶</div>
-    <div class="logo-text">YT<span>Analytics</span> Pro</div>
-  </div>
-  <div class="api-status" id="api-status">● API 연결 중</div>
-</header>
-
-<div id="global-error-banner"></div>
-
-<div class="app-layout">
-  <nav class="sidebar">
-    <div class="nav-section-title">탐색</div>
-    <button class="nav-item active" data-section="hot" onclick="showSec('hot')"><span class="nav-icon">🔥</span><span>인기영상</span></button>
-    <button class="nav-item" data-section="channel" onclick="showSec('channel')"><span class="nav-icon">📊</span><span>채널 분석</span></button>
-    <div class="nav-section-title">도구</div>
-    <button class="nav-item" data-section="revenue" onclick="showSec('revenue')"><span class="nav-icon">💰</span><span>수익 계산기</span></button>
-    <button class="nav-item" data-section="ai" onclick="showSec('ai')"><span class="nav-icon">🤖</span><span>AI 아이디어</span></button>
-    <button class="nav-item" data-section="tools" onclick="showSec('tools')"><span class="nav-icon">🛠️</span><span>유튜버 도구</span></button>
-    <button class="nav-item" data-section="shop" onclick="showSec('shop')"><span class="nav-icon">🛒</span><span>장비 쇼핑</span></button>
-  </nav>
-
-  <main class="main-content">
-    <section class="section-page active" id="section-hot">
-      <div class="section-header">
-        <div class="section-title">🔥 인기영상</div>
-        <div class="section-subtitle">카테고리별 한국 인기 YouTube 영상</div>
-      </div>
-      <div class="hot-search-box">
-        <input class="hot-search-input" id="hot-kw-input"
-          placeholder="🔍  키워드로 영상 검색 (예: 먹방, 게임, 브이로그)"
-          onkeydown="if(event.key==='Enter') doHotSearch()" />
-        <button class="hot-search-btn" onclick="doHotSearch()">검색</button>
-      </div>
-      <div class="cat-tabs" id="cat-tabs"></div>
-      <div class="hot-tab-bar">
-        <button class="hot-tab-btn active" data-type="shorts" id="tab-shorts">🎬 쇼츠</button>
-        <button class="hot-tab-btn"        data-type="longs"  id="tab-longs">📹 롱폼</button>
-      </div>
-      <div id="search-result-header" style="display:none" class="search-result-header">
-        <span>검색 결과: <strong id="search-kw-label"></strong></span>
-        <button class="search-clear-btn" onclick="clearHotSearch()">✕ 검색 초기화</button>
-      </div>
-      <div id="hot-loader" class="loader-wrap">
-        <div class="spinner"></div>
-        <div style="color:var(--text-secondary);font-size:13px">인기영상 로딩 중...</div>
-      </div>
-      <div id="shorts-grid" class="video-grid"></div>
-      <button class="more-btn" id="shorts-more-btn" onclick="loadMoreShorts()">쇼츠 더 보기 ▼</button>
-      <div id="longs-grid" class="video-grid" style="display:none"></div>
-      <button class="more-btn" id="longs-more-btn" onclick="loadMoreLongs()">롱폼 더 보기 ▼</button>
-    </section>
-
-    <section class="section-page" id="section-channel">
-      <div class="section-header">
-        <div class="section-title">📊 채널 분석</div>
-        <div class="section-subtitle">YouTube 채널 성과 및 등급 분석</div>
-      </div>
-      <div class="channel-search-box">
-        <input class="search-input" id="ch-input" placeholder="채널명 또는 핸들 (@채널명) 입력" onkeydown="if(event.key==='Enter') doChannelSearch()" />
-        <button class="search-btn" onclick="doChannelSearch()">분석</button>
-      </div>
-      <div id="channel-result"></div>
-    </section>
-
-    <section class="section-page" id="section-revenue">
-      <div class="section-header">
-        <div class="section-title">💰 수익 계산기</div>
-        <div class="section-subtitle">예상 유튜브 광고 수익 분석</div>
-      </div>
-      <div class="calc-form">
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">월 조회수</label><input class="form-input" id="rev-views" type="number" placeholder="예: 1000000" value="500000" /></div>
-          <div class="form-group"><label class="form-label">콘텐츠 카테고리</label><select class="form-input" id="rev-cat"><option value="1.5">일반 (RPM $1.5)</option><option value="3">교육/금융 (RPM $3)</option><option value="5">테크/비즈 (RPM $5)</option><option value="0.8">게임 (RPM $0.8)</option><option value="2">엔터/음악 (RPM $2)</option></select></div>
-          <div class="form-group"><label class="form-label">CTR (클릭률 %)</label><input class="form-input" id="rev-ctr" type="number" placeholder="예: 5" value="5" step="0.1" /></div>
-        </div>
-        <button class="calc-btn" onclick="calcRevenue()">💰 수익 계산</button>
-      </div>
-      <div id="rev-result" class="result-grid"></div>
-    </section>
-
-    <section class="section-page" id="section-ai">
-      <div class="section-header">
-        <div class="section-title">🤖 AI 아이디어</div>
-        <div class="section-subtitle">인기 트렌드 기반 콘텐츠 아이디어 생성</div>
-      </div>
-      <div class="ai-form">
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">채널 주제</label><input class="form-input" id="ai-topic" placeholder="예: 요리, 게임, 여행, 뷰티" /></div>
-          <div class="form-group"><label class="form-label">영상 형식</label><select class="form-input" id="ai-format"><option value="shorts">쇼츠 (60초)</option><option value="tutorial">튜토리얼</option><option value="vlog">브이로그</option><option value="review">리뷰</option><option value="challenge">챌린지</option></select></div>
-        </div>
-        <button class="calc-btn" onclick="genAiIdeas()">✨ 아이디어 생성</button>
-      </div>
-      <div id="ai-ideas-list" class="ai-idea-list"></div>
-    </section>
-
-    <section class="section-page" id="section-tools">
-      <div class="section-header">
-        <div class="section-title">🛠️ 유튜버 도구</div>
-        <div class="section-subtitle">채널 성장을 위한 필수 도구 모음</div>
-      </div>
-      <div class="tools-grid" id="tools-grid"></div>
-    </section>
-
-    <section class="section-page" id="section-shop">
-      <div class="section-header">
-        <div class="section-title">🛒 장비 쇼핑</div>
-        <div class="section-subtitle">유튜버 추천 장비 및 악세사리</div>
-      </div>
-      <div class="shop-grid" id="shop-grid"></div>
-    </section>
-  </main>
-</div>
-
-<div class="modal-overlay" id="video-modal">
-  <div class="modal">
-    <div class="modal-ads-top" id="modal-ads-top">
-      <ins class="adsbygoogle"
-           style="display:block;width:100%;min-height:90px"
-           data-ad-client="ca-pub-AF8853448"
-           data-ad-slot="YOUR_AD_SLOT_ID"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-    </div>
-    <div class="modal-header">
-      <div class="modal-title" id="modal-video-title">로딩 중...</div>
-      <button class="modal-close" id="modal-close-btn">✕</button>
-    </div>
-    <div class="player-wrap" id="player-wrap"></div>
-    <div class="modal-stats" id="modal-stats"></div>
-    <a id="modal-yt-link" href="#" target="_blank" rel="noopener" class="modal-yt-btn">▶ YouTube에서 보기</a>
-  </div>
-</div>
+<div class="page-title">▶ 유튜브 알고리즘 분석 3D 레벨 카드</div>
+<div class="page-sub">CTR · 시청유지율 · 참여율 핵심 지표와 AI 진단 메시지가 통합된 완전 최적화 버전</div>
+<div class="cards-grid" id="cards-grid"></div>
 
 <script>
-/* ================================================================
-   YTAnalytics Pro
-   ★ 핵심 수정: 롱폼 탭에 180초 미만 영상 완전 차단
-   ─────────────────────────────────────────────────────────────
-   [분류 기준]
-   쇼츠 : 재생시간 < 180초  AND  쇼츠 키워드 있음
-   롱폼 : 재생시간 >= 180초  ← 이 조건만 허용 (키워드 무관)
-          ★ 180초 미만은 쇼츠 키워드 유무와 상관없이 롱폼 탭 진입 불가
+// ═══════════════════════════════════════════════════════════════
+// 데이터 설정 및 레벨 시스템
+// ═══════════════════════════════════════════════════════════════
 
-   [3중 방어]
-   1. isLongs()  : sec >= 180 일 때만 true
-   2. loadUntilFull() : isLongs() 통과 + matchesCat() 통과한 것만 캐시 저장
-   3. renderHotSplit() / renderSearchResult() :
-      렌더링 직전 sec >= 180 재확인 (최종 방어선)
-================================================================ */
-
-const API_KEYS = [
-  'AIzaSyDzpxSQhciOKEa6qh_q3n5q47ug1mua6-4',
-];
-let keyIdx = 0;
-
-/* ★ 롱폼 최소 재생시간: 180초 미만은 롱폼 탭 진입 절대 불가 */
-const LONGS_MIN_SEC = 180;
-
-const SHORTS_KEYWORDS = [
-  'shorts','#shorts','short','#short',
-  'shortvideo','shortsvideo','reels','tiktok',
-  '쇼츠','숏츠','#쇼츠','#숏츠'
-];
-
-const CAT_CFG = {
-  '음악': {
-    categoryId: '10',
-    matchKeywords: ['kpop','k-pop','음악','뮤직','노래','mv','뮤직비디오','singer','가수','아이돌','idol','ost','cover','커버','발라드'],
-    shortsKw: ['kpop shorts','음악 쇼츠','뮤직 shorts'],
-    longsKw:  ['K-POP 뮤직비디오','음악 커버','아이돌 무대'],
-  },
-  '게임': {
-    categoryId: '20',
-    matchKeywords: ['게임','gaming','game','플레이','gameplay','공략','리그오브레전드','롤','배틀그라운드','마인크래프트','스타크래프트','overwatch','오버워치','fifa','브롤스타즈'],
-    shortsKw: ['게임 shorts','게임 쇼츠'],
-    longsKw:  ['게임 공략','게임 플레이','롤 공략'],
-  },
-  '엔터': {
-    categoryId: '24',
-    matchKeywords: ['예능','재미','웃긴','유머','comedy','개그','버라이어티','리액션','reaction','몰래카메라','장난','콩트','드라마','연예인'],
-    shortsKw: ['예능 shorts','웃긴 쇼츠','유머 shorts'],
-    longsKw:  ['예능 프로그램','웃긴 영상','코미디'],
-  },
-  '스포츠': {
-    categoryId: '17',
-    matchKeywords: ['스포츠','sport','축구','야구','농구','배구','골프','테니스','수영','육상','올림픽','월드컵','손흥민','류현진','킥복싱','격투기','mma'],
-    shortsKw: ['스포츠 shorts','축구 쇼츠','야구 shorts'],
-    longsKw:  ['스포츠 하이라이트','축구 경기','야구 경기'],
-  },
-  '교육': {
-    categoryId: '27',
-    matchKeywords: ['교육','강의','공부','학습','튜토리얼','tutorial','how to','영어','수학','과학','역사','코딩','programming','자격증','취업'],
-    shortsKw: ['교육 shorts','공부 쇼츠','강의 shorts'],
-    longsKw:  ['교육 강의','공부법','튜토리얼'],
-  },
-  '요리': {
-    categoryId: '26',
-    matchKeywords: ['요리','먹방','레시피','음식','cooking','food','맛집','mukbang','먹스타그램','맛있','식당','chef','요식','베이킹','baking','라면','삼겹살','치킨'],
-    shortsKw: ['먹방 shorts','요리 쇼츠','레시피 shorts'],
-    longsKw:  ['먹방','요리 레시피','맛집 탐방'],
-  },
-  '여행': {
-    categoryId: '19',
-    matchKeywords: ['여행','travel','브이로그','vlog','일상','관광','vacation','trip','해외','국내여행','캠핑','등산','드라이브','자동차','여행기'],
-    shortsKw: ['여행 shorts','브이로그 쇼츠','vlog shorts'],
-    longsKw:  ['여행 브이로그','해외여행','국내여행'],
-  },
-  '뷰티': {
-    categoryId: '',
-    matchKeywords: ['뷰티','beauty','메이크업','makeup','화장','패션','fashion','스킨케어','skincare','헤어','hair','네일','nail','코디','ootd','옷','향수'],
-    shortsKw: ['뷰티 shorts','메이크업 쇼츠','패션 shorts'],
-    longsKw:  ['메이크업 튜토리얼','패션 코디','뷰티 리뷰'],
-  },
+const XP_RANGES = {
+    1:  { min:1,   max:10,  current:5 },
+    2:  { min:11,  max:20,  current:15 },
+    3:  { min:21,  max:30,  current:24 },
+    4:  { min:31,  max:40,  current:35 },
+    5:  { min:41,  max:50,  current:46 },
+    6:  { min:51,  max:60,  current:55 },
+    7:  { min:61,  max:70,  current:65 },
+    8:  { min:71,  max:80,  current:75 },
+    9:  { min:81,  max:90,  current:87 },
+    10: { min:91,  max:95,  current:93 },
+    MAX:{ min:96,  max:100, current:100 }
 };
-const CAT_KEYS = Object.keys(CAT_CFG);
 
-let activeCat = CAT_KEYS[0], activeType = 'shorts';
-let hotSearchMode = false, hotSearchQuery = '';
-let searchShorts = [], searchLongs = [];
-let searchShortsPage = 0, searchLongsPage = 0;
-const catShortsCache = {}, catLongCache = {};
-let shortsPage = 0, longsPage = 0;
-const PAGE = 12;
-
-const GRADES = [
-  {min:10_000_000,label:'S+',color:'#ffd700',bg:'rgba(255,215,0,0.15)'},
-  {min: 5_000_000,label:'S', color:'#ff4757',bg:'rgba(255,71,87,0.15)'},
-  {min: 1_000_000,label:'A+',color:'#ff6b81',bg:'rgba(255,107,129,0.15)'},
-  {min:   500_000,label:'A', color:'#ffa502',bg:'rgba(255,165,2,0.15)'},
-  {min:   100_000,label:'B', color:'#2ed573',bg:'rgba(46,213,115,0.15)'},
-  {min:    10_000,label:'C', color:'#1e90ff',bg:'rgba(30,144,255,0.15)'},
-  {min:         0,label:'D', color:'#9898b0',bg:'rgba(152,152,176,0.15)'},
+// 레벨별 실제 알고리즘 분석 데이터
+const LEVEL_DATA = [
+    { 
+        lv: 1, name: '무감지', icon: '🕯️', badge: '🚨 심폐소생술',
+        score: 12, trend: '-3 ↘', 
+        ctr: { val: '0.8%', status: 'danger' },
+        retention: { val: '12%', status: 'danger' },
+        engagement: { val: '0.1%', status: 'danger' },
+        diagnosis: '썸네일과 제목을 전면 수정하세요. 클릭 유도가 전혀 안 되고 있습니다.',
+        rank: '하위 5%',
+        beamCount: 1, beamSpeed: '4.2s',
+        bokeh: [{w:30,h:30,l:15,t:20,blur:6,op:.25,dur:6,del:0},{w:20,h:20,l:70,t:60,blur:4,op:.2,dur:8,del:1}],
+        sparkles: [{l:25,t:35,sz:9,dur:'2.5s',del:'0s'},{l:65,t:15,sz:8,dur:'3s',del:'.5s'}]
+    },
+    { 
+        lv: 2, name: '감지', icon: '🔥', badge: '⚠️ 위험신호',
+        score: 24, trend: '+8 ↗', 
+        ctr: { val: '1.9%', status: 'danger' },
+        retention: { val: '18%', status: 'danger' },
+        engagement: { val: '0.3%', status: 'danger' },
+        diagnosis: '알고리즘이 감지를 시작했으나 모든 지표가 위험 수준입니다.',
+        rank: '하위 15%',
+        beamCount: 1, beamSpeed: '3.8s',
+        bokeh: [{w:32,h:32,l:12,t:18,blur:6,op:.28,dur:6.5,del:0},{w:22,h:22,l:68,t:55,blur:4,op:.22,dur:8.5,del:1.2}],
+        sparkles: [{l:22,t:32,sz:9,dur:'2.3s',del:'0s'},{l:68,t:12,sz:8,dur:'2.8s',del:'.4s'}]
+    },
+    { 
+        lv: 3, name: '탐색', icon: '💣', badge: '🔍 테스트 중',
+        score: 38, trend: '+14 ↗', 
+        ctr: { val: '3.2%', status: 'warn' },
+        retention: { val: '25%', status: 'warn' },
+        engagement: { val: '0.7%', status: 'warn' },
+        diagnosis: '알고리즘 테스트 단계 진입. 첫 15초 훅(Hook) 강화가 필요합니다.',
+        rank: '하위 30%',
+        beamCount: 2, beamSpeed: '3.4s',
+        bokeh: [{w:35,h:35,l:10,t:15,blur:7,op:.3,dur:6,del:0},{w:25,h:25,l:65,t:50,blur:5,op:.25,dur:7.5,del:1},{w:15,h:15,l:40,t:75,blur:3,op:.2,dur:9,del:2}],
+        sparkles: [{l:18,t:28,sz:10,dur:'2.1s',del:'0s'},{l:62,t:8,sz:9,dur:'2.6s',del:'.3s'},{l:45,t:65,sz:8,dur:'2.4s',del:'.6s'}]
+    },
+    { 
+        lv: 4, name: '침투', icon: '💥', badge: '🌱 성장 시동',
+        score: 45, trend: '+7 ↗', 
+        ctr: { val: '4.8%', status: 'warn' },
+        retention: { val: '32%', status: 'warn' },
+        engagement: { val: '1.1%', status: 'warn' },
+        diagnosis: '기본 성장 궤도 진입. CTR과 시청 유지율 모두 개선이 필요합니다.',
+        rank: '하위 45%',
+        beamCount: 2, beamSpeed: '3.2s',
+        bokeh: [{w:38,h:38,l:8,t:12,blur:7,op:.32,dur:5.8,del:0},{w:28,h:28,l:62,t:45,blur:5,op:.27,dur:7.2,del:1.1},{w:18,h:18,l:35,t:70,blur:4,op:.22,dur:8.5,del:2.2}],
+        sparkles: [{l:15,t:25,sz:10,dur:'2s',del:'0s'},{l:58,t:5,sz:10,dur:'2.4s',del:'.25s'},{l:42,t:60,sz:9,dur:'2.2s',del:'.5s'}]
+    },
+    { 
+        lv: 5, name: '안착', icon: '🌟', badge: '📈 성장궤도',
+        score: 58, trend: '+13 ↗', 
+        ctr: { val: '6.3%', status: 'good' },
+        retention: { val: '38%', status: 'warn' },
+        engagement: { val: '1.8%', status: 'warn' },
+        diagnosis: '클릭률은 우수하나 시청 유지율 개선 필요. 중간 이탈 방지에 집중하세요.',
+        rank: '상위 55%',
+        beamCount: 2, beamSpeed: '3.0s',
+        bokeh: [{w:40,h:40,l:6,t:10,blur:8,op:.35,dur:5.5,del:0},{w:30,h:30,l:60,t:40,blur:6,op:.3,dur:6.8,del:1},{w:20,h:20,l:32,t:65,blur:4,op:.25,dur:8,del:2}],
+        sparkles: [{l:12,t:22,sz:11,dur:'1.9s',del:'0s'},{l:55,t:2,sz:10,dur:'2.2s',del:'.2s'},{l:38,t:55,sz:9,dur:'2s',del:'.4s'}]
+    },
+    { 
+        lv: 6, name: '증식', icon: '✨', badge: '🎯 추천 노출',
+        score: 67, trend: '+9 ↗', 
+        ctr: { val: '7.8%', status: 'good' },
+        retention: { val: '45%', status: 'good' },
+        engagement: { val: '2.4%', status: 'warn' },
+        diagnosis: '추천 알고리즘 활성화! 참여 유도 강화로 완전한 성장 모드 진입 가능.',
+        rank: '상위 35%',
+        beamCount: 3, beamSpeed: '2.8s',
+        bokeh: [{w:42,h:42,l:5,t:8,blur:9,op:.38,dur:5.2,del:0},{w:32,h:32,l:58,t:35,blur:6,op:.32,dur:6.5,del:.9},{w:22,h:22,l:30,t:60,blur:5,op:.27,dur:7.8,del:1.8}],
+        sparkles: [{l:10,t:18,sz:11,dur:'1.8s',del:'0s'},{l:52,t:0,sz:11,dur:'2.1s',del:'.15s'},{l:35,t:50,sz:10,dur:'1.9s',del:'.3s'}]
+    },
+    { 
+        lv: 7, name: '잠식', icon: '🔱', badge: '🚀 급상승',
+        score: 78, trend: '+11 ↗', 
+        ctr: { val: '9.4%', status: 'good' },
+        retention: { val: '52%', status: 'good' },
+        engagement: { val: '3.2%', status: 'good' },
+        diagnosis: '홈피드 장악 중! 롱폼 콘텐츠(10분+) 도전으로 더 큰 성장 가능.',
+        rank: '상위 20%',
+        beamCount: 3, beamSpeed: '2.5s',
+        bokeh: [{w:45,h:45,l:4,t:6,blur:10,op:.4,dur:4.9,del:0},{w:35,h:35,l:56,t:30,blur:7,op:.35,dur:6.2,del:.8},{w:25,h:25,l:28,t:55,blur:5,op:.3,dur:7.5,del:1.6}],
+        sparkles: [{l:8,t:15,sz:12,dur:'1.7s',del:'0s'},{l:50,t:-2,sz:11,dur:'2s',del:'.12s'},{l:32,t:45,sz:10,dur:'1.8s',del:'.25s'}]
+    },
+    { 
+        lv: 8, name: '지배', icon: '👑', badge: '🏆 상위권',
+        score: 85, trend: '+7 ↗', 
+        ctr: { val: '11.8%', status: 'good' },
+        retention: { val: '58%', status: 'good' },
+        engagement: { val: '4.6%', status: 'good' },
+        diagnosis: '카테고리 지배 단계! 모든 지표가 상위권 수준을 유지하고 있습니다.',
+        rank: '상위 10%',
+        beamCount: 3, beamSpeed: '2.3s',
+        bokeh: [{w:48,h:48,l:3,t:4,blur:11,op:.42,dur:4.6,del:0},{w:38,h:38,l:54,t:25,blur:8,op:.37,dur:5.9,del:.7},{w:28,h:28,l:26,t:50,blur:6,op:.32,dur:7.2,del:1.4}],
+        sparkles: [{l:6,t:12,sz:12,dur:'1.6s',del:'0s'},{l:48,t:-4,sz:12,dur:'1.9s',del:'.1s'},{l:30,t:40,sz:11,dur:'1.7s',del:'.2s'}]
+    },
+    { 
+        lv: 9, name: '융합', icon: '⚜️', badge: '💎 최상위',
+        score: 94, trend: '+9 ↗', 
+        ctr: { val: '14.2%', status: 'good' },
+        retention: { val: '65%', status: 'good' },
+        engagement: { val: '6.8%', status: 'good' },
+        diagnosis: '대중적 확산 단계! 트렌드를 만들고 있는 슈퍼 크리에이터 수준입니다.',
+        rank: '상위 3%',
+        beamCount: 4, beamSpeed: '2.1s',
+        bokeh: [{w:50,h:50,l:2,t:2,blur:12,op:.45,dur:4.3,del:0},{w:40,h:40,l:52,t:20,blur:9,op:.4,dur:5.6,del:.6},{w:30,h:30,l:24,t:45,blur:7,op:.35,dur:6.9,del:1.2}],
+        sparkles: [{l:4,t:8,sz:13,dur:'1.5s',del:'0s'},{l:46,t:-6,sz:12,dur:'1.8s',del:'.08s'},{l:28,t:35,sz:11,dur:'1.6s',del:'.16s'}]
+    },
+    { 
+        lv: 10, name: '완성', icon: '💎', badge: '🌟 다이아몬드',
+        score: 97, trend: '+3 ↗', 
+        ctr: { val: '16.8%', status: 'good' },
+        retention: { val: '71%', status: 'good' },
+        engagement: { val: '9.2%', status: 'good' },
+        diagnosis: '완벽한 알고리즘 최적화! 유튜브 생태계의 핵심 크리에이터입니다.',
+        rank: '상위 1%',
+        beamCount: 4, beamSpeed: '1.9s',
+        bokeh: [{w:52,h:52,l:1,t:1,blur:13,op:.48,dur:4,del:0},{w:42,h:42,l:50,t:15,blur:10,op:.43,dur:5.3,del:.5},{w:32,h:32,l:22,t:40,blur:8,op:.38,dur:6.6,del:1}],
+        sparkles: [{l:2,t:5,sz:13,dur:'1.4s',del:'0s'},{l:44,t:-8,sz:13,dur:'1.7s',del:'.07s'},{l:26,t:30,sz:12,dur:'1.5s',del:'.14s'}]
+    },
+    { 
+        lv: 'MAX', name: '숙주', icon: '☠️', badge: '👑 레전드',
+        score: 99, trend: 'MAX', 
+        ctr: { val: '20.5%', status: 'good' },
+        retention: { val: '78%', status: 'good' },
+        engagement: { val: '12.8%', status: 'good' },
+        diagnosis: '유튜브 생태계를 지배하는 절대적 존재. 알고리즘 그 자체입니다.',
+        rank: '상위 0.1%',
+        beamCount: 4, beamSpeed: '1.8s',
+        bokeh: [{w:55,h:55,l:0,t:0,blur:15,op:.5,dur:3.8,del:0},{w:45,h:45,l:48,t:10,blur:12,op:.45,dur:5,del:.4},{w:35,h:35,l:20,t:35,blur:9,op:.4,dur:6.2,del:.8}],
+        sparkles: [{l:0,t:2,sz:14,dur:'1.3s',del:'0s'},{l:42,t:-10,sz:13,dur:'1.6s',del:'.06s'},{l:24,t:25,sz:12,dur:'1.4s',del:'.12s'}]
+    }
 ];
 
-/* ================================================================
-   유틸
-================================================================ */
-function fmt(n){
-  n=parseInt(n,10)||0;
-  if(n>=100_000_000)return(n/100_000_000).toFixed(1).replace(/\.0$/,'')+'억';
-  if(n>=10_000)return(n/10_000).toFixed(1).replace(/\.0$/,'')+'만';
-  if(n>=1_000)return(n/1_000).toFixed(1).replace(/\.0$/,'')+'천';
-  return n.toLocaleString('ko-KR');
-}
-function parseDurSec(iso){
-  if(!iso)return 0;
-  const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if(!m)return 0;
-  return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);
-}
-function fmtDur(iso){
-  const s=parseDurSec(iso);if(!s)return'--:--';
-  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;
-  return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`;
-}
-function viralOf(item){
-  const s=item.statistics||{};
-  return(parseInt(s.viewCount||0))+(parseInt(s.likeCount||0)*30)+(parseInt(s.commentCount||0)*60);
-}
-function gradeOf(sub){const n=parseInt(sub||0);return GRADES.find(g=>n>=g.min)||GRADES[GRADES.length-1];}
-function showGlobalError(msg){
-  const el=document.getElementById('global-error-banner');
-  el.textContent=msg;el.style.display='block';
-  document.getElementById('api-status').className='api-status error';
-  document.getElementById('api-status').textContent='● API 오류';
-}
-function hideGlobalError(){
-  document.getElementById('global-error-banner').style.display='none';
-  document.getElementById('api-status').className='api-status';
-  document.getElementById('api-status').textContent='● API 연결됨';
-}
+// ═══════════════════════════════════════════════════════════════
+// 카드 생성 함수들
+// ═══════════════════════════════════════════════════════════════
 
-/* ================================================================
-   ★ 분류 함수
-================================================================ */
-function hasShortKeyword(item){
-  const sn=item.snippet||{};
-  const title=(sn.title||'').toLowerCase();
-  const desc=(sn.description||'').slice(0,300).toLowerCase();
-  const tags=(sn.tags||[]).map(t=>t.toLowerCase());
-  const hay=title+' '+desc+' '+tags.join(' ');
-  return SHORTS_KEYWORDS.some(kw=>hay.includes(kw));
-}
-
-/* 쇼츠: 180초 미만 AND 쇼츠 키워드 있음 */
-function isShorts(item){
-  const sec=parseDurSec(item.contentDetails?.duration||'');
-  if(sec<=0)return false;
-  return sec<LONGS_MIN_SEC && hasShortKeyword(item);
-}
-
-/* ★ 롱폼: 재생시간 >= 180초인 경우만 허용
-          180초 미만은 키워드 유무와 상관없이 false */
-function isLongs(item){
-  const sec=parseDurSec(item.contentDetails?.duration||'');
-  return sec>=LONGS_MIN_SEC; // 오직 180초 이상만 롱폼
-}
-
-/* ★ 롱폼 최종 방어 필터: 렌더링 직전 sec >= 180 재확인 */
-function hardFilterLongs(arr){
-  return arr.filter(item=>parseDurSec(item.contentDetails?.duration||'')>=LONGS_MIN_SEC);
-}
-
-/* ================================================================
-   카테고리 매칭
-================================================================ */
-function matchesCat(item, cat){
-  const cfg=CAT_CFG[cat];
-  if(!cfg)return true;
-  const sn=item.snippet||{};
-  const hay=[
-    (sn.title||'').toLowerCase(),
-    (sn.description||'').slice(0,200).toLowerCase(),
-    (sn.tags||[]).join(' ').toLowerCase(),
-  ].join(' ');
-  return cfg.matchKeywords.some(kw=>hay.includes(kw.toLowerCase()));
-}
-
-/* ================================================================
-   광고 초기화
-================================================================ */
-let _adPushed=false;
-function initModalAd(){
-  if(_adPushed)return;
-  try{
-    const ins=document.querySelector('#modal-ads-top ins.adsbygoogle');
-    if(ins){(window.adsbygoogle=window.adsbygoogle||[]).push({});_adPushed=true;}
-  }catch(e){console.warn('[AdSense]',e);}
-}
-
-/* ================================================================
-   모달
-================================================================ */
-function closeVideoModal(){
-  const pw=document.getElementById('player-wrap');
-  const iframe=pw.querySelector('iframe');
-  if(iframe){iframe.src='';pw.removeChild(iframe);}
-  document.getElementById('video-modal').classList.remove('open');
-}
-
-async function openVideoModal(vid){
-  const overlay=document.getElementById('video-modal');
-  const pw=document.getElementById('player-wrap');
-  const titleEl=document.getElementById('modal-video-title');
-  const statsEl=document.getElementById('modal-stats');
-  const linkEl=document.getElementById('modal-yt-link');
-  pw.innerHTML='';
-  titleEl.textContent='로딩 중...';
-  statsEl.innerHTML='<div class="loader-wrap" style="padding:20px"><div class="spinner"></div></div>';
-  linkEl.href=`https://www.youtube.com/watch?v=${vid}`;
-  overlay.classList.add('open');
-  initModalAd();
-  try{
-    const data=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${vid}`);
-    const item=data.items?.[0];
-    if(!item){statsEl.innerHTML='<div class="error-card"><h3>영상 정보를 불러올 수 없습니다.</h3></div>';return;}
-    const sn=item.snippet||{},st=item.statistics||{},cd=item.contentDetails||{};
-    titleEl.textContent=sn.title||'';
-    const iframe=document.createElement('iframe');
-    iframe.src=`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
-    iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen=true;
-    iframe.loading='lazy';
-    pw.appendChild(iframe);
-    statsEl.innerHTML=`
-      <div class="modal-stat"><div class="modal-stat-value">${st.viewCount!=null?fmt(st.viewCount):'-'}</div><div class="modal-stat-label">조회수</div></div>
-      <div class="modal-stat"><div class="modal-stat-value">${st.likeCount!=null?fmt(st.likeCount):'-'}</div><div class="modal-stat-label">좋아요</div></div>
-      <div class="modal-stat"><div class="modal-stat-value">${st.commentCount!=null?fmt(st.commentCount):'-'}</div><div class="modal-stat-label">댓글</div></div>
-      <div class="modal-stat"><div class="modal-stat-value">${fmtDur(cd.duration)}</div><div class="modal-stat-label">길이</div></div>`;
-    linkEl.href=`https://www.youtube.com/watch?v=${vid}`;
-  }catch(e){
-    statsEl.innerHTML=`<div class="error-card"><h3>불러오기 실패</h3><p>${e.message}</p></div>`;
-  }
-}
-
-/* ================================================================
-   API Fetch
-================================================================ */
-async function apiFetch(url){
-  const validKeys=API_KEYS.filter(k=>k&&k.length>20&&!k.startsWith('YOUR_'));
-  if(!validKeys.length)throw new Error('유효한 API 키가 없습니다.');
-  for(let i=0;i<validKeys.length;i++){
-    const k=validKeys[(keyIdx+i)%validKeys.length];
-    const sep=url.includes('?')?'&':'?';
-    try{
-      const r=await fetch(url+sep+'key='+k);
-      let data;try{data=await r.json();}catch{data={};}
-      if(r.status===403||r.status===429){keyIdx=(keyIdx+i+1)%validKeys.length;continue;}
-      if(data.error){
-        const code=data.error.code||0,reason=data.error.errors?.[0]?.reason||'';
-        if([403,429].includes(code)||['quotaExceeded','keyInvalid','forbidden','dailyLimitExceeded'].includes(reason)){
-          keyIdx=(keyIdx+i+1)%validKeys.length;continue;
-        }
-        if(['invalidSearchFilter','invalidVideoFilter','invalidFilter'].includes(reason)){
-          const cleaned=url.replace(/[&?]videoCategoryId=[^&]*/g,'').replace(/[&?]videoDuration=[^&]*/g,'');
-          return apiFetch(cleaned);
-        }
-        throw new Error(`API 오류 [${code}] ${reason}`);
-      }
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      keyIdx=(keyIdx+i)%validKeys.length;
-      hideGlobalError();
-      return data;
-    }catch(e){if(i===validKeys.length-1)throw e;}
-  }
-  throw new Error('모든 API 키 소진');
-}
-
-/* ================================================================
-   네비게이션
-================================================================ */
-const sectionLoaded={};
-function showSec(id){
-  document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('section-'+id)?.classList.add('active');
-  document.querySelector(`.nav-item[data-section="${id}"]`)?.classList.add('active');
-  if(!sectionLoaded[id]){
-    sectionLoaded[id]=true;
-    if(id==='hot')loadHot();
-    if(id==='tools')buildTools();
-    if(id==='shop')buildShop();
-  }
-}
-
-/* ================================================================
-   인기영상 탭
-================================================================ */
-function buildCatTabs(){
-  const wrap=document.getElementById('cat-tabs');wrap.innerHTML='';
-  CAT_KEYS.forEach(cat=>{
-    const btn=document.createElement('button');
-    btn.className='cat-btn'+(cat===activeCat?' active':'');
-    btn.textContent=cat;
-    btn.onclick=()=>{if(hotSearchMode){clearHotSearch();return;}switchCat(cat);};
-    wrap.appendChild(btn);
-  });
-}
-
-function switchCat(cat){
-  activeCat=cat;
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.textContent===cat));
-  shortsPage=0;longsPage=0;
-  renderHotSplit();
-  if(!catShortsCache[cat]&&!catLongCache[cat]){
-    showHotLoader();
-    loadUntilFull(cat)
-      .then(()=>{hideHotLoader();renderHotSplit();})
-      .catch(e=>{hideHotLoader();showHotError(e.message);});
-  }
-}
-
-function showHotLoader(){
-  document.getElementById('hot-loader').style.display='block';
-  document.getElementById('shorts-grid').innerHTML='';
-  document.getElementById('longs-grid').innerHTML='';
-  document.getElementById('shorts-more-btn').style.display='none';
-  document.getElementById('longs-more-btn').style.display='none';
-}
-function hideHotLoader(){document.getElementById('hot-loader').style.display='none';}
-function showHotError(msg){
-  const g=document.getElementById(activeType==='shorts'?'shorts-grid':'longs-grid');
-  g.innerHTML=`<div class="error-card" style="grid-column:1/-1"><h3>⚠️ 로드 실패</h3><p>${msg}</p></div>`;
-}
-
-/* ================================================================
-   인기영상 로드
-================================================================ */
-async function loadHot(){
-  buildCatTabs();showHotLoader();
-  try{
-    await loadUntilFull(CAT_KEYS[0]);
-    hideHotLoader();renderHotSplit();
-    for(const k of CAT_KEYS.slice(1))
-      if(!catShortsCache[k]&&!catLongCache[k])
-        loadUntilFull(k).catch(e=>console.warn('[bg]',k,e.message));
-  }catch(err){
-    hideHotLoader();
-    showGlobalError('인기영상 로드 실패: '+err.message);
-    showHotError(err.message);
-  }
-}
-
-async function loadUntilFull(cat){
-  const cfg=CAT_CFG[cat];if(!cfg)return;
-  let shorts=[],longs=[];
-
-  /* 1단계: mostPopular */
-  if(cfg.categoryId){
-    try{
-      const d=await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics`+
-        `&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50`+
-        `&videoCategoryId=${cfg.categoryId}`
-      );
-      (d.items||[]).forEach(it=>{
-        if(!matchesCat(it,cat))return;
-        if(isShorts(it))       shorts.push(it);
-        else if(isLongs(it))   longs.push(it); // isLongs = sec >= 180 만 통과
-      });
-    }catch(e){console.warn('[mostPopular]',cat,e.message);}
-  }
-
-  /* 2단계: 쇼츠 보완 */
-  if(shorts.length<12){
-    for(const kw of cfg.shortsKw||[]){
-      if(shorts.length>=24)break;
-      try{
-        const r=await apiFetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
-          `&regionCode=KR&relevanceLanguage=ko`+
-          `&q=${encodeURIComponent(kw)}&maxResults=30&order=viewCount`
-        );
-        const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-        if(ids.length){
-          const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);
-          (d.items||[]).forEach(it=>{
-            if(matchesCat(it,cat)&&isShorts(it)&&!shorts.find(s=>s.id===it.id))
-              shorts.push(it);
-          });
-        }
-      }catch(e){console.warn('[쇼츠보완]',kw,e.message);}
+function buildBeams(data) {
+    let html = '';
+    const speed = parseFloat(data.beamSpeed);
+    for (let i = 0; i < data.beamCount; i++) {
+        const delay = '-' + ((speed / data.beamCount) * i).toFixed(3) + 's';
+        html += `<div class="beam-container"><div class="beam-ring" style="animation-duration:${data.beamSpeed};animation-delay:${delay};"></div></div>`;
     }
-  }
-
-  /* 3단계: 롱폼 보완 */
-  if(longs.length<12){
-    for(const kw of cfg.longsKw||[]){
-      if(longs.length>=24)break;
-      try{
-        const r=await apiFetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
-          `&regionCode=KR&relevanceLanguage=ko`+
-          `&q=${encodeURIComponent(kw)}&maxResults=30&order=viewCount`
-        );
-        const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-        if(ids.length){
-          const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);
-          (d.items||[]).forEach(it=>{
-            // ★ isLongs = sec >= 180 만 통과 → 180초 미만은 여기서도 차단
-            if(matchesCat(it,cat)&&isLongs(it)&&!longs.find(l=>l.id===it.id))
-              longs.push(it);
-          });
-        }
-      }catch(e){console.warn('[롱폼보완]',kw,e.message);}
-    }
-  }
-
-  const byViral=arr=>arr.slice().sort((a,b)=>viralOf(b)-viralOf(a));
-  catShortsCache[cat]=byViral(shorts);
-  // ★ 캐시 저장 직전 hardFilterLongs 로 최종 정제
-  catLongCache[cat]=byViral(hardFilterLongs(longs));
+    return html;
 }
 
-/* ================================================================
-   키워드 검색
-================================================================ */
-async function doHotSearch(){
-  const q=document.getElementById('hot-kw-input').value.trim();
-  if(!q){clearHotSearch();return;}
-  hotSearchMode=true;hotSearchQuery=q;
-  searchShortsPage=0;searchLongsPage=0;searchShorts=[];searchLongs=[];
-  document.getElementById('search-result-header').style.display='flex';
-  document.getElementById('search-kw-label').textContent=`"${q}"`;
-  document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('active');b.style.opacity='0.4';});
-  showHotLoader();
+function buildFog(data) {
+    if (data.lv === 1 || data.lv === 2) return '';
+    return `<div class="fog-wrap"></div>`;
+}
 
-  try{
-    const fetchIds=async(durParam)=>{
-      const r=await apiFetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
-        `&videoDuration=${durParam}&regionCode=KR&relevanceLanguage=ko`+
-        `&q=${encodeURIComponent(q)}&maxResults=50&order=viewCount`
-      );
-      return(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    };
+function buildParticles(data) {
+    const bokeh = data.bokeh.map(b =>
+        `<div class="bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${b.dur}s;--bdel:${b.del}s;"></div>`
+    ).join('');
+    
+    const sparkles = data.sparkles.map(s =>
+        `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${s.sz}px;--sdur:${s.dur};--sdel:${s.del};">✦</span>`
+    ).join('');
+    
+    return { bokeh, sparkles };
+}
 
-    const[sIds,mIds,lIds]=await Promise.all([
-      fetchIds('short'),
-      fetchIds('medium'),
-      fetchIds('long'),
-    ]);
+function buildXP(data) {
+    const xp = XP_RANGES[data.lv];
+    const isMax = data.lv === 'MAX';
+    const pct = isMax ? 100 : Math.round(((xp.current - xp.min) / (xp.max - xp.min)) * 100);
+    const currentText = isMax ? '✦ MAX ✦' : `${xp.current} / ${xp.max}`;
+    
+    return `
+<div class="card-xp-wrap">
+    <div class="card-xp-label">
+        <span class="xp-title">⚡ EXP</span>
+        <span class="xp-range">${currentText}</span>
+    </div>
+    <div class="xp-bar-bg">
+        <div class="xp-bar-fill" style="width:${pct}%;"></div>
+    </div>
+</div>`;
+}
 
-    const allIds=[...new Set([...sIds,...mIds,...lIds])];
-    const collected=[];
+function buildCardHTML(data) {
+    const lvLabel = data.lv === 'MAX' ? 'LV.MAX' : `LV.${data.lv}`;
+    const particles = buildParticles(data);
+    
+    return `
+<div class="card-scene" data-lv="${data.lv}" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
+    ${buildFog(data)}
+    <div class="card-tilt">
+        <div class="card-frame"></div>
+        ${buildBeams(data)}
+        <div class="card-body">
+            <div class="card-face">
+                <div class="card-bokeh">${particles.bokeh}</div>
+                <div class="card-sparkles">${particles.sparkles}</div>
+                
+                <!-- 1영역: 헤더 -->
+                <div class="card-header">
+                    <div class="card-lv-label">${lvLabel}</div>
+                    <div class="card-badge">${data.badge}</div>
+                </div>
+                
+                <!-- 2영역: 메인 점수 -->
+                <div class="card-main-wrap">
+                    <div class="card-main-icon">${data.icon}</div>
+                    <div class="card-score">${data.score}</div>
+                    <div class="card-score-label">Algorithm Score</div>
+                    <div class="card-trend">${data.trend}</div>
+                </div>
+                
+                <!-- 3영역: 핵심 지표 -->
+                <div class="card-metrics-mini">
+                    <div class="mini-metric">
+                        <span class="metric-icon">👁️</span>
+                        <span class="metric-val status-${data.ctr.status}">${data.ctr.val}</span>
+                        <span class="metric-name">클릭률</span>
+                    </div>
+                    <div class="mini-metric">
+                        <span class="metric-icon">⏱️</span>
+                        <span class="metric-val status-${data.retention.status}">${data.retention.val}</span>
+                        <span class="metric-name">시청유지</span>
+                    </div>
+                    <div class="mini-metric">
+                        <span class="metric-icon">💬</span>
+                        <span class="metric-val status-${data.engagement.status}">${data.engagement.val}</span>
+                        <span class="metric-name">참여율</span>
+                    </div>
+                </div>
 
-    for(let i=0;i<allIds.length;i+=50){
-      const chunk=allIds.slice(i,i+50);
-      try{
-        const d=await apiFetch(
-          `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${chunk.join(',')}`
-        );
-        (d.items||[]).forEach(v=>collected.push(v));
-      }catch(e){console.warn('[search detail]',e.message);}
+                <div class="card-top-band"></div>
+                <div class="card-bot-band"></div>
+                <div class="card-vignette"></div>
+                <div class="card-shine"></div>
+                
+                ${buildXP(data)}
+                
+                <!-- 4영역: AI 진단 푸터 -->
+                <div class="card-footer">
+                    <div class="footer-top">
+                        <div class="footer-name">${data.name}</div>
+                        <div class="footer-rank">${data.rank}</div>
+                    </div>
+                    <div class="footer-diagnosis">${data.diagnosis}</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 3D 인터랙션 함수들
+// ═══════════════════════════════════════════════════════════════
+
+function card3D(e, el) {
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const ry = ((x - r.width/2) / (r.width/2)) * 15;
+    const rx = -((y - r.height/2) / (r.height/2)) * 15;
+    const mx = (x / r.width * 100).toFixed(1) + '%';
+    const my = (y / r.height * 100).toFixed(1) + '%';
+    
+    const tilt = el.querySelector('.card-tilt');
+    if (tilt) tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
+    
+    const shine = el.querySelector('.card-shine');
+    if (shine) {
+        shine.style.background = `
+            linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+            linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),
+            radial-gradient(ellipse 50% 40% at ${mx} ${my},rgba(255,255,255,.25) 0%,rgba(255,255,255,.06) 50%,transparent 75%)
+        `;
     }
+}
 
-    collected.forEach(item=>{
-      if(isShorts(item))       searchShorts.push(item);
-      else if(isLongs(item))   searchLongs.push(item); // isLongs = sec >= 180 만
+function cardReset(el) {
+    const tilt = el.querySelector('.card-tilt');
+    if (tilt) tilt.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+    
+    const shine = el.querySelector('.card-shine');
+    if (shine) {
+        shine.style.background = `
+            linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
+            linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)
+        `;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 초기화 및 렌더링
+// ═══════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('cards-grid');
+    grid.innerHTML = LEVEL_DATA.map(data => buildCardHTML(data)).join('');
+    
+    // 성능 최적화를 위한 Intersection Observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.card-scene').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
     });
+});
 
-    const byViral=arr=>arr.sort((a,b)=>viralOf(b)-viralOf(a));
-    searchShorts=byViral(searchShorts);
-    // ★ 검색 결과 롱폼도 hardFilterLongs 적용
-    searchLongs=byViral(hardFilterLongs(searchLongs));
-
-    hideHotLoader();
-    renderSearchResult();
-  }catch(e){
-    hideHotLoader();
-    showHotError(e.message);
-    showGlobalError('검색 실패: '+e.message);
-  }
-}
-
-/* ================================================================
-   렌더링
-================================================================ */
-function renderSearchResult(){
-  const sg=document.getElementById('shorts-grid'),lg=document.getElementById('longs-grid');
-  const sm=document.getElementById('shorts-more-btn'),lm=document.getElementById('longs-more-btn');
-
-  if(activeType==='shorts'){
-    sg.style.display='';lg.style.display='none';lm.style.display='none';
-    if(!searchShorts.length){
-      sg.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">🔍</div><h3>"${hotSearchQuery}" 쇼츠 결과 없음</h3><p>다른 키워드로 검색해 보세요.</p></div>`;
-      sm.style.display='none';
-    }else{
-      const sl=searchShorts.slice(0,(searchShortsPage+1)*PAGE);
-      sg.innerHTML=sl.map(v=>makeVideoCard(v,'shorts')).join('');
-      sm.style.display=sl.length<searchShorts.length?'block':'none';
+// 카드 클릭 시 상세 정보 표시 (확장 가능)
+document.addEventListener('click', (e) => {
+    const card = e.target.closest('.card-scene');
+    if (card) {
+        const level = card.dataset.lv;
+        console.log(`레벨 ${level} 카드 클릭됨 - 상세 분석 모달 표시 가능`);
+        // 여기에 상세 분석 모달 로직 추가 가능
     }
-  }else{
-    sg.style.display='none';sm.style.display='none';lg.style.display='';
-    // ★ 렌더링 직전 최종 방어: sec >= 180 재확인
-    const safeLongs=hardFilterLongs(searchLongs);
-    if(!safeLongs.length){
-      lg.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">🔍</div><h3>"${hotSearchQuery}" 롱폼 결과 없음</h3><p>다른 키워드로 검색해 보세요.</p></div>`;
-      lm.style.display='none';
-    }else{
-      const sl=safeLongs.slice(0,(searchLongsPage+1)*PAGE);
-      lg.innerHTML=sl.map(v=>makeVideoCard(v,'longs')).join('');
-      lm.style.display=sl.length<safeLongs.length?'block':'none';
-    }
-  }
-}
-
-function clearHotSearch(){
-  hotSearchMode=false;hotSearchQuery='';searchShorts=[];searchLongs=[];
-  searchShortsPage=0;searchLongsPage=0;
-  document.getElementById('hot-kw-input').value='';
-  document.getElementById('search-result-header').style.display='none';
-  document.querySelectorAll('.cat-btn').forEach(b=>{
-    b.style.opacity='';
-    b.classList.toggle('active',b.textContent===activeCat);
-  });
-  shortsPage=0;longsPage=0;
-  renderHotSplit();
-}
-
-function renderHotSplit(){
-  if(hotSearchMode){renderSearchResult();return;}
-  const sg=document.getElementById('shorts-grid'),lg=document.getElementById('longs-grid');
-  const sm=document.getElementById('shorts-more-btn'),lm=document.getElementById('longs-more-btn');
-  const sl=catShortsCache[activeCat]||[];
-  // ★ 렌더링 직전 최종 방어: sec >= 180 재확인
-  const ll=hardFilterLongs(catLongCache[activeCat]||[]);
-
-  if(activeType==='shorts'){
-    sg.style.display='';lg.style.display='none';lm.style.display='none';
-    if(!sl.length){
-      sg.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">🎬</div><h3>쇼츠 데이터 없음</h3></div>`;
-      sm.style.display='none';
-    }else{
-      const s=sl.slice(0,(shortsPage+1)*PAGE);
-      sg.innerHTML=s.map(v=>makeVideoCard(v,'shorts')).join('');
-      sm.style.display=s.length<sl.length?'block':'none';
-    }
-  }else{
-    sg.style.display='none';sm.style.display='none';lg.style.display='';
-    if(!ll.length){
-      lg.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">📹</div><h3>롱폼 데이터 없음</h3></div>`;
-      lm.style.display='none';
-    }else{
-      const s=ll.slice(0,(longsPage+1)*PAGE);
-      lg.innerHTML=s.map(v=>makeVideoCard(v,'longs')).join('');
-      lm.style.display=s.length<ll.length?'block':'none';
-    }
-  }
-}
-
-function loadMoreShorts(){if(hotSearchMode){searchShortsPage++;renderSearchResult();}else{shortsPage++;renderHotSplit();}}
-function loadMoreLongs(){if(hotSearchMode){searchLongsPage++;renderSearchResult();}else{longsPage++;renderHotSplit();}}
-
-/* ── 영상 카드 ── */
-function makeVideoCard(item,type){
-  const sn=item.snippet||{},st=item.statistics||{},cd=item.contentDetails||{};
-  const vid=item.id,title=sn.title||'제목 없음',ch=sn.channelTitle||'';
-  const thumb=sn.thumbnails?.medium?.url||sn.thumbnails?.default?.url||'';
-  const dur=fmtDur(cd.duration);
-  const views=st.viewCount!=null?fmt(st.viewCount):'-';
-  const likes=st.likeCount!=null?fmt(st.likeCount):'-';
-  const viral=viralOf(item);
-  const vc=viral>5_000_000?'hot':viral>500_000?'warm':'cool';
-  const vl=viral>5_000_000?'🔥 핫':viral>500_000?'🌡️ 상승':'📈 주목';
-  const safeTitle=title.replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  return`
-    <div class="video-card" onclick="openVideoModal('${vid}')">
-      <div class="thumb-wrap">
-        <img src="${thumb}" alt="${safeTitle}" loading="lazy"
-          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 320 180%22><rect fill=%22%23222%22 width=%22320%22 height=%22180%22/><text fill=%22%23666%22 x=%22160%22 y=%2295%22 text-anchor=%22middle%22 font-size=%2224%22>▶</text></svg>'" />
-        ${type==='shorts'?'<span class="shorts-badge">Shorts</span>':''}
-        <span class="duration-badge">${dur}</span>
-      </div>
-      <div class="video-info">
-        <div class="video-title">${title}</div>
-        <div class="video-meta">
-          <span class="video-channel">${ch}</span>
-          <span class="viral-badge ${vc}">${vl}</span>
-        </div>
-        <div class="video-stats"><span>👁 ${views}</span><span>👍 ${likes}</span></div>
-      </div>
-    </div>`;
-}
-
-/* ================================================================
-   채널 분석
-================================================================ */
-async function doChannelSearch(){
-  const q=document.getElementById('ch-input').value.trim();
-  const out=document.getElementById('channel-result');
-  if(!q)return;
-  out.innerHTML='<div class="loader-wrap"><div class="spinner"></div></div>';
-  try{
-    let channelId;
-    if(q.startsWith('@')){
-      const d=await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&forHandle=${encodeURIComponent(q)}`);
-      channelId=d.items?.[0]?.id;
-    }else{
-      const d=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(q)}&maxResults=1`);
-      channelId=d.items?.[0]?.id?.channelId;
-    }
-    if(!channelId){out.innerHTML='<div class="error-card"><h3>채널을 찾을 수 없습니다.</h3></div>';return;}
-    const ch=await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CbrandingSettings&id=${channelId}`);
-    const c=ch.items?.[0];
-    if(!c){out.innerHTML='<div class="error-card"><h3>채널 정보 없음</h3></div>';return;}
-    const sn=c.snippet||{},st=c.statistics||{};
-    const grade=gradeOf(st.subscriberCount);
-    out.innerHTML=`
-      <div class="channel-result-card">
-        <div class="channel-header">
-          <img class="channel-avatar" src="${sn.thumbnails?.medium?.url||''}" alt="${sn.title}" />
-          <div>
-            <div class="channel-name">${sn.title||''}</div>
-            <div class="channel-handle">${sn.customUrl||channelId}</div>
-            <div class="grade-badge" style="margin-top:8px;color:${grade.color};border-color:${grade.color};background:${grade.bg}">${grade.label}</div>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-value">${fmt(st.subscriberCount)}</div><div class="stat-label">구독자</div></div>
-          <div class="stat-card"><div class="stat-value">${fmt(st.viewCount)}</div><div class="stat-label">총 조회수</div></div>
-          <div class="stat-card"><div class="stat-value">${fmt(st.videoCount)}</div><div class="stat-label">영상 수</div></div>
-          <div class="stat-card"><div class="stat-value">${sn.country||'-'}</div><div class="stat-label">국가</div></div>
-        </div>
-        <p style="font-size:13px;color:var(--text-secondary);margin-top:16px">
-          ${(sn.description||'').slice(0,200)}${(sn.description||'').length>200?'…':''}</p>
-        <a href="https://www.youtube.com/channel/${channelId}" target="_blank"
-           style="display:inline-block;margin-top:14px;padding:8px 20px;background:var(--accent);color:#fff;border-radius:20px;font-size:13px;text-decoration:none">채널 바로가기</a>
-      </div>`;
-  }catch(e){out.innerHTML=`<div class="error-card"><h3>분석 실패</h3><p>${e.message}</p></div>`;}
-}
-
-/* ================================================================
-   수익 계산기
-================================================================ */
-function calcRevenue(){
-  const views=parseInt(document.getElementById('rev-views').value)||0;
-  const rpm=parseFloat(document.getElementById('rev-cat').value)||1.5;
-  const ctr=parseFloat(document.getElementById('rev-ctr').value)||5;
-  const imp=views*(ctr/100),mon=(imp/1000)*rpm,yr=mon*12;
-  const per=views>0?(mon/views*1000).toFixed(4):0;
-  document.getElementById('rev-result').innerHTML=`
-    <div class="result-card"><div class="result-value">$${mon.toFixed(0)}</div><div class="result-label">월 예상 수익</div></div>
-    <div class="result-card"><div class="result-value">$${yr.toFixed(0)}</div><div class="result-label">연 예상 수익</div></div>
-    <div class="result-card"><div class="result-value">${fmt(Math.round(imp))}</div><div class="result-label">월 광고 노출</div></div>
-    <div class="result-card"><div class="result-value">$${per}</div><div class="result-label">1K뷰 수익</div></div>`;
-}
-
-/* ================================================================
-   AI 아이디어
-================================================================ */
-const AI_TEMPLATES={
-  shorts:   ['${t} 30초 꿀팁','${t} 이것만 알면 됨','${t} 충격 비하인드','${t} 1분 도전','${t} 공감 상황'],
-  tutorial: ['${t} 완전 처음부터','${t} 프로 핵심 노하우','${t} 실수 없이 배우기','${t} 하루 마스터'],
-  vlog:     ['${t} 하루 일상','${t} 현실 솔직 후기','${t} 나만의 루틴','${t} 72시간 도전'],
-  review:   ['${t} 직접 써본 솔직 리뷰','${t} 가성비 TOP5','${t} 비교 결론','${t} 6개월 후기'],
-  challenge:['${t} 챌린지 성공?','24시간 ${t}만 하기','100명에게 물어봤다','${t} 극한 도전'],
-};
-function genAiIdeas(){
-  const topic=document.getElementById('ai-topic').value.trim()||'주제';
-  const format=document.getElementById('ai-format').value;
-  const tpls=AI_TEMPLATES[format]||AI_TEMPLATES.shorts;
-  document.getElementById('ai-ideas-list').innerHTML=tpls.map(t=>{
-    const title=t.replace(/\${t}/g,topic);
-    return`<div class="ai-idea-card" onclick="this.style.borderColor='var(--accent3)'">
-      <div class="ai-idea-title">💡 ${title}</div>
-      <div class="ai-idea-desc">#${topic} #YouTube${format==='shorts'?'Shorts':''} #trending</div>
-    </div>`;
-  }).join('');
-}
-
-/* ================================================================
-   도구
-================================================================ */
-const TOOLS_DATA=[
-  {icon:'🎨',name:'Canva',          desc:'썸네일 & 그래픽 디자인',   url:'https://canva.com'},
-  {icon:'📝',name:'TubeBuddy',      desc:'SEO 최적화 & 키워드 분석', url:'https://tubebuddy.com'},
-  {icon:'🎵',name:'Epidemic Sound', desc:'저작권 프리 배경음악',      url:'https://epidemicsound.com'},
-  {icon:'✂️',name:'CapCut',         desc:'모바일/PC 영상 편집',       url:'https://capcut.com'},
-  {icon:'📊',name:'Social Blade',   desc:'채널 통계 & 성장 추적',     url:'https://socialblade.com'},
-  {icon:'🔍',name:'VidIQ',          desc:'경쟁 분석 & 트렌드 탐색',   url:'https://vidiq.com'},
-  {icon:'🎤',name:'Descript',       desc:'AI 음성 편집 & 자막',       url:'https://descript.com'},
-  {icon:'🌐',name:'Later',          desc:'SNS 예약 & 분석',           url:'https://later.com'},
-];
-function buildTools(){
-  document.getElementById('tools-grid').innerHTML=TOOLS_DATA.map(t=>`
-    <div class="tool-card" onclick="window.open('${t.url}','_blank')">
-      <div class="tool-icon">${t.icon}</div>
-      <div class="tool-name">${t.name}</div>
-      <div class="tool-desc">${t.desc}</div>
-    </div>`).join('');
-}
-
-/* ================================================================
-   쇼핑
-================================================================ */
-const SHOP_DATA=[
-  {name:'소니 ZV-E10',       desc:'유튜버 입문용 미러리스 카메라', price:'₩699,000', url:'https://link.coupang.com/a/example'},
-  {name:'Rode NT-USB Mini',  desc:'고음질 USB 콘덴서 마이크',      price:'₩129,000', url:'https://link.coupang.com/a/example'},
-  {name:'Elgato Key Light',  desc:'스트리머용 LED 링라이트',        price:'₩189,000', url:'https://link.coupang.com/a/example'},
-  {name:'GoPro HERO 12',     desc:'액션캠 & 브이로그',              price:'₩469,000', url:'https://link.coupang.com/a/example'},
-  {name:'DJI Osmo Pocket 3', desc:'4K 짐벌 카메라',                price:'₩549,000', url:'https://link.coupang.com/a/example'},
-  {name:'로지텍 StreamCam',  desc:'1080p 60fps 웹캠',               price:'₩149,000', url:'https://link.coupang.com/a/example'},
-];
-function buildShop(){
-  document.getElementById('shop-grid').innerHTML=SHOP_DATA.map(s=>`
-    <div class="shop-card">
-      <div class="tool-name">${s.name}</div>
-      <div class="shop-desc">${s.desc}</div>
-      <div class="shop-price">${s.price}</div>
-      <a class="shop-link" href="${s.url}" target="_blank" rel="noopener">쿠팡에서 보기 →</a>
-    </div>`).join('');
-}
-
-/* ================================================================
-   초기화
-================================================================ */
-window.addEventListener('DOMContentLoaded',()=>{
-  document.querySelectorAll('.hot-tab-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      activeType=btn.dataset.type;
-      shortsPage=0;longsPage=0;searchShortsPage=0;searchLongsPage=0;
-      document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      hotSearchMode?renderSearchResult():renderHotSplit();
-    });
-  });
-  document.getElementById('modal-close-btn').addEventListener('click',closeVideoModal);
-  document.getElementById('video-modal').addEventListener('click',function(e){
-    if(e.target===this)closeVideoModal();
-  });
-  sectionLoaded['hot']=true;
-  loadHot();
 });
 </script>
 </body>
