@@ -115,8 +115,6 @@
     .tool-desc,.shop-desc{font-size:12px;color:var(--text-secondary);line-height:1.5}
     .shop-price{font-size:16px;font-weight:700;color:var(--accent2);margin-top:8px}
     .shop-link{display:inline-block;margin-top:10px;padding:6px 14px;background:rgba(255,165,2,0.15);color:var(--accent2);border-radius:20px;font-size:12px;text-decoration:none}
-
-    /* 모달 */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     .modal-overlay.open{display:flex}
     .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
@@ -275,17 +273,19 @@
 <script>
 /* ================================================================
    YTAnalytics Pro
-   ★ 핵심 수정: isStrictShorts() 함수로 쇼츠 판별 강화
-      - 조건 1: 재생 시간 60초 이하 (YouTube Shorts 공식 기준)
-      - 조건 2: YouTube /shorts/ URL 접근 가능 여부 HEAD 요청으로 검증
-      - 조건 3: snippet.title 또는 tags 에 '#shorts' 포함 여부 보조 확인
-      - 키워드 검색 시 isStrictShorts() 적용, 인기영상 탭은 기존 isShorts() 유지
+   ★ 변경사항: 쇼츠/롱폼 재생시간 기준 변경
+      - 쇼츠: 180초(3분) 이하
+      - 롱폼: 180초(3분) 초과
+      - SHORTS_MAX_SEC 상수 하나만 바꾸면 전체 적용되도록 통일
 ================================================================ */
 
 const API_KEYS = [
   'AIzaSyDHqHi_Rg9_YVfEJMnjQ1d9entDsbz0Gog',
 ];
 let keyIdx = 0;
+
+/* ★ 쇼츠 최대 재생시간 기준 (초) – 이 값 하나로 전체 필터 통일 */
+const SHORTS_MAX_SEC = 180;
 
 let hotSearchMode = false, hotSearchQuery = '';
 let searchShorts = [], searchLongs = [];
@@ -356,98 +356,55 @@ function hideGlobalError(){
 }
 
 /* ================================================================
-   ★ 쇼츠 판별 함수 (2단계)
+   ★ 쇼츠/롱폼 판별 함수 – SHORTS_MAX_SEC(180초) 기준으로 통일
 
-   isShorts()       – 인기영상 탭용: 시간(≤60초)만 체크 (빠름)
-   isStrictShorts() – 키워드 검색용: 시간 + 태그/제목 #shorts 포함 여부
-                      + YouTube /shorts/ URL 리다이렉트 확인 (정확)
-
-   YouTube Data API는 영상의 세로/가로 비율(9:16)을 직접 제공하지 않으므로
-   아래 3가지 신호를 AND/OR 조합하여 최대한 정확히 필터링합니다:
-     1) duration ≤ 60s  (필수 조건)
-     2) #shorts 태그/제목 포함  (보조 신호)
-     3) https://www.youtube.com/shorts/{id} HEAD 요청 → 200 응답  (가장 정확)
+   isShorts()          – 인기영상 탭용 (느슨, 빠름)
+   strictShortsFilter()– 키워드 검색용 (엄격: 시간 + 롱폼 키워드 제외)
+   strictLongsFilter() – 키워드 검색용 (180초 초과만 통과)
 ================================================================ */
 
-/* 인기영상 탭용 (느슨한 판별: 60초 이하) */
+/* 인기영상 탭: 180초 이하 */
 function isShorts(item){
-  const s=parseDurSec(item.contentDetails?.duration||'');
-  return s>0 && s<=60;
+  const s = parseDurSec(item.contentDetails?.duration||'');
+  return s > 0 && s <= SHORTS_MAX_SEC;
 }
 
-/* 키워드 검색용 (엄격한 판별) */
-function isStrictShorts(item){
-  const sec = parseDurSec(item.contentDetails?.duration||'');
-  // ① 60초 초과는 즉시 제외
-  if(sec<=0 || sec>60) return false;
-  // ② 태그 또는 제목에 #shorts 포함 여부 (대소문자 무관)
-  const tags  = (item.snippet?.tags||[]).join(' ').toLowerCase();
-  const title = (item.snippet?.title||'').toLowerCase();
-  const desc  = (item.snippet?.description||'').toLowerCase();
-  const hasTag = tags.includes('#shorts') || tags.includes('shorts')
-              || title.includes('#shorts')
-              || desc.includes('#shorts');
-  // ③ 태그 신호가 있으면 바로 통과, 없어도 60초 이하면 일단 후보
-  //    → /shorts/ URL 검증은 배치로 처리 (verifyShortsBatch)
-  return true; // URL 검증은 별도 비동기 처리
-}
-
-/* /shorts/ URL HEAD 요청으로 실제 쇼츠 여부 검증 (배치) */
-async function verifyShortsBatch(items){
-  const results = await Promise.allSettled(
-    items.map(item =>
-      fetch(`https://www.youtube.com/shorts/${item.id}`, {method:'HEAD', mode:'no-cors'})
-        .then(()=>({id:item.id, ok:true}))
-        .catch(()=>({id:item.id, ok:true})) // no-cors는 항상 opaque → ok로 처리
-    )
-  );
-  // no-cors 모드에서는 opaque response라 status 확인 불가
-  // 대신 fetch 자체가 실패하지 않으면 URL이 존재하는 것으로 간주
-  // 실제로 /shorts/{id}가 없으면 YouTube가 /watch?v={id}로 리다이렉트하는데
-  // no-cors HEAD로는 구분 불가 → 태그 기반 필터링으로 보완
-  return items; // URL 검증 대신 아래 엄격 태그 필터 사용
-}
-
-/* ★ 최종 엄격 쇼츠 필터 (키워드 검색 전용)
-   YouTube Shorts의 핵심 특징:
-   - 반드시 60초 이하
-   - 제목/태그/설명에 #shorts 포함하는 경우가 매우 많음
-   - 그 외: snippet.liveBroadcastContent === 'none' 이고
-            contentDetails.dimension === '2d' (일반 영상과 동일)
-   API로 비율 직접 확인이 불가하므로 60초 + #shorts 태그를 주 기준으로 사용
-*/
+/* 키워드 검색 쇼츠 필터: 180초 이하 + 명백한 롱폼 키워드 제외 */
 function strictShortsFilter(items){
   return items.filter(item=>{
     const sec = parseDurSec(item.contentDetails?.duration||'');
-    if(sec<=0 || sec>60) return false;
+
+    /* ① 180초 초과는 즉시 제외 */
+    if(sec <= 0 || sec > SHORTS_MAX_SEC) return false;
 
     const tags  = (item.snippet?.tags||[]).map(t=>t.toLowerCase());
     const title = (item.snippet?.title||'').toLowerCase();
     const desc  = (item.snippet?.description||'').toLowerCase();
 
-    // #shorts 태그가 있으면 확실한 쇼츠
+    /* ② #shorts 태그 있으면 확실한 쇼츠 */
     const hasShortTag =
       tags.some(t=> t==='shorts' || t==='#shorts' || t==='short') ||
       title.includes('#shorts') ||
       desc.includes('#shorts');
-
-    // 60초 이하이고 #shorts 태그가 있으면 쇼츠로 확정
     if(hasShortTag) return true;
 
-    // 태그 없어도 60초 이하면 쇼츠 가능성 높음
-    // 단, 제목에 명백한 롱폼 키워드가 있으면 제외
-    const longFormKeywords = ['full version','풀버전','full episode','전체영상','live stream','라이브','스트리밍'];
+    /* ③ 명백한 롱폼 키워드 포함 시 제외 */
+    const longFormKeywords = [
+      'full version','풀버전','full episode','전체영상',
+      'live stream','라이브','스트리밍'
+    ];
     if(longFormKeywords.some(kw=>title.includes(kw))) return false;
 
-    return true; // 60초 이하 & 롱폼 키워드 없음 → 쇼츠로 허용
+    /* ④ 180초 이하 & 롱폼 키워드 없음 → 쇼츠 허용 */
+    return true;
   });
 }
 
-/* 롱폼 필터 (60초 초과) */
+/* 키워드 검색 롱폼 필터: 180초 초과만 통과 */
 function strictLongsFilter(items){
   return items.filter(item=>{
     const sec = parseDurSec(item.contentDetails?.duration||'');
-    return sec > 60;
+    return sec > SHORTS_MAX_SEC;
   });
 }
 
@@ -599,7 +556,7 @@ function showHotError(msg){
 }
 
 /* ================================================================
-   ★ 키워드 검색 – strictShortsFilter / strictLongsFilter 적용
+   키워드 검색
 ================================================================ */
 async function doHotSearch(){
   const q=document.getElementById('hot-kw-input').value.trim();
@@ -610,9 +567,8 @@ async function doHotSearch(){
   document.getElementById('search-kw-label').textContent=`"${q}"`;
   document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.remove('active');b.style.opacity='0.4';});
   showHotLoader();
-
   try{
-    /* ── 쇼츠 검색: videoDuration=short (≤4분) + 엄격 필터 ── */
+    /* 쇼츠 검색 */
     const sr=await apiFetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
       `&videoDuration=short&regionCode=KR&relevanceLanguage=ko`+
@@ -623,11 +579,10 @@ async function doHotSearch(){
       const d=await apiFetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${sIds.join(',')}`
       );
-      // ★ strictShortsFilter 적용 → 60초 이하 + 롱폼 키워드 없는 영상만
+      /* ★ strictShortsFilter: 180초 이하 */
       searchShorts = strictShortsFilter(d.items||[]);
     }
-
-    /* ── 롱폼 검색: medium + long duration + 엄격 필터 ── */
+    /* 롱폼 검색 (medium) */
     const mr=await apiFetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
       `&videoDuration=medium&regionCode=KR&relevanceLanguage=ko`+
@@ -638,10 +593,10 @@ async function doHotSearch(){
       const d=await apiFetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${mIds.join(',')}`
       );
-      // ★ strictLongsFilter 적용 → 60초 초과만
+      /* ★ strictLongsFilter: 180초 초과 */
       searchLongs = strictLongsFilter(d.items||[]);
     }
-
+    /* 롱폼 검색 (long) */
     const lr=await apiFetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video`+
       `&videoDuration=long&regionCode=KR&relevanceLanguage=ko`+
@@ -652,12 +607,11 @@ async function doHotSearch(){
       const d=await apiFetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${lIds.join(',')}`
       );
-      // ★ strictLongsFilter 적용 + 중복 제거
+      /* ★ strictLongsFilter: 180초 초과 + 중복 제거 */
       strictLongsFilter(d.items||[]).forEach(v=>{
         if(!searchLongs.find(l=>l.id===v.id)) searchLongs.push(v);
       });
     }
-
     hideHotLoader();
     renderSearchResult();
   }catch(e){
@@ -725,6 +679,7 @@ async function loadUntilFull(cat){
       `&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50`+
       (cfg.categoryId?`&videoCategoryId=${cfg.categoryId}`:'')
     );
+    /* ★ isShorts(): 180초 이하 */
     (d.items||[]).forEach(it=>(isShorts(it)?shorts:longs).push(it));
   }catch(e){ console.warn('[mostPopular]',cat,e.message); }
 
@@ -740,6 +695,7 @@ async function loadUntilFull(cat){
         const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
         if(ids.length){
           const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);
+          /* ★ isShorts(): 180초 이하 */
           (d.items||[]).forEach(it=>{ if(isShorts(it)&&!shorts.find(s=>s.id===it.id)) shorts.push(it); });
         }
       }catch(e){ console.warn('[쇼츠보완]',kw,e.message); }
@@ -757,6 +713,7 @@ async function loadUntilFull(cat){
         const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
         if(ids.length){
           const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);
+          /* ★ !isShorts(): 180초 초과 */
           (d.items||[]).forEach(it=>{ if(!isShorts(it)&&!longs.find(l=>l.id===it.id)) longs.push(it); });
         }
       }catch(e){ console.warn('[롱폼보완]',kw,e.message); }
