@@ -407,7 +407,7 @@
 <!-- APP LAYOUT -->
 <div class="app-layout">
 
-  <!-- SIDEBAR NAV (키워드 검색 제거) -->
+  <!-- SIDEBAR NAV -->
   <nav class="sidebar">
     <div class="nav-section-title">탐색</div>
     <button class="nav-item active" data-section="hot" onclick="showSec('hot')">
@@ -441,7 +441,6 @@
         <div class="section-subtitle">카테고리별 한국 인기 YouTube 영상</div>
       </div>
 
-      <!-- 키워드 검색창 (카테고리 탭 바로 위) -->
       <div class="hot-search-box">
         <input
           class="hot-search-input"
@@ -452,28 +451,23 @@
         <button class="hot-search-btn" onclick="doHotSearch()">검색</button>
       </div>
 
-      <!-- 카테고리 탭 -->
       <div class="cat-tabs" id="cat-tabs"></div>
 
-      <!-- 쇼츠 / 롱폼 탭 -->
       <div class="hot-tab-bar">
         <button class="hot-tab-btn active" data-type="shorts" id="tab-shorts">🎬 쇼츠</button>
         <button class="hot-tab-btn"        data-type="longs"  id="tab-longs" >📹 롱폼</button>
       </div>
 
-      <!-- 검색 결과 헤더 (검색 시에만 표시) -->
       <div id="search-result-header" style="display:none" class="search-result-header">
         <span>검색 결과: <strong id="search-kw-label"></strong></span>
         <button class="search-clear-btn" onclick="clearHotSearch()">✕ 검색 초기화</button>
       </div>
 
-      <!-- 로더 -->
       <div id="hot-loader" class="loader-wrap">
         <div class="spinner"></div>
         <div style="color:var(--text-secondary);font-size:13px">인기영상 로딩 중...</div>
       </div>
 
-      <!-- 그리드 -->
       <div id="shorts-grid" class="video-grid"></div>
       <button class="more-btn" id="shorts-more-btn" onclick="loadMoreShorts()">쇼츠 더 보기 ▼</button>
       <div id="longs-grid" class="video-grid" style="display:none"></div>
@@ -587,21 +581,18 @@
 <script>
 /* ================================================================
    YTAnalytics Pro
-   - 사이드바 키워드 검색 제거
-   - 인기영상 탭 상단에 키워드 검색창 통합
-   - 쇼츠 탭 · 롱폼 탭 레이블 단순화
-   - 전체 카테고리 제거, 쇼츠 3분 기준, apiFetch 강화
+   - 숫자 단위: 억 / 만 / 천 (한국식)
 ================================================================ */
 
 /* ── CONFIG ── */
 const API_KEYS = [
-  'AIzaSyC8cLoTsaq1IkJgOplzb_gVUYV8_9C_moU',
+  'AIzaSyDzpxSQhciOKEa6qh_q3n5q47ug1mua6-4',
   // 'YOUR_API_KEY_2',
 ];
 let keyIdx = 0;
 
 /* ── 검색 모드 상태 ── */
-let hotSearchMode = false;   // true = 검색 결과 표시 중
+let hotSearchMode  = false;
 let hotSearchQuery = '';
 
 /* ── CATEGORY CONFIG ── */
@@ -626,9 +617,8 @@ let shortsPage = 0;
 let longsPage  = 0;
 const PAGE = 12;
 
-/* ── 검색 결과 캐시 ── */
-let searchShorts = [];
-let searchLongs  = [];
+let searchShorts     = [];
+let searchLongs      = [];
 let searchShortsPage = 0;
 let searchLongsPage  = 0;
 
@@ -646,12 +636,22 @@ const GRADES = [
 /* ================================================================
    UTILITY
 ================================================================ */
+
+/**
+ * 한국식 숫자 단위 변환
+ * 1억 이상 → X.X억
+ * 1만 이상  → X.X만
+ * 1천 이상  → X.X천
+ * 그 외     → 그대로
+ */
 function fmt(n) {
   n = parseInt(n, 10) || 0;
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
-  if (n >= 1_000)     return (n / 1_000).toFixed(1) + 'K';
-  return n.toString();
+  if (n >= 100_000_000) return (n / 100_000_000).toFixed(1).replace(/\.0$/, '') + '억';
+  if (n >= 10_000)      return (n / 10_000).toFixed(1).replace(/\.0$/, '') + '만';
+  if (n >= 1_000)       return (n / 1_000).toFixed(1).replace(/\.0$/, '') + '천';
+  return n.toLocaleString('ko-KR');
 }
+
 function parseDurSec(iso) {
   if (!iso) return 0;
   const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
@@ -753,11 +753,7 @@ function buildCatTabs() {
     btn.className = 'cat-btn' + (cat === activeCat ? ' active' : '');
     btn.textContent = cat;
     btn.onclick = () => {
-      // 검색 모드 중에는 카테고리 탭 비활성 처리 (선택 불가 시각적 안내)
-      if (hotSearchMode) {
-        clearHotSearch();
-        return;
-      }
+      if (hotSearchMode) { clearHotSearch(); return; }
       switchCat(cat);
     };
     wrap.appendChild(btn);
@@ -779,7 +775,6 @@ function switchCat(cat) {
   }
 }
 
-/* ── 로더 / 에러 ── */
 function showHotLoader() {
   document.getElementById('hot-loader').style.display = 'block';
   document.getElementById('shorts-grid').innerHTML = '';
@@ -794,7 +789,7 @@ function showHotError(msg) {
 }
 
 /* ================================================================
-   인기영상 – 키워드 검색 (통합)
+   인기영상 – 키워드 검색
 ================================================================ */
 async function doHotSearch() {
   const q = document.getElementById('hot-kw-input').value.trim();
@@ -807,11 +802,9 @@ async function doHotSearch() {
   searchShorts = [];
   searchLongs  = [];
 
-  /* 검색 결과 헤더 표시 */
   document.getElementById('search-result-header').style.display = 'flex';
   document.getElementById('search-kw-label').textContent = `"${q}"`;
 
-  /* 카테고리 탭 흐리게 */
   document.querySelectorAll('.cat-btn').forEach(b => {
     b.classList.remove('active');
     b.style.opacity = '0.4';
@@ -820,45 +813,39 @@ async function doHotSearch() {
   showHotLoader();
 
   try {
-    /* 쇼츠 검색 */
-    const shortRes = await apiFetch(
+    /* 쇼츠 */
+    const sr = await apiFetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video` +
       `&videoDuration=short&regionCode=KR&relevanceLanguage=ko` +
       `&q=${encodeURIComponent(q)}&maxResults=25&order=viewCount`
     );
-    const shortIds = (shortRes.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    if (shortIds.length) {
-      const d = await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${shortIds.join(',')}`
-      );
+    const sIds = (sr.items||[]).map(i=>i.id?.videoId).filter(Boolean);
+    if (sIds.length) {
+      const d = await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${sIds.join(',')}`);
       searchShorts = (d.items||[]).filter(isShorts);
     }
 
-    /* 롱폼 검색 */
-    const longRes = await apiFetch(
+    /* 롱폼 medium */
+    const mr = await apiFetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video` +
       `&videoDuration=medium&regionCode=KR&relevanceLanguage=ko` +
       `&q=${encodeURIComponent(q)}&maxResults=25&order=viewCount`
     );
-    const longIds = (longRes.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    if (longIds.length) {
-      const d = await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${longIds.join(',')}`
-      );
+    const mIds = (mr.items||[]).map(i=>i.id?.videoId).filter(Boolean);
+    if (mIds.length) {
+      const d = await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${mIds.join(',')}`);
       searchLongs = (d.items||[]).filter(v => !isShorts(v));
     }
 
-    /* 롱폼 long(20분+)도 추가 */
-    const longRes2 = await apiFetch(
+    /* 롱폼 long */
+    const lr = await apiFetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video` +
       `&videoDuration=long&regionCode=KR&relevanceLanguage=ko` +
       `&q=${encodeURIComponent(q)}&maxResults=25&order=viewCount`
     );
-    const longIds2 = (longRes2.items||[]).map(i=>i.id?.videoId).filter(Boolean);
-    if (longIds2.length) {
-      const d = await apiFetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${longIds2.join(',')}`
-      );
+    const lIds = (lr.items||[]).map(i=>i.id?.videoId).filter(Boolean);
+    if (lIds.length) {
+      const d = await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${lIds.join(',')}`);
       (d.items||[]).filter(v => !isShorts(v)).forEach(v => {
         if (!searchLongs.find(l => l.id === v.id)) searchLongs.push(v);
       });
@@ -880,9 +867,7 @@ function renderSearchResult() {
   const longsMore  = document.getElementById('longs-more-btn');
 
   if (activeType === 'shorts') {
-    shortsGrid.style.display = '';
-    longsGrid.style.display  = 'none';
-    longsMore.style.display  = 'none';
+    shortsGrid.style.display = ''; longsGrid.style.display = 'none'; longsMore.style.display = 'none';
     if (!searchShorts.length) {
       shortsGrid.innerHTML = `<div class="no-data" style="grid-column:1/-1">
         <div class="no-data-icon">🔍</div>
@@ -890,14 +875,12 @@ function renderSearchResult() {
         <p>다른 키워드로 검색해 보세요.</p></div>`;
       shortsMore.style.display = 'none';
     } else {
-      const slice = searchShorts.slice(0, (searchShortsPage+1)*PAGE);
-      shortsGrid.innerHTML = slice.map(v => makeVideoCard(v,'shorts')).join('');
+      const slice = searchShorts.slice(0,(searchShortsPage+1)*PAGE);
+      shortsGrid.innerHTML = slice.map(v=>makeVideoCard(v,'shorts')).join('');
       shortsMore.style.display = slice.length < searchShorts.length ? 'block' : 'none';
     }
   } else {
-    shortsGrid.style.display = 'none';
-    shortsMore.style.display = 'none';
-    longsGrid.style.display  = '';
+    shortsGrid.style.display = 'none'; shortsMore.style.display = 'none'; longsGrid.style.display = '';
     if (!searchLongs.length) {
       longsGrid.innerHTML = `<div class="no-data" style="grid-column:1/-1">
         <div class="no-data-icon">🔍</div>
@@ -905,23 +888,19 @@ function renderSearchResult() {
         <p>다른 키워드로 검색해 보세요.</p></div>`;
       longsMore.style.display = 'none';
     } else {
-      const slice = searchLongs.slice(0, (searchLongsPage+1)*PAGE);
-      longsGrid.innerHTML = slice.map(v => makeVideoCard(v,'longs')).join('');
+      const slice = searchLongs.slice(0,(searchLongsPage+1)*PAGE);
+      longsGrid.innerHTML = slice.map(v=>makeVideoCard(v,'longs')).join('');
       longsMore.style.display = slice.length < searchLongs.length ? 'block' : 'none';
     }
   }
 }
 
 function clearHotSearch() {
-  hotSearchMode  = false;
-  hotSearchQuery = '';
-  searchShorts   = [];
-  searchLongs    = [];
-  searchShortsPage = 0;
-  searchLongsPage  = 0;
+  hotSearchMode = false; hotSearchQuery = '';
+  searchShorts = []; searchLongs = [];
+  searchShortsPage = 0; searchLongsPage = 0;
   document.getElementById('hot-kw-input').value = '';
   document.getElementById('search-result-header').style.display = 'none';
-  /* 카테고리 탭 복원 */
   document.querySelectorAll('.cat-btn').forEach(b => {
     b.style.opacity = '';
     b.classList.toggle('active', b.textContent === activeCat);
@@ -956,7 +935,6 @@ async function loadUntilFull(cat) {
   const cfg = CAT_CFG[cat]; if (!cfg) return;
   let shorts = [], longs = [];
 
-  /* ① mostPopular */
   try {
     const d = await apiFetch(
       `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics` +
@@ -966,7 +944,6 @@ async function loadUntilFull(cat) {
     (d.items||[]).forEach(it => (isShorts(it) ? shorts : longs).push(it));
   } catch(e) { console.warn('[mostPopular]', cat, e.message); }
 
-  /* ② 쇼츠 보완 */
   if (shorts.length < 12) {
     for (const kw of cfg.shortsKw||[]) {
       if (shorts.length >= 24) break;
@@ -978,18 +955,13 @@ async function loadUntilFull(cat) {
         );
         const ids = (r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
         if (ids.length) {
-          const d = await apiFetch(
-            `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${ids.join(',')}`
-          );
-          (d.items||[]).forEach(it => {
-            if (isShorts(it) && !shorts.find(s=>s.id===it.id)) shorts.push(it);
-          });
+          const d = await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${ids.join(',')}`);
+          (d.items||[]).forEach(it => { if (isShorts(it) && !shorts.find(s=>s.id===it.id)) shorts.push(it); });
         }
       } catch(e) { console.warn('[쇼츠 보완]', kw, e.message); }
     }
   }
 
-  /* ③ 롱폼 보완 */
   if (longs.length < 12) {
     for (const kw of cfg.keywords||[]) {
       if (longs.length >= 24) break;
@@ -1001,12 +973,8 @@ async function loadUntilFull(cat) {
         );
         const ids = (r.items||[]).map(i=>i.id?.videoId).filter(Boolean);
         if (ids.length) {
-          const d = await apiFetch(
-            `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${ids.join(',')}`
-          );
-          (d.items||[]).forEach(it => {
-            if (!isShorts(it) && !longs.find(l=>l.id===it.id)) longs.push(it);
-          });
+          const d = await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${ids.join(',')}`);
+          (d.items||[]).forEach(it => { if (!isShorts(it) && !longs.find(l=>l.id===it.id)) longs.push(it); });
         }
       } catch(e) { console.warn('[롱폼 보완]', kw, e.message); }
     }
@@ -1020,23 +988,18 @@ async function loadUntilFull(cat) {
 /* ── RENDER ── */
 function renderHotSplit() {
   if (hotSearchMode) { renderSearchResult(); return; }
-
   const shortsGrid = document.getElementById('shorts-grid');
   const longsGrid  = document.getElementById('longs-grid');
   const shortsMore = document.getElementById('shorts-more-btn');
   const longsMore  = document.getElementById('longs-more-btn');
-
   const shortsList = catShortsCache[activeCat] || [];
   const longsList  = catLongCache[activeCat]   || [];
 
   if (activeType === 'shorts') {
-    shortsGrid.style.display = '';
-    longsGrid.style.display  = 'none';
-    longsMore.style.display  = 'none';
+    shortsGrid.style.display = ''; longsGrid.style.display = 'none'; longsMore.style.display = 'none';
     if (!shortsList.length) {
       shortsGrid.innerHTML = `<div class="no-data" style="grid-column:1/-1">
-        <div class="no-data-icon">🎬</div>
-        <h3>쇼츠 데이터 없음</h3>
+        <div class="no-data-icon">🎬</div><h3>쇼츠 데이터 없음</h3>
         <p>${activeCat} 카테고리에 쇼츠가 없습니다.</p></div>`;
       shortsMore.style.display = 'none';
     } else {
@@ -1045,13 +1008,10 @@ function renderHotSplit() {
       shortsMore.style.display = slice.length < shortsList.length ? 'block' : 'none';
     }
   } else {
-    shortsGrid.style.display = 'none';
-    shortsMore.style.display = 'none';
-    longsGrid.style.display  = '';
+    shortsGrid.style.display = 'none'; shortsMore.style.display = 'none'; longsGrid.style.display = '';
     if (!longsList.length) {
       longsGrid.innerHTML = `<div class="no-data" style="grid-column:1/-1">
-        <div class="no-data-icon">📹</div>
-        <h3>롱폼 데이터 없음</h3>
+        <div class="no-data-icon">📹</div><h3>롱폼 데이터 없음</h3>
         <p>${activeCat} 카테고리에 롱폼 영상이 없습니다.</p></div>`;
       longsMore.style.display = 'none';
     } else {
@@ -1152,21 +1112,15 @@ async function doChannelSearch() {
   try {
     let channelId;
     if (q.startsWith('@')) {
-      const d = await apiFetch(
-        `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=${encodeURIComponent(q)}`
-      );
+      const d = await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=${encodeURIComponent(q)}`);
       channelId = d.items?.[0]?.id;
     } else {
-      const d = await apiFetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(q)}&maxResults=1`
-      );
+      const d = await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(q)}&maxResults=1`);
       channelId = d.items?.[0]?.id?.channelId;
     }
     if (!channelId) { out.innerHTML = '<div class="error-card"><h3>채널을 찾을 수 없습니다.</h3></div>'; return; }
-    const ch  = await apiFetch(
-      `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id=${channelId}`
-    );
-    const c = ch.items?.[0];
+    const ch = await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id=${channelId}`);
+    const c  = ch.items?.[0];
     if (!c) { out.innerHTML = '<div class="error-card"><h3>채널 정보 없음</h3></div>'; return; }
     const sn = c.snippet||{}, st = c.statistics||{};
     const grade = gradeOf(st.subscriberCount);
@@ -1211,7 +1165,7 @@ function calcRevenue() {
   document.getElementById('rev-result').innerHTML = `
     <div class="result-card"><div class="result-value">$${mon.toFixed(0)}</div><div class="result-label">월 예상 수익</div></div>
     <div class="result-card"><div class="result-value">$${yr.toFixed(0)}</div><div class="result-label">연 예상 수익</div></div>
-    <div class="result-card"><div class="result-value">${fmt(imp)}</div><div class="result-label">월 광고 노출</div></div>
+    <div class="result-card"><div class="result-value">${fmt(Math.round(imp))}</div><div class="result-label">월 광고 노출</div></div>
     <div class="result-card"><div class="result-value">$${per}</div><div class="result-label">1K뷰 수익</div></div>`;
 }
 
@@ -1287,7 +1241,6 @@ function buildShop() {
    INIT
 ================================================================ */
 window.addEventListener('DOMContentLoaded', () => {
-  /* 쇼츠 / 롱폼 탭 전환 */
   document.querySelectorAll('.hot-tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       activeType = btn.dataset.type;
@@ -1299,12 +1252,10 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* 모달 외부 클릭 닫기 */
   document.getElementById('video-modal').addEventListener('click', function(e) {
     if (e.target === this) closeModal('video-modal');
   });
 
-  /* 초기 로드 */
   sectionLoaded['hot'] = true;
   loadHot();
 });
