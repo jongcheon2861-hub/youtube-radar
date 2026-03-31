@@ -119,17 +119,48 @@
     /* ── 모달 ── */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     .modal-overlay.open{display:flex}
+    .modal{
+      background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);
+      /* ★ padding-top을 0으로 줄여 광고와 모달 내부 상단 간격 최소화 */
+      padding:0 24px 28px;
+      width:91.2vw;max-width:1330px;margin:auto;
+      display:flex;flex-direction:column;gap:10px;
+      /* 상대 위치 지정 – 닫기 버튼 absolute 배치용 */
+      position:relative;
+    }
 
-    /* ★ 모달 크기 5% 축소: 96vw→91.2vw, 1400px→1330px */
-    .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);padding:20px 24px 28px;width:91.2vw;max-width:1330px;margin:auto;display:flex;flex-direction:column;gap:14px}
-
-    .modal-ads-top{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center}
+    /* ★ 광고 영역 – 모달 상단에 딱 붙도록 border-radius 위쪽만 적용 */
+    .modal-ads-top{
+      width:100%;min-height:90px;
+      background:rgba(255,255,255,0.03);
+      border:1px dashed var(--border);
+      /* 위쪽 모서리만 모달과 동일하게 둥글게, 아래는 직각 */
+      border-radius:var(--radius) var(--radius) 0 0;
+      /* 모달 좌우 padding 상쇄 → 양쪽 끝까지 꽉 채움 */
+      margin:0 -24px;
+      overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+    }
     .modal-ads-top ins{display:block;width:100%;min-height:90px}
 
-    /* ★ modal-header: 제목 제거 후 닫기 버튼만 우측 정렬 */
-    .modal-header{display:flex;align-items:center;justify-content:flex-end}
-    .modal-close{background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1}
-    .modal-close:hover{color:var(--text-primary);background:var(--bg-hover)}
+    /* ★ 닫기 버튼 – 광고 영역 우측 상단에 absolute 오버레이 */
+    .modal-close{
+      position:absolute;
+      top:8px;right:8px;
+      z-index:10;
+      width:32px;height:32px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(15,15,26,0.75);
+      backdrop-filter:blur(4px);
+      border:1px solid var(--border);
+      border-radius:50%;
+      color:var(--text-secondary);
+      font-size:16px;
+      cursor:pointer;
+      line-height:1;
+      transition:all 0.2s;
+    }
+    .modal-close:hover{color:#fff;background:var(--accent);border-color:var(--accent);}
 
     .player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:var(--radius-sm);overflow:hidden}
     .player-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:var(--radius-sm)}
@@ -138,7 +169,7 @@
     .modal-stat-value{font-size:18px;font-weight:700;color:var(--accent)}
     .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
 
-    /* ── ★ 모달 정보 탭 ── */
+    /* ── 모달 정보 탭 ── */
     .modal-info-tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);padding-bottom:0}
     .modal-info-tab{padding:8px 18px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;border:1px solid transparent;border-bottom:none;background:none;color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:all 0.2s;margin-bottom:-1px}
     .modal-info-tab:hover{color:var(--text-primary)}
@@ -151,11 +182,11 @@
     .modal-hashtag:hover{background:rgba(30,144,255,0.25)}
     .modal-desc-text{font-size:13px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap;word-break:break-word}
     .modal-desc-more{display:inline-block;margin-top:10px;color:var(--accent4);font-size:12px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
-
     .modal-yt-btn{display:inline-block;padding:8px 22px;background:var(--accent);color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
 
     @media(max-width:700px){
-      .modal{width:100%;max-width:100%;padding:14px 14px 20px}
+      .modal{width:100%;max-width:100%;padding:0 14px 20px}
+      .modal-ads-top{margin:0 -14px}
       .modal-stats{grid-template-columns:repeat(2,1fr)}
       .modal-info-tab{padding:6px 12px;font-size:12px}
     }
@@ -186,7 +217,6 @@
   </nav>
 
   <main class="main-content">
-    <!-- 인기영상 -->
     <section class="section-page active" id="section-hot">
       <div class="section-header">
         <div class="section-title">🔥 인기영상</div>
@@ -217,7 +247,6 @@
       <button class="more-btn" id="longs-more-btn" onclick="loadMoreLongs()">롱폼 더 보기 ▼</button>
     </section>
 
-    <!-- 채널 분석 -->
     <section class="section-page" id="section-channel">
       <div class="section-header">
         <div class="section-title">📊 채널 분석</div>
@@ -230,7 +259,6 @@
       <div id="channel-result"></div>
     </section>
 
-    <!-- 수익 계산기 -->
     <section class="section-page" id="section-revenue">
       <div class="section-header">
         <div class="section-title">💰 수익 계산기</div>
@@ -247,7 +275,6 @@
       <div id="rev-result" class="result-grid"></div>
     </section>
 
-    <!-- AI 아이디어 -->
     <section class="section-page" id="section-ai">
       <div class="section-header">
         <div class="section-title">🤖 AI 아이디어</div>
@@ -263,7 +290,6 @@
       <div id="ai-ideas-list" class="ai-idea-list"></div>
     </section>
 
-    <!-- 유튜버 도구 -->
     <section class="section-page" id="section-tools">
       <div class="section-header">
         <div class="section-title">🛠️ 유튜버 도구</div>
@@ -272,7 +298,6 @@
       <div class="tools-grid" id="tools-grid"></div>
     </section>
 
-    <!-- 장비 쇼핑 -->
     <section class="section-page" id="section-shop">
       <div class="section-header">
         <div class="section-title">🛒 장비 쇼핑</div>
@@ -283,11 +308,11 @@
   </main>
 </div>
 
-<!-- ★ 모달 – 제목 칸 제거 / 정보 탭을 stats 바로 위로 이동 -->
+<!-- 모달 -->
 <div class="modal-overlay" id="video-modal">
   <div class="modal">
 
-    <!-- 광고 -->
+    <!-- ★ 광고 영역 (모달 상단 꽉 붙음) -->
     <div class="modal-ads-top" id="modal-ads-top">
       <ins class="adsbygoogle"
            style="display:block;width:100%;min-height:90px"
@@ -297,15 +322,13 @@
            data-full-width-responsive="true"></ins>
     </div>
 
-    <!-- ★ 헤더: 닫기 버튼만 (제목 칸 제거) -->
-    <div class="modal-header">
-      <button class="modal-close" id="modal-close-btn">✕</button>
-    </div>
+    <!-- ★ 닫기 버튼 – 광고 위에 absolute 오버레이 -->
+    <button class="modal-close" id="modal-close-btn">✕</button>
 
     <!-- 플레이어 -->
     <div class="player-wrap" id="player-wrap"></div>
 
-    <!-- ★ 정보 탭 (stats 바로 위) -->
+    <!-- 정보 탭 (stats 바로 위) -->
     <div class="modal-info-tabs">
       <button class="modal-info-tab active" data-panel="title">📝 제목</button>
       <button class="modal-info-tab" data-panel="hashtag">🏷️ 해시태그</button>
@@ -325,7 +348,7 @@
     <!-- 통계 카드 -->
     <div class="modal-stats" id="modal-stats"></div>
 
-    <!-- YouTube 링크 버튼 -->
+    <!-- YouTube 링크 -->
     <a id="modal-yt-link" href="#" target="_blank" rel="noopener" class="modal-yt-btn">▶ YouTube에서 보기</a>
   </div>
 </div>
@@ -366,7 +389,6 @@ const GRADES=[
   {min:         0,label:'D', color:'#9898b0',bg:'rgba(152,152,176,0.15)'},
 ];
 
-/* ── 유틸 ── */
 function fmt(n){n=parseInt(n,10)||0;if(n>=100_000_000)return(n/100_000_000).toFixed(1).replace(/\.0$/,'')+'억';if(n>=10_000)return(n/10_000).toFixed(1).replace(/\.0$/,'')+'만';if(n>=1_000)return(n/1_000).toFixed(1).replace(/\.0$/,'')+'천';return n.toLocaleString('ko-KR');}
 function parseDurSec(iso){if(!iso)return 0;const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return 0;return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);}
 function fmtDur(iso){const s=parseDurSec(iso);if(!s)return'--:--';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`;}
@@ -375,78 +397,35 @@ function gradeOf(sub){const n=parseInt(sub||0);return GRADES.find(g=>n>=g.min)||
 function showGlobalError(msg){const el=document.getElementById('global-error-banner');el.textContent=msg;el.style.display='block';document.getElementById('api-status').className='api-status error';document.getElementById('api-status').textContent='● API 오류';}
 function hideGlobalError(){document.getElementById('global-error-banner').style.display='none';document.getElementById('api-status').className='api-status';document.getElementById('api-status').textContent='● API 연결됨';}
 
-/* ── 분류 (인기영상 탭 – 건드리지 않음) ── */
 function hasShortKeyword(item){const sn=item.snippet||{};const hay=(sn.title||'').toLowerCase()+' '+(sn.description||'').slice(0,300).toLowerCase()+' '+(sn.tags||[]).join(' ').toLowerCase();return SHORTS_KEYWORDS.some(kw=>hay.includes(kw));}
 function isShorts(item){const sec=parseDurSec(item.contentDetails?.duration||'');if(sec<=0)return false;return sec<LONGS_MIN_SEC&&hasShortKeyword(item);}
 function isLongs(item){const sec=parseDurSec(item.contentDetails?.duration||'');return sec>=LONGS_MIN_SEC;}
 function hardFilterLongs(arr){return arr.filter(item=>parseDurSec(item.contentDetails?.duration||'')>=LONGS_MIN_SEC);}
 function matchesCat(item,cat){const cfg=CAT_CFG[cat];if(!cfg)return true;const sn=item.snippet||{};const hay=[(sn.title||'').toLowerCase(),(sn.description||'').slice(0,200).toLowerCase(),(sn.tags||[]).join(' ').toLowerCase()].join(' ');return cfg.matchKeywords.some(kw=>hay.includes(kw.toLowerCase()));}
 
-/* ── 광고 ── */
 let _adPushed=false;
 function initModalAd(){if(_adPushed)return;try{const ins=document.querySelector('#modal-ads-top ins.adsbygoogle');if(ins){(window.adsbygoogle=window.adsbygoogle||[]).push({});_adPushed=true;}}catch(e){console.warn('[AdSense]',e);}}
 
-/* ================================================================
-   ★ 모달 – 정보 탭 로직
-================================================================ */
-let _fullDesc = '';
-
+let _fullDesc='';
 function switchModalInfoTab(panel){
   document.querySelectorAll('.modal-info-tab').forEach(t=>t.classList.toggle('active',t.dataset.panel===panel));
   document.querySelectorAll('.modal-info-panel').forEach(p=>p.classList.toggle('active',p.id===`modal-panel-${panel}`));
 }
-
-function expandModalDesc(){
-  document.getElementById('modal-desc-text').textContent=_fullDesc;
-  document.getElementById('modal-desc-more').style.display='none';
-}
-
-function extractHashtags(title, desc){
-  const raw=(title+' '+desc).match(/#[\wㄱ-힣]+/g)||[];
-  return [...new Set(raw)];
-}
-
+function expandModalDesc(){document.getElementById('modal-desc-text').textContent=_fullDesc;document.getElementById('modal-desc-more').style.display='none';}
+function extractHashtags(title,desc){const raw=(title+' '+desc).match(/#[\wㄱ-힣]+/g)||[];return[...new Set(raw)];}
 function fillModalInfo(sn){
-  const title = sn.title||'';
-  const desc  = sn.description||'';
-  _fullDesc   = desc;
-
-  /* 제목 패널 */
-  document.getElementById('modal-full-title').textContent = title || '—';
-
-  /* 해시태그 패널 */
-  const tags = extractHashtags(title, desc);
-  const wrap = document.getElementById('modal-hashtag-wrap');
-  if(tags.length){
-    wrap.innerHTML = tags.map(t=>
-      `<span class="modal-hashtag" onclick="searchHashtag('${t.replace(/'/g,"\\'")}')">${t}</span>`
-    ).join('');
-  }else{
-    wrap.innerHTML = '<span style="color:var(--text-muted);font-size:13px">해시태그 없음</span>';
-  }
-
-  /* 설명 패널 */
-  const descEl = document.getElementById('modal-desc-text');
-  const moreEl = document.getElementById('modal-desc-more');
-  const LIMIT  = 200;
-  if(desc){
-    descEl.textContent = desc.length>LIMIT ? desc.slice(0,LIMIT)+'…' : desc;
-    moreEl.style.display = desc.length>LIMIT ? 'inline-block' : 'none';
-  }else{
-    descEl.textContent = '설명 없음';
-    moreEl.style.display = 'none';
-  }
-
+  const title=sn.title||'',desc=sn.description||'';_fullDesc=desc;
+  document.getElementById('modal-full-title').textContent=title||'—';
+  const tags=extractHashtags(title,desc);
+  const wrap=document.getElementById('modal-hashtag-wrap');
+  wrap.innerHTML=tags.length?tags.map(t=>`<span class="modal-hashtag" onclick="searchHashtag('${t.replace(/'/g,"\\'")}')">${t}</span>`).join(''):'<span style="color:var(--text-muted);font-size:13px">해시태그 없음</span>';
+  const descEl=document.getElementById('modal-desc-text'),moreEl=document.getElementById('modal-desc-more'),LIMIT=200;
+  if(desc){descEl.textContent=desc.length>LIMIT?desc.slice(0,LIMIT)+'…':desc;moreEl.style.display=desc.length>LIMIT?'inline-block':'none';}
+  else{descEl.textContent='설명 없음';moreEl.style.display='none';}
   switchModalInfoTab('title');
 }
+function searchHashtag(tag){closeVideoModal();document.getElementById('hot-kw-input').value=tag;doHotSearch();}
 
-function searchHashtag(tag){
-  closeVideoModal();
-  document.getElementById('hot-kw-input').value = tag;
-  doHotSearch();
-}
-
-/* ── 모달 열기/닫기 ── */
 function closeVideoModal(){
   const pw=document.getElementById('player-wrap');
   const iframe=pw.querySelector('iframe');
@@ -461,49 +440,36 @@ async function openVideoModal(vid){
   const linkEl=document.getElementById('modal-yt-link');
   pw.innerHTML='';
   statsEl.innerHTML='<div class="loader-wrap" style="padding:20px"><div class="spinner"></div></div>';
-
-  /* 정보 패널 초기화 */
   document.getElementById('modal-full-title').textContent='—';
   document.getElementById('modal-hashtag-wrap').innerHTML='—';
   document.getElementById('modal-desc-text').textContent='—';
   document.getElementById('modal-desc-more').style.display='none';
   switchModalInfoTab('title');
-
   linkEl.href=`https://www.youtube.com/watch?v=${vid}`;
   overlay.classList.add('open');
   initModalAd();
-
   try{
     const data=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${vid}`);
     const item=data.items?.[0];
     if(!item){statsEl.innerHTML='<div class="error-card"><h3>영상 정보를 불러올 수 없습니다.</h3></div>';return;}
     const sn=item.snippet||{},st=item.statistics||{},cd=item.contentDetails||{};
-
-    /* iframe */
     const iframe=document.createElement('iframe');
     iframe.src=`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
     iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-    iframe.allowFullscreen=true;
-    iframe.loading='lazy';
+    iframe.allowFullscreen=true;iframe.loading='lazy';
     pw.appendChild(iframe);
-
-    /* 통계 */
     statsEl.innerHTML=`
       <div class="modal-stat"><div class="modal-stat-value">${st.viewCount!=null?fmt(st.viewCount):'-'}</div><div class="modal-stat-label">조회수</div></div>
       <div class="modal-stat"><div class="modal-stat-value">${st.likeCount!=null?fmt(st.likeCount):'-'}</div><div class="modal-stat-label">좋아요</div></div>
       <div class="modal-stat"><div class="modal-stat-value">${st.commentCount!=null?fmt(st.commentCount):'-'}</div><div class="modal-stat-label">댓글</div></div>
       <div class="modal-stat"><div class="modal-stat-value">${fmtDur(cd.duration)}</div><div class="modal-stat-label">길이</div></div>`;
-
-    /* ★ 정보 탭 채우기 */
     fillModalInfo(sn);
-
     linkEl.href=`https://www.youtube.com/watch?v=${vid}`;
   }catch(e){
     statsEl.innerHTML=`<div class="error-card"><h3>불러오기 실패</h3><p>${e.message}</p></div>`;
   }
 }
 
-/* ── API ── */
 async function apiFetch(url){
   const validKeys=API_KEYS.filter(k=>k&&k.length>20&&!k.startsWith('YOUR_'));
   if(!validKeys.length)throw new Error('유효한 API 키가 없습니다.');
@@ -527,7 +493,6 @@ async function apiFetch(url){
   throw new Error('모든 API 키 소진');
 }
 
-/* ── 네비게이션 ── */
 const sectionLoaded={};
 function showSec(id){
   document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
@@ -537,7 +502,6 @@ function showSec(id){
   if(!sectionLoaded[id]){sectionLoaded[id]=true;if(id==='hot')loadHot();if(id==='tools')buildTools();if(id==='shop')buildShop();}
 }
 
-/* ── 인기영상 탭 (건드리지 않음) ── */
 function buildCatTabs(){
   const wrap=document.getElementById('cat-tabs');wrap.innerHTML='';
   CAT_KEYS.forEach(cat=>{const btn=document.createElement('button');btn.className='cat-btn'+(cat===activeCat?' active':'');btn.textContent=cat;btn.onclick=()=>{if(hotSearchMode){clearHotSearch();return;}switchCat(cat);};wrap.appendChild(btn);});
@@ -558,7 +522,6 @@ async function loadUntilFull(cat){
   catShortsCache[cat]=byViral(shorts);catLongCache[cat]=byViral(hardFilterLongs(longs));
 }
 
-/* ── 키워드 검색 ── */
 async function doHotSearch(){
   const q=document.getElementById('hot-kw-input').value.trim();
   if(!q){clearHotSearch();return;}
@@ -580,7 +543,6 @@ async function doHotSearch(){
       const chunk=allIds.slice(i,i+50);
       try{const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${chunk.join(',')}`);(d.items||[]).forEach(v=>collected.push(v));}catch(e){console.warn('[search detail]',e.message);}
     }
-    /* 재생시간만으로 분류 */
     collected.forEach(item=>{
       const sec=parseDurSec(item.contentDetails?.duration||'');
       if(sec>0&&sec<LONGS_MIN_SEC)     searchShorts.push(item);
@@ -593,7 +555,6 @@ async function doHotSearch(){
   }catch(e){hideHotLoader();showHotError(e.message);showGlobalError('검색 실패: '+e.message);}
 }
 
-/* ── 렌더링 ── */
 function renderSearchResult(){
   const sg=document.getElementById('shorts-grid'),lg=document.getElementById('longs-grid');
   const sm=document.getElementById('shorts-more-btn'),lm=document.getElementById('longs-more-btn');
@@ -662,7 +623,6 @@ function makeVideoCard(item,type){
   </div>`;
 }
 
-/* ── 채널 분석 ── */
 async function doChannelSearch(){
   const q=document.getElementById('ch-input').value.trim();const out=document.getElementById('channel-result');if(!q)return;
   out.innerHTML='<div class="loader-wrap"><div class="spinner"></div></div>';
@@ -678,26 +638,21 @@ async function doChannelSearch(){
   }catch(e){out.innerHTML=`<div class="error-card"><h3>분석 실패</h3><p>${e.message}</p></div>`;}
 }
 
-/* ── 수익 계산기 ── */
 function calcRevenue(){
   const views=parseInt(document.getElementById('rev-views').value)||0;const rpm=parseFloat(document.getElementById('rev-cat').value)||1.5;const ctr=parseFloat(document.getElementById('rev-ctr').value)||5;
   const imp=views*(ctr/100),mon=(imp/1000)*rpm,yr=mon*12;const per=views>0?(mon/views*1000).toFixed(4):0;
   document.getElementById('rev-result').innerHTML=`<div class="result-card"><div class="result-value">$${mon.toFixed(0)}</div><div class="result-label">월 예상 수익</div></div><div class="result-card"><div class="result-value">$${yr.toFixed(0)}</div><div class="result-label">연 예상 수익</div></div><div class="result-card"><div class="result-value">${fmt(Math.round(imp))}</div><div class="result-label">월 광고 노출</div></div><div class="result-card"><div class="result-value">$${per}</div><div class="result-label">1K뷰 수익</div></div>`;
 }
 
-/* ── AI 아이디어 ── */
 const AI_TEMPLATES={shorts:['${t} 30초 꿀팁','${t} 이것만 알면 됨','${t} 충격 비하인드','${t} 1분 도전','${t} 공감 상황'],tutorial:['${t} 완전 처음부터','${t} 프로 핵심 노하우','${t} 실수 없이 배우기','${t} 하루 마스터'],vlog:['${t} 하루 일상','${t} 현실 솔직 후기','${t} 나만의 루틴','${t} 72시간 도전'],review:['${t} 직접 써본 솔직 리뷰','${t} 가성비 TOP5','${t} 비교 결론','${t} 6개월 후기'],challenge:['${t} 챌린지 성공?','24시간 ${t}만 하기','100명에게 물어봤다','${t} 극한 도전']};
 function genAiIdeas(){const topic=document.getElementById('ai-topic').value.trim()||'주제';const format=document.getElementById('ai-format').value;const tpls=AI_TEMPLATES[format]||AI_TEMPLATES.shorts;document.getElementById('ai-ideas-list').innerHTML=tpls.map(t=>{const title=t.replace(/\${t}/g,topic);return`<div class="ai-idea-card" onclick="this.style.borderColor='var(--accent3)'"><div class="ai-idea-title">💡 ${title}</div><div class="ai-idea-desc">#${topic} #YouTube${format==='shorts'?'Shorts':''} #trending</div></div>`;}).join('');}
 
-/* ── 도구 ── */
 const TOOLS_DATA=[{icon:'🎨',name:'Canva',desc:'썸네일 & 그래픽 디자인',url:'https://canva.com'},{icon:'📝',name:'TubeBuddy',desc:'SEO 최적화 & 키워드 분석',url:'https://tubebuddy.com'},{icon:'🎵',name:'Epidemic Sound',desc:'저작권 프리 배경음악',url:'https://epidemicsound.com'},{icon:'✂️',name:'CapCut',desc:'모바일/PC 영상 편집',url:'https://capcut.com'},{icon:'📊',name:'Social Blade',desc:'채널 통계 & 성장 추적',url:'https://socialblade.com'},{icon:'🔍',name:'VidIQ',desc:'경쟁 분석 & 트렌드 탐색',url:'https://vidiq.com'},{icon:'🎤',name:'Descript',desc:'AI 음성 편집 & 자막',url:'https://descript.com'},{icon:'🌐',name:'Later',desc:'SNS 예약 & 분석',url:'https://later.com'}];
 function buildTools(){document.getElementById('tools-grid').innerHTML=TOOLS_DATA.map(t=>`<div class="tool-card" onclick="window.open('${t.url}','_blank')"><div class="tool-icon">${t.icon}</div><div class="tool-name">${t.name}</div><div class="tool-desc">${t.desc}</div></div>`).join('');}
 
-/* ── 쇼핑 ── */
 const SHOP_DATA=[{name:'소니 ZV-E10',desc:'유튜버 입문용 미러리스 카메라',price:'₩699,000',url:'https://link.coupang.com/a/example'},{name:'Rode NT-USB Mini',desc:'고음질 USB 콘덴서 마이크',price:'₩129,000',url:'https://link.coupang.com/a/example'},{name:'Elgato Key Light',desc:'스트리머용 LED 링라이트',price:'₩189,000',url:'https://link.coupang.com/a/example'},{name:'GoPro HERO 12',desc:'액션캠 & 브이로그',price:'₩469,000',url:'https://link.coupang.com/a/example'},{name:'DJI Osmo Pocket 3',desc:'4K 짐벌 카메라',price:'₩549,000',url:'https://link.coupang.com/a/example'},{name:'로지텍 StreamCam',desc:'1080p 60fps 웹캠',price:'₩149,000',url:'https://link.coupang.com/a/example'}];
 function buildShop(){document.getElementById('shop-grid').innerHTML=SHOP_DATA.map(s=>`<div class="shop-card"><div class="tool-name">${s.name}</div><div class="shop-desc">${s.desc}</div><div class="shop-price">${s.price}</div><a class="shop-link" href="${s.url}" target="_blank" rel="noopener">쿠팡에서 보기 →</a></div>`).join('');}
 
-/* ── 초기화 ── */
 window.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.hot-tab-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -706,7 +661,6 @@ window.addEventListener('DOMContentLoaded',()=>{
       hotSearchMode?renderSearchResult():renderHotSplit();
     });
   });
-  /* ★ 모달 정보 탭 버튼 */
   document.querySelectorAll('.modal-info-tab').forEach(btn=>{
     btn.addEventListener('click',()=>switchModalInfoTab(btn.dataset.panel));
   });
