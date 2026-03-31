@@ -1,668 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>YTAnalytics Pro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-<style>
-:root{
-  --bg0:#0a0a0f;--bg1:#12121a;--bg2:#1a1a26;--bg3:#22223a;
-  --acc:#7c5cfc;--acc2:#fc5c7d;--acc3:#5cf8fc;
-  --txt:#e8e8f0;--txt2:#a0a0b8;--txt3:#606080;
-  --left-w:220px;--right-w:300px;--header-h:64px;
-  --gold:linear-gradient(135deg,#ffe066,#ffb300,#ffe066);
-  --pink:linear-gradient(135deg,#ff6fd8,#fc5c7d,#ff6fd8);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:var(--bg0);color:var(--txt);
-  font-family:'Noto Sans KR',sans-serif;font-size:14px;
-  min-height:100vh;overflow-x:hidden;
-  padding-right:var(--right-w);
-}
-@media(max-width:1200px){body{padding-right:0}}
-#hdr{
-  position:sticky;top:0;z-index:200;height:var(--header-h);
-  background:rgba(10,10,15,.95);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(124,92,252,.25);
-  display:flex;align-items:center;gap:12px;padding:0 16px;
-}
-#hdrLogo{
-  font-size:20px;font-weight:900;
-  background:linear-gradient(90deg,var(--acc),var(--acc2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  white-space:nowrap;flex-shrink:0;
-}
-#hdrSearchWrap{flex:1;max-width:560px;margin:0 auto;display:flex;gap:6px}
-#hdrQ{
-  flex:1;background:var(--bg2);border:1px solid rgba(124,92,252,.4);
-  border-radius:22px;padding:8px 16px;color:var(--txt);font-size:14px;outline:none;
-}
-#hdrQ:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,252,.2)}
-#hdrSearchBtn{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;
-  border-radius:22px;padding:8px 18px;color:#fff;font-weight:700;
-  cursor:pointer;font-size:14px;white-space:nowrap;
-}
-#layout{display:flex;padding-top:8px;min-height:calc(100vh - var(--header-h))}
-#sidebar{
-  width:var(--left-w);flex-shrink:0;
-  position:sticky;top:calc(var(--header-h) + 8px);
-  height:calc(100vh - var(--header-h) - 8px);
-  overflow-y:auto;padding:8px 0;
-  background:var(--bg1);border-right:1px solid rgba(124,92,252,.15);
-}
-#sidebar::-webkit-scrollbar{width:4px}
-#sidebar::-webkit-scrollbar-thumb{background:rgba(124,92,252,.3);border-radius:4px}
-#wrap{flex:1;min-width:0;padding:16px;overflow-x:hidden}
-#rightAdFloat{
-  position:fixed;right:0;top:0;bottom:0;width:var(--right-w);
-  z-index:100;padding:8px;display:flex;flex-direction:column;gap:8px;
-  overflow-y:auto;background:var(--bg1);
-  border-left:1px solid rgba(124,92,252,.15);
-}
-#rightAdFloat::-webkit-scrollbar{width:4px}
-#rightAdFloat::-webkit-scrollbar-thumb{background:rgba(124,92,252,.3);border-radius:4px}
-@media(max-width:1200px){#rightAdFloat{display:none}body{padding-right:0}}
-@media(max-width:860px){#sidebar{display:none}}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 16px;color:var(--txt2);cursor:pointer;
-  border-radius:8px;margin:2px 8px;transition:all .2s;font-size:13px;
-}
-.nav-item:hover,.nav-item.active{background:rgba(124,92,252,.15);color:var(--txt)}
-.nav-item.active{border-left:3px solid var(--acc);padding-left:13px}
-.nav-icon{font-size:16px;width:20px;text-align:center}
-.nav-ad{padding:8px;margin:4px 8px}
-.section{display:none;animation:fadeIn .3s ease}
-.section.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.sec-title{
-  font-size:22px;font-weight:900;margin-bottom:16px;
-  background:linear-gradient(90deg,var(--acc),var(--acc2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.tab-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.tab-btn{
-  background:var(--bg2);border:1px solid rgba(124,92,252,.25);
-  border-radius:20px;padding:6px 14px;color:var(--txt2);
-  font-size:12px;cursor:pointer;transition:all .2s;
-}
-.tab-btn:hover{border-color:var(--acc);color:var(--txt)}
-.tab-btn.active{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#fff;border-color:transparent;
-  box-shadow:0 2px 10px rgba(124,92,252,.4);
-}
-.cat-scroll-wrap{position:relative;margin-bottom:16px}
-.cat-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scroll-behavior:smooth}
-.cat-scroll::-webkit-scrollbar{height:3px}
-.cat-scroll::-webkit-scrollbar-thumb{background:rgba(124,92,252,.4);border-radius:2px}
-.cat-tab{
-  flex-shrink:0;background:var(--bg2);border:1px solid rgba(124,92,252,.2);
-  border-radius:20px;padding:6px 16px;color:var(--txt2);
-  font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap;
-  font-family:'Noto Sans KR',sans-serif;
-}
-.cat-tab:hover{border-color:var(--acc);color:var(--txt)}
-.cat-tab.active{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));
-  color:#fff;border-color:transparent;
-  box-shadow:0 2px 10px rgba(124,92,252,.4);font-weight:700;
-}
-.hot-type-switcher{
-  display:flex;align-items:center;gap:0;
-  background:var(--bg2);border:1px solid rgba(124,92,252,.3);
-  border-radius:14px;padding:4px;width:fit-content;
-  margin-bottom:20px;box-shadow:0 4px 20px rgba(0,0,0,.3);
-}
-.hot-type-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:9px 22px;border-radius:10px;border:none;background:transparent;
-  color:var(--txt2);font-size:13px;font-weight:600;cursor:pointer;
-  transition:all .25s;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;
-}
-.hot-type-btn.active{color:#fff;box-shadow:0 4px 16px rgba(124,92,252,.4)}
-.hot-type-btn.active.shorts-active{background:linear-gradient(135deg,#fc5c7d,#ff9a4d)}
-.hot-type-btn.active.long-active{background:linear-gradient(135deg,#7c5cfc,#5cf8fc)}
-.hot-section-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:16px;padding-bottom:12px;
-  border-bottom:1px solid rgba(124,92,252,.15);flex-wrap:wrap;gap:10px;
-}
-.hot-section-title{display:flex;align-items:center;gap:10px}
-.hot-section-title h2{
-  font-size:17px;font-weight:800;
-  background:linear-gradient(90deg,#fff,var(--txt2));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hot-section-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
-.shorts-badge{
-  background:linear-gradient(135deg,rgba(252,92,125,.2),rgba(255,154,77,.2));
-  border:1px solid rgba(252,92,125,.4);color:#fc5c7d;
-}
-.long-badge{
-  background:linear-gradient(135deg,rgba(124,92,252,.2),rgba(92,248,252,.2));
-  border:1px solid rgba(124,92,252,.4);color:#a78bfa;
-}
-.hot-count-badge{
-  background:var(--bg3);border-radius:8px;
-  padding:4px 10px;font-size:11px;color:var(--txt2);
-}
-.shorts-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));
-  gap:14px;margin-bottom:16px;
-}
-.shorts-card{
-  background:var(--bg1);border:1px solid rgba(124,92,252,.12);
-  border-radius:16px;overflow:hidden;cursor:pointer;
-  transition:all .3s cubic-bezier(.25,.8,.25,1);position:relative;
-}
-.shorts-card:hover{
-  transform:translateY(-5px) scale(1.02);
-  border-color:rgba(252,92,125,.5);
-  box-shadow:0 16px 40px rgba(252,92,125,.2);
-}
-.shorts-thumb-wrap{position:relative;width:100%;aspect-ratio:9/16;overflow:hidden;background:var(--bg3)}
-.shorts-thumb{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
-.shorts-card:hover .shorts-thumb{transform:scale(1.06)}
-.shorts-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.2) 40%,transparent 70%);
-}
-.shorts-rank-badge{
-  position:absolute;top:10px;left:10px;width:28px;height:28px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:900;z-index:2;
-}
-.rank-gold{background:linear-gradient(135deg,#ffe066,#ffb300);color:#000}
-.rank-silver{background:linear-gradient(135deg,#e0e0e0,#bdbdbd);color:#000}
-.rank-bronze{background:linear-gradient(135deg,#ffb347,#cd7f32);color:#000}
-.rank-normal{background:rgba(0,0,0,.6);backdrop-filter:blur(4px);color:#fff;border:1px solid rgba(255,255,255,.2)}
-.shorts-duration{
-  position:absolute;bottom:54px;right:8px;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(4px);
-  padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;color:#fff;
-}
-.shorts-viral-overlay{
-  position:absolute;bottom:8px;left:8px;right:8px;
-  display:flex;align-items:center;justify-content:space-between;gap:4px;
-}
-.shorts-viral-pill{
-  display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:10px;
-  font-size:10px;font-weight:800;backdrop-filter:blur(8px);
-}
-.pill-fire{background:linear-gradient(135deg,rgba(255,107,107,.9),rgba(255,217,61,.9));color:#000}
-.pill-hot{background:linear-gradient(135deg,rgba(255,149,0,.9),rgba(255,204,0,.9));color:#000}
-.pill-warm{background:linear-gradient(135deg,rgba(107,203,119,.9),rgba(0,201,167,.9));color:#000}
-.pill-cool{background:rgba(30,30,50,.85);color:var(--txt2);border:1px solid rgba(255,255,255,.1)}
-.shorts-info{padding:10px}
-.shorts-title{
-  font-size:12px;font-weight:600;line-height:1.4;color:var(--txt);
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;margin-bottom:6px;
-}
-.shorts-meta{display:flex;flex-wrap:wrap;gap:4px;font-size:10px;color:var(--txt2)}
-.long-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-  gap:16px;margin-bottom:16px;
-}
-.long-card{
-  background:var(--bg1);border:1px solid rgba(124,92,252,.12);
-  border-radius:16px;overflow:hidden;cursor:pointer;
-  transition:all .3s cubic-bezier(.25,.8,.25,1);
-  position:relative;display:flex;flex-direction:column;
-}
-.long-card:hover{
-  transform:translateY(-4px);border-color:rgba(124,92,252,.5);
-  box-shadow:0 16px 40px rgba(124,92,252,.18);
-}
-.long-thumb-wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--bg3);flex-shrink:0}
-.long-thumb{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
-.long-card:hover .long-thumb{transform:scale(1.04)}
-.long-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 50%)}
-.long-rank-badge{
-  position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:8px;
-  font-size:11px;font-weight:900;z-index:2;
-}
-.long-duration{
-  position:absolute;bottom:8px;right:8px;
-  background:rgba(0,0,0,.82);backdrop-filter:blur(4px);
-  padding:3px 8px;border-radius:7px;font-size:11px;font-weight:700;color:#fff;
-}
-.long-viral-strip{position:absolute;bottom:0;left:0;right:0;height:3px}
-.strip-fire{background:linear-gradient(90deg,#ff6b6b,#ffd93d)}
-.strip-hot{background:linear-gradient(90deg,#ff9500,#ffcc00)}
-.strip-warm{background:linear-gradient(90deg,#6bcb77,#00c9a7)}
-.strip-cool{background:linear-gradient(90deg,rgba(124,92,252,.4),rgba(92,248,252,.4))}
-.long-info{padding:12px;flex:1;display:flex;flex-direction:column;gap:8px}
-.long-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.long-title{
-  font-size:13px;font-weight:700;line-height:1.45;color:var(--txt);
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  overflow:hidden;flex:1;
-}
-.long-viral-badge{flex-shrink:0;padding:4px 9px;border-radius:10px;font-size:11px;font-weight:800}
-.badge-fire{background:linear-gradient(135deg,#ff6b6b,#ffd93d);color:#000}
-.badge-hot{background:linear-gradient(135deg,#ffd93d,#ff9500);color:#000}
-.badge-warm{background:linear-gradient(135deg,#6bcb77,#00c9a7);color:#000}
-.badge-cool{background:var(--bg3);color:var(--txt2)}
-.long-stats{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--txt2);flex-wrap:wrap}
-.long-stat-item{display:flex;align-items:center;gap:3px}
-.viral-score-bar{
-  display:flex;align-items:center;gap:8px;
-  background:var(--bg2);border-radius:8px;padding:6px 10px;
-}
-.viral-label{font-size:10px;color:var(--txt3);width:54px;flex-shrink:0}
-.viral-bar-bg{flex:1;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
-.viral-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
-.viral-score-num{font-size:11px;font-weight:800;width:24px;text-align:right}
-.load-more-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:12px;margin-top:4px;margin-bottom:24px;
-  background:var(--bg2);border:1px solid rgba(124,92,252,.25);
-  border-radius:12px;color:var(--txt2);
-  font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;
-  font-family:'Noto Sans KR',sans-serif;
-}
-.load-more-btn:hover{
-  border-color:var(--acc);color:var(--txt);
-  background:rgba(124,92,252,.1);box-shadow:0 4px 16px rgba(124,92,252,.2);
-}
-.load-more-btn:disabled{opacity:.4;cursor:not-allowed}
-.skeleton{
-  background:linear-gradient(90deg,var(--bg2) 25%,var(--bg3) 50%,var(--bg2) 75%);
-  background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px;
-}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.skeleton-shorts{border-radius:16px;aspect-ratio:9/16}
-.skeleton-long{border-radius:16px;height:240px}
-.empty-state{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px 20px;color:var(--txt3);text-align:center;gap:12px;
-}
-.empty-state .empty-icon{font-size:48px;opacity:.4}
-.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.vid-card{
-  background:var(--bg1);border:1px solid rgba(124,92,252,.15);
-  border-radius:12px;overflow:hidden;cursor:pointer;transition:all .25s;
-}
-.vid-card:hover{transform:translateY(-3px);border-color:rgba(124,92,252,.5);box-shadow:0 8px 24px rgba(124,92,252,.2)}
-.vid-thumb{width:100%;aspect-ratio:16/9;object-fit:cover}
-.vid-info{padding:10px}
-.vid-title{font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px}
-.vid-meta{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;color:var(--txt2)}
-.kw-type-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;margin-bottom:6px}
-.kw-shorts{background:linear-gradient(135deg,#ff6fd8,#fc5c7d);color:#fff}
-.kw-long{background:linear-gradient(135deg,#4d96ff,#7c5cfc);color:#fff}
-.viral-score{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
-.v-fire{background:linear-gradient(135deg,#ff6b6b,#ffd93d);color:#000}
-.v-hot{background:linear-gradient(135deg,#ffd93d,#ff9500);color:#000}
-.v-warm{background:linear-gradient(135deg,#6bcb77,#00c9a7);color:#000}
-.v-cool{background:var(--bg3);color:var(--txt2)}
-#vidModal{
-  display:none;position:fixed;inset:0;z-index:500;
-  background:rgba(0,0,0,.9);overflow-y:auto;padding:20px;
-}
-#vidModalInner{
-  max-width:820px;margin:0 auto;
-  background:var(--bg1);border-radius:16px;overflow:hidden;
-  position:relative;border:1px solid rgba(124,92,252,.25);
-  box-shadow:0 24px 80px rgba(0,0,0,.6);
-}
-#vidCloseBtn{
-  position:absolute;top:12px;right:12px;z-index:10;
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.2);
-  color:#fff;font-size:18px;line-height:1;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
-}
-#vidCloseBtn:hover{background:rgba(252,92,125,.8);border-color:rgba(252,92,125,.6);transform:scale(1.1)}
-.modal-ad-wrap{padding:8px;background:var(--bg2)}
-#vidModalInner iframe{width:100%;aspect-ratio:16/9;border:none;display:block}
-.modal-body{padding:16px}
-#chSearchWrap{display:flex;gap:8px;margin-bottom:20px}
-#chInput{
-  flex:1;background:var(--bg2);border:1px solid rgba(124,92,252,.4);
-  border-radius:22px;padding:10px 18px;color:var(--txt);font-size:14px;outline:none;
-}
-#chInput:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(124,92,252,.2)}
-#chBtn{
-  background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;
-  border-radius:22px;padding:10px 24px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;
-}
-#chResult{display:none}
-.grade-badge{
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:10px 28px;border-radius:14px;font-size:18px;font-weight:900;letter-spacing:1px;
-  position:relative;overflow:hidden;margin-bottom:6px;
-}
-.grade-badge::before{content:'';position:absolute;inset:-50%;border-radius:50%;opacity:0;animation:waveRipple 2.5s ease-out infinite}
-.grade-badge::after{content:'';position:absolute;inset:-50%;border-radius:50%;opacity:0;animation:waveRipple 2.5s ease-out infinite .8s}
-@keyframes waveRipple{0%{transform:scale(.3);opacity:.6}100%{transform:scale(1);opacity:0}}
-.grade-table tr.current-grade td{position:relative;overflow:hidden}
-.grade-table tr.current-grade td::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:rowWave 2s ease-in-out infinite}
-@keyframes rowWave{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:16px}
-.stat-box{background:var(--bg2);border-radius:10px;padding:12px;text-align:center;border:1px solid rgba(124,92,252,.15)}
-.stat-val{font-size:20px;font-weight:900;background:linear-gradient(135deg,#ffe066,#ff6fd8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-lbl{font-size:11px;color:var(--txt2);margin-top:3px}
-.metric-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.metric-label{width:110px;font-size:12px;color:var(--txt2);flex-shrink:0}
-.metric-bar-bg{flex:1;height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden}
-.metric-bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
-.metric-score{width:36px;text-align:right;font-size:12px;font-weight:700}
-.xp-bar-bg{height:10px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;margin-top:8px}
-.xp-bar-fill{height:100%;border-radius:5px;transition:width 1.2s ease}
-.grade-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:12px}
-.grade-table th{background:var(--bg3);padding:8px;text-align:center;color:var(--txt2)}
-.grade-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);text-align:center}
-.bench-section{margin-top:20px;background:var(--bg2);border-radius:12px;padding:16px;border:1px solid rgba(124,92,252,.15)}
-.bench-title{font-size:15px;font-weight:700;margin-bottom:12px;color:var(--acc3)}
-.pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.pros-box,.cons-box{background:var(--bg3);border-radius:8px;padding:12px}
-.pros-box{border-left:3px solid #6bcb77}.cons-box{border-left:3px solid #ff6b6b}
-.pros-box h4{color:#6bcb77;margin-bottom:8px;font-size:13px}.cons-box h4{color:#ff6b6b;margin-bottom:8px;font-size:13px}
-.pros-box li,.cons-box li{font-size:12px;color:var(--txt2);margin-bottom:4px;list-style:none;padding-left:14px;position:relative}
-.pros-box li::before{content:"✓";position:absolute;left:0;color:#6bcb77}
-.cons-box li::before{content:"✗";position:absolute;left:0;color:#ff6b6b}
-.desc-stat{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.desc-chip{background:var(--bg3);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--txt2)}
-.desc-chip span{color:var(--acc3);font-weight:700;margin-left:4px}
-.tag-cloud{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.tag-item{background:rgba(124,92,252,.2);border:1px solid rgba(124,92,252,.3);border-radius:12px;padding:3px 10px;font-size:11px;color:var(--acc3)}
-.title-score-bar{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:12px}
-.action-list{list-style:none;margin-top:8px}
-.action-list li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;color:var(--txt2);padding-left:16px;position:relative}
-.action-list li::before{content:"→";position:absolute;left:0;color:var(--acc)}
-.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px}
-.tool-card{background:var(--bg2);border:1px solid rgba(124,92,252,.2);border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center}
-.tool-card:hover{transform:translateY(-3px);border-color:var(--acc);box-shadow:0 6px 20px rgba(124,92,252,.3)}
-.tool-logo{width:32px;height:32px;border-radius:8px;margin:0 auto 8px;display:block}
-.tool-name{font-size:13px;font-weight:700;margin-bottom:4px}
-.tool-tag{font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(124,92,252,.2);color:var(--acc3)}
-#toolModal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.8);align-items:center;justify-content:center;padding:20px}
-#toolModal.open{display:flex}
-#toolModalInner{background:var(--bg1);border-radius:16px;padding:24px;max-width:440px;width:100%;border:1px solid rgba(124,92,252,.3);position:relative}
-.idea-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.idea-card{background:var(--bg2);border-radius:12px;padding:14px;border:1px solid rgba(124,92,252,.2);cursor:pointer;transition:all .2s}
-.idea-card:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,92,252,.2)}
-.idea-title{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--acc3)}
-.idea-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--txt2)}
-.calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
-.calc-row{display:flex;flex-direction:column;gap:4px}
-.calc-row label{font-size:12px;color:var(--txt2)}
-.calc-row input{background:var(--bg2);border:1px solid rgba(124,92,252,.3);border-radius:8px;padding:8px 12px;color:var(--txt);font-size:14px;outline:none}
-.calc-row input:focus{border-color:var(--acc)}
-.calc-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-.calc-res-box{background:var(--bg2);border-radius:10px;padding:14px;text-align:center;border:1px solid rgba(124,92,252,.15)}
-.calc-res-val{font-size:22px;font-weight:900;background:var(--gold);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.calc-res-lbl{font-size:11px;color:var(--txt2);margin-top:4px}
-.shop-cat-title{font-size:17px;font-weight:800;margin:20px 0 12px;background:linear-gradient(90deg,var(--acc3),var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;border-left:3px solid var(--acc3);padding-left:10px}
-.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
-.shop-card{background:var(--bg1);border:1px solid rgba(124,92,252,.2);border-radius:12px;overflow:hidden;position:relative;transition:all .25s}
-.shop-card:hover{transform:translateY(-3px);border-color:var(--acc);box-shadow:0 8px 24px rgba(124,92,252,.25)}
-.shop-rank{position:absolute;top:8px;left:8px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;z-index:2}
-.rank1{background:linear-gradient(135deg,#ffe066,#ffb300);color:#000}
-.rank2{background:linear-gradient(135deg,#e0e0e0,#bdbdbd);color:#000}
-.rank3{background:linear-gradient(135deg,#ffb347,#cd7f32);color:#000}
-.rankN{background:var(--bg3);color:var(--txt2)}
-.shop-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin:6px 8px 0}
-.shop-name{padding:4px 10px 8px;font-size:13px;font-weight:700;line-height:1.3}
-.shop-btn{display:block;margin:0 10px 10px;padding:9px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:8px;color:#fff;text-align:center;text-decoration:none;font-size:13px;font-weight:700;transition:opacity .2s}
-.shop-btn:hover{opacity:.85}
-.right-ad-header{font-size:11px;color:var(--txt3);text-align:center;padding:8px 0 4px;border-bottom:1px solid rgba(124,92,252,.1);margin-bottom:6px}
-.right-coupon-card{background:linear-gradient(135deg,rgba(252,92,125,.12),rgba(124,92,252,.12));border:1px solid rgba(252,92,125,.35);border-radius:14px;padding:14px;text-align:center;box-shadow:0 4px 20px rgba(252,92,125,.1);margin-bottom:8px}
-.right-coupon-card img{width:56px;height:56px;border-radius:10px;margin-bottom:8px}
-.right-coupon-title{font-size:14px;font-weight:800;margin-bottom:4px;color:#fff}
-.right-coupon-desc{font-size:11px;color:var(--txt2);margin-bottom:10px;line-height:1.6}
-.right-coupon-btn{display:block;padding:9px 12px;background:linear-gradient(135deg,#fc5c7d,#ff9a4d);border-radius:10px;color:#fff;font-weight:800;font-size:13px;text-decoration:none;margin-bottom:8px;transition:opacity .2s}
-.right-coupon-btn:hover{opacity:.85}
-.right-coupon-notice{font-size:9px;color:var(--txt3);line-height:1.5;text-align:left}
-.right-ad-slot{background:var(--bg2);border-radius:10px;overflow:hidden;min-height:250px;display:flex;align-items:center;justify-content:center;color:var(--txt3);font-size:12px}
-.gb-b1{border:2px solid #a0522d;box-shadow:0 0 8px #a0522d44}
-.gb-b2{border:2px solid #cd7f32;box-shadow:0 0 14px #cd7f3266}
-.gb-b3{border:2px solid #e09050;box-shadow:0 0 18px #e0905088}
-.gb-s1{border:2px solid #a9a9a9;box-shadow:0 0 14px #a9a9a966}
-.gb-s2{border:2px solid #c8c8c8;box-shadow:0 0 18px #c8c8c888}
-.gb-s3{border:2px solid #eeeeee;box-shadow:0 0 22px #eeeeeebb}
-.gb-g1{border:2px solid #ffd700;box-shadow:0 0 20px #ffd70099}
-.gb-g2{border:3px solid #ffe566;box-shadow:0 0 26px #ffe566bb}
-.gb-g3{border:3px solid #fff176;box-shadow:0 0 32px #fff176cc,0 0 56px #ffd70055}
-.gb-pl{border:3px solid #00f5d4;box-shadow:0 0 30px #00f5d4cc,0 0 60px #00f5d455}
-.gb-di{border:3px solid #4d96ff;box-shadow:0 0 34px #4d96ffcc,0 0 68px #4d96ff55}
-.gb-ms{border:3px solid transparent;background-clip:padding-box;box-shadow:0 0 40px #c77dffcc,0 0 80px #ff6fd855,0 0 120px #4d96ff33;animation:masterPulse 1.6s ease-in-out infinite}
-@keyframes masterPulse{0%,100%{box-shadow:0 0 40px #c77dffcc,0 0 80px #ff6fd855,0 0 120px #4d96ff33}50%{box-shadow:0 0 60px #ff6fd8ff,0 0 100px #c77dffaa,0 0 150px #4d96ff66}}
-.spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(124,92,252,.3);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-msg{text-align:center;padding:32px;color:var(--txt2)}
-.error-msg{text-align:center;padding:32px;color:#ff6b6b}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg1)}
-::-webkit-scrollbar-thumb{background:rgba(124,92,252,.4);border-radius:3px}
-#footer{background:var(--bg1);border-top:1px solid rgba(124,92,252,.15);padding:24px 20px;margin-top:40px;font-size:11px;color:var(--txt3);line-height:2}
-#footer a{color:var(--txt2);text-decoration:none}
-#footer a:hover{color:var(--acc)}
-</style>
-</head>
-<body>
-
-<header id="hdr">
-  <div id="hdrLogo">▶ YTAnalytics</div>
-  <div id="hdrSearchWrap">
-    <input id="hdrQ" type="text" placeholder="🔍 키워드 검색 (예: 먹방, 게임, 브이로그)"
-      onkeydown="if(event.key==='Enter')doKwSearch()">
-    <button id="hdrSearchBtn" onclick="doKwSearch()">검색</button>
-  </div>
-</header>
-
-<div id="layout">
-  <nav id="sidebar">
-    <div class="nav-item active" data-sec="hot"     onclick="showSec(this,'hot')"><span class="nav-icon">🔥</span>인기영상</div>
-    <div class="nav-item" data-sec="channel"        onclick="showSec(this,'channel')"><span class="nav-icon">📊</span>채널분석</div>
-    <div class="nav-item" data-sec="tools"          onclick="showSec(this,'tools')"><span class="nav-icon">🛠</span>편집도구</div>
-    <div class="nav-item" data-sec="ai"             onclick="showSec(this,'ai')"><span class="nav-icon">🤖</span>AI 아이디어</div>
-    <div class="nav-item" data-sec="revenue"        onclick="showSec(this,'revenue')"><span class="nav-icon">💰</span>수익계산기</div>
-    <div class="nav-item" data-sec="shop"           onclick="showSec(this,'shop')"><span class="nav-icon">🛒</span>제휴쇼핑</div>
-    <div class="nav-ad">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1111111111" data-ad-format="auto"></ins>
-    </div>
-    <div class="nav-ad">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="2222222222" data-ad-format="auto"></ins>
-    </div>
-  </nav>
-
-  <main id="wrap">
-
-    <!-- 인기영상 -->
-    <div id="sec-hot" class="section active">
-      <div class="sec-title">🔥 인기영상</div>
-      <div class="cat-scroll-wrap">
-        <div class="cat-scroll" id="catTabs"></div>
-      </div>
-      <div class="hot-type-switcher">
-        <button class="hot-type-btn active shorts-active" id="btnShorts" onclick="setHotType(this,'shorts')">
-          <span>📱</span> 쇼츠
-        </button>
-        <button class="hot-type-btn" id="btnLong" onclick="setHotType(this,'long')">
-          <span>🎬</span> 롱폼
-        </button>
-      </div>
-      <div id="shortsSection">
-        <div class="hot-section-header">
-          <div class="hot-section-title">
-            <span style="font-size:20px">📱</span>
-            <h2>쇼츠 인기영상</h2>
-            <span class="hot-section-badge shorts-badge">9:16 · 3분 미만</span>
-          </div>
-          <div id="shortsCountBadge" class="hot-count-badge">로딩 중...</div>
-        </div>
-        <div class="shorts-grid" id="shortsGrid">
-          <div class="skeleton skeleton-shorts"></div>
-          <div class="skeleton skeleton-shorts"></div>
-          <div class="skeleton skeleton-shorts"></div>
-          <div class="skeleton skeleton-shorts"></div>
-          <div class="skeleton skeleton-shorts"></div>
-        </div>
-        <button class="load-more-btn" id="shortsMoreBtn" style="display:none" onclick="loadMoreShorts()">
-          ↓ 쇼츠 더 불러오기
-        </button>
-      </div>
-      <div id="longSection" style="display:none">
-        <div class="hot-section-header">
-          <div class="hot-section-title">
-            <span style="font-size:20px">🎬</span>
-            <h2>롱폼 인기영상</h2>
-            <span class="hot-section-badge long-badge">일반 영상</span>
-          </div>
-          <div id="longCountBadge" class="hot-count-badge">로딩 중...</div>
-        </div>
-        <div class="long-grid" id="longGrid">
-          <div class="skeleton skeleton-long"></div>
-          <div class="skeleton skeleton-long"></div>
-          <div class="skeleton skeleton-long"></div>
-          <div class="skeleton skeleton-long"></div>
-        </div>
-        <button class="load-more-btn" id="longMoreBtn" style="display:none" onclick="loadMoreLong()">
-          ↓ 롱폼 더 불러오기
-        </button>
-      </div>
-    </div>
-
-    <!-- 키워드 검색 결과 -->
-    <div id="sec-kw" class="section">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <button onclick="showSec(document.querySelector('[data-sec=hot]'),'hot')"
-          style="background:var(--bg2);border:1px solid rgba(124,92,252,.3);border-radius:10px;padding:6px 14px;color:var(--txt2);cursor:pointer;font-size:12px">← 인기영상으로</button>
-        <span id="kwHeader" style="font-size:15px;font-weight:700"></span>
-      </div>
-      <div id="kwTypeFilterRow" style="display:flex;gap:6px;margin-bottom:12px">
-        <button class="tab-btn active" onclick="setKwType(this,'all')">전체</button>
-        <button class="tab-btn" onclick="setKwType(this,'shorts')">쇼츠</button>
-        <button class="tab-btn" onclick="setKwType(this,'long')">롱폼</button>
-      </div>
-      <div class="vid-grid" id="kwGrid"></div>
-      <div id="kwMoreWrap" style="display:none;text-align:center;margin-top:16px">
-        <button onclick="loadKwMore()"
-          style="background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:20px;padding:10px 28px;color:#fff;font-weight:700;cursor:pointer;font-size:14px">더 보기</button>
-      </div>
-    </div>
-
-    <!-- 채널분석 -->
-    <div id="sec-channel" class="section">
-      <div class="sec-title">📊 채널분석</div>
-      <div id="chSearchWrap">
-        <input id="chInput" type="text" placeholder="채널 URL, @핸들, 또는 채널 ID 입력"
-          onkeydown="if(event.key==='Enter')analyzeChannel()">
-        <button id="chBtn" onclick="analyzeChannel()">분석하기</button>
-      </div>
-      <div id="chResult"></div>
-    </div>
-
-    <!-- 편집도구 -->
-    <div id="sec-tools" class="section">
-      <div class="sec-title">🛠 편집도구</div>
-      <div class="tab-row" id="toolCatTabs"></div>
-      <div class="tool-grid" id="toolGrid"></div>
-    </div>
-
-    <!-- AI 아이디어 -->
-    <div id="sec-ai" class="section">
-      <div class="sec-title">🤖 AI 아이디어 생성</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px">
-        <input id="aiTopic"
-          style="flex:1;background:var(--bg2);border:1px solid rgba(124,92,252,.4);border-radius:22px;padding:10px 18px;color:var(--txt);font-size:14px;outline:none"
-          placeholder="주제 입력 (예: 요리, 여행, 게임)"
-          onkeydown="if(event.key==='Enter')genAI()">
-        <button onclick="genAI()"
-          style="background:linear-gradient(135deg,var(--acc),var(--acc2));border:none;border-radius:22px;padding:10px 24px;color:#fff;font-weight:700;cursor:pointer">생성</button>
-      </div>
-      <div class="idea-grid" id="ideaGrid"></div>
-    </div>
-
-    <!-- 수익계산기 -->
-    <div id="sec-revenue" class="section">
-      <div class="sec-title">💰 수익계산기</div>
-      <div class="calc-grid">
-        <div class="calc-row"><label>월 평균 조회수</label><input id="rViews" type="number" value="100000" oninput="calcRevenue()"></div>
-        <div class="calc-row"><label>RPM (원/1000뷰)</label><input id="rRpm" type="number" value="1500" oninput="calcRevenue()"></div>
-        <div class="calc-row"><label>월 업로드 수</label><input id="rUploads" type="number" value="4" oninput="calcRevenue()"></div>
-        <div class="calc-row"><label>구독자 수</label><input id="rSubs" type="number" value="10000" oninput="calcRevenue()"></div>
-      </div>
-      <div class="calc-results" id="calcResults"></div>
-    </div>
-
-    <!-- 제휴쇼핑 -->
-    <div id="sec-shop" class="section">
-      <div class="sec-title">🛒 제휴쇼핑</div>
-      <div id="shopArea"></div>
-      <p id="shopNotice" style="font-size:10px;color:var(--txt3);margin-top:16px"></p>
-    </div>
-
-  </main>
-</div>
-
-<!-- RIGHT AD -->
-<div id="rightAdFloat">
-  <div class="right-ad-header">광고 · AD</div>
-  <div class="right-coupon-card">
-    <img src="https://www.google.com/s2/favicons?domain=coupang.com&sz=64" alt="쿠팡">
-    <div class="right-coupon-title">🎬 유튜버 필수장비</div>
-    <div class="right-coupon-desc">카메라 · 마이크 · 조명<br>유튜브 촬영 인기 아이템<br>최저가 한번에 확인!</div>
-    <a class="right-coupon-btn" href="https://link.coupang.com/a/youtube?partnerCode=AF8853448" target="_blank" rel="noopener">쿠팡에서 보기 →</a>
-    <div class="right-coupon-notice">이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다.</div>
-  </div>
-  <div class="right-ad-slot">
-    <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3333333333" data-ad-format="auto"></ins>
-  </div>
-  <div class="right-ad-slot">
-    <ins class="adsbygoogle" style="display:block;width:100%;min-height:250px" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6666666666" data-ad-format="auto"></ins>
-  </div>
-</div>
-
-<!-- VIDEO MODAL -->
-<div id="vidModal" onclick="if(event.target===this)closeVidModal()">
-  <div id="vidModalInner">
-    <button id="vidCloseBtn" onclick="closeVidModal()" title="닫기">✕</button>
-    <div class="modal-ad-wrap">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="4444444444" data-ad-format="auto"></ins>
-    </div>
-    <iframe id="vidFrame" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-    <div class="modal-body" id="vidModalBody"></div>
-    <div class="modal-ad-wrap">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="5555555555" data-ad-format="auto"></ins>
-    </div>
-  </div>
-</div>
-
-<!-- TOOL MODAL -->
-<div id="toolModal" onclick="if(event.target===this)closeToolModal()">
-  <div id="toolModalInner">
-    <button onclick="closeToolModal()" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--txt2);font-size:22px;cursor:pointer;line-height:1">✕</button>
-    <div id="toolModalBody"></div>
-  </div>
-</div>
-
-<footer id="footer">
-  <p><strong>YTAnalytics Pro</strong> — YouTube 채널 분석 및 영상 트렌드 서비스</p>
-  <p>본 서비스는 <a href="https://developers.google.com/youtube/v3" target="_blank">YouTube Data API v3</a>를 사용하며,
-     <a href="https://policies.google.com/privacy" target="_blank">Google 개인정보처리방침</a> 및
-     <a href="https://www.youtube.com/t/terms" target="_blank">YouTube 이용약관</a>을 준수합니다.</p>
-  <p>표시되는 수치는 API 기반 추정값으로 실제와 다를 수 있습니다.</p>
-  <p>© 2025 YTAnalytics Pro. All rights reserved.</p>
-</footer>
-
 <script>
 /* ══════════════════════════════════════
    CONFIG
 ══════════════════════════════════════ */
-const API_KEYS = ['AIzaSyC8cLoTsaq1IkJgOplzb_gVUYV8_9C_moU'];
-// 키 추가 시: ['키1','키2']
+const API_KEYS = ['AIzaSyDzpxSQhciOKEa6qh_q3n5q47ug1mua6'];
 const PC = 'AF8853448';
 let keyIdx = 0;
 
@@ -720,27 +60,28 @@ let hotLoaded=false, shopBuilt=false, toolsBuilt=false;
    카테고리 설정
 ══════════════════════════════════════ */
 const CAT_CFG = {
-  '전체':        { categoryId:'',   keywords:[] },
-  '음악':        { categoryId:'10', keywords:['음악','뮤직비디오','K-POP'] },
-  '게임':        { categoryId:'20', keywords:['게임','gaming','게임플레이'] },
-  '엔터테인먼트':{ categoryId:'24', keywords:['엔터테인먼트','예능','버라이어티'] },
-  '뉴스':        { categoryId:'25', keywords:['뉴스','news','시사'] },
-  '스포츠':      { categoryId:'17', keywords:['스포츠','축구','야구','농구'] },
-  '교육':        { categoryId:'27', keywords:['교육','공부','강의','학습','튜토리얼'], searchOnly:true },
-  '과학·기술':   { categoryId:'28', keywords:['과학','기술','테크','IT','프로그래밍'] },
-  '여행':        { categoryId:'19', keywords:['여행','travel','브이로그','해외여행'], searchOnly:true },
-  '라이프스타일':{ categoryId:'22', keywords:['라이프스타일','일상','vlog','데일리'] },
-  '코미디':      { categoryId:'23', keywords:['코미디','웃긴','개그','유머'] },
-  '영화·애니':   { categoryId:'1',  keywords:['영화','애니메이션','드라마','리뷰'] },
-  '자동차':      { categoryId:'2',  keywords:['자동차','드라이브','차량','리뷰'] },
-  'DIY·팁':     { categoryId:'26', keywords:['DIY','팁','노하우','꿀팁','만들기'] },
-  '반려동물':    { categoryId:'15', keywords:['강아지','고양이','반려동물','펫'] },
+  '전체':        { categoryId:'',   keywords:['인기','급상승'], shortsKw:['shorts','쇼츠'] },
+  '음악':        { categoryId:'10', keywords:['음악','뮤직비디오','K-POP'], shortsKw:['음악 shorts','kpop shorts'] },
+  '게임':        { categoryId:'20', keywords:['게임','gaming','게임플레이'], shortsKw:['게임 shorts','gaming shorts'] },
+  '엔터테인먼트':{ categoryId:'24', keywords:['엔터테인먼트','예능','버라이어티'], shortsKw:['예능 shorts','재미 shorts'] },
+  '뉴스':        { categoryId:'25', keywords:['뉴스','news','시사'], shortsKw:['뉴스 shorts'] },
+  '스포츠':      { categoryId:'17', keywords:['스포츠','축구','야구','농구'], shortsKw:['스포츠 shorts','축구 shorts'] },
+  '교육':        { categoryId:'27', keywords:['교육','공부','강의','학습','튜토리얼'], shortsKw:['교육 shorts','공부 shorts'], searchOnly:true },
+  '과학·기술':   { categoryId:'28', keywords:['과학','기술','테크','IT','프로그래밍'], shortsKw:['테크 shorts','IT shorts'] },
+  '여행':        { categoryId:'19', keywords:['여행','travel','브이로그','해외여행'], shortsKw:['여행 shorts','travel shorts'], searchOnly:true },
+  '라이프스타일':{ categoryId:'22', keywords:['라이프스타일','일상','vlog','데일리'], shortsKw:['일상 shorts','vlog shorts'] },
+  '코미디':      { categoryId:'23', keywords:['코미디','웃긴','개그','유머'], shortsKw:['웃긴 shorts','개그 shorts'] },
+  '영화·애니':   { categoryId:'1',  keywords:['영화','애니메이션','드라마','리뷰'], shortsKw:['영화 shorts','애니 shorts'] },
+  '자동차':      { categoryId:'2',  keywords:['자동차','드라이브','차량','리뷰'], shortsKw:['자동차 shorts'] },
+  'DIY·팁':     { categoryId:'26', keywords:['DIY','팁','노하우','꿀팁','만들기'], shortsKw:['꿀팁 shorts','DIY shorts'] },
+  '반려동물':    { categoryId:'15', keywords:['강아지','고양이','반려동물','펫'], shortsKw:['강아지 shorts','고양이 shorts'] },
 };
 const CAT_KEYS = Object.keys(CAT_CFG);
 let activeCat   = '전체';
 let hotTypeFilt = 'shorts';
-let catPool      = {};
-let catPageToken = {};
+let catPool        = {};
+let catShortsPool  = {}; // 쇼츠 전용 풀 (별도 검색)
+let catPageToken   = {};
 let catShortsCache = {};
 let catLongCache   = {};
 let shortsRenderIdx = 0;
@@ -774,69 +115,122 @@ async function switchCat(cat) {
    스켈레톤
 ══════════════════════════════════════ */
 function showSkeletons() {
-  if (hotTypeFilt === 'shorts') {
-    document.getElementById('shortsGrid').innerHTML =
-      Array(8).fill('<div class="skeleton skeleton-shorts"></div>').join('');
-  } else {
-    document.getElementById('longGrid').innerHTML =
-      Array(4).fill('<div class="skeleton skeleton-long"></div>').join('');
-  }
+  document.getElementById('shortsGrid').innerHTML =
+    Array(8).fill('<div class="skeleton skeleton-shorts"></div>').join('');
+  document.getElementById('longGrid').innerHTML =
+    Array(4).fill('<div class="skeleton skeleton-long"></div>').join('');
 }
 
 /* ══════════════════════════════════════
-   데이터 로드
+   ★ 핵심 수정: 쇼츠를 별도 검색으로 수집
+   - mostPopular 차트 → 롱폼 위주
+   - search API + videoDuration=short → 쇼츠 위주
 ══════════════════════════════════════ */
-async function loadUntilFull(cat, maxRounds=10) {
-  catPool[cat] = catPool[cat] || [];
+async function loadUntilFull(cat, maxRounds=6) {
+  catPool[cat]       = catPool[cat]      || [];
+  catShortsPool[cat] = catShortsPool[cat]|| [];
   const cfg     = CAT_CFG[cat];
-  const seenIds = new Set(catPool[cat].map(i => i.id?.videoId || i.id));
+  const seenIds = new Set([
+    ...catPool[cat].map(i => i.id?.videoId||i.id),
+    ...catShortsPool[cat].map(i => i.id?.videoId||i.id)
+  ]);
 
+  // ── 쇼츠 전용 수집 (search API + videoDuration=short) ──
+  await loadShortsSearch(cat, cfg.shortsKw||[], seenIds, 3);
+
+  // ── 롱폼 수집 ──
   if (cfg.searchOnly) {
     await loadBySearch(cat, cfg.keywords, seenIds, maxRounds);
-    finalizeCache(cat);
-    return;
+  } else {
+    let token = catPageToken[cat]||'';
+    let round = 0;
+    while (round < maxRounds) {
+      const longs = catPool[cat].filter(i => !isShorts(i));
+      if (longs.length >= 25) break;
+      if (!token && round > 0) break;
+      try {
+        let url = `https://www.googleapis.com/youtube/v3/videos`
+                + `?part=snippet,statistics,contentDetails`
+                + `&chart=mostPopular&regionCode=KR&maxResults=50&hl=ko`;
+        if (cfg.categoryId) url += `&videoCategoryId=${cfg.categoryId}`;
+        if (token)          url += `&pageToken=${token}`;
+        const data = await apiFetch(url);
+        const newItems = (data.items||[]).filter(i => {
+          const id = i.id?.videoId||i.id;
+          if (seenIds.has(id)) return false;
+          seenIds.add(id); return true;
+        });
+        catPool[cat].push(...newItems);
+        token = data.nextPageToken||'';
+        catPageToken[cat] = token;
+        round++;
+        if (!token) break;
+      } catch(e) { console.warn('chart load', e); break; }
+    }
+    // 부족하면 키워드 검색으로 보완
+    const longs = catPool[cat].filter(i => !isShorts(i));
+    if (longs.length < 25 && cfg.keywords.length) {
+      await loadBySearch(cat, cfg.keywords, seenIds, 3);
+    }
   }
 
-  let token = catPageToken[cat] || '';
-  let round = 0;
-  while (round < maxRounds) {
-    const { shorts, longs } = classifyItems(catPool[cat]);
-    if (shorts.length >= 25 && longs.length >= 25) break;
-    if (!token && round > 0) break;
-    try {
-      let url = `https://www.googleapis.com/youtube/v3/videos`
-              + `?part=snippet,statistics,contentDetails`
-              + `&chart=mostPopular&regionCode=KR&maxResults=50&hl=ko`;
-      if (cfg.categoryId) url += `&videoCategoryId=${cfg.categoryId}`;
-      if (token)          url += `&pageToken=${token}`;
-      const data = await apiFetch(url);
-      const newItems = (data.items||[]).filter(i => {
-        const id = i.id?.videoId || i.id;
-        if (seenIds.has(id)) return false;
-        seenIds.add(id); return true;
-      });
-      catPool[cat].push(...newItems);
-      token = data.nextPageToken || '';
-      catPageToken[cat] = token;
-      round++;
-      if (!token) break;
-    } catch(e) { console.warn('loadUntilFull chart', e); break; }
-  }
-
-  const { shorts, longs } = classifyItems(catPool[cat]);
-  if ((shorts.length < 25 || longs.length < 25) && cfg.keywords.length) {
-    await loadBySearch(cat, cfg.keywords, seenIds, 3);
-  }
   finalizeCache(cat);
 }
 
-async function loadBySearch(cat, keywords, seenIds, maxRoundsPerKw=3) {
-  catPool[cat] = catPool[cat] || [];
-  for (const kw of keywords) {
+/* ── 쇼츠 전용 검색 (videoDuration=short) ── */
+async function loadShortsSearch(cat, keywords, seenIds, maxRoundsPerKw=3) {
+  catShortsPool[cat] = catShortsPool[cat]||[];
+  // 키워드가 없으면 기본 쿼리 사용
+  const kwList = keywords.length ? keywords : ['인기 쇼츠 한국', 'shorts 한국 인기'];
+
+  for (const kw of kwList) {
+    if (catShortsPool[cat].length >= 50) break;
     let token = '';
     for (let r = 0; r < maxRoundsPerKw; r++) {
-      const { shorts, longs } = classifyItems(catPool[cat]);
-      if (shorts.length >= 25 && longs.length >= 25) return;
+      if (catShortsPool[cat].length >= 50) break;
+      try {
+        // videoDuration=short → 4분 미만 영상 반환 (실제 쇼츠 포함)
+        let sUrl = `https://www.googleapis.com/youtube/v3/search`
+                 + `?part=snippet&type=video`
+                 + `&q=${encodeURIComponent(kw)}`
+                 + `&videoDuration=short`
+                 + `&maxResults=50`
+                 + `&regionCode=KR`
+                 + `&relevanceLanguage=ko`
+                 + `&order=viewCount`;
+        if (token) sUrl += `&pageToken=${token}`;
+        const sd = await apiFetch(sUrl);
+        const ids = (sd.items||[])
+          .map(i => i.id?.videoId)
+          .filter(id => id && !seenIds.has(id));
+        if (ids.length) {
+          ids.forEach(id => seenIds.add(id));
+          const vd = await apiFetch(
+            `https://www.googleapis.com/youtube/v3/videos`
+            + `?part=snippet,statistics,contentDetails&id=${ids.join(',')}`
+          );
+          // 실제 3분(180초) 이하만 쇼츠로 저장
+          const shortItems = (vd.items||[]).filter(v => {
+            const sec = parseDurSec(v.contentDetails?.duration||'');
+            return sec > 0 && sec <= 180;
+          });
+          catShortsPool[cat].push(...shortItems);
+        }
+        token = sd.nextPageToken||'';
+        if (!token) break;
+      } catch(e) { console.warn('loadShortsSearch', kw, e); break; }
+    }
+  }
+}
+
+/* ── 롱폼 키워드 검색 보완 ── */
+async function loadBySearch(cat, keywords, seenIds, maxRoundsPerKw=3) {
+  catPool[cat] = catPool[cat]||[];
+  for (const kw of keywords) {
+    const longs = catPool[cat].filter(i => !isShorts(i));
+    if (longs.length >= 25) return;
+    let token = '';
+    for (let r = 0; r < maxRoundsPerKw; r++) {
       try {
         let sUrl = `https://www.googleapis.com/youtube/v3/search`
                  + `?part=snippet&type=video&q=${encodeURIComponent(kw)}`
@@ -852,45 +246,60 @@ async function loadBySearch(cat, keywords, seenIds, maxRoundsPerKw=3) {
           );
           catPool[cat].push(...(vd.items||[]));
         }
-        token = sd.nextPageToken || '';
+        token = sd.nextPageToken||'';
         if (!token) break;
       } catch(e) { console.warn('loadBySearch', kw, e); break; }
     }
   }
 }
 
+/* ══════════════════════════════════════
+   ★ 핵심 수정: finalizeCache
+   - 쇼츠: catShortsPool (전용 풀) 사용
+   - 롱폼: catPool에서 180초 초과 영상
+══════════════════════════════════════ */
 function finalizeCache(cat) {
-  const { shorts, longs } = classifyItems(catPool[cat]);
-  catShortsCache[cat] = shorts;
-  catLongCache[cat]   = longs;
+  // 쇼츠: 전용 풀에서 바이럴 정렬
+  const shorts = catShortsPool[cat]||[];
+  catShortsCache[cat] = shorts.slice().sort((a,b) => viralOf(b)-viralOf(a));
+
+  // 롱폼: 일반 풀에서 180초 초과만
+  const longs = (catPool[cat]||[]).filter(i => {
+    const sec = parseDurSec(i.contentDetails?.duration||'');
+    return sec > 180;
+  });
+  catLongCache[cat] = longs.slice().sort((a,b) => viralOf(b)-viralOf(a));
+
+  console.log(`[${cat}] 쇼츠: ${catShortsCache[cat].length}개, 롱폼: ${catLongCache[cat].length}개`);
 }
 
 /* ══════════════════════════════════════
-   분류 + 바이럴 정렬
+   isShorts 판별 (180초 이하)
 ══════════════════════════════════════ */
-function classifyItems(items) {
-  const shorts=[], longs=[];
-  items.forEach(item => {
-    const sec   = parseDurSec(item.contentDetails?.duration||'');
-    const tags  = (item.snippet?.tags||[]).map(t=>t.toLowerCase());
-    const title = (item.snippet?.title||'').toLowerCase();
-    const desc  = (item.snippet?.description||'').toLowerCase();
-    const hasShortTag      = tags.some(t=>t==='#shorts'||t==='shorts');
-    const hasShortsInTitle = title.includes('#shorts')||title.includes('shorts');
-    const hasShortsInDesc  = desc.includes('#shorts');
-    const isS = sec>0 && sec<180 && (sec<=60||hasShortTag||hasShortsInTitle||hasShortsInDesc);
-    if (isS) shorts.push(item);
-    else     longs.push(item);
-  });
-  const byViral = arr => arr.slice().sort((a,b) => viralOf(b)-viralOf(a));
-  return { shorts:byViral(shorts), longs:byViral(longs) };
+function isShorts(item) {
+  const sec = parseDurSec(item.contentDetails?.duration||'');
+  return sec > 0 && sec <= 180;
 }
+
 function viralOf(item) {
   return calcViral(
     parseInt(item.statistics?.viewCount   ||0),
     parseInt(item.statistics?.likeCount   ||0),
     parseInt(item.statistics?.commentCount||0)
   );
+}
+
+/* ══════════════════════════════════════
+   classifyItems (키워드 검색 결과 분류용)
+══════════════════════════════════════ */
+function classifyItems(items) {
+  const shorts=[], longs=[];
+  items.forEach(item => {
+    if (isShorts(item)) shorts.push(item);
+    else                longs.push(item);
+  });
+  const byViral = arr => arr.slice().sort((a,b) => viralOf(b)-viralOf(a));
+  return { shorts:byViral(shorts), longs:byViral(longs) };
 }
 
 /* ══════════════════════════════════════
@@ -909,7 +318,7 @@ function setHotType(el, tf) {
 }
 
 /* ══════════════════════════════════════
-   렌더 — 쇼츠 / 롱폼 완전 분리
+   렌더 — 쇼츠 / 롱폼 분리
 ══════════════════════════════════════ */
 function renderShorts(append) {
   const shorts = catShortsCache[activeCat]||[];
@@ -957,7 +366,8 @@ async function loadMoreShorts() {
   const shorts = catShortsCache[activeCat]||[];
   if (shortsRenderIdx >= shorts.length) {
     btn.disabled=true; btn.textContent='⏳ 로딩 중...';
-    await loadUntilFull(activeCat, 4);
+    await loadShortsSearch(activeCat, CAT_CFG[activeCat].shortsKw||[], new Set(), 3);
+    finalizeCache(activeCat);
     btn.disabled=false; btn.textContent='↓ 쇼츠 더 불러오기';
   }
   renderShorts(true);
@@ -992,12 +402,12 @@ async function loadHot() {
         <p style="color:#ff6b6b">${e.message}</p>
         <p style="font-size:12px;margin-top:8px">F12 콘솔에서 오류를 확인하세요</p>
       </div>`;
-    document.getElementById('longGrid').innerHTML='';
     return;
   }
   shortsRenderIdx=0; longRenderIdx=0;
   renderShorts(false);
   renderLongs(false);
+  // 백그라운드 프리로드
   ['음악','게임','엔터테인먼트','교육','여행'].forEach(k => {
     if (!catShortsCache[k]) loadUntilFull(k);
   });
@@ -1198,13 +608,6 @@ function vidCardHTML(item) {
 /* ══════════════════════════════════════
    VIDEO UTILS
 ══════════════════════════════════════ */
-function isShorts(item) {
-  const sec  =parseDurSec(item.contentDetails?.duration||'');
-  const tags =(item.snippet?.tags||[]).map(t=>t.toLowerCase());
-  const title=(item.snippet?.title||'').toLowerCase();
-  const desc =(item.snippet?.description||'').toLowerCase();
-  return sec>0&&sec<180&&(sec<=60||tags.some(t=>t==='#shorts'||t==='shorts')||title.includes('#shorts')||desc.includes('#shorts'));
-}
 function parseDurSec(iso) {
   const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
   if(!m)return 0;
@@ -1479,5 +882,3 @@ window.addEventListener('DOMContentLoaded', () => {
   try{document.querySelectorAll('ins.adsbygoogle').forEach(()=>{(adsbygoogle=window.adsbygoogle||[]).push({});});}catch(e){}
 });
 </script>
-</body>
-</html>
