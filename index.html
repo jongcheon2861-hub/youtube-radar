@@ -1,621 +1,868 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>유튜브 알고리즘 분석 3D 레벨 카드</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#07070f;--text:#e8e8f0;--sub:#7777aa;--accent:#6c63ff;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;padding:48px 24px 80px;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ALGO – 채널분석 레벨카드</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet"/>
 
-/* ═══════════════════════════════════════════════════════════════
-   페이지 헤더 및 기본 레이아웃
-═══════════════════════════════════════════════════════════════ */
-.page-title{text-align:center;font-size:2rem;font-weight:900;background:linear-gradient(90deg,#6c63ff,#a78bfa,#6c63ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:titleSlide 3s linear infinite;margin-bottom:8px;}
-@keyframes titleSlide{to{background-position:200% center;}}
-.page-sub{text-align:center;color:var(--sub);font-size:.88rem;margin-bottom:48px;}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:90px 40px;padding:40px 20px 60px;max-width:1400px;margin:0 auto;}
+  <style>
+    /* ═══════════════════════════════════════════════
+       0. RESET & ROOT VARIABLES
+    ═══════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ═══════════════════════════════════════════════════════════════
-   카드 기본 구조 (230×340px)
-═══════════════════════════════════════════════════════════════ */
-.card-scene{width:230px;height:340px;perspective:900px;position:relative;cursor:pointer;margin:auto;}
-.card-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(0deg) rotateY(0deg);transition:transform .1s ease;will-change:transform;}
-.card-frame{position:absolute;inset:-3px;border-radius:21px;z-index:1;pointer-events:none;}
-.card-frame::after{content:'';position:absolute;inset:2px;border-radius:19px;background:var(--bg);}
+    :root {
+      --bg:          #0a0a12;
+      --surface:     #13131f;
+      --border:      rgba(255,255,255,0.08);
+      --text:        #e8e8f0;
+      --muted:       #7a7a9a;
+      --accent:      #7c6aff;
 
-/* 빔 효과 */
-.beam-container{position:absolute;inset:-3px;border-radius:21px;overflow:hidden;z-index:2;pointer-events:none;}
-.beam-ring{position:absolute;width:400%;height:400%;top:50%;left:50%;margin-top:-200%;margin-left:-200%;animation:beamRingSpin var(--beam-speed,3s) linear infinite;transform-origin:center center;}
-@keyframes beamRingSpin{from{rotate:0deg;}to{rotate:360deg;}}
+      /* Level colour tokens */
+      --lv1-a: #4fc3f7; --lv1-b: #0277bd; --lv1-glow: #4fc3f744;
+      --lv2-a: #81c784; --lv2-b: #2e7d32; --lv2-glow: #81c78444;
+      --lv3-a: #ffb74d; --lv3-b: #e65100; --lv3-glow: #ffb74d44;
+      --lv4-a: #f06292; --lv4-b: #ad1457; --lv4-glow: #f0629244;
+      --lv5-a: #ba68c8; --lv5-b: #6a1b9a; --lv5-glow: #ba68c844;
+      --lv6-a: #ff8a65; --lv6-b: #bf360c; --lv6-glow: #ff8a6544;
+      --lv7-a: #4dd0e1; --lv7-b: #006064; --lv7-glow: #4dd0e144;
+      --lv8-a: #f48fb1; --lv8-b: #880e4f; --lv8-glow: #f48fb144;
+      --lv9-a: #fff176; --lv9-b: #f57f17; --lv9-glow: #fff17644;
+      --max-a: #ffd700; --max-b: #ff4500; --max-glow: #ffd70066;
+    }
 
-/* 카드 바디 */
-.card-body{position:absolute;inset:0;border-radius:18px;z-index:3;transition:box-shadow .3s ease;}
-.card-face{position:absolute;inset:0;border-radius:18px;overflow:hidden;}
-.card-face::before{content:'';position:absolute;inset:0;border-radius:18px;background:repeating-linear-gradient(-45deg,transparent 0px,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px);pointer-events:none;z-index:1;}
-.card-shine{position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%);pointer-events:none;z-index:5;mix-blend-mode:screen;transition:background .08s ease;}
-.card-top-band{position:absolute;top:0;left:0;right:0;height:44%;border-radius:18px 18px 0 0;z-index:2;pointer-events:none;}
-.card-bot-band{position:absolute;bottom:0;left:0;right:0;height:40%;border-radius:0 0 18px 18px;z-index:2;pointer-events:none;}
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans KR', sans-serif;
+      overflow-x: hidden;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   1영역: 헤더 - 레벨 정보 (이모지 제거됨)
-═══════════════════════════════════════════════════════════════ */
-.card-header{position:absolute;top:0;left:0;right:0;padding:13px 14px 0;display:flex;justify-content:space-between;align-items:flex-start;z-index:10;}
-.card-lv-label{font-size:11px;font-weight:900;letter-spacing:.08em;padding:3px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.6);backdrop-filter:blur(4px);}
-.card-badge{color:#fff;padding:4px 11px;border-radius:8px;font-size:10px;font-weight:900;letter-spacing:.05em;box-shadow:0 2px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.2);}
+    /* ═══════════════════════════════════════════════
+       1. PAGE LAYOUT
+    ═══════════════════════════════════════════════ */
+    .page-wrap {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   파티클 및 보케 효과
-═══════════════════════════════════════════════════════════════ */
-.card-bokeh{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:18px;}
-.bokeh-dot{position:absolute;border-radius:50%;filter:blur(var(--bblur,5px));opacity:var(--bop,.35);animation:bokehDrift var(--bdur,7s) ease-in-out infinite;animation-delay:var(--bdel,0s);}
-@keyframes bokehDrift{0%,100%{transform:translate(0,0) scale(1);}25%{transform:translate(7px,-9px) scale(1.12);}50%{transform:translate(-6px,7px) scale(.91);}75%{transform:translate(9px,4px) scale(1.06);}}
-.card-sparkles{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden;border-radius:18px;}
-.sparkle-dot{position:absolute;font-size:var(--ssz,11px);animation:sparklePop var(--sdur,2.2s) ease-in-out infinite;animation-delay:var(--sdel,0s);}
-@keyframes sparklePop{0%,100%{opacity:.08;transform:scale(.45) rotate(-12deg);}40%{opacity:1;transform:scale(1.25) rotate(12deg);}65%{opacity:.75;transform:scale(1.05) rotate(5deg);}}
+    .page-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: .12em;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #7c6aff, #f06292);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+      margin-bottom: 48px;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   2영역: 메인 알고리즘 점수 (헤더 배지 이모지로 교체됨)
-═══════════════════════════════════════════════════════════════ */
-.card-main-wrap{position:absolute;top:37%;left:50%;transform:translate(-50%,-50%);z-index:8;display:flex;flex-direction:column;align-items:center;width:100%;text-align:center;}
-.card-main-icon{font-size:2.4rem;margin-bottom:4px;animation:iconHover 3.5s ease-in-out infinite;}
-@keyframes iconHover{0%,100%{transform:translateY(0) rotateY(0deg);}30%{transform:translateY(-5px) rotateY(9deg);}70%{transform:translateY(-2px) rotateY(-6deg);}}
-.card-score{font-size:2.6rem;font-weight:900;line-height:1;letter-spacing:-0.02em;margin-bottom:2px;}
-.card-score-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.1em;margin-bottom:4px;text-transform:uppercase;}
-.card-trend{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(4px);}
+    /* ═══════════════════════════════════════════════
+       2. INPUT PANEL
+    ═══════════════════════════════════════════════ */
+    .input-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      align-items: end;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   3영역: 핵심 지표 미니 대시보드
-═══════════════════════════════════════════════════════════════ */
-.card-metrics-mini{position:absolute;bottom:75px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:10;gap:4px;}
-.mini-metric{flex:1;display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 2px;backdrop-filter:blur(4px);transition:transform .2s ease;}
-.mini-metric:hover{transform:translateY(-2px);}
-.metric-icon{font-size:11px;margin-bottom:2px;opacity:0.9;}
-.metric-val{font-size:10px;font-weight:800;color:#fff;line-height:1;}
-.metric-name{font-size:7px;color:rgba(255,255,255,.5);margin-top:2px;letter-spacing:0.05em;}
+    .input-group label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: .9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .input-group input:focus,
+    .input-group select:focus { border-color: var(--accent); }
+    .input-group input::placeholder { color: var(--muted); }
 
-.status-good{color:#66ffdd !important;}
-.status-warn{color:#ffaa44 !important;}
-.status-danger{color:#ff6680 !important;}
+    .btn-analyze {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #7c6aff, #f06292);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-analyze:hover { opacity: .88; transform: translateY(-2px); }
+    .btn-analyze:active { transform: translateY(0); }
 
-/* ═══════════════════════════════════════════════════════════════
-   XP 바 및 비네트 효과
-═══════════════════════════════════════════════════════════════ */
-.card-vignette{position:absolute;inset:0;z-index:6;pointer-events:none;border-radius:18px;background:radial-gradient(ellipse at center,transparent 28%,rgba(4,4,12,.62) 100%);}
-.card-xp-wrap{position:absolute;bottom:42px;left:14px;right:14px;z-index:10;}
-.card-xp-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
-.xp-title{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.5);}
-.xp-range{font-size:9px;font-weight:700;color:rgba(255,255,255,.5);}
-.xp-bar-bg{width:100%;height:5px;border-radius:4px;background:rgba(255,255,255,.1);overflow:hidden;position:relative;}
-.xp-bar-fill{height:100%;border-radius:4px;position:relative;transition:width .6s ease;}
-.xp-bar-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.45) 50%,transparent 100%);animation:xpShine 2s linear infinite;}
-@keyframes xpShine{0%{transform:translateX(-100%);}100%{transform:translateX(200%);}}
+    /* ═══════════════════════════════════════════════
+       3. RESULT SECTION
+    ═══════════════════════════════════════════════ */
+    #result-section { display: none; }
+    #result-section.visible { display: block; }
 
-/* ═══════════════════════════════════════════════════════════════
-   4영역: 푸터 (분석 기준일 + 랭크 정보)
-═══════════════════════════════════════════════════════════════ */
-.card-footer{position:absolute;bottom:0;left:0;right:0;padding:0 14px;display:flex;justify-content:space-between;align-items:center;height:36px;z-index:10;border-radius:0 0 18px 18px;border-top:1px solid rgba(255,255,255,.15);}
-.footer-meta{font-size:9px;color:rgba(255,255,255,.6);letter-spacing:0.02em;display:flex;align-items:center;gap:4px;}
-.footer-rank{font-size:10px;font-weight:800;color:#fff;background:rgba(0,0,0,.3);padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.15);box-shadow:inset 0 1px 0 rgba(255,255,255,.1);}
+    .result-heading {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   배경 글로우 효과
-═══════════════════════════════════════════════════════════════ */
-.card-scene::before,.card-scene::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:60%;border-radius:50%;pointer-events:none;z-index:0;}
-.card-scene::before{top:-18px;height:36px;filter:blur(14px);animation:topGlow 3s ease-in-out infinite;}
-.card-scene::after{bottom:-18px;height:36px;filter:blur(14px);animation:botGlow 3s ease-in-out infinite;}
-@keyframes topGlow{0%,100%{opacity:.55;transform:translateX(-50%) scaleX(1);}50%{opacity:.88;transform:translateX(-50%) scaleX(1.14);}}
-@keyframes botGlow{0%,100%{opacity:.50;transform:translateX(-50%) scaleX(1);}50%{opacity:.82;transform:translateX(-50%) scaleX(1.12);}}
-@keyframes fogPulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:.88;transform:scale(1.07);}}
+    /* 카드 그리드 */
+    .card-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: center;
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   레벨별 시각적 테마 (LV1~LV9, MAX 총 10단계)
-═══════════════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════
+       4. CH-CARD 3D SCENE  (scaleX 82.5%)
+    ═══════════════════════════════════════════════ */
+    .ch-card-scene {
+      width: 230px;
+      height: 320px;
+      perspective: 900px;
+      transform: scaleX(0.825);
+      transform-origin: center top;
+      flex-shrink: 0;
+    }
 
-/* LV1 - 아이스 블루 */
-.card-scene[data-lv="1"]::before,.card-scene[data-lv="1"]::after{background:radial-gradient(ellipse,rgba(180,230,255,.9) 0%,transparent 70%);}
-.card-scene[data-lv="1"] .card-lv-label{color:#b0e8ff;border-color:rgba(128,208,240,.45);text-shadow:0 0 8px rgba(128,208,240,.8);}
-.card-scene[data-lv="1"] .card-frame{background:linear-gradient(135deg,#0a1a2e,#2a6080,#80d0f0,#ffffff,#80d0f0,#2a6080,#0a1a2e);background-size:300% 300%;animation:levelShift 3s ease-in-out infinite;}
-.card-scene[data-lv="1"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1a4060 2%,#3a90c0 4%,#90dff8 5.5%,#ffffff 6.5%,#90dff8 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="1"] .card-body{background:linear-gradient(160deg,#060f18 0%,#04090f 55%,#060f18 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(128,208,240,.35),0 0 0 1px rgba(128,208,240,.38);}
-.card-scene[data-lv="1"] .card-top-band{background:linear-gradient(180deg,rgba(128,208,240,.45) 0%,transparent 100%);}
-.card-scene[data-lv="1"] .card-bot-band{background:linear-gradient(0deg,rgba(128,208,240,.38) 0%,transparent 100%);}
-.card-scene[data-lv="1"] .card-score{color:#b0e8ff;text-shadow:0 0 14px rgba(128,208,240,.9),0 0 32px rgba(100,180,220,.6);}
-.card-scene[data-lv="1"] .card-trend{color:#80d0f0;}
-.card-scene[data-lv="1"] .card-badge{background:linear-gradient(135deg,#1a4060,#3a90c0);}
-.card-scene[data-lv="1"] .card-footer{background:linear-gradient(135deg,#06101c 0%,#0a1a2a 100%);}
-.card-scene[data-lv="1"] .xp-bar-fill{background:linear-gradient(90deg,#1a4060,#3a90c0,#90dff8);box-shadow:0 0 6px rgba(128,208,240,.7);}
+    .ch-card-tilt {
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .08s linear;
+      border-radius: 20px;
+      position: relative;
+    }
 
-/* LV2 - 스틸 블루 */
-.card-scene[data-lv="2"]::before,.card-scene[data-lv="2"]::after{background:radial-gradient(ellipse,rgba(100,149,220,.9) 0%,transparent 70%);}
-.card-scene[data-lv="2"] .card-lv-label{color:#a8c8f0;border-color:rgba(74,127,193,.45);text-shadow:0 0 8px rgba(74,127,193,.8);}
-.card-scene[data-lv="2"] .card-frame{background:linear-gradient(135deg,#1c2e4a,#4a7fc1,#a8c8f0,#4a7fc1,#1c2e4a);background-size:300% 300%;animation:levelShift 4s ease-in-out infinite;}
-.card-scene[data-lv="2"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#1c3a5e 2%,#4a7fc1 4%,#a8c8f0 5.5%,#4a7fc1 7%,#1c3a5e 9%,transparent 11%,transparent 100%);}
-.card-scene[data-lv="2"] .card-body{background:linear-gradient(160deg,#0d1a2e 0%,#0a0f1a 55%,#0d1a2e 100%);box-shadow:0 20px 55px rgba(0,0,0,.7),0 0 30px rgba(74,127,193,.25),0 0 0 1px rgba(74,127,193,.3);}
-.card-scene[data-lv="2"] .card-top-band{background:linear-gradient(180deg,rgba(74,127,193,.35) 0%,transparent 100%);}
-.card-scene[data-lv="2"] .card-bot-band{background:linear-gradient(0deg,rgba(74,127,193,.30) 0%,transparent 100%);}
-.card-scene[data-lv="2"] .card-score{color:#a8c8f0;text-shadow:0 0 12px rgba(74,127,193,.9),0 0 24px rgba(74,127,193,.5);}
-.card-scene[data-lv="2"] .card-trend{color:#7ba8e0;}
-.card-scene[data-lv="2"] .card-badge{background:linear-gradient(135deg,#1c3a5e,#4a7fc1);}
-.card-scene[data-lv="2"] .card-footer{background:linear-gradient(135deg,#0d1e36 0%,#162a45 100%);}
-.card-scene[data-lv="2"] .xp-bar-fill{background:linear-gradient(90deg,#1c3a5e,#4a7fc1,#a8c8f0);box-shadow:0 0 6px rgba(74,127,193,.7);}
+    /* card body = the visible face */
+    .ch-card-body {
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.14);
+      display: flex;
+      flex-direction: column;
+    }
 
-/* LV3 - 코발트 블루 */
-.card-scene[data-lv="3"]::before,.card-scene[data-lv="3"]::after{background:radial-gradient(ellipse,rgba(0,160,255,.9) 0%,transparent 70%);}
-.card-scene[data-lv="3"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,160,255,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="3"] .card-lv-label{color:#66ccff;border-color:rgba(0,153,255,.45);text-shadow:0 0 8px rgba(0,153,255,.8);}
-.card-scene[data-lv="3"] .card-frame{background:linear-gradient(135deg,#001a33,#0055aa,#00aaff,#ffffff,#00aaff,#0055aa,#001a33);background-size:300% 300%;animation:levelShift 3.5s ease-in-out infinite;}
-.card-scene[data-lv="3"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#003366 2%,#0077cc 4%,#00aaff 5.5%,#ffffff 6.5%,#00aaff 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="3"] .card-body{background:linear-gradient(160deg,#00091a 0%,#000d22 55%,#00091a 100%);box-shadow:0 22px 58px rgba(0,0,0,.75),0 0 35px rgba(0,153,255,.28),0 0 0 1px rgba(0,153,255,.32);}
-.card-scene[data-lv="3"] .card-top-band{background:linear-gradient(180deg,rgba(0,153,255,.4) 0%,transparent 100%);}
-.card-scene[data-lv="3"] .card-bot-band{background:linear-gradient(0deg,rgba(0,153,255,.35) 0%,transparent 100%);}
-.card-scene[data-lv="3"] .card-score{color:#66ccff;text-shadow:0 0 14px rgba(0,170,255,.9),0 0 30px rgba(0,153,255,.55);}
-.card-scene[data-lv="3"] .card-trend{color:#33aaff;}
-.card-scene[data-lv="3"] .card-badge{background:linear-gradient(135deg,#003366,#0077cc);}
-.card-scene[data-lv="3"] .card-footer{background:linear-gradient(135deg,#00091f 0%,#001433 100%);}
-.card-scene[data-lv="3"] .xp-bar-fill{background:linear-gradient(90deg,#003366,#0077cc,#00aaff);box-shadow:0 0 6px rgba(0,153,255,.7);}
+    /* ── Glossy sheen layer ── */
+    .ch-card-body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.18) 0%,
+        rgba(255,255,255,0.04) 40%,
+        transparent 60%
+      );
+      border-radius: inherit;
+      z-index: 10;
+      pointer-events: none;
+    }
 
-/* LV4 - 에메랄드 */
-.card-scene[data-lv="4"]::before,.card-scene[data-lv="4"]::after{background:radial-gradient(ellipse,rgba(0,200,120,.9) 0%,transparent 70%);}
-.card-scene[data-lv="4"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,200,120,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="4"] .card-lv-label{color:#66ffaa;border-color:rgba(0,204,102,.45);text-shadow:0 0 8px rgba(0,204,102,.8);}
-.card-scene[data-lv="4"] .card-frame{background:linear-gradient(135deg,#001a0d,#006633,#00cc66,#aaffcc,#00cc66,#006633,#001a0d);background-size:300% 300%;animation:levelShift 3s ease-in-out infinite;}
-.card-scene[data-lv="4"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004422 2%,#009944 4%,#00cc66 5.5%,#aaffcc 6.5%,#00cc66 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="4"] .card-body{background:linear-gradient(160deg,#001a0a 0%,#000f06 55%,#001a0a 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,200,100,.35),0 0 0 1px rgba(0,200,100,.38);}
-.card-scene[data-lv="4"] .card-top-band{background:linear-gradient(180deg,rgba(0,204,102,.45) 0%,transparent 100%);}
-.card-scene[data-lv="4"] .card-bot-band{background:linear-gradient(0deg,rgba(0,204,102,.38) 0%,transparent 100%);}
-.card-scene[data-lv="4"] .card-score{color:#66ffaa;text-shadow:0 0 14px rgba(0,204,102,.9),0 0 32px rgba(0,170,80,.6);}
-.card-scene[data-lv="4"] .card-trend{color:#33ee88;}
-.card-scene[data-lv="4"] .card-badge{background:linear-gradient(135deg,#004422,#009944);}
-.card-scene[data-lv="4"] .card-footer{background:linear-gradient(135deg,#001508 0%,#002a12 100%);}
-.card-scene[data-lv="4"] .xp-bar-fill{background:linear-gradient(90deg,#004422,#009944,#00cc66);box-shadow:0 0 6px rgba(0,204,102,.7);}
+    /* ── Dynamic light-reflex (JS driven) ── */
+    .ch-card-body::after {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 70%);
+      transform: translate(-50%, -50%);
+      left: var(--mx, 50%);
+      top:  var(--my, 50%);
+      z-index: 11;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .ch-card-tilt:hover .ch-card-body::after { opacity: 1; }
 
-/* LV5 - 틸 */
-.card-scene[data-lv="5"]::before,.card-scene[data-lv="5"]::after{background:radial-gradient(ellipse,rgba(0,180,160,.9) 0%,transparent 70%);}
-.card-scene[data-lv="5"] .fog-wrap{position:absolute;inset:-28px;border-radius:22px;background:radial-gradient(ellipse at center,rgba(0,180,160,.3) 0%,transparent 72%);filter:blur(18px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="5"] .card-lv-label{color:#66ffdd;border-color:rgba(0,204,170,.45);text-shadow:0 0 8px rgba(0,204,170,.8);}
-.card-scene[data-lv="5"] .card-frame{background:linear-gradient(135deg,#001a18,#006655,#00ccaa,#ffd700,#00ccaa,#006655,#001a18);background-size:300% 300%;animation:levelShift 3s ease-in-out infinite;}
-.card-scene[data-lv="5"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#004433 2%,#009977 4%,#00ccaa 5.5%,#ffd700 6.5%,#00ccaa 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="5"] .card-body{background:linear-gradient(160deg,#001a16 0%,#000f0d 55%,#001a16 100%);box-shadow:0 22px 60px rgba(0,0,0,.75),0 0 50px rgba(0,180,150,.35),0 0 0 1px rgba(0,180,150,.38);}
-.card-scene[data-lv="5"] .card-top-band{background:linear-gradient(180deg,rgba(0,204,170,.45) 0%,transparent 100%);}
-.card-scene[data-lv="5"] .card-bot-band{background:linear-gradient(0deg,rgba(0,204,170,.38) 0%,transparent 100%);}
-.card-scene[data-lv="5"] .card-score{color:#66ffdd;text-shadow:0 0 14px rgba(0,204,170,.9),0 0 32px rgba(0,170,140,.6);}
-.card-scene[data-lv="5"] .card-trend{color:#33eebb;}
-.card-scene[data-lv="5"] .card-badge{background:linear-gradient(135deg,#004433,#009977);}
-.card-scene[data-lv="5"] .card-footer{background:linear-gradient(135deg,#001512 0%,#002a22 100%);}
-.card-scene[data-lv="5"] .xp-bar-fill{background:linear-gradient(90deg,#004433,#009977,#00ccaa);box-shadow:0 0 6px rgba(0,204,170,.7);}
+    /* ═══════════════════════════════════════════════
+       5. CARD INTERNAL LAYOUT
+    ═══════════════════════════════════════════════ */
+    .ch-card-header {
+      padding: 14px 16px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    .ch-card-badge {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(4px);
+    }
+    .ch-card-lvlabel {
+      font-family: 'Orbitron', sans-serif;
+      font-size: .58rem;
+      font-weight: 900;
+      opacity: .75;
+      letter-spacing: .1em;
+    }
 
-/* LV6 - 앰버 골드 */
-.card-scene[data-lv="6"]::before,.card-scene[data-lv="6"]::after{background:radial-gradient(ellipse,rgba(220,150,0,.9) 0%,transparent 70%);}
-.card-scene[data-lv="6"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,150,0,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="6"] .card-lv-label{color:#ffd166;border-color:rgba(232,160,0,.45);text-shadow:0 0 8px rgba(232,160,0,.8);}
-.card-scene[data-lv="6"] .card-frame{background:linear-gradient(135deg,#1a0d00,#7a4400,#e8a000,#fff3cc,#e8a000,#7a4400,#1a0d00);background-size:300% 300%;animation:levelShift 2.8s ease-in-out infinite;}
-.card-scene[data-lv="6"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#4a2200 2%,#aa6600 4%,#e8a000 5.5%,#fff3cc 6.5%,#e8a000 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="6"] .card-body{background:linear-gradient(160deg,#1a0900 0%,#0f0500 55%,#1a0900 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,150,0,.45),0 0 0 1px rgba(220,150,0,.42);}
-.card-scene[data-lv="6"] .card-top-band{background:linear-gradient(180deg,rgba(232,160,0,.50) 0%,transparent 100%);}
-.card-scene[data-lv="6"] .card-bot-band{background:linear-gradient(0deg,rgba(232,160,0,.45) 0%,transparent 100%);}
-.card-scene[data-lv="6"] .card-score{color:#ffd166;text-shadow:0 0 16px rgba(232,160,0,.9),0 0 36px rgba(200,130,0,.65);}
-.card-scene[data-lv="6"] .card-trend{color:#ffb733;}
-.card-scene[data-lv="6"] .card-badge{background:linear-gradient(135deg,#4a2200,#aa6600);}
-.card-scene[data-lv="6"] .card-footer{background:linear-gradient(135deg,#1a0a00 0%,#2e1500 100%);}
-.card-scene[data-lv="6"] .xp-bar-fill{background:linear-gradient(90deg,#4a2200,#aa6600,#e8a000);box-shadow:0 0 6px rgba(232,160,0,.7);}
+    .ch-card-main {
+      padding: 0 16px 8px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      z-index: 2;
+    }
 
-/* LV7 - 솔라 오렌지 */
-.card-scene[data-lv="7"]::before,.card-scene[data-lv="7"]::after{background:radial-gradient(ellipse,rgba(255,120,0,.9) 0%,transparent 70%);}
-.card-scene[data-lv="7"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(255,120,0,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="7"] .card-lv-label{color:#ffaa44;border-color:rgba(255,102,0,.45);text-shadow:0 0 8px rgba(255,102,0,.8);}
-.card-scene[data-lv="7"] .card-frame{background:linear-gradient(135deg,#1a0500,#882200,#ff6600,#ffdd88,#ff6600,#882200,#1a0500);background-size:300% 300%;animation:levelShift 2.5s ease-in-out infinite;}
-.card-scene[data-lv="7"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551100 2%,#cc4400 4%,#ff6600 5.5%,#ffdd88 6.5%,#ff6600 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="7"] .card-body{background:linear-gradient(160deg,#1a0500 0%,#0f0200 55%,#1a0500 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(255,100,0,.50),0 0 0 1px rgba(255,100,0,.45);}
-.card-scene[data-lv="7"] .card-top-band{background:linear-gradient(180deg,rgba(255,102,0,.52) 0%,transparent 100%);}
-.card-scene[data-lv="7"] .card-bot-band{background:linear-gradient(0deg,rgba(255,102,0,.46) 0%,transparent 100%);}
-.card-scene[data-lv="7"] .card-score{color:#ffaa44;text-shadow:0 0 16px rgba(255,102,0,.9),0 0 38px rgba(220,60,0,.7);}
-.card-scene[data-lv="7"] .card-trend{color:#ff8822;}
-.card-scene[data-lv="7"] .card-badge{background:linear-gradient(135deg,#551100,#cc4400);}
-.card-scene[data-lv="7"] .card-footer{background:linear-gradient(135deg,#1a0400 0%,#2e0800 100%);}
-.card-scene[data-lv="7"] .xp-bar-fill{background:linear-gradient(90deg,#551100,#cc4400,#ff6600);box-shadow:0 0 6px rgba(255,102,0,.7);}
+    /* Channel name */
+    .ch-name {
+      font-size: .78rem;
+      font-weight: 600;
+      opacity: .85;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-/* LV8 - 루비 레드 */
-.card-scene[data-lv="8"]::before,.card-scene[data-lv="8"]::after{background:radial-gradient(ellipse,rgba(200,0,40,.9) 0%,transparent 70%);}
-.card-scene[data-lv="8"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(200,0,40,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="8"] .card-lv-label{color:#ff6680;border-color:rgba(204,0,51,.45);text-shadow:0 0 8px rgba(204,0,51,.8);}
-.card-scene[data-lv="8"] .card-frame{background:linear-gradient(135deg,#1a0008,#770011,#cc0033,#ffaabb,#cc0033,#770011,#1a0008);background-size:300% 300%;animation:levelShift 2.5s ease-in-out infinite;}
-.card-scene[data-lv="8"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#440008 2%,#aa0022 4%,#cc0033 5.5%,#ffaabb 6.5%,#cc0033 8%,transparent 10%,transparent 100%);}
-.card-scene[data-lv="8"] .card-body{background:linear-gradient(160deg,#1a0006 0%,#0f0003 55%,#1a0006 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(200,0,40,.50),0 0 0 1px rgba(200,0,40,.45);}
-.card-scene[data-lv="8"] .card-top-band{background:linear-gradient(180deg,rgba(204,0,51,.52) 0%,transparent 100%);}
-.card-scene[data-lv="8"] .card-bot-band{background:linear-gradient(0deg,rgba(204,0,51,.46) 0%,transparent 100%);}
-.card-scene[data-lv="8"] .card-score{color:#ff6680;text-shadow:0 0 16px rgba(204,0,51,.9),0 0 38px rgba(160,0,30,.7);}
-.card-scene[data-lv="8"] .card-trend{color:#ff3355;}
-.card-scene[data-lv="8"] .card-badge{background:linear-gradient(135deg,#440008,#aa0022);}
-.card-scene[data-lv="8"] .card-footer{background:linear-gradient(135deg,#1a0005 0%,#2e000a 100%);}
-.card-scene[data-lv="8"] .xp-bar-fill{background:linear-gradient(90deg,#440008,#aa0022,#cc0033);box-shadow:0 0 6px rgba(204,0,51,.7);}
+    /* Big score */
+    .ch-score-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 4px 0;
+    }
+    .ch-score {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+    .ch-score-unit {
+      font-size: .7rem;
+      opacity: .7;
+    }
 
-/* LV9 - 로즈 골드 */
-.card-scene[data-lv="9"]::before,.card-scene[data-lv="9"]::after{background:radial-gradient(ellipse,rgba(220,100,150,.9) 0%,transparent 70%);}
-.card-scene[data-lv="9"] .fog-wrap{position:absolute;inset:-42px;border-radius:24px;background:radial-gradient(ellipse at center,rgba(220,100,150,.42) 0%,transparent 72%);filter:blur(24px);z-index:0;animation:fogPulse 3s ease-in-out infinite;}
-.card-scene[data-lv="9"] .card-lv-label{color:#ffaacc;border-color:rgba(204,68,136,.45);text-shadow:0 0 8px rgba(204,68,136,.8);}
-.card-scene[data-lv="9"] .card-frame{background:linear-gradient(135deg,#1a0010,#882255,#cc4488,#ffccdd,#ffd700,#ffccdd,#cc4488,#882255,#1a0010);background-size:300% 300%;animation:levelShift 2.5s ease-in-out infinite;}
-.card-scene[data-lv="9"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#551133 2%,#aa3366 4%,#cc4488 5.5%,#ffccdd 6.5%,#ffd700 7.5%,#cc4488 9%,transparent 11%,transparent 100%);}
-.card-scene[data-lv="9"] .card-body{background:linear-gradient(160deg,#1a0010 0%,#0f0008 55%,#1a0010 100%);box-shadow:0 24px 65px rgba(0,0,0,.8),0 0 65px rgba(220,80,140,.50),0 0 0 1px rgba(220,80,140,.45);}
-.card-scene[data-lv="9"] .card-top-band{background:linear-gradient(180deg,rgba(204,68,136,.52) 0%,transparent 100%);}
-.card-scene[data-lv="9"] .card-bot-band{background:linear-gradient(0deg,rgba(204,68,136,.46) 0%,transparent 100%);}
-.card-scene[data-lv="9"] .card-score{color:#ffaacc;text-shadow:0 0 16px rgba(220,80,140,.9),0 0 38px rgba(180,50,110,.7);}
-.card-scene[data-lv="9"] .card-trend{color:#ff77aa;}
-.card-scene[data-lv="9"] .card-badge{background:linear-gradient(135deg,#551133,#aa3366);}
-.card-scene[data-lv="9"] .card-footer{background:linear-gradient(135deg,#1a000e 0%,#2e0018 100%);}
-.card-scene[data-lv="9"] .xp-bar-fill{background:linear-gradient(90deg,#551133,#aa3366,#cc4488,#ffd700);box-shadow:0 0 6px rgba(220,80,140,.7);}
+    /* Metric rows */
+    .ch-metrics { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
+    .ch-metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .72rem;
+    }
+    .ch-metric-label { opacity: .65; }
+    .ch-metric-val   { font-weight: 700; letter-spacing: .03em; }
 
-/* LV MAX - 레전드 퍼플 */
-.card-scene[data-lv="MAX"]::before,.card-scene[data-lv="MAX"]::after{background:radial-gradient(ellipse,rgba(160,60,255,.95) 0%,transparent 70%);}
-.card-scene[data-lv="MAX"] .fog-wrap{position:absolute;inset:-58px;border-radius:26px;background:radial-gradient(ellipse at center,rgba(140,40,255,.58) 0%,transparent 70%);filter:blur(32px);z-index:0;animation:fogPulse 2.5s ease-in-out infinite;}
-.card-scene[data-lv="MAX"] .card-lv-label{color:#e0aaff;border-color:rgba(192,132,252,.55);text-shadow:0 0 10px rgba(180,100,255,.9),0 0 20px rgba(140,60,255,.6);animation:maxLvPulse 2s ease-in-out infinite alternate;}
-.card-scene[data-lv="MAX"] .card-frame{background:linear-gradient(135deg,#0d0020,#3d00a0,#7b2fff,#c084fc,#ffd700,#c084fc,#7b2fff,#3d00a0,#0d0020);background-size:300% 300%;animation:levelShift 2s ease-in-out infinite;}
-.card-scene[data-lv="MAX"] .beam-ring{background:conic-gradient(from 0deg,transparent 0%,#220055 2%,#6600cc 3.5%,#9933ff 5%,#c084fc 6%,#ffd700 7%,#c084fc 8%,#6600cc 9.5%,transparent 11%,transparent 100%);}
-.card-scene[data-lv="MAX"] .card-body{background:linear-gradient(160deg,#0d0020 0%,#07000f 55%,#0d0020 100%);box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 80px rgba(123,47,255,.65),0 0 0 1px rgba(192,132,252,.5);animation:maxGlow 2s ease-in-out infinite;}
-.card-scene[data-lv="MAX"] .card-top-band{background:linear-gradient(180deg,rgba(123,47,255,.60) 0%,transparent 100%);}
-.card-scene[data-lv="MAX"] .card-bot-band{background:linear-gradient(0deg,rgba(123,47,255,.46) 0%,transparent 100%);}
-.card-scene[data-lv="MAX"] .card-score{color:#e0aaff;text-shadow:0 0 18px rgba(180,100,255,.9),0 0 40px rgba(140,60,255,.7);animation:maxNamePulse 2s ease-in-out infinite alternate;}
-.card-scene[data-lv="MAX"] .card-trend{color:#c084fc;}
-.card-scene[data-lv="MAX"] .card-badge{background:linear-gradient(135deg,#3d00a0,#7b2fff,#c084fc,#ffd700);border-color:rgba(255,215,0,.45);}
-.card-scene[data-lv="MAX"] .card-footer{background:linear-gradient(135deg,#0d0020 0%,#1a0040 100%);border-top:1px solid rgba(192,132,252,.3);}
-.card-scene[data-lv="MAX"] .xp-bar-fill{background:linear-gradient(90deg,#3d00a0,#6600cc,#9933ff,#c084fc);background-size:200% 100%;animation:maxXpShine 1.5s linear infinite;box-shadow:0 0 8px rgba(160,80,255,.9),0 0 16px rgba(123,47,255,.6);}
+    /* XP bar */
+    .ch-xp-wrap { margin-top: 8px; }
+    .ch-xp-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .62rem;
+      opacity: .6;
+      margin-bottom: 5px;
+    }
+    .ch-xp-track {
+      height: 5px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .ch-xp-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s cubic-bezier(.4,0,.2,1);
+    }
 
-@keyframes levelShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
-@keyframes maxLvPulse{from{text-shadow:0 0 8px rgba(160,80,255,.8);}to{text-shadow:0 0 16px rgba(220,150,255,1);}}
-@keyframes maxGlow{0%,100%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 70px rgba(123,47,255,.58),0 0 0 1px rgba(192,132,252,.45);}50%{box-shadow:0 28px 80px rgba(0,0,0,.85),0 0 100px rgba(150,80,255,.75),0 0 0 1px rgba(220,160,255,.65);}}
-@keyframes maxNamePulse{from{text-shadow:0 0 14px rgba(160,80,255,.8);}to{text-shadow:0 0 26px rgba(220,150,255,1);}}
-@keyframes maxXpShine{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+    /* Card footer */
+    .ch-card-footer {
+      padding: 10px 16px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: .65rem;
+      opacity: .75;
+    }
+    .ch-footer-status { display: flex; align-items: center; gap: 5px; }
+    .ch-status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1);   }
+      50%      { opacity: .5; transform: scale(1.4); }
+    }
 
-/* ═══════════════════════════════════════════════════════════════
-   반응형 최적화
-═══════════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-    .cards-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:60px 30px;}
-    .card-scene{width:200px;height:300px;}
-    .card-metrics-mini{bottom:66px;gap:2px;}
-    .mini-metric{padding:4px 1px;}
-    .metric-val{font-size:9px;}
-    .metric-name{font-size:6px;}
-    .card-xp-wrap{bottom:36px;}
-    .footer-meta{font-size:8px;}
-    .footer-rank{font-size:9px;}
-}
+    /* ═══════════════════════════════════════════════
+       6. LEVEL THEMES
+    ═══════════════════════════════════════════════ */
+    /* LV1 – 하늘파랑 */
+    .ch-lv-1 .ch-card-body {
+      background: linear-gradient(145deg, #0d2137, #0a3d5c, #1565a0);
+      box-shadow: 0 0 32px var(--lv1-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-1 .ch-score, .ch-lv-1 .ch-card-badge { color: var(--lv1-a); }
+    .ch-lv-1 .ch-xp-fill { background: linear-gradient(90deg, var(--lv1-b), var(--lv1-a)); }
+    .ch-lv-1 .ch-status-dot { background: var(--lv1-a); box-shadow: 0 0 6px var(--lv1-a); }
 
-@media (max-width: 480px) {
-    .card-scene{width:180px;height:270px;}
-    .card-score{font-size:2.2rem;}
-    .card-main-icon{font-size:2rem;}
-}
-</style>
+    /* LV2 – 에메랄드 */
+    .ch-lv-2 .ch-card-body {
+      background: linear-gradient(145deg, #0d1f0e, #1b4020, #2e7d32);
+      box-shadow: 0 0 32px var(--lv2-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-2 .ch-score, .ch-lv-2 .ch-card-badge { color: var(--lv2-a); }
+    .ch-lv-2 .ch-xp-fill { background: linear-gradient(90deg, var(--lv2-b), var(--lv2-a)); }
+    .ch-lv-2 .ch-status-dot { background: var(--lv2-a); box-shadow: 0 0 6px var(--lv2-a); }
+
+    /* LV3 – 앰버 오렌지 */
+    .ch-lv-3 .ch-card-body {
+      background: linear-gradient(145deg, #1f1200, #4a2400, #7b3800);
+      box-shadow: 0 0 32px var(--lv3-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-3 .ch-score, .ch-lv-3 .ch-card-badge { color: var(--lv3-a); }
+    .ch-lv-3 .ch-xp-fill { background: linear-gradient(90deg, var(--lv3-b), var(--lv3-a)); }
+    .ch-lv-3 .ch-status-dot { background: var(--lv3-a); box-shadow: 0 0 6px var(--lv3-a); }
+
+    /* LV4 – 핑크 로즈 */
+    .ch-lv-4 .ch-card-body {
+      background: linear-gradient(145deg, #1f0512, #4a0e26, #880e3a);
+      box-shadow: 0 0 32px var(--lv4-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-4 .ch-score, .ch-lv-4 .ch-card-badge { color: var(--lv4-a); }
+    .ch-lv-4 .ch-xp-fill { background: linear-gradient(90deg, var(--lv4-b), var(--lv4-a)); }
+    .ch-lv-4 .ch-status-dot { background: var(--lv4-a); box-shadow: 0 0 6px var(--lv4-a); }
+
+    /* LV5 – 퍼플 */
+    .ch-lv-5 .ch-card-body {
+      background: linear-gradient(145deg, #120820, #2d0e52, #5a1990);
+      box-shadow: 0 0 32px var(--lv5-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-5 .ch-score, .ch-lv-5 .ch-card-badge { color: var(--lv5-a); }
+    .ch-lv-5 .ch-xp-fill { background: linear-gradient(90deg, var(--lv5-b), var(--lv5-a)); }
+    .ch-lv-5 .ch-status-dot { background: var(--lv5-a); box-shadow: 0 0 6px var(--lv5-a); }
+
+    /* LV6 – 코럴 레드 */
+    .ch-lv-6 .ch-card-body {
+      background: linear-gradient(145deg, #1f0800, #4a1500, #8a2400);
+      box-shadow: 0 0 32px var(--lv6-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-6 .ch-score, .ch-lv-6 .ch-card-badge { color: var(--lv6-a); }
+    .ch-lv-6 .ch-xp-fill { background: linear-gradient(90deg, var(--lv6-b), var(--lv6-a)); }
+    .ch-lv-6 .ch-status-dot { background: var(--lv6-a); box-shadow: 0 0 6px var(--lv6-a); }
+
+    /* LV7 – 시안 */
+    .ch-lv-7 .ch-card-body {
+      background: linear-gradient(145deg, #001a1c, #003d40, #006064);
+      box-shadow: 0 0 32px var(--lv7-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-7 .ch-score, .ch-lv-7 .ch-card-badge { color: var(--lv7-a); }
+    .ch-lv-7 .ch-xp-fill { background: linear-gradient(90deg, var(--lv7-b), var(--lv7-a)); }
+    .ch-lv-7 .ch-status-dot { background: var(--lv7-a); box-shadow: 0 0 6px var(--lv7-a); }
+
+    /* LV8 – 딥 핑크 */
+    .ch-lv-8 .ch-card-body {
+      background: linear-gradient(145deg, #1f0015, #4a0030, #880050);
+      box-shadow: 0 0 32px var(--lv8-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-8 .ch-score, .ch-lv-8 .ch-card-badge { color: var(--lv8-a); }
+    .ch-lv-8 .ch-xp-fill { background: linear-gradient(90deg, var(--lv8-b), var(--lv8-a)); }
+    .ch-lv-8 .ch-status-dot { background: var(--lv8-a); box-shadow: 0 0 6px var(--lv8-a); }
+
+    /* LV9 – 골드 옐로우 */
+    .ch-lv-9 .ch-card-body {
+      background: linear-gradient(145deg, #1a1100, #3d2a00, #7a5000);
+      box-shadow: 0 0 32px var(--lv9-glow), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .ch-lv-9 .ch-score, .ch-lv-9 .ch-card-badge { color: var(--lv9-a); }
+    .ch-lv-9 .ch-xp-fill { background: linear-gradient(90deg, var(--lv9-b), var(--lv9-a)); }
+    .ch-lv-9 .ch-status-dot { background: var(--lv9-a); box-shadow: 0 0 6px var(--lv9-a); }
+
+    /* LV MAX – 레인보우 골드 */
+    .ch-lv-MAX .ch-card-body {
+      background: linear-gradient(145deg, #1a0800, #3a1500, #6a2a00);
+      box-shadow:
+        0 0 24px var(--max-glow),
+        0 0 60px rgba(255,69,0,.25),
+        inset 0 1px 0 rgba(255,255,255,0.18);
+      animation: maxGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes maxGlow {
+      from { box-shadow: 0 0 24px #ffd70066, 0 0 60px rgba(255,69,0,.25), inset 0 1px 0 rgba(255,255,255,0.18); }
+      to   { box-shadow: 0 0 50px #ffd700aa, 0 0 90px rgba(255,69,0,.45), inset 0 1px 0 rgba(255,255,255,0.25); }
+    }
+    .ch-lv-MAX .ch-score {
+      background: linear-gradient(90deg, #ffd700, #ff4500, #ffd700);
+      background-size: 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 2.5s linear infinite;
+    }
+    @keyframes shimmer { to { background-position: 200% center; } }
+    .ch-lv-MAX .ch-card-badge {
+      background: linear-gradient(90deg, #ffd700, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .ch-lv-MAX .ch-xp-fill  { background: linear-gradient(90deg, var(--max-b), var(--max-a)); }
+    .ch-lv-MAX .ch-status-dot { background: var(--max-a); box-shadow: 0 0 8px var(--max-a); }
+
+    /* ═══════════════════════════════════════════════
+       7. RESPONSIVE
+    ═══════════════════════════════════════════════ */
+    @media (max-width: 600px) {
+      .input-panel { padding: 20px 16px; }
+      .ch-card-scene { width: 200px; height: 285px; }
+    }
+  </style>
 </head>
 <body>
-<div class="page-title">▶ 유튜브 알고리즘 분석 3D 레벨 카드</div>
-<div class="page-sub">LV1~LV9 + MAX, 총 10장으로 구성된 최종 완성 버전</div>
-<div class="cards-grid" id="cards-grid"></div>
 
+<div class="page-wrap">
+  <h1 class="page-title">⚡ ALGO 채널분석</h1>
+  <p class="page-sub">채널 정보를 입력하면 알고리즘 레벨 카드를 즉시 생성합니다</p>
+
+  <!-- ── INPUT PANEL ── -->
+  <div class="input-panel">
+    <div class="input-group">
+      <label>채널명</label>
+      <input type="text" id="in-name" placeholder="예: 코딩유튜브" maxlength="28"/>
+    </div>
+    <div class="input-group">
+      <label>구독자 수</label>
+      <input type="number" id="in-subs" placeholder="예: 15000" min="0"/>
+    </div>
+    <div class="input-group">
+      <label>총 영상 수</label>
+      <input type="number" id="in-videos" placeholder="예: 80" min="0"/>
+    </div>
+    <div class="input-group">
+      <label>최근 30일 조회수</label>
+      <input type="number" id="in-views" placeholder="예: 50000" min="0"/>
+    </div>
+    <div class="input-group">
+      <label>평균 댓글 수 (영상당)</label>
+      <input type="number" id="in-comments" placeholder="예: 12" min="0"/>
+    </div>
+    <div class="input-group">
+      <label>평균 좋아요 수 (영상당)</label>
+      <input type="number" id="in-likes" placeholder="예: 180" min="0"/>
+    </div>
+    <div class="input-group" style="grid-column: span 1;">
+      <label>&nbsp;</label>
+      <button class="btn-analyze" onclick="runAnalysis()">🔍 분석 시작</button>
+    </div>
+  </div>
+
+  <!-- ── RESULT ── -->
+  <div id="result-section">
+    <p class="result-heading">📊 분석 결과 – 채널 레벨 카드</p>
+    <div class="card-grid" id="card-grid"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════ -->
 <script>
-// ═══════════════════════════════════════════════════════════════
-// 데이터 설정 및 레벨 시스템 (총 10단계)
-// ═══════════════════════════════════════════════════════════════
+'use strict';
 
-const XP_RANGES = {
-    1:  { min:1,   max:10,  current:5 },
-    2:  { min:11,  max:20,  current:15 },
-    3:  { min:21,  max:30,  current:24 },
-    4:  { min:31,  max:40,  current:35 },
-    5:  { min:41,  max:50,  current:46 },
-    6:  { min:51,  max:60,  current:55 },
-    7:  { min:61,  max:70,  current:65 },
-    8:  { min:71,  max:80,  current:75 },
-    9:  { min:81,  max:90,  current:87 },
-    MAX:{ min:91,  max:100, current:100 }
-};
-
-// 레벨별 데이터 (LV1~LV9, MAX 총 10장)
-const LEVEL_DATA = [
-    { 
-        lv: 1, icon: '🚨', badge: '심폐소생술',
-        score: 12, trend: '-3 ↘', 
-        ctr: { val: '0.8%', status: 'danger' },
-        retention: { val: '12%', status: 'danger' },
-        engagement: { val: '0.1%', status: 'danger' },
-        rank: '하위 5%', meta: '최근 30일 평균',
-        beamCount: 1, beamSpeed: '4.2s',
-        bokeh: [{w:30,h:30,l:15,t:20,blur:6,op:.25,dur:6,del:0},{w:20,h:20,l:70,t:60,blur:4,op:.2,dur:8,del:1}],
-        sparkles: [{l:25,t:35,sz:9,dur:'2.5s',del:'0s'},{l:65,t:15,sz:8,dur:'3s',del:'.5s'}]
-    },
-    { 
-        lv: 2, icon: '⚠️', badge: '위험신호',
-        score: 24, trend: '+8 ↗', 
-        ctr: { val: '1.9%', status: 'danger' },
-        retention: { val: '18%', status: 'danger' },
-        engagement: { val: '0.3%', status: 'danger' },
-        rank: '하위 15%', meta: '최근 30일 평균',
-        beamCount: 1, beamSpeed: '3.8s',
-        bokeh: [{w:32,h:32,l:12,t:18,blur:6,op:.28,dur:6.5,del:0},{w:22,h:22,l:68,t:55,blur:4,op:.22,dur:8.5,del:1.2}],
-        sparkles: [{l:22,t:32,sz:9,dur:'2.3s',del:'0s'},{l:68,t:12,sz:8,dur:'2.8s',del:'.4s'}]
-    },
-    { 
-        lv: 3, icon: '🔍', badge: '테스트 중',
-        score: 38, trend: '+14 ↗', 
-        ctr: { val: '3.2%', status: 'warn' },
-        retention: { val: '25%', status: 'warn' },
-        engagement: { val: '0.7%', status: 'warn' },
-        rank: '하위 30%', meta: '최근 30일 평균',
-        beamCount: 2, beamSpeed: '3.4s',
-        bokeh: [{w:35,h:35,l:10,t:15,blur:7,op:.3,dur:6,del:0},{w:25,h:25,l:65,t:50,blur:5,op:.25,dur:7.5,del:1},{w:15,h:15,l:40,t:75,blur:3,op:.2,dur:9,del:2}],
-        sparkles: [{l:18,t:28,sz:10,dur:'2.1s',del:'0s'},{l:62,t:8,sz:9,dur:'2.6s',del:'.3s'},{l:45,t:65,sz:8,dur:'2.4s',del:'.6s'}]
-    },
-    { 
-        lv: 4, icon: '🌱', badge: '성장 시동',
-        score: 45, trend: '+7 ↗', 
-        ctr: { val: '4.8%', status: 'warn' },
-        retention: { val: '32%', status: 'warn' },
-        engagement: { val: '1.1%', status: 'warn' },
-        rank: '하위 45%', meta: '최근 30일 평균',
-        beamCount: 2, beamSpeed: '3.2s',
-        bokeh: [{w:38,h:38,l:8,t:12,blur:7,op:.32,dur:5.8,del:0},{w:28,h:28,l:62,t:45,blur:5,op:.27,dur:7.2,del:1.1},{w:18,h:18,l:35,t:70,blur:4,op:.22,dur:8.5,del:2.2}],
-        sparkles: [{l:15,t:25,sz:10,dur:'2s',del:'0s'},{l:58,t:5,sz:10,dur:'2.4s',del:'.25s'},{l:42,t:60,sz:9,dur:'2.2s',del:'.5s'}]
-    },
-    { 
-        lv: 5, icon: '📈', badge: '성장궤도',
-        score: 58, trend: '+13 ↗', 
-        ctr: { val: '6.3%', status: 'good' },
-        retention: { val: '38%', status: 'warn' },
-        engagement: { val: '1.8%', status: 'warn' },
-        rank: '상위 45%', meta: '최근 30일 평균',
-        beamCount: 2, beamSpeed: '3.0s',
-        bokeh: [{w:40,h:40,l:6,t:10,blur:8,op:.35,dur:5.5,del:0},{w:30,h:30,l:60,t:40,blur:6,op:.3,dur:6.8,del:1},{w:20,h:20,l:32,t:65,blur:4,op:.25,dur:8,del:2}],
-        sparkles: [{l:12,t:22,sz:11,dur:'1.9s',del:'0s'},{l:55,t:2,sz:10,dur:'2.2s',del:'.2s'},{l:38,t:55,sz:9,dur:'2s',del:'.4s'}]
-    },
-    { 
-        lv: 6, icon: '🎯', badge: '추천 노출',
-        score: 67, trend: '+9 ↗', 
-        ctr: { val: '7.8%', status: 'good' },
-        retention: { val: '45%', status: 'good' },
-        engagement: { val: '2.4%', status: 'warn' },
-        rank: '상위 35%', meta: '최근 30일 평균',
-        beamCount: 3, beamSpeed: '2.8s',
-        bokeh: [{w:42,h:42,l:5,t:8,blur:9,op:.38,dur:5.2,del:0},{w:32,h:32,l:58,t:35,blur:6,op:.32,dur:6.5,del:.9},{w:22,h:22,l:30,t:60,blur:5,op:.27,dur:7.8,del:1.8}],
-        sparkles: [{l:10,t:18,sz:11,dur:'1.8s',del:'0s'},{l:52,t:0,sz:11,dur:'2.1s',del:'.15s'},{l:35,t:50,sz:10,dur:'1.9s',del:'.3s'}]
-    },
-    { 
-        lv: 7, icon: '🚀', badge: '급상승',
-        score: 78, trend: '+11 ↗', 
-        ctr: { val: '9.4%', status: 'good' },
-        retention: { val: '52%', status: 'good' },
-        engagement: { val: '3.2%', status: 'good' },
-        rank: '상위 20%', meta: '최근 30일 평균',
-        beamCount: 3, beamSpeed: '2.5s',
-        bokeh: [{w:45,h:45,l:4,t:6,blur:10,op:.4,dur:4.9,del:0},{w:35,h:35,l:56,t:30,blur:7,op:.35,dur:6.2,del:.8},{w:25,h:25,l:28,t:55,blur:5,op:.3,dur:7.5,del:1.6}],
-        sparkles: [{l:8,t:15,sz:12,dur:'1.7s',del:'0s'},{l:50,t:-2,sz:11,dur:'2s',del:'.12s'},{l:32,t:45,sz:10,dur:'1.8s',del:'.25s'}]
-    },
-    { 
-        lv: 8, icon: '🏆', badge: '상위권',
-        score: 85, trend: '+7 ↗', 
-        ctr: { val: '11.8%', status: 'good' },
-        retention: { val: '58%', status: 'good' },
-        engagement: { val: '4.6%', status: 'good' },
-        rank: '상위 10%', meta: '최근 30일 평균',
-        beamCount: 3, beamSpeed: '2.3s',
-        bokeh: [{w:48,h:48,l:3,t:4,blur:11,op:.42,dur:4.6,del:0},{w:38,h:38,l:54,t:25,blur:8,op:.37,dur:5.9,del:.7},{w:28,h:28,l:26,t:50,blur:6,op:.32,dur:7.2,del:1.4}],
-        sparkles: [{l:6,t:12,sz:12,dur:'1.6s',del:'0s'},{l:48,t:-4,sz:12,dur:'1.9s',del:'.1s'},{l:30,t:40,sz:11,dur:'1.7s',del:'.2s'}]
-    },
-    { 
-        lv: 9, icon: '💎', badge: '최상위',
-        score: 94, trend: '+9 ↗', 
-        ctr: { val: '14.2%', status: 'good' },
-        retention: { val: '65%', status: 'good' },
-        engagement: { val: '6.8%', status: 'good' },
-        rank: '상위 3%', meta: '최근 30일 평균',
-        beamCount: 4, beamSpeed: '2.1s',
-        bokeh: [{w:50,h:50,l:2,t:2,blur:12,op:.45,dur:4.3,del:0},{w:40,h:40,l:52,t:20,blur:9,op:.4,dur:5.6,del:.6},{w:30,h:30,l:24,t:45,blur:7,op:.35,dur:6.9,del:1.2}],
-        sparkles: [{l:4,t:8,sz:13,dur:'1.5s',del:'0s'},{l:46,t:-6,sz:12,dur:'1.8s',del:'.08s'},{l:28,t:35,sz:11,dur:'1.6s',del:'.16s'}]
-    },
-    { 
-        lv: 'MAX', icon: '👑', badge: '레전드',
-        score: 99, trend: 'MAX', 
-        ctr: { val: '20.5%', status: 'good' },
-        retention: { val: '78%', status: 'good' },
-        engagement: { val: '12.8%', status: 'good' },
-        rank: '상위 0.1%', meta: '최근 30일 평균',
-        beamCount: 4, beamSpeed: '1.8s',
-        bokeh: [{w:55,h:55,l:0,t:0,blur:15,op:.5,dur:3.8,del:0},{w:45,h:45,l:48,t:10,blur:12,op:.45,dur:5,del:.4},{w:35,h:35,l:20,t:35,blur:9,op:.4,dur:6.2,del:.8}],
-        sparkles: [{l:0,t:2,sz:14,dur:'1.3s',del:'0s'},{l:42,t:-10,sz:13,dur:'1.6s',del:'.06s'},{l:24,t:25,sz:12,dur:'1.4s',del:'.12s'}]
-    }
+/* ─────────────────────────────────────────
+   CH_LEVEL_TABLE
+   각 레벨의 기준, 설명, 배지 텍스트 정의
+───────────────────────────────────────── */
+const CH_LEVEL_TABLE = [
+  {
+    key: '1',
+    label: 'LV 1',
+    badge: 'ROOKIE',
+    minScore: 0,
+    maxScore: 19,
+    desc: '채널 시작 단계',
+    tip: '꾸준한 업로드로 기반을 쌓으세요',
+    statusText: '성장 중',
+  },
+  {
+    key: '2',
+    label: 'LV 2',
+    badge: 'RISING',
+    minScore: 20,
+    maxScore: 34,
+    desc: '초기 성장 단계',
+    tip: '썸네일·제목 최적화를 시작하세요',
+    statusText: '상승세',
+  },
+  {
+    key: '3',
+    label: 'LV 3',
+    badge: 'STEADY',
+    minScore: 35,
+    maxScore: 49,
+    desc: '안정적 성장 단계',
+    tip: 'SEO 키워드를 강화하세요',
+    statusText: '안정',
+  },
+  {
+    key: '4',
+    label: 'LV 4',
+    badge: 'ACTIVE',
+    minScore: 50,
+    maxScore: 59,
+    desc: '활발한 활동 단계',
+    tip: '쇼츠 콘텐츠를 병행하세요',
+    statusText: '활성',
+  },
+  {
+    key: '5',
+    label: 'LV 5',
+    badge: 'NOTABLE',
+    minScore: 60,
+    maxScore: 69,
+    desc: '주목받는 채널',
+    tip: '커뮤니티 탭을 활용하세요',
+    statusText: '주목',
+  },
+  {
+    key: '6',
+    label: 'LV 6',
+    badge: 'POPULAR',
+    minScore: 70,
+    maxScore: 79,
+    desc: '인기 채널 진입',
+    tip: '콜라보로 노출을 확장하세요',
+    statusText: '인기',
+  },
+  {
+    key: '7',
+    label: 'LV 7',
+    badge: 'POWER',
+    minScore: 80,
+    maxScore: 89,
+    desc: '파워 채널',
+    tip: '멤버십·슈퍼챗을 활성화하세요',
+    statusText: '파워',
+  },
+  {
+    key: '8',
+    label: 'LV 8',
+    badge: 'ELITE',
+    minScore: 90,
+    maxScore: 94,
+    desc: '엘리트 채널',
+    tip: '브랜드 딜을 적극 유치하세요',
+    statusText: '엘리트',
+  },
+  {
+    key: '9',
+    label: 'LV 9',
+    badge: 'LEGEND',
+    minScore: 95,
+    maxScore: 98,
+    desc: '레전드 채널',
+    tip: '독자 IP 개발을 고려하세요',
+    statusText: '레전드',
+  },
+  {
+    key: 'MAX',
+    label: 'LV MAX',
+    badge: '◆ MAX ◆',
+    minScore: 99,
+    maxScore: 100,
+    desc: '알고리즘 정복자',
+    tip: '업계 선두 – 새 트렌드를 직접 만드세요',
+    statusText: '◆ MAX',
+  },
 ];
 
-// ═══════════════════════════════════════════════════════════════
-// 카드 생성 함수들
-// ═══════════════════════════════════════════════════════════════
+/* ─────────────────────────────────────────
+   SCORING HELPERS
+───────────────────────────────────────── */
 
-function buildBeams(data) {
-    let html = '';
-    const speed = parseFloat(data.beamSpeed);
-    for (let i = 0; i < data.beamCount; i++) {
-        const delay = '-' + ((speed / data.beamCount) * i).toFixed(3) + 's';
-        html += `<div class="beam-container"><div class="beam-ring" style="animation-duration:${data.beamSpeed};animation-delay:${delay};"></div></div>`;
-    }
-    return html;
+/** 구독자 점수 (0-30) */
+function scoreSubs(subs) {
+  if (subs >= 10_000_000) return 30;
+  if (subs >=  1_000_000) return 26;
+  if (subs >=    500_000) return 22;
+  if (subs >=    100_000) return 18;
+  if (subs >=     50_000) return 14;
+  if (subs >=     10_000) return 10;
+  if (subs >=      5_000) return  7;
+  if (subs >=      1_000) return  4;
+  return 1;
 }
 
-function buildFog(data) {
-    if (data.lv === 1 || data.lv === 2) return '';
-    return `<div class="fog-wrap"></div>`;
+/** 조회수 점수 (0-30) */
+function scoreViews(views) {
+  if (views >= 5_000_000) return 30;
+  if (views >= 1_000_000) return 26;
+  if (views >=   500_000) return 22;
+  if (views >=   100_000) return 17;
+  if (views >=    50_000) return 12;
+  if (views >=    10_000) return  8;
+  if (views >=     5_000) return  5;
+  return 2;
 }
 
-function buildParticles(data) {
-    const bokeh = data.bokeh.map(b =>
-        `<div class="bokeh-dot" style="width:${b.w}px;height:${b.h}px;left:${b.l}%;top:${b.t}%;--bblur:${b.blur}px;--bop:${b.op};--bdur:${b.dur}s;--bdel:${b.del}s;"></div>`
-    ).join('');
-    
-    const sparkles = data.sparkles.map(s =>
-        `<span class="sparkle-dot" style="left:${s.l}%;top:${s.t}%;--ssz:${s.sz}px;--sdur:${s.dur};--sdel:${s.del};">✦</span>`
-    ).join('');
-    
-    return { bokeh, sparkles };
+/** 참여율 점수 (0-25)  좋아요+댓글 / 조회수 */
+function scoreEngagement(views, likes, comments) {
+  if (views <= 0) return 0;
+  const rate = (likes + comments * 3) / views;
+  if (rate >= 0.15) return 25;
+  if (rate >= 0.10) return 20;
+  if (rate >= 0.07) return 16;
+  if (rate >= 0.04) return 12;
+  if (rate >= 0.02) return  8;
+  if (rate >= 0.01) return  4;
+  return 1;
 }
 
-function buildXP(data) {
-    const xp = XP_RANGES[data.lv];
-    const isMax = data.lv === 'MAX';
-    const pct = isMax ? 100 : Math.round(((xp.current - xp.min) / (xp.max - xp.min)) * 100);
-    const currentText = isMax ? '✦ MAX ✦' : `${xp.current} / ${xp.max}`;
-    
-    return `
-<div class="card-xp-wrap">
-    <div class="card-xp-label">
-        <span class="xp-title">⚡ EXP</span>
-        <span class="xp-range">${currentText}</span>
-    </div>
-    <div class="xp-bar-bg">
-        <div class="xp-bar-fill" style="width:${pct}%;"></div>
-    </div>
-</div>`;
+/** 영상 수 점수 (0-15) */
+function scoreVideos(n) {
+  if (n >= 500) return 15;
+  if (n >= 200) return 12;
+  if (n >= 100) return  9;
+  if (n >=  50) return  6;
+  if (n >=  20) return  3;
+  return 1;
 }
 
-function buildCardHTML(data) {
-    const lvLabel = data.lv === 'MAX' ? 'LV.MAX' : `LV.${data.lv}`;
-    const particles = buildParticles(data);
-    
-    return `
-<div class="card-scene" data-lv="${data.lv}" onmousemove="card3D(event,this)" onmouseleave="cardReset(this)">
-    ${buildFog(data)}
-    <div class="card-tilt">
-        <div class="card-frame"></div>
-        ${buildBeams(data)}
-        <div class="card-body">
-            <div class="card-face">
-                <div class="card-bokeh">${particles.bokeh}</div>
-                <div class="card-sparkles">${particles.sparkles}</div>
-                
-                <!-- 1영역: 헤더 (이모지 제거됨) -->
-                <div class="card-header">
-                    <div class="card-lv-label">${lvLabel}</div>
-                    <div class="card-badge">${data.badge}</div>
-                </div>
-                
-                <!-- 2영역: 메인 점수 (배지 이모지 적용) -->
-                <div class="card-main-wrap">
-                    <div class="card-main-icon">${data.icon}</div>
-                    <div class="card-score">${data.score}</div>
-                    <div class="card-score-label">Algorithm Score</div>
-                    <div class="card-trend">${data.trend}</div>
-                </div>
-                
-                <!-- 3영역: 핵심 지표 -->
-                <div class="card-metrics-mini">
-                    <div class="mini-metric">
-                        <span class="metric-icon">👁️</span>
-                        <span class="metric-val status-${data.ctr.status}">${data.ctr.val}</span>
-                        <span class="metric-name">클릭률</span>
-                    </div>
-                    <div class="mini-metric">
-                        <span class="metric-icon">⏱️</span>
-                        <span class="metric-val status-${data.retention.status}">${data.retention.val}</span>
-                        <span class="metric-name">시청유지</span>
-                    </div>
-                    <div class="mini-metric">
-                        <span class="metric-icon">💬</span>
-                        <span class="metric-val status-${data.engagement.status}">${data.engagement.val}</span>
-                        <span class="metric-name">참여율</span>
-                    </div>
-                </div>
+/** 종합 점수 계산 (0-100) */
+function calcScore({ subs, views, likes, comments, videos }) {
+  const s = scoreSubs(subs) + scoreViews(views) +
+            scoreEngagement(views, likes, comments) + scoreVideos(videos);
+  // 최대 = 30+30+25+15 = 100
+  return Math.min(100, Math.round(s));
+}
 
-                <div class="card-top-band"></div>
-                <div class="card-bot-band"></div>
-                <div class="card-vignette"></div>
-                <div class="card-shine"></div>
-                
-                ${buildXP(data)}
-                
-                <!-- 4영역: 푸터 (분석 기준일 + 랭크 정보) -->
-                <div class="card-footer">
-                    <span class="footer-meta">📊 ${data.meta}</span>
-                    <span class="footer-rank">${data.rank}</span>
-                </div>
+/** 점수 → 레벨 오브젝트 */
+function scoreToLevel(score) {
+  return CH_LEVEL_TABLE.find(
+    lv => score >= lv.minScore && score <= lv.maxScore
+  ) || CH_LEVEL_TABLE[CH_LEVEL_TABLE.length - 1];
+}
 
-            </div>
+/* ─────────────────────────────────────────
+   NUMBER FORMATTER
+───────────────────────────────────────── */
+function fmtNum(n) {
+  if (n >= 100_000_000) return (n / 100_000_000).toFixed(1) + '억';
+  if (n >= 10_000)      return (n / 10_000).toFixed(1)      + '만';
+  if (n >= 1_000)       return (n / 1_000).toFixed(1)       + 'K';
+  return String(n);
+}
+
+/* ─────────────────────────────────────────
+   3D CARD INTERACTION
+───────────────────────────────────────── */
+function chCard3D(e, scene) {
+  const rect  = scene.getBoundingClientRect();
+  const tilt  = scene.querySelector('.ch-card-tilt');
+  const body  = scene.querySelector('.ch-card-body');
+  const cx    = rect.left + rect.width  / 2;
+  const cy    = rect.top  + rect.height / 2;
+  const dx    = (e.clientX - cx) / (rect.width  / 2);   // -1 ~ 1
+  const dy    = (e.clientY - cy) / (rect.height / 2);   // -1 ~ 1
+  const rotY  =  dx * 14;
+  const rotX  = -dy * 10;
+
+  tilt.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+  // light reflex position (percentage)
+  const px = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1) + '%';
+  const py = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1) + '%';
+  body.style.setProperty('--mx', px);
+  body.style.setProperty('--my', py);
+}
+
+function chCardReset(scene) {
+  const tilt = scene.querySelector('.ch-card-tilt');
+  tilt.style.transform = 'rotateX(0deg) rotateY(0deg)';
+  tilt.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+  setTimeout(() => { tilt.style.transition = 'transform .08s linear'; }, 520);
+}
+
+/* ─────────────────────────────────────────
+   BUILD ONE CH-CARD HTML STRING
+───────────────────────────────────────── */
+function buildChCard(params) {
+  const { name, subs, views, likes, comments, videos } = params;
+
+  const score    = calcScore({ subs, views, likes, comments, videos });
+  const lv       = scoreToLevel(score);
+  const engRate  = views > 0
+    ? ((likes + comments) / views * 100).toFixed(2) + '%'
+    : '0%';
+
+  // XP progress within current level band
+  const band  = lv.maxScore - lv.minScore;
+  const xpPct = band > 0
+    ? Math.round((score - lv.minScore) / band * 100)
+    : 100;
+  const nextLv = CH_LEVEL_TABLE.find(l => l.minScore > lv.maxScore);
+  const nextLabel = nextLv ? nextLv.label : '◆ MAX';
+
+  return `
+<div class="ch-card-scene ch-lv-${lv.key}"
+     onmousemove="chCard3D(event,this)"
+     onmouseleave="chCardReset(this)">
+  <div class="ch-card-tilt">
+    <div class="ch-card-body">
+
+      <!-- HEADER -->
+      <div class="ch-card-header">
+        <span class="ch-card-badge">${lv.badge}</span>
+        <span class="ch-card-lvlabel">${lv.label}</span>
+      </div>
+
+      <!-- MAIN -->
+      <div class="ch-card-main">
+        <div class="ch-name" title="${name}">${name || '이름 없음'}</div>
+
+        <!-- 종합 점수 -->
+        <div class="ch-score-wrap">
+          <span class="ch-score" data-target="${score}">0</span>
+          <span class="ch-score-unit">/ 100 pt</span>
         </div>
-    </div>
-</div>`;
+
+        <!-- 메트릭 -->
+        <div class="ch-metrics">
+          <div class="ch-metric-row">
+            <span class="ch-metric-label">👥 구독자</span>
+            <span class="ch-metric-val">${fmtNum(subs)}</span>
+          </div>
+          <div class="ch-metric-row">
+            <span class="ch-metric-label">👁 조회수(30일)</span>
+            <span class="ch-metric-val">${fmtNum(views)}</span>
+          </div>
+          <div class="ch-metric-row">
+            <span class="ch-metric-label">💬 참여율</span>
+            <span class="ch-metric-val">${engRate}</span>
+          </div>
+          <div class="ch-metric-row">
+            <span class="ch-metric-label">🎬 영상 수</span>
+            <span class="ch-metric-val">${videos}개</span>
+          </div>
+        </div>
+
+        <!-- XP BAR -->
+        <div class="ch-xp-wrap">
+          <div class="ch-xp-label">
+            <span>XP ${score - lv.minScore} / ${lv.maxScore - lv.minScore}</span>
+            <span>다음: ${nextLabel}</span>
+          </div>
+          <div class="ch-xp-track">
+            <div class="ch-xp-fill" style="width:0%" data-fill="${xpPct}"></div>
+          </div>
+        </div>
+      </div><!-- /ch-card-main -->
+
+      <!-- FOOTER -->
+      <div class="ch-card-footer">
+        <div class="ch-footer-status">
+          <div class="ch-status-dot"></div>
+          <span>${lv.statusText}</span>
+        </div>
+        <span>${lv.desc}</span>
+      </div>
+
+    </div><!-- /ch-card-body -->
+  </div><!-- /ch-card-tilt -->
+</div><!-- /ch-card-scene -->`;
 }
 
-// ═══════════════════════════════════════════════════════════════
-// 3D 인터랙션 함수들
-// ═══════════════════════════════════════════════════════════════
+/* ─────────────────────────────────────────
+   ANIMATE SCORE COUNTER + XP BAR
+───────────────────────────────────────── */
+function animateCards() {
+  // 점수 카운터
+  document.querySelectorAll('.ch-score[data-target]').forEach(el => {
+    const target = parseInt(el.dataset.target, 10);
+    const dur    = 900;
+    const start  = performance.now();
+    const tick   = (now) => {
+      const t = Math.min((now - start) / dur, 1);
+      const ease = 1 - Math.pow(1 - t, 3); // cubic ease-out
+      el.textContent = Math.round(ease * target);
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
 
-function card3D(e, el) {
-    const r = el.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    const ry = ((x - r.width/2) / (r.width/2)) * 15;
-    const rx = -((y - r.height/2) / (r.height/2)) * 15;
-    const mx = (x / r.width * 100).toFixed(1) + '%';
-    const my = (y / r.height * 100).toFixed(1) + '%';
-    
-    const tilt = el.querySelector('.card-tilt');
-    if (tilt) tilt.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
-    
-    const shine = el.querySelector('.card-shine');
-    if (shine) {
-        shine.style.background = `
-            linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
-            linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%),
-            radial-gradient(ellipse 50% 40% at ${mx} ${my},rgba(255,255,255,.25) 0%,rgba(255,255,255,.06) 50%,transparent 75%)
-        `;
-    }
-}
-
-function cardReset(el) {
-    const tilt = el.querySelector('.card-tilt');
-    if (tilt) tilt.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
-    
-    const shine = el.querySelector('.card-shine');
-    if (shine) {
-        shine.style.background = `
-            linear-gradient(135deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.04) 30%,transparent 60%),
-            linear-gradient(225deg,rgba(255,255,255,.08) 0%,transparent 50%)
-        `;
-    }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 초기화 및 렌더링
-// ═══════════════════════════════════════════════════════════════
-
-document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.getElementById('cards-grid');
-    grid.innerHTML = LEVEL_DATA.map(data => buildCardHTML(data)).join('');
-    
-    // 성능 최적화를 위한 Intersection Observer
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.card-scene').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
+  // XP 바
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.ch-xp-fill[data-fill]').forEach(el => {
+      const pct = parseInt(el.dataset.fill, 10);
+      setTimeout(() => { el.style.width = pct + '%'; }, 200);
     });
-});
+  });
+}
 
-// 카드 클릭 시 상세 분석 확장 가능
-document.addEventListener('click', (e) => {
-    const card = e.target.closest('.card-scene');
-    if (card) {
-        const level = card.dataset.lv;
-        console.log(`레벨 ${level} 카드 클릭됨 - 상세 분석 모달 연결 가능`);
-        // 여기에 상세 분석 모달 로직 추가 가능
-    }
-});
+/* ─────────────────────────────────────────
+   MAIN – runAnalysis()
+───────────────────────────────────────── */
+function runAnalysis() {
+  const name     = document.getElementById('in-name').value.trim();
+  const subs     = parseInt(document.getElementById('in-subs').value)     || 0;
+  const videos   = parseInt(document.getElementById('in-videos').value)   || 0;
+  const views    = parseInt(document.getElementById('in-views').value)    || 0;
+  const comments = parseInt(document.getElementById('in-comments').value) || 0;
+  const likes    = parseInt(document.getElementById('in-likes').value)    || 0;
+
+  const grid    = document.getElementById('card-grid');
+  const section = document.getElementById('result-section');
+
+  grid.innerHTML = buildChCard({ name, subs, views, likes, comments, videos });
+  section.classList.add('visible');
+
+  // 부드러운 스크롤
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // 애니메이션
+  requestAnimationFrame(animateCards);
+}
 </script>
 </body>
 </html>
