@@ -9,59 +9,48 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Cinzel:wght@900&display=swap" rel="stylesheet" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-AF8853448" crossorigin="anonymous"></script>
 
-  <!-- ══ 파비콘 생성 ══ -->
   <script>
   function buildFavicon(outputSize) {
     const c = document.createElement('canvas');
     c.width = c.height = outputSize;
     const ctx = c.getContext('2d');
-
-    /* ── 1. 둥근 모서리 클리핑 (iOS 스타일) ── */
     const r = outputSize * 0.22;
     ctx.beginPath();
     ctx.moveTo(r, 0);
     ctx.lineTo(outputSize - r, 0);
-    ctx.arcTo(outputSize, 0,        outputSize, r,              r);
+    ctx.arcTo(outputSize, 0, outputSize, r, r);
     ctx.lineTo(outputSize, outputSize - r);
     ctx.arcTo(outputSize, outputSize, outputSize - r, outputSize, r);
     ctx.lineTo(r, outputSize);
-    ctx.arcTo(0, outputSize, 0,     outputSize - r,             r);
+    ctx.arcTo(0, outputSize, 0, outputSize - r, r);
     ctx.lineTo(0, r);
-    ctx.arcTo(0, 0, r, 0,                                       r);
+    ctx.arcTo(0, 0, r, 0, r);
     ctx.closePath();
     ctx.clip();
-
-    /* ── 2. 보라 → 핫핑크 대각선 배경 ── */
     const bg = ctx.createLinearGradient(0, 0, outputSize, outputSize);
-    bg.addColorStop(0,    '#7b2ff7');
+    bg.addColorStop(0, '#7b2ff7');
     bg.addColorStop(0.55, '#a044f5');
-    bg.addColorStop(1,    '#e040aa');
+    bg.addColorStop(1, '#e040aa');
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, outputSize, outputSize);
-
-    /* ── 3. 흰색 A (serif, 굵게, 그림자) ── */
     const fontSize = Math.round(outputSize * 0.63);
-    ctx.shadowColor   = 'rgba(0,0,0,0.25)';
-    ctx.shadowBlur    = outputSize * 0.06;
+    ctx.shadowColor = 'rgba(0,0,0,0.25)';
+    ctx.shadowBlur = outputSize * 0.06;
     ctx.shadowOffsetY = outputSize * 0.04;
-    ctx.fillStyle     = '#ffffff';
-    ctx.font          = `700 ${fontSize}px Georgia, "Times New Roman", serif`;
-    ctx.textAlign     = 'center';
-    ctx.textBaseline  = 'middle';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `700 ${fontSize}px Georgia, "Times New Roman", serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillText('A', outputSize / 2, outputSize / 2 - outputSize * 0.01);
-
     return c;
   }
-
   window.addEventListener('DOMContentLoaded', () => {
     document.fonts.ready.then(() => {
       [16, 32, 64, 256].forEach(sz => {
         const canvas = buildFavicon(sz);
-        const link   = document.createElement('link');
-        link.rel   = 'icon';
-        link.type  = 'image/png';
-        link.sizes = `${sz}x${sz}`;
-        link.href  = canvas.toDataURL('image/png');
+        const link = document.createElement('link');
+        link.rel = 'icon'; link.type = 'image/png';
+        link.sizes = `${sz}x${sz}`; link.href = canvas.toDataURL('image/png');
         document.head.appendChild(link);
       });
     });
@@ -83,17 +72,11 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 
+    /* ── Header ── */
     .header{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,0,22,0.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(124,58,237,0.25);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
     .logo{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none}
-    .logo-canvas-wrap{
-      width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;
-      box-shadow:0 0 10px rgba(123,47,247,0.5),0 0 20px rgba(224,64,170,0.3);
-      animation:logoGlow 4s ease-in-out infinite alternate;
-    }
-    @keyframes logoGlow{
-      0%  {box-shadow:0 0 8px rgba(123,47,247,0.4), 0 0 16px rgba(224,64,170,0.2)}
-      100%{box-shadow:0 0 20px rgba(123,47,247,0.9),0 0 36px rgba(224,64,170,0.6)}
-    }
+    .logo-canvas-wrap{width:40px;height:40px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:0 0 10px rgba(123,47,247,0.5),0 0 20px rgba(224,64,170,0.3);animation:logoGlow 4s ease-in-out infinite alternate}
+    @keyframes logoGlow{0%{box-shadow:0 0 8px rgba(123,47,247,0.4),0 0 16px rgba(224,64,170,0.2)}100%{box-shadow:0 0 20px rgba(123,47,247,0.9),0 0 36px rgba(224,64,170,0.6)}}
     #header-logo-canvas{display:block;width:40px;height:40px}
     .logo-text-wrap{display:flex;flex-direction:column;line-height:1}
     .logo-algo{font-family:'Cinzel',serif;font-weight:900;font-size:22px;letter-spacing:2px;line-height:1;background:linear-gradient(135deg,#ffe49a 0%,#f0c96a 25%,#e879a0 55%,#a855f7 80%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px rgba(240,201,106,0.5))}
@@ -102,21 +85,95 @@
     .api-status.error{background:rgba(255,71,87,0.15);color:var(--accent);border-color:rgba(255,71,87,0.3)}
     #global-error-banner{display:none;position:fixed;top:60px;left:0;right:0;z-index:99;background:rgba(255,71,87,0.92);color:#fff;padding:10px 24px;font-size:14px;font-weight:500;text-align:center}
 
+    /* ── 3-column layout ── */
     .app-layout{display:flex;padding-top:60px;min-height:100vh}
-    .sidebar{width:220px;background:linear-gradient(180deg,rgba(26,10,46,0.98) 0%,rgba(26,26,46,0.98) 100%);border-right:1px solid rgba(124,58,237,0.2);padding:20px 12px;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto}
+
+    /* Left sidebar */
+    .sidebar{width:220px;background:linear-gradient(180deg,rgba(26,10,46,0.98) 0%,rgba(26,26,46,0.98) 100%);border-right:1px solid rgba(124,58,237,0.2);padding:20px 12px;position:fixed;top:60px;left:0;bottom:0;overflow-y:auto;z-index:50}
     .nav-section-title{font-size:11px;font-weight:600;color:var(--algo-violet);opacity:0.6;text-transform:uppercase;letter-spacing:1px;padding:0 8px 8px;margin-top:16px}
     .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:500;color:var(--text-secondary);transition:all 0.2s;border:none;background:none;width:100%;text-align:left}
     .nav-item:hover{background:rgba(124,58,237,0.12);color:var(--algo-gold)}
     .nav-item.active{background:rgba(124,58,237,0.18);color:var(--algo-gold);border-left:2px solid var(--algo-gold)}
     .nav-item .nav-icon{font-size:18px;width:24px;text-align:center}
 
-    .main-content{margin-left:220px;flex:1;padding:24px;min-width:0}
+    /* Main content */
+    .main-content{margin-left:220px;margin-right:260px;flex:1;padding:24px;min-width:0}
+
+    /* Right column */
+    #rightCol{
+      width:245px;
+      position:fixed;
+      top:60px;
+      right:0;
+      bottom:0;
+      padding:16px 12px;
+      overflow-y:auto;
+      border-left:1px solid rgba(124,58,237,0.15);
+      background:linear-gradient(180deg,rgba(20,10,40,0.98) 0%,rgba(26,26,46,0.98) 100%);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      z-index:50;
+    }
+
+    /* Coupang card */
+    .cp-grad-border{
+      border-radius:16px;
+      padding:2px;
+      background:linear-gradient(135deg,#f0c96a,#e879a0,#7c3aed);
+    }
+    .cp-inner{
+      background:#17112b;
+      border-radius:14px;
+      padding:18px 14px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      text-align:center;
+    }
+    .cp-logo{
+      font-family:'Cinzel',serif;
+      font-size:18px;
+      font-weight:900;
+      color:#fff;
+      letter-spacing:1px;
+    }
+    .cp-logo span{color:var(--algo-gold)}
+    .cp-tagline{
+      font-size:13px;font-weight:700;
+      background:linear-gradient(90deg,var(--algo-gold),var(--algo-pink));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .cp-desc{font-size:11.5px;color:var(--text-secondary);line-height:1.6}
+    .cp-btn{
+      display:block;
+      margin-top:4px;
+      padding:9px 0;
+      border-radius:20px;
+      background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));
+      color:#fff;
+      font-size:13px;font-weight:700;
+      text-decoration:none;
+      transition:opacity 0.2s,transform 0.15s;
+    }
+    .cp-btn:hover{opacity:0.88;transform:translateY(-1px)}
+    .cp-disc{font-size:9.5px;color:var(--text-muted);line-height:1.5;margin-top:2px}
+
+    /* AdSense rectangle in right col */
+    .right-adsense-wrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+    }
+
+    /* Section pages */
     .section-page{display:none}
     .section-page.active{display:block}
     .section-header{margin-bottom:24px}
     .section-title{font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px}
     .section-subtitle{font-size:14px;color:var(--text-secondary);margin-top:6px}
 
+    /* Hot search */
     .hot-search-box{display:flex;gap:10px;margin-bottom:16px}
     .hot-search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
     .hot-search-input:focus{border-color:var(--algo-violet)}
@@ -130,7 +187,7 @@
     .hot-tab-btn.active{background:rgba(124,58,237,0.15);border-color:var(--algo-violet);color:var(--algo-gold)}
     .search-result-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:14px;color:var(--text-secondary)}
     .search-clear-btn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-secondary);cursor:pointer;font-size:12px}
-    .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:16px}
+    .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:16px}
     .video-card{background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:all 0.2s}
     .video-card:hover{transform:translateY(-2px);border-color:var(--algo-violet);box-shadow:0 6px 24px rgba(124,58,237,0.25)}
     .thumb-wrap{position:relative;aspect-ratio:16/9;overflow:hidden;background:#111}
@@ -155,31 +212,23 @@
     .no-data-icon{font-size:48px;margin-bottom:12px}
     .error-card{background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);border-radius:var(--radius);padding:20px;color:var(--accent)}
 
+    /* Channel analysis */
     .channel-search-box{display:flex;gap:10px;margin-bottom:24px}
     .search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;color:var(--text-primary);font-size:14px;font-family:inherit;outline:none}
     .search-input:focus{border-color:var(--algo-violet)}
     .search-btn{padding:12px 24px;background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600}
-    .channel-result-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px}
-    .channel-header{display:flex;align-items:center;gap:20px;margin-bottom:20px}
-    .channel-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover}
-    .channel-name{font-size:20px;font-weight:700}
-    .channel-handle{font-size:14px;color:var(--text-secondary);margin-top:4px}
-    .grade-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:14px;font-weight:700;border:2px solid}
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px}
-    .stat-card{background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);padding:16px;text-align:center}
-    .stat-value{font-size:22px;font-weight:700;color:var(--algo-gold)}
-    .stat-label{font-size:12px;color:var(--text-secondary);margin-top:4px}
 
+    /* Revenue */
     .rev-wrap{display:flex;flex-direction:column;gap:16px}
     .rev-input-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;transition:border-color 0.2s}
     .rev-input-card:hover{border-color:rgba(124,58,237,0.4)}
     .rev-label{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:10px}
     .rev-gauge-wrap{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-    .rev-gauge-btn{width:44px;height:44px;min-width:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:1.3rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;user-select:none;}
+    .rev-gauge-btn{width:44px;height:44px;min-width:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text-primary);font-size:1.3rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;user-select:none}
     .rev-gauge-btn:hover{background:var(--algo-purple);border-color:var(--algo-violet);color:#fff}
     .rev-gauge-btn:active{transform:scale(0.93)}
-    .rev-gauge-track{flex:1;height:28px;border-radius:14px;background:rgba(255,255,255,0.07);border:1px solid var(--border);position:relative;cursor:pointer;overflow:hidden;touch-action:none;}
-    .rev-gauge-fill{height:100%;border-radius:14px;background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));transition:width 0.08s;pointer-events:none;}
+    .rev-gauge-track{flex:1;height:28px;border-radius:14px;background:rgba(255,255,255,0.07);border:1px solid var(--border);position:relative;cursor:pointer;overflow:hidden;touch-action:none}
+    .rev-gauge-fill{height:100%;border-radius:14px;background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));transition:width 0.08s;pointer-events:none}
     .rev-gauge-val{font-size:14px;font-weight:700;color:var(--algo-gold);text-align:right}
     .rev-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-top:4px}
     .rev-result-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;transition:border-color 0.2s}
@@ -188,6 +237,7 @@
     .rev-result-lbl{font-size:12px;color:var(--text-secondary)}
     .rev-tip{margin-top:8px;padding:12px 16px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);text-align:center}
 
+    /* AI */
     .ai-form{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:24px}
     .ai-idea-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
     .ai-idea-card{background:var(--bg-secondary);border-radius:var(--radius);border:1px solid var(--border);padding:16px;cursor:pointer;transition:all 0.2s}
@@ -201,6 +251,7 @@
     .form-input:focus{border-color:var(--algo-violet)}
     .calc-btn{padding:12px 28px;background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700}
 
+    /* Tools */
     .tool-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
     .tool-tab{padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;transition:all 0.2s}
     .tool-tab:hover{border-color:var(--algo-violet);color:var(--algo-violet)}
@@ -211,8 +262,8 @@
     .tool-icon{width:48px;height:48px;border-radius:12px;object-fit:contain;background:var(--bg-card);padding:4px}
     .tool-name{font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.3}
     .tool-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.3px}
-    .tb-free    {background:rgba(46,213,115,0.15);color:var(--accent3);border:1px solid rgba(46,213,115,0.3)}
-    .tb-paid    {background:rgba(255,71,87,0.15); color:var(--accent); border:1px solid rgba(255,71,87,0.3)}
+    .tb-free{background:rgba(46,213,115,0.15);color:var(--accent3);border:1px solid rgba(46,213,115,0.3)}
+    .tb-paid{background:rgba(255,71,87,0.15);color:var(--accent);border:1px solid rgba(255,71,87,0.3)}
     .tb-freemium{background:rgba(240,201,106,0.15);color:var(--algo-gold);border:1px solid rgba(240,201,106,0.3)}
     .tool-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;align-items:center;justify-content:center;padding:20px}
     .tool-modal-overlay.open{display:flex}
@@ -226,6 +277,7 @@
     .tool-modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1}
     .tool-modal-close:hover{background:var(--bg-hover);color:var(--text-primary)}
 
+    /* Shop */
     .shop-notice{font-size:0.75rem;color:var(--text-secondary);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:20px;text-align:center}
     .shop-cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
     .shop-cat-card{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px 16px 22px;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;text-decoration:none;cursor:pointer;transition:transform 0.22s ease,box-shadow 0.22s ease,border-color 0.22s ease;position:relative;overflow:hidden;text-align:center}
@@ -239,9 +291,10 @@
     .shop-cat-cta{margin-top:6px;font-size:0.82rem;font-weight:600;color:var(--cat-color);background:rgba(255,255,255,0.06);border:1px solid var(--cat-color);border-radius:20px;padding:5px 16px;transition:background 0.18s ease,color 0.18s ease}
     .shop-cat-card:hover .shop-cat-cta{background:var(--cat-color);color:#fff}
 
+    /* Video modal */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
     .modal-overlay.open{display:flex}
-    .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid rgba(124,58,237,0.25);padding:20px 24px 28px;width:96vw;max-width:1400px;margin:auto;display:flex;flex-direction:column;gap:14px}
+    .modal{background:var(--bg-card);border-radius:var(--radius);border:1px solid rgba(124,58,237,0.25);padding:20px 24px 28px;width:96vw;max-width:1000px;margin:auto;display:flex;flex-direction:column;gap:14px}
     .modal-ads-top{width:100%;min-height:90px;background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:var(--radius-sm);overflow:hidden;display:flex;align-items:center;justify-content:center}
     .modal-ads-top ins{display:block;width:100%;min-height:90px}
     .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -256,7 +309,109 @@
     .modal-stat-label{font-size:11px;color:var(--text-secondary);margin-top:3px}
     .modal-yt-btn{display:inline-block;padding:8px 22px;background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border-radius:20px;font-size:13px;text-decoration:none;font-weight:600;align-self:flex-start}
 
+    /* ── 채널 분석 전용 스타일 ── */
+    .ch-profile{background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(232,121,160,0.08));border:1px solid rgba(124,58,237,0.3);border-radius:var(--radius);padding:24px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+    .ch-avatar{width:76px;height:76px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(124,58,237,0.5)}
+    .ch-profile-info{flex:1;min-width:160px}
+    .ch-name{font-size:20px;font-weight:700;margin-bottom:3px}
+    .ch-handle{font-size:13px;color:var(--text-secondary);margin-bottom:10px}
+    .ch-stat-row{display:flex;gap:20px;flex-wrap:wrap}
+    .ch-stat{text-align:center}
+    .ch-stat-v{font-size:17px;font-weight:800;background:linear-gradient(135deg,var(--algo-gold),var(--algo-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .ch-stat-l{font-size:10px;color:var(--text-muted);margin-top:2px}
+    .algo-level-scene{perspective:1000px;margin-bottom:18px}
+    .algo-level-card{position:relative;overflow:hidden;border-radius:18px;padding:26px 24px 22px;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.23,1,.32,1),box-shadow .55s;cursor:default}
+    .algo-level-card:hover{transform:rotateY(-5deg) rotateX(2.5deg) translateZ(8px)}
+    .alc-fog{pointer-events:none;position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse at 50% 110%,var(--lv-glow-color,rgba(124,58,237,.18)) 0%,transparent 68%);z-index:0}
+    .alc-shine{pointer-events:none;position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 55%);z-index:2}
+    .alc-beam{pointer-events:none;position:absolute;top:0;left:50%;width:1.5px;background:linear-gradient(to bottom,transparent,var(--lv-color,#a855f7),transparent);transform:translateX(-50%);animation:beamScan 3.2s ease-in-out infinite;opacity:.45;z-index:1}
+    @keyframes beamScan{0%,100%{height:0;top:0;opacity:0}50%{height:100%;top:0;opacity:.55}}
+    .alc-bokeh{pointer-events:none;position:absolute;border-radius:50%;background:var(--lv-color,#a855f7);opacity:.18;animation:bokehFloat 5s ease-in-out infinite;z-index:0}
+    @keyframes bokehFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.15)}}
+    .alc-sparkle{pointer-events:none;position:absolute;border-radius:50%;background:#fff;animation:sparklePop 1.6s ease-in-out infinite;z-index:3}
+    @keyframes sparklePop{0%,100%{transform:scale(0);opacity:0}50%{transform:scale(1);opacity:1}}
+    .alc-content{position:relative;z-index:4}
+    .alc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .alc-lv-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 13px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:.3px;border:1.5px solid var(--lv-color,#a855f7);color:var(--lv-color,#a855f7);background:rgba(0,0,0,.35)}
+    .alc-emoji{font-size:30px;line-height:1}
+    .alc-title{font-size:20px;font-weight:800;margin-bottom:3px}
+    .alc-sub{font-size:12px;color:var(--text-secondary);margin-bottom:18px}
+    .alc-metrics{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px}
+    .alc-metric-item{text-align:center}
+    .alc-metric-val{font-size:20px;font-weight:900;color:var(--lv-color,#a855f7)}
+    .alc-metric-lbl{font-size:9px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+    .alc-xp-wrap{margin-top:4px}
+    .alc-xp-track{height:7px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+    .alc-xp-fill{height:100%;border-radius:4px;width:0;background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));transition:width 1.5s cubic-bezier(.4,0,.2,1)}
+    .alc-xp-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:4px}
+    .algo-score-ring-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:18px}
+    .algo-ring-svg{flex-shrink:0}
+    .algo-ring-info{flex:1;min-width:160px}
+    .algo-ring-score{font-size:34px;font-weight:900;line-height:1}
+    .algo-ring-label{font-size:10px;color:var(--text-muted);margin-top:2px}
+    .algo-ring-desc{font-size:12px;color:var(--text-secondary);margin-top:8px;line-height:1.7}
+    .algo-weight-bars{flex:1;min-width:220px;display:flex;flex-direction:column;gap:9px}
+    .awb-row{display:flex;flex-direction:column;gap:3px}
+    .awb-head{display:flex;justify-content:space-between;font-size:11px}
+    .awb-head span:first-child{color:var(--text-secondary)}
+    .awb-head span:last-child{font-weight:700}
+    .awb-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+    .awb-fill{height:100%;border-radius:3px;width:0;transition:width 1.1s ease}
+    .ch-metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-bottom:18px}
+    .ch-metric-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:border-color .2s}
+    .ch-metric-card:hover{border-color:rgba(124,58,237,.4)}
+    .ch-metric-card-title{font-size:12px;font-weight:700;color:var(--algo-violet);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+    .ch-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
+    .ch-row:last-child{border-bottom:none}
+    .ch-row-key{color:var(--text-secondary)}
+    .ch-row-val{font-weight:700}
+    .ch-row-val.good{color:var(--accent3)}
+    .ch-row-val.warn{color:var(--accent2)}
+    .ch-row-val.bad{color:var(--accent)}
+    .ch-row-val.neutral{color:var(--text-primary)}
+    .ch-traffic-row{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+    .ch-traffic-lbl{font-size:11px;color:var(--text-secondary);min-width:100px}
+    .ch-traffic-track{flex:1;height:9px;background:var(--border);border-radius:5px;overflow:hidden}
+    .ch-traffic-fill{height:100%;border-radius:5px;width:0;transition:width 1.3s ease}
+    .ch-traffic-pct{font-size:11px;font-weight:700;min-width:34px;text-align:right}
+    .ch-seo-item{display:flex;align-items:center;gap:9px;font-size:12px;margin-bottom:9px}
+    .ch-seo-icon{font-size:14px;width:18px;text-align:center}
+    .ch-seo-lbl{flex:1;color:var(--text-secondary)}
+    .ch-seo-pill{padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700}
+    .ch-seo-pill.good{background:rgba(46,213,115,.15);color:var(--accent3)}
+    .ch-seo-pill.mid{background:rgba(255,165,2,.15);color:var(--accent2)}
+    .ch-seo-pill.bad{background:rgba(255,71,87,.15);color:var(--accent)}
+    .ch-feedback-wrap{margin-bottom:18px}
+    .ch-feedback-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .ch-feedback-list{display:flex;flex-direction:column;gap:10px}
+    .ch-fb-card{border-radius:10px;padding:13px 16px;border-left:4px solid var(--algo-violet);background:var(--bg-secondary)}
+    .ch-fb-card.high{border-left-color:var(--accent)}
+    .ch-fb-card.mid{border-left-color:var(--accent2)}
+    .ch-fb-card.low{border-left-color:var(--accent3)}
+    .ch-fb-title{font-size:13px;font-weight:700;margin-bottom:4px}
+    .ch-fb-body{font-size:12px;color:var(--text-secondary);line-height:1.7}
+    .ch-formula-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px;font-size:12px;color:var(--text-secondary);line-height:2}
+    .ch-formula-box b{color:var(--text-primary)}
+    .ch-formula-note{font-size:11px;color:var(--text-muted);margin-top:6px}
+    .lv-max{--lv-color:#ffd700;--lv-glow-color:rgba(255,215,0,.25);border:1.5px solid #ffd700;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(40,30,10,.9));box-shadow:0 0 28px rgba(255,215,0,.22),inset 0 0 30px rgba(255,215,0,.05)}
+    .lv-9{--lv-color:#e879a0;--lv-glow-color:rgba(232,121,160,.25);border:1.5px solid #e879a0;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(40,10,25,.9));box-shadow:0 0 24px rgba(232,121,160,.2),inset 0 0 28px rgba(232,121,160,.05)}
+    .lv-8{--lv-color:#a855f7;--lv-glow-color:rgba(168,85,247,.25);border:1.5px solid #a855f7;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(30,10,50,.9));box-shadow:0 0 24px rgba(168,85,247,.2),inset 0 0 28px rgba(168,85,247,.05)}
+    .lv-7{--lv-color:#7c3aed;--lv-glow-color:rgba(124,58,237,.25);border:1.5px solid #7c3aed;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(20,10,40,.9));box-shadow:0 0 22px rgba(124,58,237,.2),inset 0 0 26px rgba(124,58,237,.05)}
+    .lv-6{--lv-color:#06b6d4;--lv-glow-color:rgba(6,182,212,.25);border:1.5px solid #06b6d4;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(5,20,30,.9));box-shadow:0 0 22px rgba(6,182,212,.2),inset 0 0 26px rgba(6,182,212,.05)}
+    .lv-5{--lv-color:#10b981;--lv-glow-color:rgba(16,185,129,.25);border:1.5px solid #10b981;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(5,25,18,.9));box-shadow:0 0 20px rgba(16,185,129,.2),inset 0 0 24px rgba(16,185,129,.05)}
+    .lv-4{--lv-color:#f59e0b;--lv-glow-color:rgba(245,158,11,.25);border:1.5px solid #f59e0b;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(35,25,5,.9));box-shadow:0 0 20px rgba(245,158,11,.2),inset 0 0 24px rgba(245,158,11,.05)}
+    .lv-3{--lv-color:#f97316;--lv-glow-color:rgba(249,115,22,.25);border:1.5px solid #f97316;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(35,15,5,.9));box-shadow:0 0 18px rgba(249,115,22,.18),inset 0 0 22px rgba(249,115,22,.04)}
+    .lv-2{--lv-color:#94a3b8;--lv-glow-color:rgba(148,163,184,.2);border:1.5px solid #94a3b8;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(20,22,30,.9));box-shadow:0 0 14px rgba(148,163,184,.15)}
+    .lv-1{--lv-color:#64748b;--lv-glow-color:rgba(100,116,139,.18);border:1.5px solid #64748b;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(18,20,26,.9));box-shadow:0 0 12px rgba(100,116,139,.12)}
+
+    /* ── Responsive ── */
+    @media(max-width:1100px){
+      #rightCol{display:none}
+      .main-content{margin-right:0}
+    }
     @media(max-width:700px){
+      .sidebar{width:0;overflow:hidden;padding:0;border:none}
+      .main-content{margin-left:0;margin-right:0;padding:16px}
       .modal{width:100%;max-width:100%;padding:14px 14px 20px}
       .modal-stats{grid-template-columns:repeat(2,1fr)}
       .shop-cat-grid{grid-template-columns:repeat(2,1fr);gap:12px}
@@ -264,229 +419,10 @@
       .shop-cat-icon{font-size:2.2rem}
       .tool-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
       .rev-results-grid{grid-template-columns:repeat(2,1fr)}
+      .ch-metric-grid{grid-template-columns:1fr}
+      .algo-score-ring-wrap{flex-direction:column}
+      .ch-profile{flex-direction:column}
     }
-  /* ══════════════════════════════════════════
-   채널 분석 전용 스타일
-══════════════════════════════════════════ */
-
-/* 프로필 헤더 */
-.ch-profile{
-  background:linear-gradient(135deg,rgba(124,58,237,0.12),rgba(232,121,160,0.08));
-  border:1px solid rgba(124,58,237,0.3);
-  border-radius:var(--radius);padding:24px;
-  display:flex;gap:20px;align-items:flex-start;
-  flex-wrap:wrap;margin-bottom:18px;
-}
-.ch-avatar{
-  width:76px;height:76px;border-radius:50%;
-  object-fit:cover;flex-shrink:0;
-  border:2px solid rgba(124,58,237,0.5);
-}
-.ch-profile-info{flex:1;min-width:160px}
-.ch-name{font-size:20px;font-weight:700;margin-bottom:3px}
-.ch-handle{font-size:13px;color:var(--text-secondary);margin-bottom:10px}
-.ch-stat-row{display:flex;gap:20px;flex-wrap:wrap}
-.ch-stat{text-align:center}
-.ch-stat-v{
-  font-size:17px;font-weight:800;
-  background:linear-gradient(135deg,var(--algo-gold),var(--algo-violet));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.ch-stat-l{font-size:10px;color:var(--text-muted);margin-top:2px}
-
-/* 3D 레벨 카드 */
-.algo-level-scene{perspective:1000px;margin-bottom:18px}
-.algo-level-card{
-  position:relative;overflow:hidden;
-  border-radius:18px;padding:26px 24px 22px;
-  transform-style:preserve-3d;
-  transition:transform .55s cubic-bezier(.23,1,.32,1),box-shadow .55s;
-  cursor:default;
-}
-.algo-level-card:hover{
-  transform:rotateY(-5deg) rotateX(2.5deg) translateZ(8px);
-}
-.alc-fog{
-  pointer-events:none;position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(ellipse at 50% 110%,var(--lv-glow-color,rgba(124,58,237,.18)) 0%,transparent 68%);
-  z-index:0;
-}
-.alc-shine{
-  pointer-events:none;position:absolute;inset:0;border-radius:inherit;
-  background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 55%);
-  z-index:2;
-}
-.alc-beam{
-  pointer-events:none;position:absolute;
-  top:0;left:50%;width:1.5px;
-  background:linear-gradient(to bottom,transparent,var(--lv-color,#a855f7),transparent);
-  transform:translateX(-50%);
-  animation:beamScan 3.2s ease-in-out infinite;
-  opacity:.45;z-index:1;
-}
-@keyframes beamScan{
-  0%,100%{height:0;top:0;opacity:0}
-  50%{height:100%;top:0;opacity:.55}
-}
-.alc-bokeh{
-  pointer-events:none;position:absolute;border-radius:50%;
-  background:var(--lv-color,#a855f7);opacity:.18;
-  animation:bokehFloat 5s ease-in-out infinite;z-index:0;
-}
-@keyframes bokehFloat{
-  0%,100%{transform:translateY(0) scale(1)}
-  50%{transform:translateY(-12px) scale(1.15)}
-}
-.alc-sparkle{
-  pointer-events:none;position:absolute;border-radius:50%;background:#fff;
-  animation:sparklePop 1.6s ease-in-out infinite;z-index:3;
-}
-@keyframes sparklePop{
-  0%,100%{transform:scale(0);opacity:0}
-  50%{transform:scale(1);opacity:1}
-}
-.alc-content{position:relative;z-index:4}
-.alc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.alc-lv-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 13px;border-radius:20px;
-  font-size:12px;font-weight:800;letter-spacing:.3px;
-  border:1.5px solid var(--lv-color,#a855f7);
-  color:var(--lv-color,#a855f7);
-  background:rgba(0,0,0,.35);
-}
-.alc-emoji{font-size:30px;line-height:1}
-.alc-title{font-size:20px;font-weight:800;margin-bottom:3px}
-.alc-sub{font-size:12px;color:var(--text-secondary);margin-bottom:18px}
-.alc-metrics{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:16px}
-.alc-metric-item{text-align:center}
-.alc-metric-val{font-size:20px;font-weight:900;color:var(--lv-color,#a855f7)}
-.alc-metric-lbl{font-size:9px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
-
-/* XP 바 */
-.alc-xp-wrap{margin-top:4px}
-.alc-xp-track{height:7px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
-.alc-xp-fill{
-  height:100%;border-radius:4px;width:0;
-  background:linear-gradient(90deg,var(--algo-purple),var(--algo-violet),var(--algo-gold));
-  transition:width 1.5s cubic-bezier(.4,0,.2,1);
-}
-.alc-xp-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted);margin-top:4px}
-
-/* 점수 링 */
-.algo-score-ring-wrap{
-  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
-  background:var(--bg-secondary);border:1px solid var(--border);
-  border-radius:var(--radius);padding:20px;margin-bottom:18px;
-}
-.algo-ring-svg{flex-shrink:0}
-.algo-ring-info{flex:1;min-width:160px}
-.algo-ring-score{font-size:34px;font-weight:900;line-height:1}
-.algo-ring-label{font-size:10px;color:var(--text-muted);margin-top:2px}
-.algo-ring-desc{font-size:12px;color:var(--text-secondary);margin-top:8px;line-height:1.7}
-
-/* 가중 바 */
-.algo-weight-bars{flex:1;min-width:220px;display:flex;flex-direction:column;gap:9px}
-.awb-row{display:flex;flex-direction:column;gap:3px}
-.awb-head{display:flex;justify-content:space-between;font-size:11px}
-.awb-head span:first-child{color:var(--text-secondary)}
-.awb-head span:last-child{font-weight:700}
-.awb-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.awb-fill{height:100%;border-radius:3px;width:0;transition:width 1.1s ease}
-
-/* 7개 지표 그리드 */
-.ch-metric-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:14px;margin-bottom:18px;
-}
-.ch-metric-card{
-  background:var(--bg-secondary);border:1px solid var(--border);
-  border-radius:var(--radius);padding:16px;
-  transition:border-color .2s;
-}
-.ch-metric-card:hover{border-color:rgba(124,58,237,.4)}
-.ch-metric-card-title{
-  font-size:12px;font-weight:700;color:var(--algo-violet);
-  margin-bottom:12px;padding-bottom:8px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:6px;
-}
-.ch-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
-  font-size:12px;
-}
-.ch-row:last-child{border-bottom:none}
-.ch-row-key{color:var(--text-secondary)}
-.ch-row-val{font-weight:700}
-.ch-row-val.good{color:var(--accent3)}
-.ch-row-val.warn{color:var(--accent2)}
-.ch-row-val.bad {color:var(--accent)}
-.ch-row-val.neutral{color:var(--text-primary)}
-
-/* 트래픽 바 */
-.ch-traffic-row{display:flex;align-items:center;gap:9px;margin-bottom:8px}
-.ch-traffic-lbl{font-size:11px;color:var(--text-secondary);min-width:100px}
-.ch-traffic-track{flex:1;height:9px;background:var(--border);border-radius:5px;overflow:hidden}
-.ch-traffic-fill{height:100%;border-radius:5px;width:0;transition:width 1.3s ease}
-.ch-traffic-pct{font-size:11px;font-weight:700;min-width:34px;text-align:right}
-
-/* SEO */
-.ch-seo-item{display:flex;align-items:center;gap:9px;font-size:12px;margin-bottom:9px}
-.ch-seo-icon{font-size:14px;width:18px;text-align:center}
-.ch-seo-lbl{flex:1;color:var(--text-secondary)}
-.ch-seo-pill{
-  padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700;
-}
-.ch-seo-pill.good{background:rgba(46,213,115,.15);color:var(--accent3)}
-.ch-seo-pill.mid {background:rgba(255,165,2,.15); color:var(--accent2)}
-.ch-seo-pill.bad {background:rgba(255,71,87,.15);  color:var(--accent)}
-
-/* 피드백 */
-.ch-feedback-wrap{margin-bottom:18px}
-.ch-feedback-title{
-  font-size:15px;font-weight:700;
-  margin-bottom:12px;display:flex;align-items:center;gap:8px;
-}
-.ch-feedback-list{display:flex;flex-direction:column;gap:10px}
-.ch-fb-card{
-  border-radius:10px;padding:13px 16px;
-  border-left:4px solid var(--algo-violet);
-  background:var(--bg-secondary);
-}
-.ch-fb-card.high{border-left-color:var(--accent)}
-.ch-fb-card.mid {border-left-color:var(--accent2)}
-.ch-fb-card.low {border-left-color:var(--accent3)}
-.ch-fb-title{font-size:13px;font-weight:700;margin-bottom:4px}
-.ch-fb-body {font-size:12px;color:var(--text-secondary);line-height:1.7}
-
-/* 공식 박스 */
-.ch-formula-box{
-  background:var(--bg-secondary);border:1px solid var(--border);
-  border-radius:var(--radius);padding:16px;margin-bottom:18px;
-  font-size:12px;color:var(--text-secondary);line-height:2;
-}
-.ch-formula-box b{color:var(--text-primary)}
-.ch-formula-note{font-size:11px;color:var(--text-muted);margin-top:6px}
-
-/* 레벨 색상 */
-.lv-max{--lv-color:#ffd700;--lv-glow-color:rgba(255,215,0,.25);border:1.5px solid #ffd700;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(40,30,10,.9));box-shadow:0 0 28px rgba(255,215,0,.22),inset 0 0 30px rgba(255,215,0,.05)}
-.lv-9  {--lv-color:#e879a0;--lv-glow-color:rgba(232,121,160,.25);border:1.5px solid #e879a0;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(40,10,25,.9));box-shadow:0 0 24px rgba(232,121,160,.2),inset 0 0 28px rgba(232,121,160,.05)}
-.lv-8  {--lv-color:#a855f7;--lv-glow-color:rgba(168,85,247,.25);border:1.5px solid #a855f7;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(30,10,50,.9));box-shadow:0 0 24px rgba(168,85,247,.2),inset 0 0 28px rgba(168,85,247,.05)}
-.lv-7  {--lv-color:#7c3aed;--lv-glow-color:rgba(124,58,237,.25);border:1.5px solid #7c3aed;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(20,10,40,.9));box-shadow:0 0 22px rgba(124,58,237,.2),inset 0 0 26px rgba(124,58,237,.05)}
-.lv-6  {--lv-color:#06b6d4;--lv-glow-color:rgba(6,182,212,.25);border:1.5px solid #06b6d4;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(5,20,30,.9));box-shadow:0 0 22px rgba(6,182,212,.2),inset 0 0 26px rgba(6,182,212,.05)}
-.lv-5  {--lv-color:#10b981;--lv-glow-color:rgba(16,185,129,.25);border:1.5px solid #10b981;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(5,25,18,.9));box-shadow:0 0 20px rgba(16,185,129,.2),inset 0 0 24px rgba(16,185,129,.05)}
-.lv-4  {--lv-color:#f59e0b;--lv-glow-color:rgba(245,158,11,.25);border:1.5px solid #f59e0b;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(35,25,5,.9));box-shadow:0 0 20px rgba(245,158,11,.2),inset 0 0 24px rgba(245,158,11,.05)}
-.lv-3  {--lv-color:#f97316;--lv-glow-color:rgba(249,115,22,.25);border:1.5px solid #f97316;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(35,15,5,.9));box-shadow:0 0 18px rgba(249,115,22,.18),inset 0 0 22px rgba(249,115,22,.04)}
-.lv-2  {--lv-color:#94a3b8;--lv-glow-color:rgba(148,163,184,.2);border:1.5px solid #94a3b8;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(20,22,30,.9));box-shadow:0 0 14px rgba(148,163,184,.15)}
-.lv-1  {--lv-color:#64748b;--lv-glow-color:rgba(100,116,139,.18);border:1.5px solid #64748b;background:linear-gradient(145deg,rgba(26,26,46,.9),rgba(18,20,26,.9));box-shadow:0 0 12px rgba(100,116,139,.12)}
-
-@media(max-width:700px){
-  .ch-metric-grid{grid-template-columns:1fr}
-  .algo-score-ring-wrap{flex-direction:column}
-  .ch-profile{flex-direction:column}
-}
   </style>
 </head>
 <body>
@@ -507,6 +443,8 @@
 <div id="global-error-banner"></div>
 
 <div class="app-layout">
+
+  <!-- ── Left Sidebar ── -->
   <nav class="sidebar">
     <div class="nav-section-title">탐색</div>
     <button class="nav-item active" data-section="hot"     onclick="showSec('hot')"><span class="nav-icon">🔥</span><span>인기영상</span></button>
@@ -518,7 +456,9 @@
     <button class="nav-item"        data-section="shop"    onclick="showSec('shop')"><span class="nav-icon">🛒</span><span>장비 쇼핑</span></button>
   </nav>
 
+  <!-- ── Main Content ── -->
   <main class="main-content">
+
     <!-- 인기영상 -->
     <section class="section-page active" id="section-hot">
       <div class="section-header">
@@ -550,24 +490,24 @@
       <button class="more-btn" id="longs-more-btn" onclick="loadMoreLongs()">롱폼 더 보기 ▼</button>
     </section>
 
- <!-- 채널 분석 -->
-<section class="section-page" id="section-channel">
-  <div class="section-header">
-    <div class="section-title">📊 채널 분석</div>
-    <div class="section-subtitle">YouTube 채널 알고리즘 종합 점수 · 공개 API 기반 추정 분석</div>
-  </div>
-  <div class="channel-search-box">
-    <input class="search-input" id="ch-input"
-      placeholder="채널명 또는 핸들 (@채널명) 입력"
-      onkeydown="if(event.key==='Enter') doChannelSearch()" />
-    <button class="search-btn" onclick="doChannelSearch()">분석</button>
-  </div>
-  <div id="ch-loader" style="display:none" class="loader-wrap">
-    <div class="spinner"></div>
-    <div style="color:var(--text-secondary);font-size:13px">채널 분석 중…</div>
-  </div>
-  <div id="channel-result"></div>
-</section>
+    <!-- 채널 분석 -->
+    <section class="section-page" id="section-channel">
+      <div class="section-header">
+        <div class="section-title">📊 채널 분석</div>
+        <div class="section-subtitle">YouTube 채널 알고리즘 종합 점수 · 공개 API 기반 추정 분석</div>
+      </div>
+      <div class="channel-search-box">
+        <input class="search-input" id="ch-input"
+          placeholder="채널명 또는 핸들 (@채널명) 입력"
+          onkeydown="if(event.key==='Enter') doChannelSearch()" />
+        <button class="search-btn" onclick="doChannelSearch()">분석</button>
+      </div>
+      <div id="ch-loader" style="display:none" class="loader-wrap">
+        <div class="spinner"></div>
+        <div style="color:var(--text-secondary);font-size:13px">채널 분석 중…</div>
+      </div>
+      <div id="channel-result"></div>
+    </section>
 
     <!-- 수익 계산기 -->
     <section class="section-page" id="section-revenue">
@@ -618,8 +558,35 @@
 
     <!-- 장비 쇼핑 -->
     <section class="section-page" id="section-shop"></section>
+
   </main>
-</div>
+
+  <!-- ── Right Column (광고) ── -->
+  <div id="rightCol">
+    <!-- 쿠팡 파트너스 카드 -->
+    <div class="cp-grad-border">
+      <div class="cp-inner">
+        <div class="cp-logo">Coup<span>ang</span></div>
+        <div class="cp-tagline">🎬 유튜버 장비 최저가!</div>
+        <div class="cp-desc">카메라·마이크·조명·편집PC<br>로켓배송으로 빠르게 받아보세요</div>
+        <a class="cp-btn"
+           href="https://link.coupang.com/a/youtube-gear?partnerCode=AF8853448"
+           target="_blank" rel="noopener sponsored">지금 쇼핑하기 →</a>
+        <div class="cp-disc">이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br>이에 따른 일정액의 수수료를 제공받습니다.</div>
+      </div>
+    </div>
+
+    <!-- AdSense 직사각형 배너 -->
+    <div class="right-adsense-wrap">
+      <ins class="adsbygoogle"
+           style="display:block;width:220px;height:200px"
+           data-ad-client="ca-pub-AF8853448"
+           data-ad-slot="1010101010"
+           data-ad-format="rectangle"></ins>
+    </div>
+  </div>
+
+</div><!-- /.app-layout -->
 
 <!-- 영상 모달 -->
 <div class="modal-overlay" id="video-modal">
@@ -656,59 +623,57 @@
 </div>
 
 <script>
-/* ================================================================
-   헤더 로고 렌더  +  파비콘
-================================================================ */
-function renderHeaderLogo() {
-  const target = document.getElementById('header-logo-canvas');
-  if (!target) return;
-  const src = buildFavicon(80);
-  target.width = 80; target.height = 80;
-  target.getContext('2d').drawImage(src, 0, 0, 80, 80);
-  document.fonts.ready.then(() => {
-    target.getContext('2d').clearRect(0, 0, 80, 80);
-    target.getContext('2d').drawImage(buildFavicon(80), 0, 0, 80, 80);
+/* ── 헤더 로고 ── */
+function renderHeaderLogo(){
+  const target=document.getElementById('header-logo-canvas');
+  if(!target)return;
+  const src=buildFavicon(80);
+  target.width=80;target.height=80;
+  target.getContext('2d').drawImage(src,0,0,80,80);
+  document.fonts.ready.then(()=>{
+    target.getContext('2d').clearRect(0,0,80,80);
+    target.getContext('2d').drawImage(buildFavicon(80),0,0,80,80);
   });
 }
 
-/* ================================================================
-   API / 유틸
-================================================================ */
-const API_KEYS = ['AIzaSyDzpxSQhciOKEa6qh_q3n5q47ug1mua6-4'];
-let keyIdx = 0;
-const LONGS_MIN_SEC = 180;
-const SHORTS_KEYWORDS = ['shorts','#shorts','short','#short','shortvideo','shortsvideo','reels','tiktok','쇼츠','숏츠','#쇼츠','#숏츠'];
+/* ── AdSense 초기화 ── */
+let _adPushed=false;
+function initModalAd(){
+  if(_adPushed)return;
+  try{const ins=document.querySelector('#modal-ads-top ins.adsbygoogle');if(ins){(window.adsbygoogle=window.adsbygoogle||[]).push({});_adPushed=true;}}catch(e){}
+}
+/* 우측 AdSense 배너는 DOMContentLoaded 후 한 번만 push */
+function initRightAd(){
+  try{
+    const ins=document.querySelector('#rightCol ins.adsbygoogle');
+    if(ins)(window.adsbygoogle=window.adsbygoogle||[]).push({});
+  }catch(e){}
+}
 
-const CAT_CFG = {
-  '음악':  {categoryId:'10', matchKeywords:['kpop','k-pop','음악','뮤직','노래','mv','뮤직비디오','singer','가수','아이돌','idol','ost','cover','커버','발라드'], shortsKw:['kpop shorts','음악 쇼츠','뮤직 shorts'], longsKw:['K-POP 뮤직비디오','음악 커버','아이돌 무대']},
-  '게임':  {categoryId:'20', matchKeywords:['게임','gaming','game','플레이','gameplay','공략','리그오브레전드','롤','배틀그라운드','마인크래프트','스타크래프트','overwatch','오버워치','fifa','브롤스타즈'], shortsKw:['게임 shorts','게임 쇼츠'], longsKw:['게임 공략','게임 플레이','롤 공략']},
-  '엔터':  {categoryId:'24', matchKeywords:['예능','재미','웃긴','유머','comedy','개그','버라이어티','리액션','reaction','몰래카메라','장난','콩트','드라마','연예인'], shortsKw:['예능 shorts','웃긴 쇼츠','유머 shorts'], longsKw:['예능 프로그램','웃긴 영상','코미디']},
-  '스포츠':{categoryId:'17', matchKeywords:['스포츠','sport','축구','야구','농구','배구','골프','테니스','수영','육상','올림픽','월드컵','손흥민','류현진','킥복싱','격투기','mma'], shortsKw:['스포츠 shorts','축구 쇼츠','야구 shorts'], longsKw:['스포츠 하이라이트','축구 경기','야구 경기']},
-  '교육':  {categoryId:'27', matchKeywords:['교육','강의','공부','학습','튜토리얼','tutorial','how to','영어','수학','과학','역사','코딩','programming','자격증','취업'], shortsKw:['교육 shorts','공부 쇼츠','강의 shorts'], longsKw:['교육 강의','공부법','튜토리얼']},
-  '요리':  {categoryId:'26', matchKeywords:['요리','먹방','레시피','음식','cooking','food','맛집','mukbang','먹스타그램','맛있','식당','chef','요식','베이킹','baking','라면','삼겹살','치킨'], shortsKw:['먹방 shorts','요리 쇼츠','레시피 shorts'], longsKw:['먹방','요리 레시피','맛집 탐방']},
-  '여행':  {categoryId:'19', matchKeywords:['여행','travel','브이로그','vlog','일상','관광','vacation','trip','해외','국내여행','캠핑','등산','드라이브','자동차','여행기'], shortsKw:['여행 shorts','브이로그 쇼츠','vlog shorts'], longsKw:['여행 브이로그','해외여행','국내여행']},
-  '뷰티':  {categoryId:'',   matchKeywords:['뷰티','beauty','메이크업','makeup','화장','패션','fashion','스킨케어','skincare','헤어','hair','네일','nail','코디','ootd','옷','향수'], shortsKw:['뷰티 shorts','메이크업 쇼츠','패션 shorts'], longsKw:['메이크업 튜토리얼','패션 코디','뷰티 리뷰']},
+/* ── API / 유틸 ── */
+const API_KEYS=['AIzaSyDV0UqoCP26AQpv4fkatmxVYqo2pXC3Rog'];
+let keyIdx=0;
+const LONGS_MIN_SEC=180;
+const SHORTS_KEYWORDS=['shorts','#shorts','short','#short','shortvideo','shortsvideo','reels','tiktok','쇼츠','숏츠','#쇼츠','#숏츠'];
+const CAT_CFG={
+  '음악':{categoryId:'10',matchKeywords:['kpop','k-pop','음악','뮤직','노래','mv','뮤직비디오','singer','가수','아이돌','idol','ost','cover','커버','발라드'],shortsKw:['kpop shorts','음악 쇼츠','뮤직 shorts'],longsKw:['K-POP 뮤직비디오','음악 커버','아이돌 무대']},
+  '게임':{categoryId:'20',matchKeywords:['게임','gaming','game','플레이','gameplay','공략','리그오브레전드','롤','배틀그라운드','마인크래프트','스타크래프트','overwatch','오버워치','fifa','브롤스타즈'],shortsKw:['게임 shorts','게임 쇼츠'],longsKw:['게임 공략','게임 플레이','롤 공략']},
+  '엔터':{categoryId:'24',matchKeywords:['예능','재미','웃긴','유머','comedy','개그','버라이어티','리액션','reaction','몰래카메라','장난','콩트','드라마','연예인'],shortsKw:['예능 shorts','웃긴 쇼츠','유머 shorts'],longsKw:['예능 프로그램','웃긴 영상','코미디']},
+  '스포츠':{categoryId:'17',matchKeywords:['스포츠','sport','축구','야구','농구','배구','골프','테니스','수영','육상','올림픽','월드컵','손흥민','류현진','킥복싱','격투기','mma'],shortsKw:['스포츠 shorts','축구 쇼츠','야구 shorts'],longsKw:['스포츠 하이라이트','축구 경기','야구 경기']},
+  '교육':{categoryId:'27',matchKeywords:['교육','강의','공부','학습','튜토리얼','tutorial','how to','영어','수학','과학','역사','코딩','programming','자격증','취업'],shortsKw:['교육 shorts','공부 쇼츠','강의 shorts'],longsKw:['교육 강의','공부법','튜토리얼']},
+  '요리':{categoryId:'26',matchKeywords:['요리','먹방','레시피','음식','cooking','food','맛집','mukbang','먹스타그램','맛있','식당','chef','요식','베이킹','baking','라면','삼겹살','치킨'],shortsKw:['먹방 shorts','요리 쇼츠','레시피 shorts'],longsKw:['먹방','요리 레시피','맛집 탐방']},
+  '여행':{categoryId:'19',matchKeywords:['여행','travel','브이로그','vlog','일상','관광','vacation','trip','해외','국내여행','캠핑','등산','드라이브','자동차','여행기'],shortsKw:['여행 shorts','브이로그 쇼츠','vlog shorts'],longsKw:['여행 브이로그','해외여행','국내여행']},
+  '뷰티':{categoryId:'',matchKeywords:['뷰티','beauty','메이크업','makeup','화장','패션','fashion','스킨케어','skincare','헤어','hair','네일','nail','코디','ootd','옷','향수'],shortsKw:['뷰티 shorts','메이크업 쇼츠','패션 shorts'],longsKw:['메이크업 튜토리얼','패션 코디','뷰티 리뷰']},
 };
-const CAT_KEYS = Object.keys(CAT_CFG);
-
-let activeCat = CAT_KEYS[0], activeType = 'shorts';
-let hotSearchMode = false, hotSearchQuery = '';
-let searchShorts = [], searchLongs = [];
-let searchShortsPage = 0, searchLongsPage = 0;
-const catShortsCache = {}, catLongCache = {};
-let shortsPage = 0, longsPage = 0;
-const PAGE = 12;
-
-const GRADES = [
-  {min:10_000_000, label:'S+', color:'#ffd700', bg:'rgba(255,215,0,0.15)'},
-  {min:5_000_000,  label:'S',  color:'#ff4757', bg:'rgba(255,71,87,0.15)'},
-  {min:1_000_000,  label:'A+', color:'#ff6b81', bg:'rgba(255,107,129,0.15)'},
-  {min:500_000,    label:'A',  color:'#ffa502', bg:'rgba(255,165,2,0.15)'},
-  {min:100_000,    label:'B',  color:'#2ed573', bg:'rgba(46,213,115,0.15)'},
-  {min:10_000,     label:'C',  color:'#1e90ff', bg:'rgba(30,144,255,0.15)'},
-  {min:0,          label:'D',  color:'#9898b0', bg:'rgba(152,152,176,0.15)'},
-];
-
+const CAT_KEYS=Object.keys(CAT_CFG);
+let activeCat=CAT_KEYS[0],activeType='shorts';
+let hotSearchMode=false,hotSearchQuery='';
+let searchShorts=[],searchLongs=[];
+let searchShortsPage=0,searchLongsPage=0;
+const catShortsCache={},catLongCache={};
+let shortsPage=0,longsPage=0;
+const PAGE=12;
+const GRADES=[{min:10_000_000,label:'S+',color:'#ffd700',bg:'rgba(255,215,0,0.15)'},{min:5_000_000,label:'S',color:'#ff4757',bg:'rgba(255,71,87,0.15)'},{min:1_000_000,label:'A+',color:'#ff6b81',bg:'rgba(255,107,129,0.15)'},{min:500_000,label:'A',color:'#ffa502',bg:'rgba(255,165,2,0.15)'},{min:100_000,label:'B',color:'#2ed573',bg:'rgba(46,213,115,0.15)'},{min:10_000,label:'C',color:'#1e90ff',bg:'rgba(30,144,255,0.15)'},{min:0,label:'D',color:'#9898b0',bg:'rgba(152,152,176,0.15)'}];
 function fmt(n){n=parseInt(n,10)||0;if(n>=100_000_000)return(n/100_000_000).toFixed(1).replace(/\.0$/,'')+'억';if(n>=10_000)return(n/10_000).toFixed(1).replace(/\.0$/,'')+'만';if(n>=1_000)return(n/1_000).toFixed(1).replace(/\.0$/,'')+'천';return n.toLocaleString('ko-KR');}
 function parseDurSec(iso){if(!iso)return 0;const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return 0;return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);}
 function fmtDur(iso){const s=parseDurSec(iso);if(!s)return'--:--';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`;}
@@ -721,9 +686,6 @@ function isShorts(item){const sec=parseDurSec(item.contentDetails?.duration||'')
 function isLongs(item){return parseDurSec(item.contentDetails?.duration||'')>=LONGS_MIN_SEC;}
 function hardFilterLongs(arr){return arr.filter(item=>parseDurSec(item.contentDetails?.duration||'')>=LONGS_MIN_SEC);}
 function matchesCat(item,cat){const cfg=CAT_CFG[cat];if(!cfg)return true;const sn=item.snippet||{};const hay=[(sn.title||'').toLowerCase(),(sn.description||'').slice(0,200).toLowerCase(),(sn.tags||[]).join(' ').toLowerCase()].join(' ');return cfg.matchKeywords.some(kw=>hay.includes(kw.toLowerCase()));}
-
-let _adPushed = false;
-function initModalAd(){if(_adPushed)return;try{const ins=document.querySelector('#modal-ads-top ins.adsbygoogle');if(ins){(window.adsbygoogle=window.adsbygoogle||[]).push({});_adPushed=true;}}catch(e){}}
 
 function closeVideoModal(){const pw=document.getElementById('player-wrap');const iframe=pw.querySelector('iframe');if(iframe){iframe.src='';pw.removeChild(iframe);}document.getElementById('video-modal').classList.remove('open');}
 async function openVideoModal(vid){
@@ -772,7 +734,7 @@ async function apiFetch(url){
   throw new Error('모든 API 키 소진');
 }
 
-const sectionLoaded = {};
+const sectionLoaded={};
 function showSec(id){
   document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
@@ -797,12 +759,7 @@ function buildCatTabs(){
     wrap.appendChild(btn);
   });
 }
-function switchCat(cat){
-  activeCat=cat;
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.textContent===cat));
-  shortsPage=0;longsPage=0;renderHotSplit();
-  if(!catShortsCache[cat]&&!catLongCache[cat]){showHotLoader();loadUntilFull(cat).then(()=>{hideHotLoader();renderHotSplit();}).catch(e=>{hideHotLoader();showHotError(e.message);});}
-}
+function switchCat(cat){activeCat=cat;document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('active',b.textContent===cat));shortsPage=0;longsPage=0;renderHotSplit();if(!catShortsCache[cat]&&!catLongCache[cat]){showHotLoader();loadUntilFull(cat).then(()=>{hideHotLoader();renderHotSplit();}).catch(e=>{hideHotLoader();showHotError(e.message);});}}
 function showHotLoader(){document.getElementById('hot-loader').style.display='block';document.getElementById('shorts-grid').innerHTML='';document.getElementById('longs-grid').innerHTML='';document.getElementById('shorts-more-btn').style.display='none';document.getElementById('longs-more-btn').style.display='none';}
 function hideHotLoader(){document.getElementById('hot-loader').style.display='none';}
 function showHotError(msg){document.getElementById(activeType==='shorts'?'shorts-grid':'longs-grid').innerHTML=`<div class="error-card" style="grid-column:1/-1"><h3>⚠️ 로드 실패</h3><p>${msg}</p></div>`;}
@@ -818,21 +775,9 @@ async function loadHot(){
 async function loadUntilFull(cat){
   const cfg=CAT_CFG[cat];if(!cfg)return;
   let shorts=[],longs=[];
-  if(cfg.categoryId){
-    try{const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50&videoCategoryId=${cfg.categoryId}`);(d.items||[]).forEach(it=>{if(!matchesCat(it,cat))return;if(isShorts(it))shorts.push(it);else if(isLongs(it))longs.push(it);});}catch(e){console.warn('[mostPopular]',cat,e.message);}
-  }
-  if(shorts.length<12){
-    for(const kw of cfg.shortsKw||[]){
-      if(shorts.length>=24)break;
-      try{const r=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&regionCode=KR&relevanceLanguage=ko&q=${encodeURIComponent(kw)}&maxResults=30&order=viewCount`);const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);if(ids.length){const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);(d.items||[]).forEach(it=>{if(matchesCat(it,cat)&&isShorts(it)&&!shorts.find(s=>s.id===it.id))shorts.push(it);});}}catch(e){console.warn('[쇼츠보완]',kw,e.message);}
-    }
-  }
-  if(longs.length<12){
-    for(const kw of cfg.longsKw||[]){
-      if(longs.length>=24)break;
-      try{const r=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&regionCode=KR&relevanceLanguage=ko&q=${encodeURIComponent(kw)}&maxResults=30&order=viewCount`);const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);if(ids.length){const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);(d.items||[]).forEach(it=>{if(matchesCat(it,cat)&&isLongs(it)&&!longs.find(l=>l.id===it.id))longs.push(it);});}}catch(e){console.warn('[롱폼보완]',kw,e.message);}
-    }
-  }
+  if(cfg.categoryId){try{const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50&videoCategoryId=${cfg.categoryId}`);(d.items||[]).forEach(it=>{if(!matchesCat(it,cat))return;if(isShorts(it))shorts.push(it);else if(isLongs(it))longs.push(it);});}catch(e){console.warn('[mostPopular]',cat,e.message);}}
+  if(shorts.length<12){for(const kw of cfg.shortsKw||[]){if(shorts.length>=24)break;try{const r=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&regionCode=KR&relevanceLanguage=ko&q=${encodeURIComponent(kw)}&maxResults=30&order=viewCount`);const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);if(ids.length){const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);(d.items||[]).forEach(it=>{if(matchesCat(it,cat)&&isShorts(it)&&!shorts.find(s=>s.id===it.id))shorts.push(it);});}}catch(e){console.warn('[쇼츠보완]',kw,e.message);}}}
+  if(longs.length<12){for(const kw of cfg.longsKw||[]){if(longs.length>=24)break;try{const r=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&regionCode=KR&relevanceLanguage=ko&q=${encodeURIComponent(kw)}&maxResults=30&order=viewCount`);const ids=(r.items||[]).map(i=>i.id?.videoId).filter(Boolean);if(ids.length){const d=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${ids.join(',')}`);(d.items||[]).forEach(it=>{if(matchesCat(it,cat)&&isLongs(it)&&!longs.find(l=>l.id===it.id))longs.push(it);});}}catch(e){console.warn('[롱폼보완]',kw,e.message);}}}
   const byViral=arr=>arr.slice().sort((a,b)=>viralOf(b)-viralOf(a));
   catShortsCache[cat]=byViral(shorts);catLongCache[cat]=byViral(hardFilterLongs(longs));
 }
@@ -860,12 +805,7 @@ function renderSearchResult(){
   if(activeType==='shorts'){sg.style.display='';lg.style.display='none';lm.style.display='none';if(!searchShorts.length){sg.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">🔍</div><h3>"${hotSearchQuery}" 쇼츠 결과 없음</h3></div>`;sm.style.display='none';}else{const sl=searchShorts.slice(0,(searchShortsPage+1)*PAGE);sg.innerHTML=sl.map(v=>makeVideoCard(v,'shorts')).join('');sm.style.display=sl.length<searchShorts.length?'block':'none';}}
   else{sg.style.display='none';sm.style.display='none';lg.style.display='';const safeLongs=hardFilterLongs(searchLongs);if(!safeLongs.length){lg.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">🔍</div><h3>"${hotSearchQuery}" 롱폼 결과 없음</h3></div>`;lm.style.display='none';}else{const sl=safeLongs.slice(0,(searchLongsPage+1)*PAGE);lg.innerHTML=sl.map(v=>makeVideoCard(v,'longs')).join('');lm.style.display=sl.length<safeLongs.length?'block':'none';}}
 }
-function clearHotSearch(){
-  hotSearchMode=false;hotSearchQuery='';searchShorts=[];searchLongs=[];searchShortsPage=0;searchLongsPage=0;
-  document.getElementById('hot-kw-input').value='';document.getElementById('search-result-header').style.display='none';
-  document.querySelectorAll('.cat-btn').forEach(b=>{b.style.opacity='';b.classList.toggle('active',b.textContent===activeCat);});
-  shortsPage=0;longsPage=0;renderHotSplit();
-}
+function clearHotSearch(){hotSearchMode=false;hotSearchQuery='';searchShorts=[];searchLongs=[];searchShortsPage=0;searchLongsPage=0;document.getElementById('hot-kw-input').value='';document.getElementById('search-result-header').style.display='none';document.querySelectorAll('.cat-btn').forEach(b=>{b.style.opacity='';b.classList.toggle('active',b.textContent===activeCat);});shortsPage=0;longsPage=0;renderHotSplit();}
 function renderHotSplit(){
   if(hotSearchMode){renderSearchResult();return;}
   const sg=document.getElementById('shorts-grid'),lg=document.getElementById('longs-grid'),sm=document.getElementById('shorts-more-btn'),lm=document.getElementById('longs-more-btn');
@@ -893,25 +833,18 @@ function makeVideoCard(item,type){
   </div>`;
 }
 
-/* ================================================================
-   채널 분석 — 전체 교체
-================================================================ */
-
-/* ── 헬퍼 ── */
-function chFmt(n){return fmt(n);}                          // 기존 fmt 재사용
+/* ════════════════════════════════
+   채널 분석
+════════════════════════════════ */
+function chFmt(n){return fmt(n);}
 function chPct(v,digits=1){return isFinite(v)?v.toFixed(digits)+'%':'—';}
-function chSec(s){
-  if(!isFinite(s)||s<=0)return'—';
-  const m=Math.floor(s/60),sec=Math.round(s%60);
-  return m>0?`${m}분 ${sec}초`:`${sec}초`;
-}
+function chSec(s){if(!isFinite(s)||s<=0)return'—';const m=Math.floor(s/60),sec=Math.round(s%60);return m>0?`${m}분 ${sec}초`:`${sec}초`;}
 function chColor(v,good,mid){return v>=good?'good':v>=mid?'warn':'bad';}
 function seoGrade(s){return s>=75?'good':s>=50?'mid':'bad';}
 function seoIcon(s){return s>=75?'✅':s>=50?'⚠️':'❌';}
 
-/* ── 레벨 테이블 ── */
 const CH_LEVELS=[
-  {min:95,lv:'LV.MAX',cls:'lv-max',color:'#ffd700',label:'알고리즘 마스터', emoji:'🏆',desc:'알고리즘을 완벽히 이해하고 활용하는 최고 레벨입니다.'},
+  {min:95,lv:'LV.MAX',cls:'lv-max',color:'#ffd700',label:'알고리즘 마스터',emoji:'🏆',desc:'알고리즘을 완벽히 이해하고 활용하는 최고 레벨입니다.'},
   {min:88,lv:'LV.9',  cls:'lv-9',  color:'#e879a0',label:'슈퍼 크리에이터',emoji:'👑',desc:'최상위 크리에이터 수준. 브랜드 협업과 수익 다각화를 검토하세요.'},
   {min:78,lv:'LV.8',  cls:'lv-8',  color:'#a855f7',label:'바이럴 잠재력', emoji:'💫',desc:'바이럴 가능성이 높습니다. 공유 유도 콘텐츠를 전략적으로 배치하세요.'},
   {min:68,lv:'LV.7',  cls:'lv-7',  color:'#7c3aed',label:'알고 탑승',     emoji:'🌟',desc:'알고리즘 추천 사이클에 탑승했습니다. 시리즈 콘텐츠로 재방문율을 높이세요.'},
@@ -924,262 +857,70 @@ const CH_LEVELS=[
 ];
 function getLevel(score){return CH_LEVELS.find(l=>score>=l.min)||CH_LEVELS[CH_LEVELS.length-1];}
 
-/* ── 지표 계산 ──
-   공개 API로 얻을 수 있는 실제 수치:
-   viewCount, likeCount, commentCount, subscriberCount,
-   videoCount, duration (영상별)
-   → 노출수·AVD·트래픽소스는 YouTube Studio 전용이므로 업계 기준치 + 채널 규모로 추정
-*/
-function calcMetrics(st, videos){
-  const subCount   = +(st.subscriberCount  ||0);
-  const totalViews = +(st.viewCount         ||0);
-  const videoCount = +(st.videoCount        ||0);
-
+function calcMetrics(st,videos){
+  const subCount=+(st.subscriberCount||0),totalViews=+(st.viewCount||0),videoCount=+(st.videoCount||0);
   let sumViews=0,sumLikes=0,sumComments=0,sumDurSec=0,durCount=0;
-  (videos||[]).forEach(v=>{
-    const s=v.statistics||{};
-    sumViews    += +(s.viewCount   ||0);
-    sumLikes    += +(s.likeCount   ||0);
-    sumComments += +(s.commentCount||0);
-    const d=parseDurSec(v.contentDetails?.duration||'');
-    if(d>0){sumDurSec+=d;durCount++;}
-  });
-  const n        = videos.length||1;
-  const avgViews = sumViews/n;          // 영상 평균 조회수 (실측)
-  const avgLikes = sumLikes/n;          // 영상 평균 좋아요 (실측)
-  const avgCmt   = sumComments/n;       // 영상 평균 댓글  (실측)
-  const avgDur   = durCount?sumDurSec/durCount:0; // 영상 평균 길이(초) (실측)
-
-  /* 참여율 — 실측 공개 데이터
-     (좋아요+댓글) / 조회수 × 100  (공유는 공개 API 미제공 → 제외 후 명시) */
-  const engRate = avgViews>0 ? (avgLikes+avgCmt)/avgViews*100 : 0;
-
-  /* CTR 추정
-     노출수는 비공개 → 구독자 대비 조회 비율로 역산:
-     업계 평균: 초기 24시간에 구독자의 8~15%가 노출 수용 → CTR ≈ avgViews/(subCount*11%) *100
-     단, 구독자 0이면 검색·외부 채널로 간주해 4.2% 기본값 적용 */
-  let ctrEst;
-  if(subCount>0 && avgViews>0){
-    const impressionEst = subCount*0.11;          // 노출수 추정
-    ctrEst = Math.min((avgViews/impressionEst)*100, 15);
-  }else{
-    ctrEst = 4.2;
-  }
-  ctrEst = Math.max(ctrEst, 0.5);
-
-  /* AVD / 유지율 추정
-     실제 AVD는 비공개 → 조회수당 시청 시간을 구독자 규모 기반 보정:
-     소형(<1만): 35%, 중형(<10만): 40%, 대형(<100만): 44%, 메가: 47% */
-  const retFactor = subCount>=1e6?0.47:subCount>=1e5?0.44:subCount>=1e4?0.40:0.35;
-  const avdSec    = avgDur * retFactor;            // 추정 AVD(초)
-  const retRate   = avgDur>0 ? avdSec/avgDur*100 : retFactor*100;  // 유지율(%)
-
-  /* 추천유입 추정
-     구독자 규모가 클수록 홈피드·추천 비중 증가 (비공개 → 규모 기반 추정) */
-  const recInflow = subCount>=1e6?38:subCount>=1e5?28:subCount>=1e4?18:12;
-
-  /* 업로드 주기 */
+  (videos||[]).forEach(v=>{const s=v.statistics||{};sumViews+=+(s.viewCount||0);sumLikes+=+(s.likeCount||0);sumComments+=+(s.commentCount||0);const d=parseDurSec(v.contentDetails?.duration||'');if(d>0){sumDurSec+=d;durCount++;}});
+  const n=videos.length||1,avgViews=sumViews/n,avgLikes=sumLikes/n,avgCmt=sumComments/n,avgDur=durCount?sumDurSec/durCount:0;
+  let ctrEst;if(subCount>0&&avgViews>0){const imp=subCount*0.11;ctrEst=Math.min((avgViews/imp)*100,15);}else{ctrEst=4.2;}ctrEst=Math.max(ctrEst,0.5);
+  const retFactor=subCount>=1e6?0.47:subCount>=1e5?0.44:subCount>=1e4?0.40:0.35;
+  const avdSec=avgDur*retFactor,retRate=avgDur>0?avdSec/avgDur*100:retFactor*100;
+  const engRate=avgViews>0?(avgLikes+avgCmt)/avgViews*100:0;
+  const recInflow=subCount>=1e6?38:subCount>=1e5?28:subCount>=1e4?18:12;
   let uploadsPerWeek=0;
-  if(videos.length>=2){
-    const dates=videos.map(v=>new Date(v.snippet?.publishedAt||0)).sort((a,b)=>a-b);
-    const spanWks=Math.max(1,(dates[dates.length-1]-dates[0])/(7*864e5));
-    uploadsPerWeek=videos.length/spanWks;
-  }
-
-  /* 구독자 전환율 추정 (총조회수 대비 구독자) */
-  const subConvRate = totalViews>0 ? Math.min((subCount/totalViews)*100, 10) : 0;
-
-  /* 유사 채널 구독자 성장률 추정 (벤치마크 기반) */
-  const subGrowthEst = subCount>=1e6?2.1:subCount>=1e5?3.8:subCount>=1e4?5.5:8.2;
-
-  /* 좋아요 비율 */
-  const likeRatio = avgViews>0 ? avgLikes/avgViews*100 : 0;
-
-  /* 30s / 50% / 90% 유지율 추정 */
-  const ret30 = Math.min(100, retRate+18);
-  const ret50 = retRate;
-  const ret90 = Math.max(0,  retRate-20);
-
-  return{
-    subCount,totalViews,videoCount,n,
-    avgViews,avgLikes,avgCmt,avgDur,avdSec,
-    ctrEst,retRate,engRate,recInflow,
-    uploadsPerWeek,subConvRate,subGrowthEst,
-    likeRatio,ret30,ret50,ret90,
-    sumViews,sumLikes,sumComments,
-  };
+  if(videos.length>=2){const dates=videos.map(v=>new Date(v.snippet?.publishedAt||0)).sort((a,b)=>a-b);const spanWks=Math.max(1,(dates[dates.length-1]-dates[0])/(7*864e5));uploadsPerWeek=videos.length/spanWks;}
+  const subConvRate=totalViews>0?Math.min((subCount/totalViews)*100,10):0;
+  const subGrowthEst=subCount>=1e6?2.1:subCount>=1e5?3.8:subCount>=1e4?5.5:8.2;
+  const likeRatio=avgViews>0?avgLikes/avgViews*100:0;
+  const ret30=Math.min(100,retRate+18),ret50=retRate,ret90=Math.max(0,retRate-20);
+  return{subCount,totalViews,videoCount,n,avgViews,avgLikes,avgCmt,avgDur,avdSec,ctrEst,retRate,engRate,recInflow,uploadsPerWeek,subConvRate,subGrowthEst,likeRatio,ret30,ret50,ret90,sumViews,sumLikes,sumComments};
 }
-
-/* ── 알고리즘 점수 산출 ── */
 function calcAlgoScore(m){
-  /* 각 지표를 0~100 정규화 */
-  const nCTR   = Math.min(100, m.ctrEst/10*100);          // 10% = 만점
-  const nRet   = Math.min(100, m.retRate);                 // 100% = 만점
-  const nEng   = Math.min(100, m.engRate/5*100);          // 5%   = 만점
-  const nRec   = Math.min(100, m.recInflow/50*100);       // 50%  = 만점
-  const nFreq  = Math.min(100, m.uploadsPerWeek/3*100);   // 3회/주 = 만점
-  const nSub   = Math.min(100, m.subConvRate/5*100);      // 5%   = 만점
-  const nOther = (nFreq+nSub)/2;
-
-  /* 종합 점수 = CTR×0.25 + 유지율×0.25 + 참여율×0.20 + 추천유입×0.15 + 기타×0.15 */
+  const nCTR=Math.min(100,m.ctrEst/10*100),nRet=Math.min(100,m.retRate),nEng=Math.min(100,m.engRate/5*100),nRec=Math.min(100,m.recInflow/50*100);
+  const nFreq=Math.min(100,m.uploadsPerWeek/3*100),nSub=Math.min(100,m.subConvRate/5*100),nOther=(nFreq+nSub)/2;
   const total=Math.round(nCTR*0.25+nRet*0.25+nEng*0.20+nRec*0.15+nOther*0.15);
-
   return{total,nCTR:Math.round(nCTR),nRet:Math.round(nRet),nEng:Math.round(nEng),nRec:Math.round(nRec),nOther:Math.round(nOther)};
 }
-
-/* ── SEO 분석 ── */
 function calcSEO(videos){
   if(!videos.length)return{title:50,desc:40,tag:40,chapter:20,caption:30};
-  let tS=0,dS=0,kS=0,cS=0;
-  const cap=Math.min(videos.length,15);
-  videos.slice(0,cap).forEach(v=>{
-    const sn=v.snippet||{};
-    const tl=(sn.title||'').length;
-    const dl=(sn.description||'').length;
-    const tags=(sn.tags||[]).length;
-    tS+=tl>=40&&tl<=70?100:tl>=25?68:38;
-    dS+=dl>300?100:dl>100?68:35;
-    kS+=tags>=8&&tags<=15?100:tags>=3?62:25;
-    cS+=/\d{1,2}:\d{2}/.test(sn.description||'')?100:15;
-  });
-  return{
-    title:Math.round(tS/cap),
-    desc :Math.round(dS/cap),
-    tag  :Math.round(kS/cap),
-    chapter:Math.round(cS/cap),
-    caption:38,                // 자막: 공개 API 미제공 → 업계 평균
-  };
+  let tS=0,dS=0,kS=0,cS=0;const cap=Math.min(videos.length,15);
+  videos.slice(0,cap).forEach(v=>{const sn=v.snippet||{};const tl=(sn.title||'').length,dl=(sn.description||'').length,tags=(sn.tags||[]).length;tS+=tl>=40&&tl<=70?100:tl>=25?68:38;dS+=dl>300?100:dl>100?68:35;kS+=tags>=8&&tags<=15?100:tags>=3?62:25;cS+=/\d{1,2}:\d{2}/.test(sn.description||'')?100:15;});
+  return{title:Math.round(tS/cap),desc:Math.round(dS/cap),tag:Math.round(kS/cap),chapter:Math.round(cS/cap),caption:38};
 }
-
-/* ── 트래픽 소스 추정 ── */
 function estimateTraffic(subCount){
-  if(subCount>=1e6)return[
-    {lbl:'홈 피드 추천', pct:36,color:'#a855f7'},
-    {lbl:'추천 동영상',  pct:27,color:'#7c3aed'},
-    {lbl:'검색',        pct:17,color:'#06b6d4'},
-    {lbl:'외부(SNS/웹)',pct:11,color:'#e879a0'},
-    {lbl:'구독자 피드',  pct:9, color:'#f0c96a'},
-  ];
-  if(subCount>=1e5)return[
-    {lbl:'홈 피드 추천', pct:27,color:'#a855f7'},
-    {lbl:'추천 동영상',  pct:24,color:'#7c3aed'},
-    {lbl:'검색',        pct:26,color:'#06b6d4'},
-    {lbl:'외부(SNS/웹)',pct:13,color:'#e879a0'},
-    {lbl:'구독자 피드',  pct:10,color:'#f0c96a'},
-  ];
-  return[
-    {lbl:'홈 피드 추천', pct:16,color:'#a855f7'},
-    {lbl:'추천 동영상',  pct:17,color:'#7c3aed'},
-    {lbl:'검색',        pct:38,color:'#06b6d4'},
-    {lbl:'외부(SNS/웹)',pct:21,color:'#e879a0'},
-    {lbl:'구독자 피드',  pct:8, color:'#f0c96a'},
-  ];
+  if(subCount>=1e6)return[{lbl:'홈 피드 추천',pct:36,color:'#a855f7'},{lbl:'추천 동영상',pct:27,color:'#7c3aed'},{lbl:'검색',pct:17,color:'#06b6d4'},{lbl:'외부(SNS/웹)',pct:11,color:'#e879a0'},{lbl:'구독자 피드',pct:9,color:'#f0c96a'}];
+  if(subCount>=1e5)return[{lbl:'홈 피드 추천',pct:27,color:'#a855f7'},{lbl:'추천 동영상',pct:24,color:'#7c3aed'},{lbl:'검색',pct:26,color:'#06b6d4'},{lbl:'외부(SNS/웹)',pct:13,color:'#e879a0'},{lbl:'구독자 피드',pct:10,color:'#f0c96a'}];
+  return[{lbl:'홈 피드 추천',pct:16,color:'#a855f7'},{lbl:'추천 동영상',pct:17,color:'#7c3aed'},{lbl:'검색',pct:38,color:'#06b6d4'},{lbl:'외부(SNS/웹)',pct:21,color:'#e879a0'},{lbl:'구독자 피드',pct:8,color:'#f0c96a'}];
 }
-
-/* ── 액션 피드백 생성 ── */
 function buildFeedback(m,seo,score){
   const fb=[];
-
-  /* CTR */
-  if(m.ctrEst<3)
-    fb.push({p:'high',title:'🖼️ CTR 긴급 개선 필요',
-      body:`추정 CTR ${m.ctrEst.toFixed(1)}%로 매우 낮습니다. 썸네일에 얼굴·감정 표현을 크게 넣고, 제목에 숫자·의문문을 활용하세요. 예: "이것 하나로 구독자 1만 달성?!" — 첫 24시간 CTR이 4% 미만이면 썸네일을 즉시 교체하세요.`});
-  else if(m.ctrEst<5)
-    fb.push({p:'mid',title:'🖼️ CTR 개선 권장',
-      body:`추정 CTR ${m.ctrEst.toFixed(1)}% — 평균 수준입니다. 밝은 배경 + 확대된 텍스트 오버레이 썸네일이 효과적입니다. A/B 테스트로 성과 좋은 패턴을 찾으세요.`});
-  else
-    fb.push({p:'low',title:'✅ CTR 양호',
-      body:`추정 CTR ${m.ctrEst.toFixed(1)}% — 업계 평균(4~5%)을 상회합니다. 노출 수 증가에 집중하세요.`});
-
-  /* 유지율 */
-  if(m.retRate<35)
-    fb.push({p:'high',title:'⏱️ 시청 유지율 긴급 개선',
-      body:`추정 유지율 ${m.retRate.toFixed(0)}%로 낮습니다. 첫 15초 안에 핵심 내용 힌트를 보여주세요(훅). "이 영상 끝까지 보면 X를 얻을 수 있어요" 형식이 효과적입니다.`});
-  else if(m.retRate<50)
-    fb.push({p:'mid',title:'⏱️ 시청 유지율 향상 권장',
-      body:`추정 유지율 ${m.retRate.toFixed(0)}% — 중반부 이탈이 발생하고 있습니다. 챕터 마커를 추가하고 영상 중간에 패턴 인터럽트를 삽입하세요.`});
-  else
-    fb.push({p:'low',title:'✅ 시청 유지율 양호',
-      body:`추정 유지율 ${m.retRate.toFixed(0)}% — 알고리즘이 긍정적으로 평가하는 수준입니다.`});
-
-  /* 참여율 */
-  if(m.engRate<1)
-    fb.push({p:'high',title:'💬 참여율 긴급 개선',
-      body:`참여율 ${m.engRate.toFixed(2)}%로 매우 낮습니다. 영상 내에서 구체적인 질문을 던지세요. Call-to-Action 타이밍은 영상 50% 지점이 최적입니다.`});
-  else if(m.engRate<3)
-    fb.push({p:'mid',title:'💬 참여율 향상 권장',
-      body:`참여율 ${m.engRate.toFixed(2)}% — 댓글 이벤트나 투표를 활용하세요. 업로드 후 1시간 내 댓글에 빠르게 답글을 달면 알고리즘 부스트 효과가 있습니다.`});
-  else
-    fb.push({p:'low',title:'✅ 참여율 우수',
-      body:`참여율 ${m.engRate.toFixed(2)}% — 매우 우수합니다. 댓글 커뮤니티를 적극 활용해 채널 충성도를 높이세요.`});
-
-  /* SEO */
-  if(seo.title<60)
-    fb.push({p:'mid',title:'🔍 제목 SEO 최적화 필요',
-      body:'제목을 40~70자로 유지하고, 검색량 높은 키워드를 앞부분에 배치하세요.'});
-  if(seo.tag<60)
-    fb.push({p:'mid',title:'🏷️ 태그 최적화 필요',
-      body:'태그를 8~15개로 유지하고, 메인 키워드·관련 키워드·채널 브랜드 태그를 균형 있게 사용하세요.'});
-  if(seo.chapter<60)
-    fb.push({p:'low',title:'📑 챕터 마커 추가 권장',
-      body:'설명란에 타임스탬프(챕터)를 최소 3개 이상 추가하면 검색 결과에 챕터 목록이 표시되어 CTR이 향상됩니다.'});
-
-  /* 업로드 빈도 */
-  if(m.uploadsPerWeek<0.5)
-    fb.push({p:'mid',title:'📅 업로드 빈도 증가 필요',
-      body:'주 1회 이하 업로드입니다. 알고리즘은 일관된 업로드를 선호합니다. 최소 주 1회 스케줄을 설정하세요.'});
-
+  if(m.ctrEst<3)fb.push({p:'high',title:'🖼️ CTR 긴급 개선 필요',body:`추정 CTR ${m.ctrEst.toFixed(1)}%로 매우 낮습니다. 썸네일에 얼굴·감정 표현을 크게 넣고, 제목에 숫자·의문문을 활용하세요.`});
+  else if(m.ctrEst<5)fb.push({p:'mid',title:'🖼️ CTR 개선 권장',body:`추정 CTR ${m.ctrEst.toFixed(1)}% — 평균 수준입니다. A/B 테스트로 성과 좋은 썸네일 패턴을 찾으세요.`});
+  else fb.push({p:'low',title:'✅ CTR 양호',body:`추정 CTR ${m.ctrEst.toFixed(1)}% — 업계 평균(4~5%)을 상회합니다.`});
+  if(m.retRate<35)fb.push({p:'high',title:'⏱️ 시청 유지율 긴급 개선',body:`추정 유지율 ${m.retRate.toFixed(0)}%로 낮습니다. 첫 15초 안에 핵심 내용 힌트를 보여주세요.`});
+  else if(m.retRate<50)fb.push({p:'mid',title:'⏱️ 시청 유지율 향상 권장',body:`추정 유지율 ${m.retRate.toFixed(0)}% — 챕터 마커를 추가하고 영상 중간에 패턴 인터럽트를 삽입하세요.`});
+  else fb.push({p:'low',title:'✅ 시청 유지율 양호',body:`추정 유지율 ${m.retRate.toFixed(0)}% — 알고리즘이 긍정적으로 평가하는 수준입니다.`});
+  if(m.engRate<1)fb.push({p:'high',title:'💬 참여율 긴급 개선',body:`참여율 ${m.engRate.toFixed(2)}%로 매우 낮습니다. 영상 50% 지점에서 구체적인 질문을 던지세요.`});
+  else if(m.engRate<3)fb.push({p:'mid',title:'💬 참여율 향상 권장',body:`참여율 ${m.engRate.toFixed(2)}% — 댓글 이벤트나 투표를 활용하세요.`});
+  else fb.push({p:'low',title:'✅ 참여율 우수',body:`참여율 ${m.engRate.toFixed(2)}% — 매우 우수합니다.`});
+  if(seo.title<60)fb.push({p:'mid',title:'🔍 제목 SEO 최적화 필요',body:'제목을 40~70자로 유지하고, 검색량 높은 키워드를 앞부분에 배치하세요.'});
+  if(seo.tag<60)fb.push({p:'mid',title:'🏷️ 태그 최적화 필요',body:'태그를 8~15개로 유지하고 메인 키워드·관련 키워드를 균형 있게 사용하세요.'});
+  if(seo.chapter<60)fb.push({p:'low',title:'📑 챕터 마커 추가 권장',body:'설명란에 타임스탬프를 최소 3개 이상 추가하면 CTR이 향상됩니다.'});
+  if(m.uploadsPerWeek<0.5)fb.push({p:'mid',title:'📅 업로드 빈도 증가 필요',body:'주 1회 이하 업로드입니다. 최소 주 1회 스케줄을 설정하세요.'});
   return fb;
 }
 
-/* ── HTML 빌드 ── */
-function buildChannelHTML(ch, videos){
-  const sn=ch.snippet||{}, st=ch.statistics||{};
-  const m   =calcMetrics(st,videos);
-  const sc  =calcAlgoScore(m);
-  const lv  =getLevel(sc.total);
-  const seo =calcSEO(videos);
-  const traf=estimateTraffic(m.subCount);
-  const fb  =buildFeedback(m,seo,sc.total);
-
+function buildChannelHTML(ch,videos){
+  const sn=ch.snippet||{},st=ch.statistics||{};
+  const m=calcMetrics(st,videos),sc=calcAlgoScore(m),lv=getLevel(sc.total);
+  const seo=calcSEO(videos),traf=estimateTraffic(m.subCount),fb=buildFeedback(m,seo,sc.total);
   const thumb=sn.thumbnails?.high?.url||sn.thumbnails?.medium?.url||'';
   const xpPct=Math.min(100,sc.total);
-  const ringC=2*Math.PI*52;
-  const ringOff=ringC*(1-xpPct/100);
-
-  /* ── 트래픽 바 ── */
-  const trafficHTML=traf.map(t=>`
-    <div class="ch-traffic-row">
-      <div class="ch-traffic-lbl">${t.lbl}</div>
-      <div class="ch-traffic-track">
-        <div class="ch-traffic-fill" data-pct="${t.pct}" style="background:${t.color}"></div>
-      </div>
-      <div class="ch-traffic-pct" style="color:${t.color}">${t.pct}%</div>
-    </div>`).join('');
-
-  /* ── SEO 체크리스트 ── */
-  const seoHTML=[
-    {lbl:'제목 키워드 최적화', s:seo.title},
-    {lbl:'설명란 최적화',      s:seo.desc},
-    {lbl:'태그 품질',          s:seo.tag},
-    {lbl:'챕터 마커 활용',     s:seo.chapter},
-    {lbl:'자막 활용(추정)',    s:seo.caption},
-  ].map(x=>`
-    <div class="ch-seo-item">
-      <span class="ch-seo-icon">${seoIcon(x.s)}</span>
-      <span class="ch-seo-lbl">${x.lbl}</span>
-      <span class="ch-seo-pill ${seoGrade(x.s)}">${x.s}점</span>
-    </div>`).join('');
-
-  /* ── 피드백 ── */
-  const fbHTML=fb.map(f=>`
-    <div class="ch-fb-card ${f.p}">
-      <div class="ch-fb-title">${f.title}</div>
-      <div class="ch-fb-body">${f.body}</div>
-    </div>`).join('');
-
+  const ringC=2*Math.PI*52,ringOff=ringC*(1-xpPct/100);
+  const trafficHTML=traf.map(t=>`<div class="ch-traffic-row"><div class="ch-traffic-lbl">${t.lbl}</div><div class="ch-traffic-track"><div class="ch-traffic-fill" data-pct="${t.pct}" style="background:${t.color}"></div></div><div class="ch-traffic-pct" style="color:${t.color}">${t.pct}%</div></div>`).join('');
+  const seoHTML=[{lbl:'제목 키워드 최적화',s:seo.title},{lbl:'설명란 최적화',s:seo.desc},{lbl:'태그 품질',s:seo.tag},{lbl:'챕터 마커 활용',s:seo.chapter},{lbl:'자막 활용(추정)',s:seo.caption}].map(x=>`<div class="ch-seo-item"><span class="ch-seo-icon">${seoIcon(x.s)}</span><span class="ch-seo-lbl">${x.lbl}</span><span class="ch-seo-pill ${seoGrade(x.s)}">${x.s}점</span></div>`).join('');
+  const fbHTML=fb.map(f=>`<div class="ch-fb-card ${f.p}"><div class="ch-fb-title">${f.title}</div><div class="ch-fb-body">${f.body}</div></div>`).join('');
   return `
-  <!-- ① 프로필 헤더 -->
   <div class="ch-profile">
     ${thumb?`<img class="ch-avatar" src="${thumb}" alt="${sn.title||''}" />`:''}
     <div class="ch-profile-info">
@@ -1194,64 +935,32 @@ function buildChannelHTML(ch, videos){
       </div>
     </div>
   </div>
-
-  <!-- ② 알고리즘 점수 링 + 가중 바 -->
   <div class="algo-score-ring-wrap">
-    <!-- 링 -->
     <svg class="algo-ring-svg" width="120" height="120" viewBox="0 0 120 120">
       <circle cx="60" cy="60" r="52" stroke="var(--border)" stroke-width="9" fill="none"/>
-      <circle cx="60" cy="60" r="52"
-        stroke="${lv.color}" stroke-width="9" fill="none"
-        stroke-dasharray="${ringC.toFixed(2)}"
-        stroke-dashoffset="${ringOff.toFixed(2)}"
-        stroke-linecap="round"
-        transform="rotate(-90 60 60)"
-        class="ch-ring-arc"
+      <circle cx="60" cy="60" r="52" stroke="${lv.color}" stroke-width="9" fill="none"
+        stroke-dasharray="${ringC.toFixed(2)}" stroke-dashoffset="${ringOff.toFixed(2)}"
+        stroke-linecap="round" transform="rotate(-90 60 60)"
         style="transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)"/>
       <text x="60" y="62" text-anchor="middle" dominant-baseline="middle"
-        font-size="28" font-weight="900" fill="${lv.color}"
-        id="ch-score-text">0</text>
-      <text x="60" y="82" text-anchor="middle"
-        font-size="10" fill="var(--text-muted)">/100</text>
+        font-size="28" font-weight="900" fill="${lv.color}" id="ch-score-text">0</text>
+      <text x="60" y="82" text-anchor="middle" font-size="10" fill="var(--text-muted)">/100</text>
     </svg>
-    <!-- 레벨 설명 -->
     <div class="algo-ring-info">
       <div style="margin-bottom:10px">
-        <span class="alc-lv-pill" style="--lv-color:${lv.color};border-color:${lv.color};color:${lv.color}">
-          ${lv.emoji} ${lv.lv} — ${lv.label}
-        </span>
+        <span class="alc-lv-pill" style="--lv-color:${lv.color};border-color:${lv.color};color:${lv.color}">${lv.emoji} ${lv.lv} — ${lv.label}</span>
       </div>
       <div class="algo-ring-score" style="color:${lv.color}" id="ch-score-num">0</div>
       <div class="algo-ring-label">알고리즘 종합 점수</div>
       <div class="algo-ring-desc">${lv.desc}</div>
     </div>
-    <!-- 가중 바 -->
     <div class="algo-weight-bars">
-      ${[
-        {lbl:'📸 CTR (×0.25)',    pct:sc.nCTR,  color:'#a855f7'},
-        {lbl:'⏱️ 유지율 (×0.25)',pct:sc.nRet,  color:'#06b6d4'},
-        {lbl:'💬 참여율 (×0.20)', pct:sc.nEng,  color:'#e879a0'},
-        {lbl:'🏠 추천유입 (×0.15)',pct:sc.nRec, color:'#f0c96a'},
-        {lbl:'📋 기타 (×0.15)',   pct:sc.nOther,color:'#10b981'},
-      ].map(b=>`
-        <div class="awb-row">
-          <div class="awb-head">
-            <span>${b.lbl}</span>
-            <span style="color:${b.color}">${b.pct}점</span>
-          </div>
-          <div class="awb-track">
-            <div class="awb-fill" data-pct="${b.pct}" style="background:${b.color}"></div>
-          </div>
-        </div>`).join('')}
+      ${[{lbl:'📸 CTR (×0.25)',pct:sc.nCTR,color:'#a855f7'},{lbl:'⏱️ 유지율 (×0.25)',pct:sc.nRet,color:'#06b6d4'},{lbl:'💬 참여율 (×0.20)',pct:sc.nEng,color:'#e879a0'},{lbl:'🏠 추천유입 (×0.15)',pct:sc.nRec,color:'#f0c96a'},{lbl:'📋 기타 (×0.15)',pct:sc.nOther,color:'#10b981'}].map(b=>`<div class="awb-row"><div class="awb-head"><span>${b.lbl}</span><span style="color:${b.color}">${b.pct}점</span></div><div class="awb-track"><div class="awb-fill" data-pct="${b.pct}" style="background:${b.color}"></div></div></div>`).join('')}
     </div>
   </div>
-
-  <!-- ③ 3D 레벨 카드 -->
   <div class="algo-level-scene">
     <div class="algo-level-card ${lv.cls}">
-      <div class="alc-fog"></div>
-      <div class="alc-beam"></div>
-      <div class="alc-shine"></div>
+      <div class="alc-fog"></div><div class="alc-beam"></div><div class="alc-shine"></div>
       <div class="alc-bokeh" style="width:90px;height:90px;top:-25px;right:-25px;animation-delay:0s"></div>
       <div class="alc-bokeh" style="width:45px;height:45px;bottom:18px;left:12px;animation-delay:1.8s"></div>
       <div class="alc-sparkle" style="width:5px;height:5px;top:20%;left:16%;animation-delay:.4s"></div>
@@ -1259,227 +968,117 @@ function buildChannelHTML(ch, videos){
       <div class="alc-sparkle" style="width:5px;height:5px;top:80%;left:46%;animation-delay:1.4s"></div>
       <div class="alc-content">
         <div class="alc-top">
-          <div class="alc-lv-pill" style="--lv-color:${lv.color};border-color:${lv.color};color:${lv.color}">
-            ${lv.emoji} ${lv.lv}
-          </div>
+          <div class="alc-lv-pill" style="--lv-color:${lv.color};border-color:${lv.color};color:${lv.color}">${lv.emoji} ${lv.lv}</div>
           <span style="font-size:28px">${lv.emoji}</span>
         </div>
         <div class="alc-title">${lv.label}</div>
         <div class="alc-sub">${sn.title||''}</div>
         <div class="alc-metrics">
-          <div class="alc-metric-item">
-            <div class="alc-metric-val" style="color:${lv.color}">${sc.total}</div>
-            <div class="alc-metric-lbl">알고 점수</div>
-          </div>
-          <div class="alc-metric-item">
-            <div class="alc-metric-val" style="color:#06b6d4">${m.ctrEst.toFixed(1)}%</div>
-            <div class="alc-metric-lbl">추정 CTR</div>
-          </div>
-          <div class="alc-metric-item">
-            <div class="alc-metric-val" style="color:#10b981">${m.retRate.toFixed(0)}%</div>
-            <div class="alc-metric-lbl">추정 유지율</div>
-          </div>
-          <div class="alc-metric-item">
-            <div class="alc-metric-val" style="color:#e879a0">${m.engRate.toFixed(2)}%</div>
-            <div class="alc-metric-lbl">참여율</div>
-          </div>
-          <div class="alc-metric-item">
-            <div class="alc-metric-val" style="color:#f0c96a">${chFmt(m.avgViews)}</div>
-            <div class="alc-metric-lbl">평균 조회수</div>
-          </div>
+          <div class="alc-metric-item"><div class="alc-metric-val" style="color:${lv.color}">${sc.total}</div><div class="alc-metric-lbl">알고 점수</div></div>
+          <div class="alc-metric-item"><div class="alc-metric-val" style="color:#06b6d4">${m.ctrEst.toFixed(1)}%</div><div class="alc-metric-lbl">추정 CTR</div></div>
+          <div class="alc-metric-item"><div class="alc-metric-val" style="color:#10b981">${m.retRate.toFixed(0)}%</div><div class="alc-metric-lbl">추정 유지율</div></div>
+          <div class="alc-metric-item"><div class="alc-metric-val" style="color:#e879a0">${m.engRate.toFixed(2)}%</div><div class="alc-metric-lbl">참여율</div></div>
+          <div class="alc-metric-item"><div class="alc-metric-val" style="color:#f0c96a">${chFmt(m.avgViews)}</div><div class="alc-metric-lbl">평균 조회수</div></div>
         </div>
-        <!-- XP 바 -->
         <div class="alc-xp-wrap">
-          <div class="alc-xp-track">
-            <div class="alc-xp-fill" id="ch-xp-fill" data-pct="${xpPct}"></div>
-          </div>
+          <div class="alc-xp-track"><div class="alc-xp-fill" id="ch-xp-fill" data-pct="${xpPct}"></div></div>
           <div class="alc-xp-labels"><span>LV.1</span><span>${sc.total} XP</span><span>LV.MAX</span></div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- ④ 7개 지표 그룹 -->
   <div class="ch-metric-grid">
-
-    <!-- 1. 노출 & 클릭 -->
     <div class="ch-metric-card">
       <div class="ch-metric-card-title">📸 노출 & 클릭 지표</div>
-      <div class="ch-row"><span class="ch-row-key">추정 CTR</span>
-        <span class="ch-row-val ${chColor(m.ctrEst,5,3)}">${chPct(m.ctrEst)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">영상 평균 조회수</span>
-        <span class="ch-row-val neutral">${chFmt(m.avgViews)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">초기 CTR 1h (추정)</span>
-        <span class="ch-row-val ${chColor(m.ctrEst*1.35,6,4)}">${chPct(m.ctrEst*1.35)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">초기 CTR 24h (추정)</span>
-        <span class="ch-row-val ${chColor(m.ctrEst*1.12,5,3)}">${chPct(m.ctrEst*1.12)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">썸네일 품질 점수</span>
-        <span class="ch-row-val ${chColor(sc.nCTR,70,50)}">${sc.nCTR}/100</span></div>
+      <div class="ch-row"><span class="ch-row-key">추정 CTR</span><span class="ch-row-val ${chColor(m.ctrEst,5,3)}">${chPct(m.ctrEst)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">영상 평균 조회수</span><span class="ch-row-val neutral">${chFmt(m.avgViews)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">초기 CTR 1h (추정)</span><span class="ch-row-val ${chColor(m.ctrEst*1.35,6,4)}">${chPct(m.ctrEst*1.35)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">초기 CTR 24h (추정)</span><span class="ch-row-val ${chColor(m.ctrEst*1.12,5,3)}">${chPct(m.ctrEst*1.12)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">썸네일 품질 점수</span><span class="ch-row-val ${chColor(sc.nCTR,70,50)}">${sc.nCTR}/100</span></div>
     </div>
-
-    <!-- 2. 시청 유지율 -->
     <div class="ch-metric-card">
       <div class="ch-metric-card-title">⏱️ 시청 유지율 지표</div>
-      <div class="ch-row"><span class="ch-row-key">영상 평균 길이</span>
-        <span class="ch-row-val neutral">${chSec(m.avgDur)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">추정 AVD</span>
-        <span class="ch-row-val ${chColor(m.retRate,50,35)}">${chSec(m.avdSec)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">추정 유지율</span>
-        <span class="ch-row-val ${chColor(m.retRate,50,35)}">${chPct(m.retRate)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">30초 유지율 (추정)</span>
-        <span class="ch-row-val ${chColor(m.ret30,72,56)}">${chPct(m.ret30,0)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">50% 시점 유지율 (추정)</span>
-        <span class="ch-row-val ${chColor(m.ret50,50,35)}">${chPct(m.ret50,0)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">90% 이상 유지 (추정)</span>
-        <span class="ch-row-val ${chColor(m.ret90,25,12)}">${chPct(m.ret90,0)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">영상 평균 길이</span><span class="ch-row-val neutral">${chSec(m.avgDur)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">추정 AVD</span><span class="ch-row-val ${chColor(m.retRate,50,35)}">${chSec(m.avdSec)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">추정 유지율</span><span class="ch-row-val ${chColor(m.retRate,50,35)}">${chPct(m.retRate)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">30초 유지율 (추정)</span><span class="ch-row-val ${chColor(m.ret30,72,56)}">${chPct(m.ret30,0)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">50% 시점 유지율 (추정)</span><span class="ch-row-val ${chColor(m.ret50,50,35)}">${chPct(m.ret50,0)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">90% 이상 유지 (추정)</span><span class="ch-row-val ${chColor(m.ret90,25,12)}">${chPct(m.ret90,0)}</span></div>
     </div>
-
-    <!-- 3. 참여 지표 -->
     <div class="ch-metric-card">
       <div class="ch-metric-card-title">💬 참여 지표</div>
-      <div class="ch-row"><span class="ch-row-key">평균 좋아요 수</span>
-        <span class="ch-row-val neutral">${chFmt(m.avgLikes)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">평균 댓글 수</span>
-        <span class="ch-row-val neutral">${chFmt(m.avgCmt)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">좋아요 비율</span>
-        <span class="ch-row-val ${chColor(m.likeRatio,3,1)}">${chPct(m.likeRatio,2)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">종합 참여율 ★</span>
-        <span class="ch-row-val ${chColor(m.engRate,3,1)}">${chPct(m.engRate,2)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">댓글 응답률</span>
-        <span class="ch-row-val neutral">— (비공개)</span></div>
-      <div style="font-size:10px;color:var(--text-muted);margin-top:8px">★ (좋아요+댓글)÷조회수×100 — 공유는 공개 API 미제공</div>
+      <div class="ch-row"><span class="ch-row-key">평균 좋아요 수</span><span class="ch-row-val neutral">${chFmt(m.avgLikes)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">평균 댓글 수</span><span class="ch-row-val neutral">${chFmt(m.avgCmt)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">좋아요 비율</span><span class="ch-row-val ${chColor(m.likeRatio,3,1)}">${chPct(m.likeRatio,2)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">종합 참여율 ★</span><span class="ch-row-val ${chColor(m.engRate,3,1)}">${chPct(m.engRate,2)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">댓글 응답률</span><span class="ch-row-val neutral">— (비공개)</span></div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:8px">★ (좋아요+댓글)÷조회수×100</div>
     </div>
-
-    <!-- 4. 트래픽 소스 -->
-    <div class="ch-metric-card">
-      <div class="ch-metric-card-title">🚦 트래픽 소스 (구독자 규모 추정)</div>
-      ${trafficHTML}
-    </div>
-
-    <!-- 5. 시청자 특성 & 충성도 -->
+    <div class="ch-metric-card"><div class="ch-metric-card-title">🚦 트래픽 소스 (구독자 규모 추정)</div>${trafficHTML}</div>
     <div class="ch-metric-card">
       <div class="ch-metric-card-title">👥 시청자 특성 & 충성도</div>
-      <div class="ch-row"><span class="ch-row-key">구독자 전환율 (추정)</span>
-        <span class="ch-row-val ${chColor(m.subConvRate,2,0.8)}">${chPct(m.subConvRate,2)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">구독자 월성장률 (추정)</span>
-        <span class="ch-row-val ${chColor(m.subGrowthEst,4,2)}">${m.subGrowthEst.toFixed(1)}%</span></div>
-      <div class="ch-row"><span class="ch-row-key">비구독자 유입 비중 (추정)</span>
-        <span class="ch-row-val neutral">~${Math.round(100-m.subConvRate*8)}%</span></div>
-      <div class="ch-row"><span class="ch-row-key">재방문율 (추정)</span>
-        <span class="ch-row-val neutral">~${Math.round(22+m.subConvRate*3)}%</span></div>
-      <div class="ch-row"><span class="ch-row-key">국가/기기 분포</span>
-        <span class="ch-row-val neutral">Studio 전용</span></div>
+      <div class="ch-row"><span class="ch-row-key">구독자 전환율 (추정)</span><span class="ch-row-val ${chColor(m.subConvRate,2,0.8)}">${chPct(m.subConvRate,2)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">구독자 월성장률 (추정)</span><span class="ch-row-val ${chColor(m.subGrowthEst,4,2)}">${m.subGrowthEst.toFixed(1)}%</span></div>
+      <div class="ch-row"><span class="ch-row-key">비구독자 유입 (추정)</span><span class="ch-row-val neutral">~${Math.round(100-m.subConvRate*8)}%</span></div>
+      <div class="ch-row"><span class="ch-row-key">재방문율 (추정)</span><span class="ch-row-val neutral">~${Math.round(22+m.subConvRate*3)}%</span></div>
+      <div class="ch-row"><span class="ch-row-key">국가/기기 분포</span><span class="ch-row-val neutral">Studio 전용</span></div>
     </div>
-
-    <!-- 6. SEO & 메타데이터 -->
-    <div class="ch-metric-card">
-      <div class="ch-metric-card-title">🔍 SEO & 메타데이터 (최근 ${Math.min(videos.length,15)}개 영상)</div>
-      ${seoHTML}
-    </div>
-
-    <!-- 7. 채널 레벨 지표 -->
+    <div class="ch-metric-card"><div class="ch-metric-card-title">🔍 SEO & 메타데이터 (최근 ${Math.min(videos.length,15)}개 영상)</div>${seoHTML}</div>
     <div class="ch-metric-card">
       <div class="ch-metric-card-title">📡 채널 레벨 종합</div>
-      <div class="ch-row"><span class="ch-row-key">구독자 수</span>
-        <span class="ch-row-val neutral">${chFmt(m.subCount)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">총 조회수</span>
-        <span class="ch-row-val neutral">${chFmt(m.totalViews)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">채널 평균 CTR</span>
-        <span class="ch-row-val ${chColor(m.ctrEst,5,3)}">${chPct(m.ctrEst)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">채널 평균 유지율</span>
-        <span class="ch-row-val ${chColor(m.retRate,50,35)}">${chPct(m.retRate)}</span></div>
-      <div class="ch-row"><span class="ch-row-key">주간 업로드 빈도</span>
-        <span class="ch-row-val ${chColor(m.uploadsPerWeek,2,0.8)}">${m.uploadsPerWeek.toFixed(1)}회/주</span></div>
-      <div class="ch-row"><span class="ch-row-key">알고리즘 종합 점수</span>
-        <span class="ch-row-val" style="color:${lv.color};font-size:15px">${sc.total}/100</span></div>
+      <div class="ch-row"><span class="ch-row-key">구독자 수</span><span class="ch-row-val neutral">${chFmt(m.subCount)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">총 조회수</span><span class="ch-row-val neutral">${chFmt(m.totalViews)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">채널 평균 CTR</span><span class="ch-row-val ${chColor(m.ctrEst,5,3)}">${chPct(m.ctrEst)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">채널 평균 유지율</span><span class="ch-row-val ${chColor(m.retRate,50,35)}">${chPct(m.retRate)}</span></div>
+      <div class="ch-row"><span class="ch-row-key">주간 업로드 빈도</span><span class="ch-row-val ${chColor(m.uploadsPerWeek,2,0.8)}">${m.uploadsPerWeek.toFixed(1)}회/주</span></div>
+      <div class="ch-row"><span class="ch-row-key">알고리즘 종합 점수</span><span class="ch-row-val" style="color:${lv.color};font-size:15px">${sc.total}/100</span></div>
     </div>
-
   </div>
-
-  <!-- ⑤ 액션 피드백 -->
   <div class="ch-feedback-wrap">
     <div class="ch-feedback-title">🎯 맞춤 개선 액션 플랜</div>
     <div class="ch-feedback-list">${fbHTML}</div>
   </div>
-
-  <!-- ⑥ 점수 공식 -->
   <div class="ch-formula-box">
     <b>종합 점수</b> = (CTR × 0.25) + (유지율 × 0.25) + (참여율 × 0.20) + (추천유입 × 0.15) + (기타지표 × 0.15)<br/>
-    <b>CTR</b> = 조회수 ÷ 노출수 × 100 &nbsp;|&nbsp;
-    <b>AVD</b> = 총 시청 시간 ÷ 조회수 &nbsp;|&nbsp;
-    <b>유지율</b> = AVD ÷ 영상 길이 × 100<br/>
-    <b>참여율</b> = (좋아요 + 댓글 + 공유) ÷ 조회수 × 100 &nbsp;|&nbsp;
-    <b>추천유입</b> = 추천 조회수 ÷ 전체 조회수 × 100<br/>
-    <div class="ch-formula-note">
-      * 노출 수, 실제 AVD, 트래픽 소스, 자막 활용 등 일부 지표는 YouTube Studio에서만 확인 가능하며,
-      위 분석은 공개 API(viewCount, likeCount, commentCount, subscriberCount, duration) 기반 추정값입니다.
-    </div>
+    <b>CTR</b> = 조회수 ÷ 노출수 × 100 &nbsp;|&nbsp; <b>AVD</b> = 총 시청 시간 ÷ 조회수 &nbsp;|&nbsp; <b>유지율</b> = AVD ÷ 영상 길이 × 100<br/>
+    <b>참여율</b> = (좋아요 + 댓글 + 공유) ÷ 조회수 × 100 &nbsp;|&nbsp; <b>추천유입</b> = 추천 조회수 ÷ 전체 조회수 × 100
+    <div class="ch-formula-note">* 노출 수, 실제 AVD, 트래픽 소스 등은 YouTube Studio 전용 데이터이며, 위 분석은 공개 API 기반 추정값입니다.</div>
   </div>`;
 }
 
-/* ── 애니메이션 실행 ── */
 function runChannelAnimations(total){
-  /* 바 애니메이션 */
   requestAnimationFrame(()=>{
     document.querySelectorAll('.awb-fill[data-pct]').forEach(el=>{el.style.width=el.dataset.pct+'%';});
     document.querySelectorAll('.ch-traffic-fill[data-pct]').forEach(el=>{el.style.width=el.dataset.pct+'%';});
     const xp=document.getElementById('ch-xp-fill');
     if(xp)setTimeout(()=>{xp.style.width=xp.dataset.pct+'%';},200);
   });
-
-  /* 점수 카운터 */
-  const numEl=document.getElementById('ch-score-num');
-  const svgEl=document.getElementById('ch-score-text');
+  const numEl=document.getElementById('ch-score-num'),svgEl=document.getElementById('ch-score-text');
   if(!numEl)return;
-  let cur=0;
-  const step=Math.max(1,Math.ceil(total/60));
-  const timer=setInterval(()=>{
-    cur=Math.min(cur+step,total);
-    numEl.textContent=cur;
-    if(svgEl)svgEl.textContent=cur;
-    if(cur>=total)clearInterval(timer);
-  },16);
+  let cur=0;const step=Math.max(1,Math.ceil(total/60));
+  const timer=setInterval(()=>{cur=Math.min(cur+step,total);numEl.textContent=cur;if(svgEl)svgEl.textContent=cur;if(cur>=total)clearInterval(timer);},16);
 }
 
-/* ── 메인 진입점 ── */
 async function doChannelSearch(){
-  const q  =document.getElementById('ch-input').value.trim();
+  const q=document.getElementById('ch-input').value.trim();
   const out=document.getElementById('channel-result');
   const ldr=document.getElementById('ch-loader');
   if(!q)return;
-  out.innerHTML='';
-  ldr.style.display='flex';
-
+  out.innerHTML='';ldr.style.display='flex';
   try{
-    /* 1. 채널 ID 해석 */
     let channelId;
-    if(q.startsWith('@')){
-      const d=await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&forHandle=${encodeURIComponent(q)}`);
-      channelId=d.items?.[0]?.id;
-    }else{
-      const d=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(q)}&maxResults=1`);
-      channelId=d.items?.[0]?.id?.channelId;
-    }
+    if(q.startsWith('@')){const d=await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&forHandle=${encodeURIComponent(q)}`);channelId=d.items?.[0]?.id;}
+    else{const d=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(q)}&maxResults=1`);channelId=d.items?.[0]?.id?.channelId;}
     if(!channelId)throw new Error('채널을 찾을 수 없습니다. 핸들(@채널명) 형식도 시도해 보세요.');
-
-    /* 2. 채널 상세 */
     const chData=await apiFetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CbrandingSettings%2CcontentDetails&id=${channelId}`);
-    const ch=chData.items?.[0];
-    if(!ch)throw new Error('채널 정보를 불러올 수 없습니다.');
-
-    /* 3. 최근 영상 50개 */
+    const ch=chData.items?.[0];if(!ch)throw new Error('채널 정보를 불러올 수 없습니다.');
     const searchRes=await apiFetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=50`);
     const videoIds=(searchRes.items||[]).map(i=>i.id?.videoId).filter(Boolean);
     let videos=[];
-    if(videoIds.length){
-      const vData=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoIds.join(',')}`);
-      videos=vData.items||[];
-    }
-
+    if(videoIds.length){const vData=await apiFetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoIds.join(',')}`);videos=vData.items||[];}
     ldr.style.display='none';
     out.innerHTML=buildChannelHTML(ch,videos);
     runChannelAnimations(calcAlgoScore(calcMetrics(ch.statistics||{},videos)).total);
-
   }catch(e){
     ldr.style.display='none';
     out.innerHTML=`<div class="error-card"><h3>⚠️ 분석 실패</h3><p>${e.message}</p></div>`;
@@ -1488,27 +1087,13 @@ async function doChannelSearch(){
 
 /* ── 수익 계산기 ── */
 const REV_INPUTS=[
-  {id:'views', label:'월 예상 조회수',    unit:'회', min:1000,  max:50000000, step:10000, val:100000, fmt:n=>n.toLocaleString()},
-  {id:'rpm',   label:'예상 RPM',          unit:'원', min:100,   max:30000,    step:100,   val:2500,   fmt:n=>n.toLocaleString()},
-  {id:'ctr',   label:'CTR (클릭률)',      unit:'%',  min:0.1,   max:20,       step:0.1,   val:4,      fmt:n=>n.toFixed(1)},
-  {id:'cpc',   label:'CPC (클릭당 단가)', unit:'원', min:10,    max:5000,     step:10,    val:200,    fmt:n=>n.toLocaleString()},
+  {id:'views',label:'월 예상 조회수',    unit:'회',min:1000,  max:50000000,step:10000,val:100000,fmt:n=>n.toLocaleString()},
+  {id:'rpm',  label:'예상 RPM',          unit:'원',min:100,   max:30000,   step:100,  val:2500,  fmt:n=>n.toLocaleString()},
+  {id:'ctr',  label:'CTR (클릭률)',      unit:'%', min:0.1,   max:20,      step:0.1,  val:4,     fmt:n=>n.toFixed(1)},
+  {id:'cpc',  label:'CPC (클릭당 단가)', unit:'원',min:10,    max:5000,    step:10,   val:200,   fmt:n=>n.toLocaleString()},
 ];
 const revVals={};REV_INPUTS.forEach(x=>{revVals[x.id]=x.val;});
-function buildRevInputs(){
-  document.getElementById('revInputs').innerHTML=REV_INPUTS.map(inp=>{
-    const pct=((revVals[inp.id]-inp.min)/(inp.max-inp.min)*100).toFixed(1);
-    return`<div class="rev-input-card"><div class="rev-label">📊 ${inp.label}</div>
-      <div class="rev-gauge-wrap">
-        <button class="rev-gauge-btn" onpointerdown="adjRev('${inp.id}',-1)">−</button>
-        <div class="rev-gauge-track" id="track_${inp.id}" onpointerdown="startDrag(event,'${inp.id}')" onclick="trackClick(event,'${inp.id}')">
-          <div class="rev-gauge-fill" id="fill_${inp.id}" style="width:${pct}%;"></div>
-        </div>
-        <button class="rev-gauge-btn" onpointerdown="adjRev('${inp.id}',1)">+</button>
-      </div>
-      <div class="rev-gauge-val" id="val_${inp.id}">${inp.fmt(revVals[inp.id])} ${inp.unit}</div>
-    </div>`;
-  }).join('');
-}
+function buildRevInputs(){document.getElementById('revInputs').innerHTML=REV_INPUTS.map(inp=>{const pct=((revVals[inp.id]-inp.min)/(inp.max-inp.min)*100).toFixed(1);return`<div class="rev-input-card"><div class="rev-label">📊 ${inp.label}</div><div class="rev-gauge-wrap"><button class="rev-gauge-btn" onpointerdown="adjRev('${inp.id}',-1)">−</button><div class="rev-gauge-track" id="track_${inp.id}" onpointerdown="startDrag(event,'${inp.id}')" onclick="trackClick(event,'${inp.id}')"><div class="rev-gauge-fill" id="fill_${inp.id}" style="width:${pct}%;"></div></div><button class="rev-gauge-btn" onpointerdown="adjRev('${inp.id}',1)">+</button></div><div class="rev-gauge-val" id="val_${inp.id}">${inp.fmt(revVals[inp.id])} ${inp.unit}</div></div>`;}).join('');}
 let dragId=null;
 function startDrag(e,id){dragId=id;e.currentTarget.setPointerCapture(e.pointerId);applyDrag(e,id);e.currentTarget.onpointermove=(ev)=>{if(dragId===id)applyDrag(ev,id);};e.currentTarget.onpointerup=()=>{dragId=null;};e.currentTarget.onpointercancel=()=>{dragId=null;};}
 function applyDrag(e,id){const inp=REV_INPUTS.find(x=>x.id===id);const track=document.getElementById('track_'+id);const rect=track.getBoundingClientRect();let pct=(e.clientX-rect.left)/rect.width;pct=Math.max(0,Math.min(1,pct));revVals[id]=Math.round((inp.min+pct*(inp.max-inp.min))/inp.step)*inp.step;revVals[id]=Math.min(Math.max(revVals[id],inp.min),inp.max);updateRevGauge(inp);calcRevenue();}
@@ -1519,108 +1104,36 @@ function calcRevenue(){
   const{views,rpm,ctr,cpc}=revVals;
   const rpmRev=Math.round(views/1000*rpm),ctrClicks=Math.round(views*(ctr/100)),cpcRev=Math.round(ctrClicks*cpc),monthly=Math.round((rpmRev+cpcRev)/2);
   const fmtW=n=>n.toLocaleString('ko-KR')+'원';
-  document.getElementById('revResults').innerHTML=`
-    <div class="rev-result-card"><div class="rev-result-val">${fmtW(monthly)}</div><div class="rev-result-lbl">월 예상 수익</div></div>
-    <div class="rev-result-card"><div class="rev-result-val">${fmtW(monthly*12)}</div><div class="rev-result-lbl">연 예상 수익</div></div>
-    <div class="rev-result-card"><div class="rev-result-val">${fmtW(rpmRev)}</div><div class="rev-result-lbl">RPM 기반 광고수익</div></div>
-    <div class="rev-result-card"><div class="rev-result-val">${ctrClicks.toLocaleString()}회</div><div class="rev-result-lbl">CTR 예측 클릭수</div></div>`;
+  document.getElementById('revResults').innerHTML=`<div class="rev-result-card"><div class="rev-result-val">${fmtW(monthly)}</div><div class="rev-result-lbl">월 예상 수익</div></div><div class="rev-result-card"><div class="rev-result-val">${fmtW(monthly*12)}</div><div class="rev-result-lbl">연 예상 수익</div></div><div class="rev-result-card"><div class="rev-result-val">${fmtW(rpmRev)}</div><div class="rev-result-lbl">RPM 기반 광고수익</div></div><div class="rev-result-card"><div class="rev-result-val">${ctrClicks.toLocaleString()}회</div><div class="rev-result-lbl">CTR 예측 클릭수</div></div>`;
   document.getElementById('revTip').textContent=monthly>=5000000?'🔥 상위 1% 수준! 정말 대단해요!':monthly>=1000000?'💪 월 100만원 이상! 전업 유튜버 가능한 수준이에요.':monthly>=300000?'📈 성장 중! 조금만 더 하면 큰 수익이 기다려요.':'🌱 아직 시작 단계예요. 꾸준함이 핵심입니다!';
 }
 
 /* ── AI 아이디어 ── */
-const AI_TEMPLATES={
-  shorts:   ['${t} 30초 꿀팁','${t} 이것만 알면 됨','${t} 충격 비하인드','${t} 1분 도전','${t} 공감 상황'],
-  tutorial: ['${t} 완전 처음부터','${t} 프로 핵심 노하우','${t} 실수 없이 배우기','${t} 하루 마스터'],
-  vlog:     ['${t} 하루 일상','${t} 현실 솔직 후기','${t} 나만의 루틴','${t} 72시간 도전'],
-  review:   ['${t} 직접 써본 솔직 리뷰','${t} 가성비 TOP5','${t} 비교 결론','${t} 6개월 후기'],
-  challenge:['${t} 챌린지 성공?','24시간 ${t}만 하기','100명에게 물어봤다','${t} 극한 도전'],
-};
-function genAiIdeas(){
-  const topic=document.getElementById('ai-topic').value.trim()||'주제',format=document.getElementById('ai-format').value,tpls=AI_TEMPLATES[format]||AI_TEMPLATES.shorts;
-  document.getElementById('ai-ideas-list').innerHTML=tpls.map(t=>{const title=t.replace(/\${t}/g,topic);return`<div class="ai-idea-card" onclick="this.style.borderColor='var(--accent3)'"><div class="ai-idea-title">💡 ${title}</div><div class="ai-idea-desc">#${topic} #YouTube${format==='shorts'?'Shorts':''} #trending</div></div>`;}).join('');
-}
+const AI_TEMPLATES={shorts:['${t} 30초 꿀팁','${t} 이것만 알면 됨','${t} 충격 비하인드','${t} 1분 도전','${t} 공감 상황'],tutorial:['${t} 완전 처음부터','${t} 프로 핵심 노하우','${t} 실수 없이 배우기','${t} 하루 마스터'],vlog:['${t} 하루 일상','${t} 현실 솔직 후기','${t} 나만의 루틴','${t} 72시간 도전'],review:['${t} 직접 써본 솔직 리뷰','${t} 가성비 TOP5','${t} 비교 결론','${t} 6개월 후기'],challenge:['${t} 챌린지 성공?','24시간 ${t}만 하기','100명에게 물어봤다','${t} 극한 도전']};
+function genAiIdeas(){const topic=document.getElementById('ai-topic').value.trim()||'주제',format=document.getElementById('ai-format').value,tpls=AI_TEMPLATES[format]||AI_TEMPLATES.shorts;document.getElementById('ai-ideas-list').innerHTML=tpls.map(t=>{const title=t.replace(/\${t}/g,topic);return`<div class="ai-idea-card" onclick="this.style.borderColor='var(--accent3)'"><div class="ai-idea-title">💡 ${title}</div><div class="ai-idea-desc">#${topic} #YouTube${format==='shorts'?'Shorts':''} #trending</div></div>`;}).join('');}
 
 /* ── 유튜버 도구 ── */
 const TOOLS_DATA={
-  '영상편집':[
-    {name:'Vrew',url:'https://vrew.voyagerx.com',desc:'AI 자막 자동 생성 영상 편집 툴.',tag:'freemium'},
-    {name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve',desc:'프로 수준 무료 영상 편집 소프트웨어.',tag:'free'},
-    {name:'Premiere Pro',url:'https://www.adobe.com/kr/products/premiere.html',desc:'어도비 프리미어 프로. 유튜버 표준 편집 툴.',tag:'paid'},
-    {name:'CapCut',url:'https://www.capcut.com',desc:'모바일·PC 지원 무료 편집 앱. 쇼츠 특화.',tag:'free'},
-    {name:'Final Cut Pro',url:'https://www.apple.com/final-cut-pro',desc:'Mac 전용 프로급 편집 소프트웨어.',tag:'paid'},
-    {name:'iMovie',url:'https://www.apple.com/imovie',desc:'Mac·iOS 기본 탑재 무료 편집 앱.',tag:'free'},
-    {name:'Clipchamp',url:'https://clipchamp.com',desc:'Microsoft 무료 브라우저 기반 편집기.',tag:'free'},
-    {name:'Filmora',url:'https://filmora.wondershare.com',desc:'직관적 UI 입문·중급 편집 툴.',tag:'freemium'},
-    {name:'Adobe Express',url:'https://www.adobe.com/express',desc:'어도비의 쉬운 영상·SNS 콘텐츠 제작 툴.',tag:'freemium'},
-    {name:'InShot',url:'https://inshot.com',desc:'모바일 전용 쇼츠·릴스 제작 앱.',tag:'freemium'},
-  ],
-  '썸네일':[
-    {name:'Canva',url:'https://www.canva.com',desc:'드래그앤드롭 온라인 디자인 툴.',tag:'freemium'},
-    {name:'Photoshop',url:'https://www.adobe.com/kr/products/photoshop.html',desc:'전문가용 이미지 편집.',tag:'paid'},
-    {name:'Adobe Firefly',url:'https://firefly.adobe.com',desc:'AI 이미지 생성 툴.',tag:'freemium'},
-    {name:'Remove.bg',url:'https://www.remove.bg',desc:'AI 배경 제거 툴.',tag:'freemium'},
-    {name:'Snappa',url:'https://snappa.com',desc:'썸네일 전용 템플릿 디자인 툴.',tag:'freemium'},
-    {name:'Fotor',url:'https://www.fotor.com',desc:'AI 기반 이미지 편집 원스톱 툴.',tag:'freemium'},
-    {name:'PicsArt',url:'https://picsart.com',desc:'모바일 썸네일 제작 앱.',tag:'freemium'},
-    {name:'Pixlr',url:'https://pixlr.com',desc:'브라우저 기반 무료 포토샵 대체.',tag:'freemium'},
-  ],
-  '음향·음악':[
-    {name:'Audacity',url:'https://www.audacityteam.org',desc:'무료 오픈소스 오디오 편집.',tag:'free'},
-    {name:'Adobe Audition',url:'https://www.adobe.com/kr/products/audition.html',desc:'전문 오디오 편집.',tag:'paid'},
-    {name:'Epidemic Sound',url:'https://www.epidemicsound.com',desc:'저작권 프리 BGM 라이브러리.',tag:'paid'},
-    {name:'Artlist',url:'https://artlist.io',desc:'무제한 음악·효과음 라이선스.',tag:'paid'},
-    {name:'Pixabay Music',url:'https://pixabay.com/music',desc:'무료 CC0 음악 라이브러리.',tag:'free'},
-    {name:'YT 오디오 보관함',url:'https://studio.youtube.com',desc:'YouTube 스튜디오 무료 저작권 프리 음악.',tag:'free'},
-    {name:'AIVA',url:'https://www.aiva.ai',desc:'AI 작곡 플랫폼.',tag:'freemium'},
-    {name:'Suno AI',url:'https://suno.com',desc:'텍스트로 완성된 노래를 생성하는 AI.',tag:'freemium'},
-  ],
-  'AI 도구':[
-    {name:'ChatGPT',url:'https://chat.openai.com',desc:'스크립트·제목·설명란 작성 AI.',tag:'freemium'},
-    {name:'Claude',url:'https://claude.ai',desc:'긴 스크립트 작성 및 아이디어 발굴.',tag:'freemium'},
-    {name:'Runway',url:'https://runwayml.com',desc:'AI 영상 생성·편집.',tag:'freemium'},
-    {name:'ElevenLabs',url:'https://elevenlabs.io',desc:'고품질 AI 음성 생성.',tag:'freemium'},
-    {name:'HeyGen',url:'https://www.heygen.com',desc:'AI 아바타 영상 자동 생성.',tag:'freemium'},
-    {name:'Synthesia',url:'https://www.synthesia.io',desc:'AI 아바타 영상 제작 플랫폼.',tag:'paid'},
-    {name:'Pictory',url:'https://pictory.ai',desc:'스크립트를 AI로 영상 변환.',tag:'freemium'},
-    {name:'Descript',url:'https://www.descript.com',desc:'텍스트 기반 영상 편집.',tag:'freemium'},
-    {name:'Opus Clip',url:'https://www.opus.pro',desc:'긴 영상을 AI가 쇼츠로 자동 분리.',tag:'freemium'},
-    {name:'Captions',url:'https://www.captions.ai',desc:'AI 자막·번역·편집 모바일 앱.',tag:'freemium'},
-  ],
-  '방송·스트리밍':[
-    {name:'OBS Studio',url:'https://obsproject.com',desc:'무료 오픈소스 방송·녹화 소프트웨어.',tag:'free'},
-    {name:'Streamlabs',url:'https://streamlabs.com',desc:'OBS 기반 방송 툴 + 채팅봇 통합.',tag:'freemium'},
-    {name:'StreamYard',url:'https://streamyard.com',desc:'브라우저 기반 라이브 방송 툴.',tag:'freemium'},
-    {name:'Ecamm Live',url:'https://www.ecamm.com/mac/ecammlive',desc:'Mac 전용 라이브 방송 소프트웨어.',tag:'paid'},
-    {name:'Restream',url:'https://restream.io',desc:'다중 동시 방송 플랫폼.',tag:'freemium'},
-  ],
-  '영상·이미지 소스':[
-    {name:'Pexels',url:'https://www.pexels.com/videos',desc:'무료 HD/4K 스톡 영상.',tag:'free'},
-    {name:'Pixabay',url:'https://pixabay.com/videos',desc:'CC0 라이선스 영상·이미지·음악.',tag:'free'},
-    {name:'Mixkit',url:'https://mixkit.co',desc:'무료 스톡 영상·애니메이션·음악.',tag:'free'},
-    {name:'Unsplash',url:'https://unsplash.com',desc:'고해상도 무료 사진 라이브러리.',tag:'free'},
-    {name:'Freepik',url:'https://www.freepik.com',desc:'무료 벡터·PSD·아이콘·이미지.',tag:'freemium'},
-    {name:'Storyblocks',url:'https://www.storyblocks.com',desc:'구독제 스톡 영상·음악·이미지.',tag:'paid'},
-    {name:'Shutterstock',url:'https://www.shutterstock.com',desc:'세계 최대 스톡 이미지·영상 플랫폼.',tag:'paid'},
-    {name:'Flaticon',url:'https://www.flaticon.com',desc:'수백만 개 무료 아이콘.',tag:'freemium'},
-  ],
+  '영상편집':[{name:'Vrew',url:'https://vrew.voyagerx.com',desc:'AI 자막 자동 생성 영상 편집 툴.',tag:'freemium'},{name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve',desc:'프로 수준 무료 영상 편집 소프트웨어.',tag:'free'},{name:'Premiere Pro',url:'https://www.adobe.com/kr/products/premiere.html',desc:'어도비 프리미어 프로. 유튜버 표준 편집 툴.',tag:'paid'},{name:'CapCut',url:'https://www.capcut.com',desc:'모바일·PC 지원 무료 편집 앱. 쇼츠 특화.',tag:'free'},{name:'Final Cut Pro',url:'https://www.apple.com/final-cut-pro',desc:'Mac 전용 프로급 편집 소프트웨어.',tag:'paid'},{name:'iMovie',url:'https://www.apple.com/imovie',desc:'Mac·iOS 기본 탑재 무료 편집 앱.',tag:'free'},{name:'Clipchamp',url:'https://clipchamp.com',desc:'Microsoft 무료 브라우저 기반 편집기.',tag:'free'},{name:'Filmora',url:'https://filmora.wondershare.com',desc:'직관적 UI 입문·중급 편집 툴.',tag:'freemium'},{name:'Adobe Express',url:'https://www.adobe.com/express',desc:'어도비의 쉬운 영상·SNS 콘텐츠 제작 툴.',tag:'freemium'},{name:'InShot',url:'https://inshot.com',desc:'모바일 전용 쇼츠·릴스 제작 앱.',tag:'freemium'}],
+  '썸네일':[{name:'Canva',url:'https://www.canva.com',desc:'드래그앤드롭 온라인 디자인 툴.',tag:'freemium'},{name:'Photoshop',url:'https://www.adobe.com/kr/products/photoshop.html',desc:'전문가용 이미지 편집.',tag:'paid'},{name:'Adobe Firefly',url:'https://firefly.adobe.com',desc:'AI 이미지 생성 툴.',tag:'freemium'},{name:'Remove.bg',url:'https://www.remove.bg',desc:'AI 배경 제거 툴.',tag:'freemium'},{name:'Snappa',url:'https://snappa.com',desc:'썸네일 전용 템플릿 디자인 툴.',tag:'freemium'},{name:'Fotor',url:'https://www.fotor.com',desc:'AI 기반 이미지 편집 원스톱 툴.',tag:'freemium'},{name:'PicsArt',url:'https://picsart.com',desc:'모바일 썸네일 제작 앱.',tag:'freemium'},{name:'Pixlr',url:'https://pixlr.com',desc:'브라우저 기반 무료 포토샵 대체.',tag:'freemium'}],
+  '음향·음악':[{name:'Audacity',url:'https://www.audacityteam.org',desc:'무료 오픈소스 오디오 편집.',tag:'free'},{name:'Adobe Audition',url:'https://www.adobe.com/kr/products/audition.html',desc:'전문 오디오 편집.',tag:'paid'},{name:'Epidemic Sound',url:'https://www.epidemicsound.com',desc:'저작권 프리 BGM 라이브러리.',tag:'paid'},{name:'Artlist',url:'https://artlist.io',desc:'무제한 음악·효과음 라이선스.',tag:'paid'},{name:'Pixabay Music',url:'https://pixabay.com/music',desc:'무료 CC0 음악 라이브러리.',tag:'free'},{name:'YT 오디오 보관함',url:'https://studio.youtube.com',desc:'YouTube 스튜디오 무료 저작권 프리 음악.',tag:'free'},{name:'AIVA',url:'https://www.aiva.ai',desc:'AI 작곡 플랫폼.',tag:'freemium'},{name:'Suno AI',url:'https://suno.com',desc:'텍스트로 완성된 노래를 생성하는 AI.',tag:'freemium'}],
+  'AI 도구':[{name:'ChatGPT',url:'https://chat.openai.com',desc:'스크립트·제목·설명란 작성 AI.',tag:'freemium'},{name:'Claude',url:'https://claude.ai',desc:'긴 스크립트 작성 및 아이디어 발굴.',tag:'freemium'},{name:'Runway',url:'https://runwayml.com',desc:'AI 영상 생성·편집.',tag:'freemium'},{name:'ElevenLabs',url:'https://elevenlabs.io',desc:'고품질 AI 음성 생성.',tag:'freemium'},{name:'HeyGen',url:'https://www.heygen.com',desc:'AI 아바타 영상 자동 생성.',tag:'freemium'},{name:'Synthesia',url:'https://www.synthesia.io',desc:'AI 아바타 영상 제작 플랫폼.',tag:'paid'},{name:'Pictory',url:'https://pictory.ai',desc:'스크립트를 AI로 영상 변환.',tag:'freemium'},{name:'Descript',url:'https://www.descript.com',desc:'텍스트 기반 영상 편집.',tag:'freemium'},{name:'Opus Clip',url:'https://www.opus.pro',desc:'긴 영상을 AI가 쇼츠로 자동 분리.',tag:'freemium'},{name:'Captions',url:'https://www.captions.ai',desc:'AI 자막·번역·편집 모바일 앱.',tag:'freemium'}],
+  '방송·스트리밍':[{name:'OBS Studio',url:'https://obsproject.com',desc:'무료 오픈소스 방송·녹화 소프트웨어.',tag:'free'},{name:'Streamlabs',url:'https://streamlabs.com',desc:'OBS 기반 방송 툴 + 채팅봇 통합.',tag:'freemium'},{name:'StreamYard',url:'https://streamyard.com',desc:'브라우저 기반 라이브 방송 툴.',tag:'freemium'},{name:'Ecamm Live',url:'https://www.ecamm.com/mac/ecammlive',desc:'Mac 전용 라이브 방송 소프트웨어.',tag:'paid'},{name:'Restream',url:'https://restream.io',desc:'다중 동시 방송 플랫폼.',tag:'freemium'}],
+  '영상·이미지 소스':[{name:'Pexels',url:'https://www.pexels.com/videos',desc:'무료 HD/4K 스톡 영상.',tag:'free'},{name:'Pixabay',url:'https://pixabay.com/videos',desc:'CC0 라이선스 영상·이미지·음악.',tag:'free'},{name:'Mixkit',url:'https://mixkit.co',desc:'무료 스톡 영상·애니메이션·음악.',tag:'free'},{name:'Unsplash',url:'https://unsplash.com',desc:'고해상도 무료 사진 라이브러리.',tag:'free'},{name:'Freepik',url:'https://www.freepik.com',desc:'무료 벡터·PSD·아이콘·이미지.',tag:'freemium'},{name:'Storyblocks',url:'https://www.storyblocks.com',desc:'구독제 스톡 영상·음악·이미지.',tag:'paid'},{name:'Shutterstock',url:'https://www.shutterstock.com',desc:'세계 최대 스톡 이미지·영상 플랫폼.',tag:'paid'},{name:'Flaticon',url:'https://www.flaticon.com',desc:'수백만 개 무료 아이콘.',tag:'freemium'}],
 };
 let currentToolCat=Object.keys(TOOLS_DATA)[0];
-function renderTools(){
-  document.getElementById('toolTabs').innerHTML=Object.keys(TOOLS_DATA).map(k=>`<button class="tool-tab${k===currentToolCat?' active':''}" onclick="selectToolCat('${k}')">${k}</button>`).join('');
-  const tools=TOOLS_DATA[currentToolCat]||[];
-  document.getElementById('toolGrid').innerHTML=tools.map(t=>{const domain=new URL(t.url).hostname;const icon=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;const esc=s=>s.replace(/'/g,"\\'");return`<div class="tool-card" onclick="openToolModal('${esc(t.name)}','${t.url}','${esc(t.desc)}','${t.tag}')"><img class="tool-icon" src="${icon}" alt="${t.name}" onerror="this.style.background='var(--bg-card)'" /><div class="tool-name">${t.name}</div><span class="tool-badge tb-${t.tag}">${t.tag==='free'?'무료':t.tag==='paid'?'유료':'무료+유료'}</span></div>`;}).join('');
-}
+function renderTools(){document.getElementById('toolTabs').innerHTML=Object.keys(TOOLS_DATA).map(k=>`<button class="tool-tab${k===currentToolCat?' active':''}" onclick="selectToolCat('${k}')">${k}</button>`).join('');const tools=TOOLS_DATA[currentToolCat]||[];document.getElementById('toolGrid').innerHTML=tools.map(t=>{const domain=new URL(t.url).hostname;const icon=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;const esc=s=>s.replace(/'/g,"\\'");return`<div class="tool-card" onclick="openToolModal('${esc(t.name)}','${t.url}','${esc(t.desc)}','${t.tag}')"><img class="tool-icon" src="${icon}" alt="${t.name}" onerror="this.style.background='var(--bg-card)'" /><div class="tool-name">${t.name}</div><span class="tool-badge tb-${t.tag}">${t.tag==='free'?'무료':t.tag==='paid'?'유료':'무료+유료'}</span></div>`;}).join('');}
 function selectToolCat(cat){currentToolCat=cat;renderTools();}
 function openToolModal(name,url,desc,tag){const domain=new URL(url).hostname;document.getElementById('tmIcon').src=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;document.getElementById('tmName').textContent=name;document.getElementById('tmDesc').textContent=desc;document.getElementById('tmLink').href=url;document.getElementById('toolModal').classList.add('open');}
 
 /* ── 장비 쇼핑 ── */
 const COUPANG_ID='YOUR_COUPANG_ID';
 const SHOP_CATS=[
-  {id:'camera', icon:'📷',label:'카메라',       desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠', color:'#ff6b35',keyword:'유튜브 카메라 미러리스',coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
-  {id:'mic',    icon:'🎙️',label:'마이크',       desc:'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크',color:'#a855f7',keyword:'유튜브 마이크 콘덴서',   coupangCatUrl:'https://www.coupang.com/np/categories/205258'},
-  {id:'light',  icon:'💡', label:'조명',        desc:'링라이트, 소프트박스, 스트림 패널 조명',   color:'#f59e0b',keyword:'유튜브 조명 링라이트',   coupangCatUrl:'https://www.coupang.com/np/categories/685718'},
+  {id:'camera',icon:'📷',label:'카메라',desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠',color:'#ff6b35',keyword:'유튜브 카메라 미러리스',coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+  {id:'mic',icon:'🎙️',label:'마이크',desc:'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크',color:'#a855f7',keyword:'유튜브 마이크 콘덴서',coupangCatUrl:'https://www.coupang.com/np/categories/205258'},
+  {id:'light',icon:'💡',label:'조명',desc:'링라이트, 소프트박스, 스트림 패널 조명',color:'#f59e0b',keyword:'유튜브 조명 링라이트',coupangCatUrl:'https://www.coupang.com/np/categories/685718'},
   {id:'editing',icon:'🖥️',label:'편집·스트리밍',desc:'캡처보드, 스트림덱, 고성능 편집용 주변기기',color:'#06b6d4',keyword:'유튜브 캡처보드 스트림덱',coupangCatUrl:'https://www.coupang.com/np/categories/194525'},
-  {id:'acc',    icon:'🎒', label:'액세서리',    desc:'삼각대, 짐벌, SD카드, 카메라 가방',        color:'#10b981',keyword:'유튜브 삼각대 짐벌',     coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+  {id:'acc',icon:'🎒',label:'액세서리',desc:'삼각대, 짐벌, SD카드, 카메라 가방',color:'#10b981',keyword:'유튜브 삼각대 짐벌',coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
 ];
 function coupangCatLink(cat){return(cat.coupangCatUrl||'https://www.coupang.com/np/search?q='+encodeURIComponent(cat.keyword)+'&channel=user')+'?subId='+COUPANG_ID;}
 function buildShop(){
@@ -1630,19 +1143,20 @@ function buildShop(){
 }
 
 /* ── 초기화 ── */
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded',()=>{
   renderHeaderLogo();
-  document.querySelectorAll('.hot-tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+  initRightAd();
+  document.querySelectorAll('.hot-tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
       activeType=btn.dataset.type;shortsPage=0;longsPage=0;searchShortsPage=0;searchLongsPage=0;
       document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       hotSearchMode?renderSearchResult():renderHotSplit();
     });
   });
-  document.getElementById('modal-close-btn').addEventListener('click', closeVideoModal);
-  document.getElementById('video-modal').addEventListener('click', function(e){if(e.target===this)closeVideoModal();});
-  document.getElementById('toolModal').addEventListener('click', function(e){if(e.target===this)this.classList.remove('open');});
+  document.getElementById('modal-close-btn').addEventListener('click',closeVideoModal);
+  document.getElementById('video-modal').addEventListener('click',function(e){if(e.target===this)closeVideoModal();});
+  document.getElementById('toolModal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
   sectionLoaded['hot']=true;
   loadHot();
 });
