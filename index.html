@@ -713,29 +713,83 @@ function hideGlobalError(){
   document.getElementById('api-status').textContent='● API 연결됨';
 }
 
-/* ══════════════════════════════════════
-   apiFetch
-══════════════════════════════════════ */
-async function apiFetch(url){
-  const _k=Array.isArray(API_KEYS)?API_KEYS:[API_KEYS];
-  const vk=_k.filter(k=>k&&k.length>20&&!k.startsWith('YOUR_'));
-  if(!vk.length)throw new Error('유효한 API 키가 없습니다.');
-  for(let i=0;i<vk.length;i++){
-    const k=vk[(keyIdx+i)%vk.length];
-    const sep=url.includes('?')?'&':'?';
-    try{
-      const r=await fetch(url+sep+'key='+k);
-      let data;try{data=await r.json();}catch{data={};}
-      if(r.status===403||r.status===429){keyIdx=(keyIdx+i+1)%vk.length;continue;}
-      if(data.error){
-        const code=data.error.code||0,reason=data.error.errors?.[0]?.reason||'';
-        if([403,429].includes(code)||['quotaExceeded','keyInvalid','forbidden','dailyLimitExceeded'].includes(reason)){keyIdx=(keyIdx+i+1)%vk.length;continue;}
-        throw new Error(`API 오류 [${code}] ${reason}`);
-      }
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      keyIdx=(keyIdx+i)%vk.length;hideGlobalError();return data;
-    }catch(e){if(i===vk.length-1)throw e;}
+/* ---------- apiFetch – 키 검증 + 로테이션 + 오류 처리 ---------- */
+async function apiFetch(url) {
+  // 1. API_KEYS를 항상 배열로 정규화
+  const _keys = Array.isArray(API_KEYS)
+    ? API_KEYS
+    : (typeof API_KEYS === 'string' ? [API_KEYS] : []);
+
+  // 2. 유효한 키만 필터링 (길이 20자 이상, 'YOUR_'로 시작하지 않음)
+  const validKeys = _keys.filter(
+    k => k && typeof k === 'string' && k.length > 20 && !k.startsWith('YOUR_')
+  );
+
+  if (!validKeys.length) {
+    showGlobalError('유효한 API 키가 없습니다. API_KEYS를 확인하세요.');
+    throw new Error('No valid API key');
   }
+
+  // 3. 유효한 키를 순서대로 시도
+  for (let i = 0; i < validKeys.length; i++) {
+    const k = validKeys[(keyIdx + i) % validKeys.length];
+    const sep = url.includes('?') ? '&' : '?';
+    const fullUrl = `${url}${sep}key=${k}`;
+
+    try {
+      const r = await fetch(fullUrl);
+
+      // HTTP 레벨 quota/forbidden 처리
+      if (r.status === 403 || r.status === 429) {
+        console.warn(`[API] 키 ${k.slice(0, 8)}... quota 초과 → 다음 키 시도`);
+        keyIdx = (keyIdx + i + 1) % validKeys.length;
+        if (i < validKeys.length - 1) continue;
+        showGlobalError('모든 API 키의 할당량이 초과되었습니다.');
+        throw new Error('All API keys quota exceeded');
+      }
+
+      // JSON 파싱 (실패 시 빈 객체)
+      const data = await r.json().catch(() => ({}));
+
+      // API 응답 내 error 객체 처리
+      if (data.error) {
+        const code    = data.error.code || 0;
+        const message = data.error.message || '';
+        const reason  = data.error.errors?.[0]?.reason || '';
+
+        const isQuotaErr = [403, 429].includes(code)
+          || ['quotaExceeded', 'keyInvalid', 'forbidden',
+              'dailyLimitExceeded', 'rateLimitExceeded'].includes(reason);
+
+        if (isQuotaErr) {
+          console.warn(`[API] 오류(${code}/${reason}) → 다음 키 시도`);
+          keyIdx = (keyIdx + i + 1) % validKeys.length;
+          if (i < validKeys.length - 1) continue;
+          showGlobalError(`API 할당량 초과: ${message}`);
+          throw new Error(message);
+        }
+
+        // quota 외 일반 API 오류
+        showGlobalError(`API 오류 [${code}]: ${message}`);
+        throw new Error(`API Error [${code}]: ${message}`);
+      }
+
+      if (!r.ok) {
+        throw new Error('HTTP error ' + r.status);
+      }
+
+      // 성공 시 현재 키 인덱스 저장 후 데이터 반환
+      keyIdx = (keyIdx + i) % validKeys.length;
+      hideGlobalError();
+      return data;
+
+    } catch (e) {
+      // 마지막 키까지 실패한 경우 예외 throw
+      if (i === validKeys.length - 1) throw e;
+      console.error(`[apiFetch] 키 ${i + 1} 실패, 다음 키 시도:`, e.message);
+    }
+  }
+
   throw new Error('모든 API 키 소진');
 }
 
