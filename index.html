@@ -10,6 +10,75 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-AF8853448" crossorigin="anonymous"></script>
 
   <script>
+    /* ===== 키워드 검색 (횟수 제한) ===== */
+const SEARCH_DAILY_LIMIT = 5; // 하루 최대 검색 횟수
+
+function getSearchCount(){
+  const data = JSON.parse(localStorage.getItem('algo-search-count')||'{}');
+  const today = new Date().toISOString().slice(0,10);
+  if(data.date !== today) return {date:today, count:0};
+  return data;
+}
+
+function addSearchCount(){
+  const data = getSearchCount();
+  data.count++;
+  localStorage.setItem('algo-search-count', JSON.stringify(data));
+  return data.count;
+}
+
+function getSearchRemaining(){
+  const data = getSearchCount();
+  return Math.max(0, SEARCH_DAILY_LIMIT - data.count);
+}
+
+async function hotKeywordSearch(){
+  const input = document.querySelector('.hot-search-input');
+  const keyword = input.value.trim();
+  if(!keyword) return;
+
+  const remaining = getSearchRemaining();
+  if(remaining <= 0){
+    alert('오늘 검색 횟수를 모두 사용했습니다. (하루 '+SEARCH_DAILY_LIMIT+'회 제한)\n내일 다시 이용해주세요.');
+    return;
+  }
+
+  if(!confirm(`키워드: "${keyword}"\n남은 검색 횟수: ${remaining}/${SEARCH_DAILY_LIMIT}\n\n검색하시겠습니까?`)) return;
+
+  document.getElementById('hot-loader').style.display='flex';
+  document.getElementById('hot-grid').innerHTML='';
+  document.getElementById('hot-more-btn').style.display='none';
+
+  try{
+    const sd = await apiFetch('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&regionCode=KR&hl=ko&maxResults=50&q='+encodeURIComponent(keyword));
+    const ids = (sd.items||[]).map(i=>i.id.videoId).filter(Boolean);
+    if(!ids.length){ document.getElementById('hot-loader').style.display='none'; alert('검색 결과가 없습니다.'); return; }
+
+    const vd = await apiFetch('https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id='+ids.join(','));
+    allCache = byViral(vd.items||[]);
+    allPage = 0;
+
+    addSearchCount();
+    updateSearchBadge();
+  }catch(e){
+    showGlobalError('검색 실패: '+e.message);
+  }
+
+  document.getElementById('hot-loader').style.display='none';
+  renderHotGrid(true);
+}
+
+function updateSearchBadge(){
+  const badge = document.querySelector('.hot-search-badge');
+  const remaining = getSearchRemaining();
+  if(badge){
+    badge.textContent = remaining > 0 ? '오늘 '+remaining+'회 남음' : '오늘 소진';
+    badge.style.background = remaining > 0
+      ? 'linear-gradient(135deg,#ffe49a,#f0c96a,#e879a0,#a855f7,#7c3aed)'
+      : 'rgba(255,71,87,0.3)';
+    badge.style.color = remaining > 0 ? '#fff' : '#ff6680';
+  }
+}
   function buildFavicon(outputSize) {
     const c = document.createElement('canvas');
     c.width = c.height = outputSize;
@@ -1069,6 +1138,14 @@ function showSec(id){
     if(id==='shop')buildShop();
   }
 }
+<div class="hot-search-wrap">
+  <div class="hot-search-bar">
+    <span class="hot-search-icon">🔍</span>
+    <input type="text" class="hot-search-input" placeholder="키워드로 영상 검색 (하루 5회 제한)" onkeydown="if(event.key==='Enter')hotKeywordSearch()" />
+    <span class="hot-search-badge">오늘 5회 남음</span>
+    <button class="hot-search-btn" onclick="hotKeywordSearch()">검색</button>
+  </div>
+</div>
 
 /* ═══ 인기영상 ═══ */
 function renderHotGrid(reset=false){
@@ -1081,18 +1158,9 @@ function renderHotGrid(reset=false){
   allPage=np;
   btn.style.display=(np*PAGE)<allCache.length?'block':'none';
 }
-  
-function renderHotGrid(reset=false){
-  const grid=document.getElementById('hot-grid'),btn=document.getElementById('hot-more-btn'),cache=activeType==='shorts'?shortsCache:longsCache,page=activeType==='shorts'?shortsPage:longsPage;
-  if(!cache.length){grid.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">${activeType==='shorts'?'🎬':'📹'}</div><h3>데이터 없음</h3></div>`;btn.style.display='none';return;}
-  const start=reset?0:page*PAGE,items=cache.slice(start,start+PAGE);if(reset)grid.innerHTML='';
-  items.forEach(it=>{const el=document.createElement('div');el.className='video-card';el.innerHTML=makeVideoCard(it);el.onclick=()=>openVideoModal(it.id);grid.appendChild(el);});
-  const np=reset?1:page+1;if(activeType==='shorts')shortsPage=np;else longsPage=np;btn.style.display=(np*PAGE)<cache.length?'block':'none';
-}
-document.querySelectorAll('.hot-tab-btn').forEach(b=>b.addEventListener('click',()=>switchType(b.dataset.type)));
 
 function makeVideoCard(it){const sn=it.snippet||{},st=it.statistics||{},cd=it.contentDetails||{},th=sn.thumbnails?.medium?.url||'',dur=fmtDur(cd.duration),v=st.viewCount!=null?fmt(st.viewCount):'-',l=st.likeCount!=null?fmt(st.likeCount):'-',vi=viralOf(it),vc=vi>5e6?'hot':vi>5e5?'warm':'cool',vl=vi>5e6?'🔥 핫':vi>5e5?'🌡️ 상승':'📈 주목',t=(sn.title||'').replace(/</g,'&lt;'),s=parseDurSec(cd.duration),isS=s>0&&s<LONGS_MIN_SEC;return`<div class="thumb-wrap"><img src="${th}" alt="" loading="lazy"/>${isS?'<span class="shorts-badge">Shorts</span>':''}<span class="duration-badge">${dur}</span></div><div class="video-info"><div class="video-title">${t}</div><div class="video-meta"><span class="video-channel">${sn.channelTitle||''}</span><span class="viral-badge ${vc}">${vl}</span></div><div class="video-stats"><span>👁 ${v}</span><span>👍 ${l}</span></div></div>`;}
-function switchType(type){activeType=type;document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.type===type));if(type==='shorts')shortsPage=0;else longsPage=0;renderHotGrid(true);}
+
 
 /* ═══ 영상 모달 ═══ */
 function closeVideoModal(){const pw=document.getElementById('player-wrap'),f=pw.querySelector('iframe');if(f){f.src='';pw.removeChild(f);}document.getElementById('video-modal').classList.remove('open');}
@@ -1533,6 +1601,7 @@ document.addEventListener('keydown',e=>{if(!document.getElementById('chModalOver
 /* ═══ 초기화 ═══ */
 window.addEventListener('DOMContentLoaded',()=>{
   renderHeaderLogo();
+  updateSearchBadge();
   setTimeout(()=>{try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}},500);
   document.querySelectorAll('.hot-tab-btn').forEach(b=>b.addEventListener('click',()=>switchType(b.dataset.type)));
   document.getElementById('modal-close-btn').addEventListener('click',closeVideoModal);
