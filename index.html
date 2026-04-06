@@ -1089,7 +1089,8 @@ function renderHotGrid(reset=false){
   items.forEach(it=>{const el=document.createElement('div');el.className='video-card';el.innerHTML=makeVideoCard(it);el.onclick=()=>openVideoModal(it.id);grid.appendChild(el);});
   const np=reset?1:page+1;if(activeType==='shorts')shortsPage=np;else longsPage=np;btn.style.display=(np*PAGE)<cache.length?'block':'none';
 }
-function renderMore(){renderHotGrid(false);}
+document.querySelectorAll('.hot-tab-btn').forEach(b=>b.addEventListener('click',()=>switchType(b.dataset.type)));
+
 function makeVideoCard(it){const sn=it.snippet||{},st=it.statistics||{},cd=it.contentDetails||{},th=sn.thumbnails?.medium?.url||'',dur=fmtDur(cd.duration),v=st.viewCount!=null?fmt(st.viewCount):'-',l=st.likeCount!=null?fmt(st.likeCount):'-',vi=viralOf(it),vc=vi>5e6?'hot':vi>5e5?'warm':'cool',vl=vi>5e6?'🔥 핫':vi>5e5?'🌡️ 상승':'📈 주목',t=(sn.title||'').replace(/</g,'&lt;'),s=parseDurSec(cd.duration),isS=s>0&&s<LONGS_MIN_SEC;return`<div class="thumb-wrap"><img src="${th}" alt="" loading="lazy"/>${isS?'<span class="shorts-badge">Shorts</span>':''}<span class="duration-badge">${dur}</span></div><div class="video-info"><div class="video-title">${t}</div><div class="video-meta"><span class="video-channel">${sn.channelTitle||''}</span><span class="viral-badge ${vc}">${vl}</span></div><div class="video-stats"><span>👁 ${v}</span><span>👍 ${l}</span></div></div>`;}
 function switchType(type){activeType=type;document.querySelectorAll('.hot-tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.type===type));if(type==='shorts')shortsPage=0;else longsPage=0;renderHotGrid(true);}
 
