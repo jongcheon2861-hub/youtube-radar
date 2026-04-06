@@ -115,6 +115,7 @@ bg.addColorStop(0,'#ffe49a');bg.addColorStop(0.25,'#f0c96a');bg.addColorStop(0.5
   </script>
 
   <style>
+.ch-grade-section{display:none}
 .hot-search-wrap{margin-bottom:16px}
 .hot-search-bar{display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 16px;gap:10px;position:relative;transition:all 0.3s}
 .hot-search-icon{font-size:1rem;opacity:0.4}
@@ -887,6 +888,76 @@ body {
       .ch-modal-body{grid-template-columns:1fr;}
       .ch-detail-panels{grid-template-columns:1fr;}
     }
+    /* ═══ AI 아이디어 입력 ═══ */
+.ai-input-area{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+.ai-input-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px}
+.ai-field{display:flex;flex-direction:column;gap:6px}
+.ai-label{font-size:0.75rem;font-weight:700;color:var(--algo-gold);text-transform:uppercase;letter-spacing:0.5px}
+.ai-select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;color:var(--text-primary);font-size:0.85rem;font-family:inherit;cursor:pointer;outline:none;transition:border-color 0.3s}
+.ai-select:focus{border-color:var(--algo-gold)}
+.ai-select option{background:#1a1a2e;color:#fff}
+.ai-keyword-row{display:flex;gap:12px;align-items:stretch}
+.ai-keyword-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 16px;color:var(--text-primary);font-size:0.85rem;font-family:inherit;outline:none;transition:border-color 0.3s}
+.ai-keyword-input:focus{border-color:var(--algo-gold)}
+.ai-keyword-input::placeholder{color:rgba(255,255,255,0.25)}
+.ai-generate-btn{background:linear-gradient(135deg,#ffe49a,#f0c96a,#e879a0,#a855f7);color:#1a1a2e;border:none;border-radius:12px;padding:12px 28px;font-size:0.9rem;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;transition:transform 0.2s,box-shadow 0.2s;letter-spacing:0.5px}
+.ai-generate-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(168,85,247,0.3)}
+.ai-generate-btn:active{transform:scale(0.97)}
+
+/* ═══ AI 아이디어 카드 그리드 ═══ */
+.ai-ideas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.ai-idea-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden}
+.ai-idea-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--algo-gold),#a855f7);opacity:0;transition:opacity 0.3s}
+.ai-idea-card:hover{border-color:rgba(255,228,154,0.3);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+.ai-idea-card:hover::before{opacity:1}
+.ai-idea-card-num{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--algo-gold),#a855f7);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#1a1a2e}
+.ai-idea-card-emoji{font-size:2.2rem;margin-bottom:12px}
+.ai-idea-card-title{font-size:1.05rem;font-weight:800;color:var(--text-primary);margin-bottom:8px;line-height:1.4;padding-right:40px}
+.ai-idea-card-desc{font-size:0.82rem;color:var(--text-secondary);line-height:1.6;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ai-idea-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.ai-idea-tag{font-size:0.68rem;padding:4px 10px;border-radius:20px;background:rgba(168,85,247,0.15);color:#c084fc;font-weight:600}
+.ai-idea-card-meta{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.ai-idea-difficulty{font-size:0.72rem;font-weight:700}
+.ai-idea-potential{font-size:0.72rem;color:var(--algo-gold);font-weight:700}
+.ai-idea-card-cta{font-size:0.75rem;color:var(--algo-gold);font-weight:700;opacity:0;transition:opacity 0.3s}
+.ai-idea-card:hover .ai-idea-card-cta{opacity:1}
+
+/* ═══ 상세 가이드 모달 ═══ */
+.ai-detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;align-items:center;justify-content:center;backdrop-filter:blur(8px);padding:20px}
+.ai-detail-overlay.open{display:flex}
+.ai-detail-modal{background:var(--bg-primary);border:1px solid var(--border);border-radius:20px;max-width:720px;width:100%;max-height:85vh;overflow-y:auto;padding:36px;position:relative;animation:aiModalIn 0.3s ease}
+@keyframes aiModalIn{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ai-detail-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.08);border:none;color:var(--text-secondary);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:1}
+.ai-detail-close:hover{background:rgba(255,255,255,0.15);color:#fff}
+.ai-detail-header{text-align:center;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ai-detail-emoji{font-size:3rem;margin-bottom:12px}
+.ai-detail-title{font-size:1.3rem;font-weight:800;color:var(--text-primary);margin-bottom:8px}
+.ai-detail-subtitle{font-size:0.85rem;color:var(--text-secondary)}
+.ai-detail-section{margin-bottom:24px}
+.ai-detail-section-title{font-size:0.9rem;font-weight:800;color:var(--algo-gold);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ai-detail-section-body{font-size:0.84rem;color:var(--text-secondary);line-height:1.8;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:16px 20px}
+.ai-detail-step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.ai-detail-step-num{min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--algo-gold),#a855f7);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:900;color:#1a1a2e;flex-shrink:0;margin-top:2px}
+.ai-detail-step-text{font-size:0.84rem;color:var(--text-secondary);line-height:1.7}
+.ai-detail-step-text strong{color:var(--text-primary)}
+.ai-detail-tags-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.ai-detail-tag{font-size:0.72rem;padding:5px 12px;border-radius:20px;background:rgba(168,85,247,0.12);color:#c084fc;font-weight:600}
+.ai-detail-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.ai-detail-stat{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:center}
+.ai-detail-stat-value{font-size:1.1rem;font-weight:800;color:var(--algo-gold)}
+.ai-detail-stat-label{font-size:0.7rem;color:var(--text-secondary);margin-top:4px}
+.ai-detail-tip{background:linear-gradient(135deg,rgba(255,228,154,0.08),rgba(168,85,247,0.08));border:1px solid rgba(255,228,154,0.15);border-radius:12px;padding:16px 20px;font-size:0.84rem;color:var(--text-secondary);line-height:1.7;margin-top:8px}
+.ai-detail-tip strong{color:var(--algo-gold)}
+
+/* 반응형 */
+@media(max-width:640px){
+  .ai-ideas-grid{grid-template-columns:1fr}
+  .ai-input-row{grid-template-columns:1fr}
+  .ai-keyword-row{flex-direction:column}
+  .ai-detail-modal{padding:24px 18px;max-height:90vh}
+  .ai-detail-stat-grid{grid-template-columns:1fr 1fr}
+}
+
   </style>
 </head>
 <body>
@@ -975,6 +1046,9 @@ body {
         <div class="ch-growth-tips" id="chGrowthTips"></div>
         <div class="ch-suggestions-panel" id="chSuggestionsPanel"></div>
         <div class="ch-history-panel" id="chHistoryPanel"></div>
+        <div style="text-align:center;margin-bottom:16px;">
+  <button class="ch-btn-analyze" id="chGradeToggleBtn" onclick="chToggleGradeTable()" style="max-width:360px;margin:0 auto;font-size:0.9rem;padding:12px 28px;">📊 알고리즘 등급표 보기</button>
+</div>
         <div class="ch-grade-section" id="chGradeSection">
           <div class="ch-grade-section-title">
             <div class="ch-panel-title" style="margin-bottom:0;">📊 알고리즘 등급표</div>
@@ -994,22 +1068,538 @@ body {
     </section>
 
     <section class="section-page" id="section-ai">
-      <div class="section-header"><div class="section-title">🤖 AI 아이디어</div><div class="section-subtitle">인기 트렌드 기반 콘텐츠 아이디어 생성</div></div>
-      <div class="ai-form">
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">채널 주제</label><input class="form-input" id="ai-topic" placeholder="예: 요리, 게임, 여행, 뷰티"/></div>
-          <div class="form-group"><label class="form-label">영상 형식</label><select class="form-input" id="ai-format"><option value="shorts">쇼츠 (60초)</option><option value="tutorial">튜토리얼</option><option value="vlog">브이로그</option><option value="review">리뷰</option><option value="challenge">챌린지</option></select></div>
-        </div>
-        <button class="calc-btn" onclick="genAiIdeas()">✨ 아이디어 생성</button>
-      </div>
-      <div id="ai-ideas-list" class="ai-idea-list"></div>
-    </section>
+  <section class="section-page" id="section-ai">
+  <div class="section-header">
+    <div class="section-title">💡 AI 아이디어</div>
+    <div class="section-subtitle">AI가 트렌드를 분석하여 유튜브 영상 아이디어를 제안합니다</div>
+  </div>
 
-    <section class="section-page" id="section-tools">
-      <div class="section-header"><div class="section-title">🛠️ 유튜버 도구</div><div class="section-subtitle">카테고리별 채널 성장 필수 도구 모음</div></div>
-      <div class="tool-tabs" id="toolTabs"></div>
-      <div class="tool-grid" id="toolGrid"></div>
-    </section>
+  <!-- 입력 영역 -->
+  <div class="ai-input-area">
+    <div class="ai-input-row">
+      <div class="ai-field">
+        <label class="ai-label">채널 주제 / 카테고리</label>
+        <select id="aiCategory" class="ai-select">
+          <option value="테크/IT">🖥 테크 / IT</option>
+          <option value="게임">🎮 게임</option>
+          <option value="먹방/요리">🍳 먹방 / 요리</option>
+          <option value="뷰티/패션">💄 뷰티 / 패션</option>
+          <option value="브이로그">📹 브이로그</option>
+          <option value="교육/자기계발">📚 교육 / 자기계발</option>
+          <option value="음악/댄스">🎵 음악 / 댄스</option>
+          <option value="여행">✈️ 여행</option>
+          <option value="운동/헬스">💪 운동 / 헬스</option>
+          <option value="경제/재테크">💰 경제 / 재테크</option>
+          <option value="반려동물">🐾 반려동물</option>
+          <option value="자동차">🚗 자동차</option>
+          <option value="키즈">👶 키즈</option>
+          <option value="공포/미스터리">👻 공포 / 미스터리</option>
+          <option value="자유주제" selected>🎯 자유주제</option>
+        </select>
+      </div>
+      <div class="ai-field">
+        <label class="ai-label">영상 스타일</label>
+        <select id="aiStyle" class="ai-select">
+          <option value="shorts">⚡ 쇼츠 (60초 이하)</option>
+          <option value="medium" selected>🎬 중간 (5~15분)</option>
+          <option value="long">📺 롱폼 (20분 이상)</option>
+          <option value="live">🔴 라이브 스트리밍</option>
+        </select>
+      </div>
+      <div class="ai-field">
+        <label class="ai-label">타겟 구독자 수</label>
+        <select id="aiTarget" class="ai-select">
+          <option value="beginner" selected>🌱 초보 (0~1천)</option>
+          <option value="growing">🌿 성장 (1천~1만)</option>
+          <option value="established">🌳 중견 (1만~10만)</option>
+          <option value="top">🏆 대형 (10만 이상)</option>
+        </select>
+      </div>
+    </div>
+  /* ═══════════════════════════════════════
+   AI 아이디어 생성기 (다중 카드 + 상세 가이드)
+   ═══════════════════════════════════════ */
+
+let aiGeneratedIdeas = [];
+
+/* ── 아이디어 데이터베이스 ── */
+const AI_IDEA_DB = {
+  "테크/IT": [
+    {emoji:"🤖",title:"ChatGPT vs Gemini vs Claude 실사용 비교",desc:"3대 AI를 동일 과제로 테스트하고 솔직 리뷰하는 영상. 코딩, 글쓰기, 이미지 생성 등 5가지 미션을 수행시켜 점수를 매깁니다.",tags:["AI비교","챗GPT","제미나이"],difficulty:"중",potential:"매우 높음",
+      detail:{
+        hook:"'AI 전쟁의 승자는?' 같은 도발적 질문으로 시작",
+        structure:["인트로: 3개 AI 소개 + 평가 기준 설명 (1분)","미션 1: 블로그 글 작성 비교 (3분)","미션 2: 코드 작성 비교 (3분)","미션 3: 이미지/디자인 비교 (3분)","미션 4: 수학/논리 문제 (2분)","미션 5: 창의적 글쓰기 (2분)","종합 점수표 + 결론 (2분)"],
+        thumbnail:"화면을 3분할하여 각 AI 로고 배치, 가운데 VS 불꽃 이펙트, 상단에 '최종 승자는?' 텍스트",
+        seo:"#AI비교 #ChatGPT #Gemini #Claude #AI추천 #인공지능",
+        equipment:"화면 녹화 프로그램 (OBS), 각 AI 유료 계정, 편집용 비교 템플릿",
+        monetization:"AI 도구 제휴 링크, 강의 플랫폼 협찬, 기술 관련 광고 단가 높음 (CPM $8~15)",
+        tip:"결과를 표로 정리하고 시각적으로 점수 차이를 보여주세요. 의외의 결과가 나올수록 댓글이 활성화됩니다."
+      }
+    },
+    {emoji:"⌨️",title:"비전공자가 2주 만에 앱 만드는 과정",desc:"코딩 경험 없는 사람이 AI 도구(Cursor, v0, Replit)만으로 실제 앱을 만드는 리얼 도전기. 매일 진행 상황을 기록합니다.",tags:["노코드","앱개발","도전"],difficulty:"상",potential:"높음",
+      detail:{
+        hook:"'코딩 1도 모르는 제가 앱을 출시했습니다' 결과물을 먼저 보여주고 시작",
+        structure:["Day 1-2: 아이디어 구상 + AI 도구 세팅 (3분)","Day 3-5: 기본 화면 만들기 시행착오 (4분)","Day 6-9: 핵심 기능 구현 + 좌절 구간 (4분)","Day 10-12: 디자인 다듬기 + 버그 수정 (3분)","Day 13-14: 배포 + 최종 결과 (3분)","비용 정리 + 소감 (2분)"],
+        thumbnail:"노트북 앞에 놀란 표정, 화면에 완성된 앱 UI, '2주 만에 앱 출시?!' 텍스트",
+        seo:"#앱만들기 #노코드 #AI개발 #비전공자코딩 #사이드프로젝트",
+        equipment:"Cursor/Replit 등 AI 코딩 도구, 화면 녹화, 타임랩스 촬영용 카메라",
+        monetization:"AI 코딩 도구 제휴링크, 온라인 강의 플랫폼 협찬, IT 광고 단가 높음",
+        tip:"실패 과정을 솔직하게 보여줄수록 공감을 얻습니다. 매일 짧은 클립을 쇼츠로도 올리세요."
+      }
+    },
+    {emoji:"🔒",title:"내 개인정보 얼마나 유출됐나 직접 확인",desc:"무료 도구를 활용해 자신의 개인정보 유출 현황을 확인하고, 보안 설정을 강화하는 실용 튜토리얼입니다.",tags:["보안","개인정보","필수시청"],difficulty:"하",potential:"매우 높음",
+      detail:{
+        hook:"'여러분의 비밀번호, 이미 다크웹에 있을 수 있습니다' 충격적 사실로 시작",
+        structure:["인트로: 개인정보 유출 실태 통계 (1분)","Have I Been Pwned 사이트로 확인 (3분)","구글 비밀번호 관리자 점검 (2분)","2단계 인증 설정 방법 (3분)","비밀번호 관리자 추천 + 세팅 (3분)","꼭 지켜야 할 보안 습관 3가지 (2분)"],
+        thumbnail:"자물쇠가 깨진 이미지 + 빨간 경고 아이콘, '당신의 비밀번호 유출됨' 텍스트",
+        seo:"#개인정보보호 #비밀번호유출 #보안설정 #해킹방지 #2단계인증",
+        equipment:"화면 녹화, 보안 확인 사이트 목록, 비밀번호 관리자 앱",
+        monetization:"VPN 협찬, 비밀번호 관리 앱 제휴링크, 보안 소프트웨어 광고",
+        tip:"실제로 자신의 이메일을 검색해보는 라이브 반응이 핵심입니다. 시청자에게 직접 해보라고 유도하면 체류시간이 늘어납니다."
+      }
+    },
+    {emoji:"🏠",title:"5만원으로 스마트홈 구축하기",desc:"가성비 IoT 기기로 자취방을 스마트홈으로 바꾸는 과정. 음성 제어, 자동화 루틴까지 완성합니다.",tags:["스마트홈","IoT","가성비"],difficulty:"중",potential:"높음",
+      detail:{
+        hook:"'OK 구글, 퇴근 모드' 한마디에 조명, 에어컨, TV가 동시에 켜지는 장면",
+        structure:["Before: 일반 자취방 상태 (1분)","5만원 쇼핑 리스트 공개 (2분)","기기 설치 과정 (5분)","자동화 루틴 세팅 (4분)","After: 완성된 스마트홈 시연 (3분)","한달 사용 후기 + 추가 추천 (2분)"],
+        thumbnail:"방 절반은 어둡고 절반은 네온 조명, '5만원으로 이게 가능?' 텍스트",
+        seo:"#스마트홈 #IoT #가성비 #자취방꾸미기 #홈오토메이션",
+        equipment:"스마트 전구, 스마트 플러그, 온습도 센서, 스마트 스피커",
+        monetization:"기기 쿠팡 파트너스 링크, 스마트홈 기기 협찬, 인테리어 광고",
+        tip:"비포/애프터를 극적으로 보여주세요. '이 가격에 이게 된다고?' 하는 반전이 조회수 핵심입니다."
+      }
+    },
+    {emoji:"📱",title:"2025 가성비 스마트폰 TOP 5 실사용 랭킹",desc:"직접 한 달씩 사용한 스마트폰들의 솔직 랭킹. 카메라, 배터리, 발열, 실사용 체감을 기준으로 순위를 매깁니다.",tags:["스마트폰","가성비","랭킹"],difficulty:"상",potential:"매우 높음",
+      detail:{
+        hook:"'비싼 폰이 무조건 좋다? 이 결과 보면 생각 바뀝니다'",
+        structure:["선정 기준 설명 (1분)","5위부터 역순 리뷰 (각 2분, 총 10분)","카메라 블라인드 테스트 (3분)","배터리 실측 비교 (2분)","최종 1위 발표 + 총평 (2분)"],
+        thumbnail:"스마트폰 5대를 부채꼴로 배치, 1위에 왕관 아이콘, 'No.1은?' 텍스트",
+        seo:"#가성비폰 #스마트폰추천 #폰비교 #2025스마트폰 #스마트폰랭킹",
+        equipment:"비교 대상 스마트폰 5대, 카메라 테스트 차트, 배터리 측정 앱",
+        monetization:"통신사 제휴, 기기 판매 링크, 액세서리 광고, IT 광고 단가 높음",
+        tip:"블라인드 테스트 구간을 넣으면 시청자 참여도가 높아집니다. 투표 카드를 활용하세요."
+      }
+    },
+    {emoji:"🖥️",title:"AI로 유튜브 영상 자동 편집하는 법",desc:"무료 AI 편집 도구를 활용해 영상 편집 시간을 90% 줄이는 워크플로우를 공개합니다.",tags:["AI편집","자동화","유튜브팁"],difficulty:"중",potential:"높음",
+      detail:{
+        hook:"'8시간 걸리던 편집, 이제 30분이면 끝납니다'",
+        structure:["기존 편집 과정 vs AI 편집 과정 비교 (2분)","추천 AI 도구 3개 소개 (3분)","실제 영상으로 AI 편집 시연 (6분)","수동 보정이 필요한 부분 (2분)","최종 결과물 비교 + 소감 (2분)"],
+        thumbnail:"타임라인 위에 AI 로봇 아이콘, '편집 시간 -90%' 텍스트, 시계 아이콘",
+        seo:"#AI영상편집 #자동편집 #유튜브팁 #영상제작 #편집자동화",
+        equipment:"무료 AI 편집 도구 (CapCut, Descript), 편집 전후 영상 소스",
+        monetization:"편집 도구 제휴링크, 강의 플랫폼 협찬, 크리에이터 타겟 광고",
+        tip:"실제 작업 화면을 빠르게 보여주는 타임랩스 + 핵심 포인트만 정상속도로 설명하면 집중도가 높아집니다."
+      }
+    }
+  ],
+  "게임": [
+    {emoji:"🏆",title:"신작 게임 입문자 가이드 완벽판",desc:"화제의 신작 게임 초보가 반드시 알아야 할 세팅, 조작법, 초반 공략을 한 영상에 정리합니다.",tags:["게임공략","입문","신작"],difficulty:"중",potential:"매우 높음",
+      detail:{
+        hook:"'이것만 알면 초반 10시간 아낄 수 있습니다'",
+        structure:["게임 소개 + 왜 핫한지 (1분)","최적 세팅 (그래픽/조작) (2분)","캐릭터/직업 추천 (3분)","초반 필수 퀘스트 루트 (4분)","초보가 하는 실수 TOP 5 (3분)","중반 이후 로드맵 (2분)"],
+        thumbnail:"게임 캐릭터 + 초보 마크 아이콘, '이것만 보세요' 텍스트",
+        seo:"#게임공략 #초보가이드 #신작게임 #겜알려줌",
+        equipment:"게임 캡처 카드/OBS, 마이크, 게임 클라이언트",
+        monetization:"게임 굿즈 협찬, 게이밍 기어 제휴링크, 게임 광고",
+        tip:"출시 첫 주에 올리면 검색 유입이 폭발합니다. 미리 베타에서 촬영해두세요."
+      }
+    },
+    {emoji:"🎯",title:"게이머 손목/허리 스트레칭 루틴",desc:"장시간 게임으로 인한 통증을 예방하는 5분 스트레칭. 게임 로딩 중에 할 수 있는 동작들로 구성합니다.",tags:["건강","스트레칭","게이머"],difficulty:"하",potential:"높음",
+      detail:{
+        hook:"'손목 터널 증후군 걸리고 나서 후회하지 마세요'",
+        structure:["게이머 직업병 소개 (1분)","손목 스트레칭 3가지 (2분)","목/어깨 스트레칭 3가지 (2분)","허리/골반 스트레칭 (2분)","게임 중 자세 교정 팁 (2분)","루틴 요약 카드 (1분)"],
+        thumbnail:"게이밍 체어에 앉아 스트레칭하는 모습, '5분이면 충분' 텍스트",
+        seo:"#게이머스트레칭 #손목터널 #게임건강 #자세교정",
+        equipment:"카메라, 마이크, 스트레칭 시범 공간",
+        monetization:"게이밍 의자 협찬, 헬스 앱 협찬, 건강 제품 광고",
+        tip:"실제 유명 프로게이머의 부상 사례를 인용하면 설득력이 높아집니다."
+      }
+    },
+    {emoji:"💰",title:"게임으로 월 100만원 버는 현실적 방법 5가지",desc:"프로게이머가 아니어도 게임으로 수익을 내는 방법을 직접 검증합니다.",tags:["수익화","부업","게임머니"],difficulty:"중",potential:"매우 높음",
+      detail:{
+        hook:"'취미로 하던 게임이 월급보다 벌어다 줍니다'",
+        structure:["방법 1: 게임 유튜브/트위치 (3분)","방법 2: 게임 코칭/과외 (2분)","방법 3: 게임 아이템 거래 (2분)","방법 4: 대회 참가 (2분)","방법 5: 게임 테스터/QA (2분)","현실적 수익 공개 + 추천 (2분)"],
+        thumbnail:"게임 컨트롤러에서 돈이 나오는 일러스트, '월 100만원?' 텍스트",
+        seo:"#게임수익 #게임부업 #게임으로돈벌기 #사이드잡",
+        equipment:"각 플랫폼 수익 인증 스크린샷, 화면 녹화",
+        monetization:"게이밍 장비 제휴링크, 코칭 플랫폼 협찬, 재테크 광고",
+        tip:"실제 수익 인증 스크린샷이 있으면 신뢰도가 크게 올라갑니다."
+      }
+    },
+    {emoji:"⚔️",title:"역대급 보스전 리액션 모음",desc:"명작 게임들의 전설적인 보스전을 처음 플레이하며 리액션하는 하이라이트 영상입니다.",tags:["리액션","보스전","명장면"],difficulty:"하",potential:"높음",
+      detail:{
+        hook:"첫 보스전에서 충격받는 리액션 하이라이트를 3초만 보여주기",
+        structure:["게임 1: 첫 보스 도전 + 리액션 (3분)","게임 2: 멘붕 구간 (3분)","게임 3: 감동 엔딩 보스 (3분)","게임 4: 역대급 난이도 (3분)","최종 랭킹 + 소감 (2분)"],
+        thumbnail:"놀란 표정 클로즈업 + 게임 보스 이미지 합성, 'OMG' 텍스트",
+        seo:"#보스전 #게임리액션 #명작게임 #첫플레이",
+        equipment:"페이스캠, 캡처 카드, 마이크",
+        monetization:"게임 판매 제휴링크, 게이밍 모니터 협찬, 조회수 기반 광고",
+        tip:"리액션은 자연스러움이 생명입니다. 과장하지 말고 진짜 처음 플레이하세요."
+      }
+    },
+    {emoji:"🔧",title:"10만원 이하 게이밍 세팅 도전기",desc:"극한 가성비로 쾌적한 게이밍 환경을 만드는 과정. 중고 마켓 활용부터 세팅까지 전 과정을 담습니다.",tags:["가성비","게이밍세팅","도전"],difficulty:"중",potential:"높음",
+      detail:{
+        hook:"'10만원으로 배그를 돌린다고?' 완성된 세팅을 먼저 보여주기",
+        structure:["예산 공개 + 계획 (1분)","중고 마켓 쇼핑 (3분)","조립 과정 (4분)","세팅 최적화 (3분)","실제 게임 구동 테스트 (3분)","총 비용 정리 + 소감 (2분)"],
+        thumbnail:"10만원 지폐 + PC 이미지, '이 가격에 이 성능?' 텍스트",
+        seo:"#가성비PC #게이밍세팅 #조립PC #중고PC",
+        equipment:"카메라, 중고 부품, 조립 도구",
+        monetization:"부품 쿠팡 링크, 게이밍 기어 협찬, 쇼핑 관련 광고",
+        tip:"예산 안에 들어오는 과정의 긴장감이 컨텐츠의 재미입니다."
+      }
+    },
+    {emoji:"🧩",title:"숨겨진 인디 게임 명작 BEST 7",desc:"대형 게임에 가려진 인디 게임 중 꼭 해봐야 할 작품들을 소개합니다.",tags:["인디게임","추천","명작"],difficulty:"하",potential:"중",
+      detail:{
+        hook:"'AAA 게임보다 재밌는 게임이 5천원입니다'",
+        structure:["선정 기준 설명 (1분)","7위~4위 소개 (각 1.5분, 6분)","3위~1위 심층 리뷰 (각 2.5분, 7.5분)","구매 팁 + 세일 정보 (1.5분)"],
+        thumbnail:"인디 게임 스크린샷 콜라주 + '숨겨진 명작' 텍스트, 보석 이모지",
+        seo:"#인디게임 #게임추천 #명작게임 #가성비게임 #스팀추천",
+        equipment:"각 게임 플레이 캡처, 스팀 스크린샷",
+        monetization:"스팀 제휴링크, 게임 키 사이트 협찬, 게임 광고",
+        tip:"각 게임마다 가장 인상적인 장면 10초를 보여주면 클릭률이 높아집니다."
+      }
+    }
+  ],
+  "먹방/요리": [
+    {emoji:"🍜",title:"편의점 재료로 레스토랑급 요리 도전",desc:"편의점에서 살 수 있는 재료만으로 고급 레스토랑 수준의 요리를 만드는 도전 영상입니다.",tags:["편의점요리","도전","자취생"],difficulty:"하",potential:"매우 높음",
+      detail:{
+        hook:"'이게 편의점 재료로 만든 거라고?' 완성된 요리를 먼저 클로즈업",
+        structure:["편의점 장보기 (2분)","재료 공개 + 메뉴 발표 (1분)","조리 과정 (6분)","플레이팅 (2분)","시식 리뷰 + 원가 공개 (2분)","레스토랑 가격과 비교 (1분)"],
+        thumbnail:"편의점 봉투 vs 고급 접시에 담긴 요리, '5천원 vs 5만원' 텍스트",
+        seo:"#편의점요리 #자취요리 #가성비요리 #요리도전 #편의점레시피",
+        equipment:"카메라, 기본 조리도구, 편의점 재료",
+        monetization:"식품/키친 브랜드 협찬, 편의점 프로모션, 쿠팡 주방용품 링크",
+        tip:"가격 대비 퀄리티의 갭이 클수록 반응이 좋습니다. 원가를 꼭 공개하세요."
+      }
+    },
+    {emoji:"🌍",title:"세계 이색 길거리 음식 리뷰 시리즈",desc:"각 나라의 특이한 길거리 음식을 직접 만들거나 방문해서 리뷰하는 시리즈입니다.",tags:["세계음식","길거리음식","리뷰"],difficulty:"중",potential:"높음",
+      detail:{
+        hook:"'이 나라에서는 이걸 간식으로 먹습니다' 충격적인 비주얼의 음식",
+        structure:["나라 소개 + 음식 문화 (2분)","음식 만들기/방문 (5분)","시식 리액션 (3분)","맛 평가 + 점수 (2분)","다음 편 예고 (1분)"],
+        thumbnail:"특이한 음식 클로즈업 + 국기 아이콘, '이게 음식?' 텍스트",
+        seo:"#세계음식 #길거리음식 #음식리뷰 #먹방 #이색음식",
+        equipment:"카메라, 레시피 재료, 해외 식재료",
+        monetization:"식재료 배송 서비스 협찬, 여행 관련 광고, 요리도구 링크",
+        tip:"시리즈로 만들면 구독 전환율이 높아집니다. 나라 선정 투표를 활용하세요."
+      }
+    },
+    {emoji:"⏰",title:"5분 안에 만드는 야식 레시피 5가지",desc:"자취생과 직장인을 위한 초간단 야식 레시피 모음. 재료비 3천원 이하, 조리시간 5분 이내입니다.",tags:["야식","간단요리","5분레시피"],difficulty:"하",potential:"높음",
+      detail:{
+        hook:"'배고픈데 귀찮을 때, 이것만 따라하세요'",
+        structure:["레시피 1: 치즈계란밥 (1분)","레시피 2: 참치마요 덮밥 (1분)","레시피 3: 라면 업그레이드 (2분)","레시피 4: 원팬 볶음면 (2분)","레시피 5: 전자레인지 떡볶이 (2분)","재료비 총정리 (1분)"],
+        thumbnail:"맛있어 보이는 야식 5가지 그리드, '5분이면 완성' 텍스트, 시계 아이콘",
+        seo:"#야식레시피 #자취요리 #간단요리 #5분요리 #야식추천",
+        equipment:"기본 조리도구, 카메라 (탑뷰 삼각대 추천)",
+        monetization:"주방용품 링크, 식재료 브랜드 협찬, 쿠킹 앱 광고",
+        tip:"탑뷰 촬영이 요리 영상에서 가장 깔끔합니다. 타이머를 화면에 넣으면 신뢰감이 올라갑니다."
+      }
+    },
+    {emoji:"🔥",title:"매운맛 단계별 도전 먹방",desc:"순한 맛부터 지옥 매운맛까지 단계별로 도전하는 리액션 먹방입니다.",tags:["매운맛","도전먹방","리액션"],difficulty:"하",potential:"매우 높음",
+      detail:{
+        hook:"마지막 단계에서 고통받는 표정 3초 미리보기",
+        structure:["도전 규칙 설명 (1분)","Level 1-3: 순한맛 (3분)","Level 4-6: 매운맛 (4분)","Level 7-9: 극한 매운맛 (4분)","Level 10: 사망맛 (3분)","후기 + 위장약 (1분)"],
+        thumbnail:"빨간 얼굴 + 불꽃 이펙트, 'Level 10 도전' 텍스트, 고추 아이콘",
+        seo:"#매운맛도전 #먹방 #도전먹방 #핵매운 #매운음식",
+        equipment:"카메라, 단계별 매운 소스/음식, 우유",
+        monetization:"소스 브랜드 협찬, 식품 관련 광고, 조회수 기반 수익 (먹방 인기 높음)",
+        tip:"각 단계마다 스코빌 지수를 표시하면 교육적이면서 재밌습니다."
+      }
+    },
+    {emoji:"👨‍🍳",title:"프로 셰프 vs 초보 같은 재료 요리 대결",desc:"동일한 재료를 프로 셰프와 요리 초보에게 주고 결과물을 비교하는 대결 영상입니다.",tags:["요리대결","셰프","비교"],difficulty:"중",potential:"매우 높음",
+      detail:{
+        hook:"같은 재료인데 완전히 다른 두 결과물을 나란히 보여주기",
+        structure:["규칙 설명 + 재료 공개 (2분)","초보 조리 과정 (4분)","셰프 조리 과정 (4분)","블라인드 시식 심사 (3분)","결과 발표 + 셰프 팁 공개 (2분)"],
+        thumbnail:"접시 2개 나란히 (엉망 vs 완벽), 'VS' 텍스트",
+        seo:"#요리대결 #셰프vs초보 #쿠킹배틀 #요리비교 #음식대결",
+        equipment:"카메라 2대, 동일 재료 2세트, 기본 조리도구",
+        monetization:"요리 클래스 협찬, 주방용품 브랜드 제휴, 음식 관련 높은 광고 단가",
+        tip:"심사위원을 추가하면 더 재밌어집니다. 초보가 의외로 잘하는 반전이 있으면 대박입니다."
+      }
+    },
+    {emoji:"🧮",title:"만원의 행복 - 1만원으로 하루 세끼",desc:"하루 식비 1만원으로 아침, 점심, 저녁을 해결하는 알뜰 식단 도전기입니다.",tags:["가성비","절약","식단"],difficulty:"하",potential:"높음",
+      detail:{
+        hook:"'식비 절약 끝판왕, 1만원으로 하루 세끼 가능합니다'",
+        structure:["예산 계획 + 장보기 (2분)","아침 만들기 (2분)","점심 만들기 (3분)","저녁 만들기 (3분)","영양 분석 + 총 비용 공개 (2분)","일주일 도전 예고 (1분)"],
+        thumbnail:"1만원 지폐 + 세끼 음식 사진, '이게 다 만원?' 텍스트",
+        seo:"#만원식단 #절약식단 #자취요리 #식비절약 #가성비식단",
+        equipment:"카메라, 저예산 식재료, 기본 조리도구",
+        monetization:"마트/배송 서비스 협찬, 가계부 앱 광고, 주방용품 링크",
+        tip:"영수증을 화면에 보여주며 실시간으로 금액을 계산하면 신뢰도가 올라갑니다."
+      }
+    }
+  ]
+};
+
+/* ── 범용 아이디어 (카테고리에 없을 때) ── */
+const AI_IDEA_GENERAL = [
+  {emoji:"📊",title:"구독자 0에서 1000명까지 걸린 시간과 방법",desc:"실제 채널 성장 과정을 데이터와 함께 분석하고, 초보 유튜버에게 실용적인 전략을 공유합니다.",tags:["유튜브성장","초보유튜버","데이터분석"],difficulty:"중",potential:"높음",
+    detail:{hook:"'6개월간의 데이터를 전부 공개합니다'",structure:["현재 채널 상태 공개 (1분)","월별 성장 데이터 분석 (4분)","효과 있었던 전략 TOP 5 (5분)","실패했던 시도들 (3분)","초보에게 드리는 조언 (2분)"],thumbnail:"구독자 그래프 + 0→1000 텍스트",seo:"#유튜브성장 #구독자늘리기 #초보유튜버",equipment:"채널 분석 데이터, 화면 녹화",monetization:"유튜브 교육 플랫폼 협찬",tip:"실제 수치를 공개할수록 신뢰도와 공유율이 높아집니다."}
+  },
+  {emoji:"🎙️",title:"하루 루틴 브이로그 - 직업별 24시간",desc:"특정 직업인의 하루를 밀착 촬영하는 브이로그 시리즈입니다.",tags:["브이로그","하루루틴","직업"],difficulty:"하",potential:"높음",
+    detail:{hook:"알람 소리와 함께 시작되는 새벽 5시",structure:["기상 + 모닝 루틴 (2분)","출근/이동 (2분)","업무 하이라이트 (5분)","점심 + 쉬는 시간 (2분)","오후 일과 (3분)","퇴근 + 저녁 루틴 (2분)"],thumbnail:"시계 + 직업 아이콘, '24시간 밀착' 텍스트",seo:"#하루루틴 #브이로그 #직업소개 #일상",equipment:"브이로그 카메라, 마이크, 짐벌",monetization:"카메라 장비 협찬, 생활용품 광고",tip:"자막으로 시간을 표시하면 구조감이 생깁니다. 직업별 시리즈로 확장하세요."}
+  },
+  {emoji:"💡",title:"10가지 생활 꿀팁 모아보기",desc:"일상에서 바로 써먹을 수 있는 꿀팁을 모아 빠르게 보여주는 영상입니다.",tags:["꿀팁","라이프핵","생활"],difficulty:"하",potential:"높음",
+    detail:{hook:"'3번 팁은 진짜 인생이 바뀝니다'",structure:["팁 1-3: 주방 꿀팁 (3분)","팁 4-6: 청소 꿀팁 (3분)","팁 7-8: 수납 꿀팁 (2분)","팁 9-10: 절약 꿀팁 (2분)","보너스 팁 (1분)"],thumbnail:"전구 아이콘 + 놀란 표정, '몰랐던 꿀팁 10' 텍스트",seo:"#꿀팁 #생활꿀팁 #라이프핵 #생활정보",equipment:"카메라, 각 팁 관련 소품",monetization:"생활용품 제휴링크, 쿠팡 파트너스",tip:"쇼츠로 개별 팁을 올리면 본편 유입도 늘어납니다."}
+  },
+  {emoji:"🏃",title:"30일 챌린지 변화 기록",desc:"30일간 특정 챌린지(운동, 독서, 금주 등)를 수행하며 변화를 기록하는 영상입니다.",tags:["챌린지","30일","자기계발"],difficulty:"중",potential:"매우 높음",
+    detail:{hook:"Day 1 vs Day 30 비포/애프터를 먼저 보여주기",structure:["챌린지 선언 + 규칙 (1분)","Week 1: 시작의 설렘 (3분)","Week 2: 슬럼프 구간 (3분)","Week 3: 변화 시작 (3분)","Week 4: 최종 결과 (3분)","데이터 정리 + 소감 (2분)"],thumbnail:"비포/애프터 사진 나란히, '30일의 기적' 텍스트",seo:"#30일챌린지 #자기계발 #변화기록 #도전",equipment:"매일 기록용 카메라, 측정 도구",monetization:"운동/건강 제품 협찬, 앱 광고",tip:"매일 짧은 기록을 쇼츠로 올리면 시리즈 구독 효과가 있습니다."}
+  },
+  {emoji:"🧪",title:"유튜브 알고리즘 실험 결과 공개",desc:"실제로 다양한 업로드 전략을 실험하고 결과 데이터를 분석하는 영상입니다.",tags:["알고리즘","실험","데이터"],difficulty:"상",potential:"매우 높음",
+    detail:{hook:"'이 한 가지를 바꿨더니 조회수가 5배 올랐습니다'",structure:["실험 설계 (2분)","실험 1: 업로드 시간 비교 (3분)","실험 2: 썸네일 A/B 테스트 (3분)","실험 3: 제목 패턴 비교 (3분)","종합 데이터 분석 (3분)","결론 + 추천 전략 (2분)"],thumbnail:"그래프 차트 + 돋보기, '알고리즘 해킹?' 텍스트",seo:"#유튜브알고리즘 #조회수올리기 #유튜브전략 #알고리즘분석",equipment:"유튜브 스튜디오 데이터, 화면 녹화, 분석 스프레드시트",monetization:"유튜브 교육 강의 협찬, 크리에이터 도구 광고",tip:"구체적인 숫자와 그래프가 핵심입니다. 허세 없이 솔직한 데이터가 공유를 유발합니다."}
+  },
+  {emoji:"🎭",title:"직접 해본 부업 솔직 후기 랭킹",desc:"직접 체험한 부업 5가지의 실제 수익, 난이도, 시간 투자를 솔직하게 랭킹하는 영상입니다.",tags:["부업","수익","솔직후기"],difficulty:"중",potential:"매우 높음",
+    detail:{hook:"'이 부업은 절대 하지 마세요' 역발상 오프닝",structure:["선정 기준 + 평가 항목 (1분)","부업 1: 블로그 (3분)","부업 2: 스마트스토어 (3분)","부업 3: 배달 (3분)","부업 4: 번역/프리랜서 (3분)","부업 5: 주식/투자 (3분)","종합 순위 + 추천 (2분)"],thumbnail:"돈 아이콘 + 순위 표, '부업 랭킹' 텍스트",seo:"#부업추천 #부업순위 #투잡 #수익공개",equipment:"각 부업 체험 인증 자료, 수익 스크린샷",monetization:"재테크 플랫폼 협찬, 클래스 광고, 관련 서비스 제휴",tip:"실제 수익을 공개하면 조회수가 폭발합니다. 과장하지 마세요."}
+  }
+];
+
+/* ── 스타일/타겟별 보정 텍스트 ── */
+const STYLE_TIPS = {
+  shorts: "쇼츠는 첫 1초가 생명입니다. 결론/반전을 먼저 보여주고, 세로 화면(9:16)으로 촬영하세요. 자막은 크고 가운데에 배치합니다.",
+  medium: "5~15분 영상은 챕터를 나누고 2분마다 시각적 변화를 주세요. 인트로는 30초 이내로 끝내야 이탈률이 낮습니다.",
+  long: "20분 이상 영상은 스토리라인이 핵심입니다. 중간중간 미니 클라이맥스를 넣어 이탈을 방지하세요.",
+  live: "라이브는 시작 전 예고 쇼츠를 올리고, 채팅 반응을 적극 활용하세요. 하이라이트를 별도 영상으로 편집하면 2차 수익이 됩니다."
+};
+const TARGET_TIPS = {
+  beginner: "초보 채널은 니치(틈새) 주제에 집중하세요. 작은 시장에서 1위가 되면 알고리즘이 추천을 시작합니다. 주 3회 이상 꾸준한 업로드가 핵심입니다.",
+  growing: "1천~1만 구간은 시리즈 콘텐츠로 재방문율을 높이세요. 커뮤니티 게시판을 활용하고, 시청자 요청 영상을 만들면 충성도가 올라갑니다.",
+  established: "1만~10만 구간은 브랜딩을 강화할 시기입니다. 일관된 인트로/아웃트로, 채널 멤버십, 협찬 기준을 정립하세요.",
+  top: "10만 이상은 팀 빌딩과 콘텐츠 다각화를 고려하세요. 쇼츠 + 본편 + 라이브 3가지를 병행하면 수익이 극대화됩니다."
+};
+
+/* ── 아이디어 생성 함수 ── */
+function aiGenerateIdeas(){
+  const btn = document.getElementById('aiGenerateBtn');
+  const btnText = document.getElementById('aiGenBtnText');
+  const btnLoader = document.getElementById('aiGenBtnLoader');
+  const grid = document.getElementById('aiIdeasGrid');
+  const category = document.getElementById('aiCategory').value;
+  const style = document.getElementById('aiStyle').value;
+  const target = document.getElementById('aiTarget').value;
+  const keyword = document.getElementById('aiKeyword').value.trim();
+
+  btn.disabled = true;
+  btnText.style.display = 'none';
+  btnLoader.style.display = 'inline';
+  grid.innerHTML = '';
+
+  /* 로딩 애니메이션 */
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+    <div style="font-size:2.5rem;margin-bottom:16px;animation:pulse 1.5s infinite">🧠</div>
+    <div style="color:var(--text-secondary);font-size:0.9rem;">AI가 트렌드를 분석하고 있습니다...</div>
+  </div>`;
+
+  setTimeout(()=>{
+    /* 카테고리별 DB에서 가져오기 */
+    let pool = AI_IDEA_DB[category] ? [...AI_IDEA_DB[category]] : [];
+
+    /* 범용 아이디어 추가 */
+    let generalPool = [...AI_IDEA_GENERAL];
+
+    /* 키워드 필터링 (있으면 관련도 높은 것 우선) */
+    if(keyword){
+      const kw = keyword.toLowerCase();
+      const scoreItem = (item) => {
+        let s = 0;
+        if(item.title.toLowerCase().includes(kw)) s += 3;
+        if(item.desc.toLowerCase().includes(kw)) s += 2;
+        if(item.tags.some(t=>t.toLowerCase().includes(kw))) s += 2;
+        return s;
+      };
+      pool.sort((a,b)=>scoreItem(b)-scoreItem(a));
+      generalPool.sort((a,b)=>scoreItem(b)-scoreItem(a));
+    }
+
+    /* 셔플 함수 */
+    const shuffle = arr => {
+      for(let i=arr.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+      }
+      return arr;
+    };
+
+    /* 6개 선택: 카테고리에서 최대 4개, 나머지 범용에서 */
+    let selected = [];
+    if(pool.length >= 4){
+      selected = shuffle(pool).slice(0,4);
+      selected = selected.concat(shuffle(generalPool).slice(0,2));
+    } else {
+      selected = [...pool];
+      const need = 6 - selected.length;
+      selected = selected.concat(shuffle(generalPool).slice(0, need));
+    }
+    selected = shuffle(selected).slice(0,6);
+
+    /* 스타일/타겟 보정 정보 추가 */
+    selected.forEach(item => {
+      item._styleTip = STYLE_TIPS[style] || '';
+      item._targetTip = TARGET_TIPS[target] || '';
+      item._style = style;
+      item._target = target;
+      item._category = category;
+      item._keyword = keyword;
+    });
+
+    aiGeneratedIdeas = selected;
+
+    /* 렌더링 */
+    grid.innerHTML = '';
+    selected.forEach((idea, idx) => {
+      const diffColor = idea.difficulty === '하' ? '#4ade80' : idea.difficulty === '중' ? '#fbbf24' : '#f87171';
+      const potColor = idea.potential === '매우 높음' ? '#4ade80' : idea.potential === '높음' ? '#fbbf24' : '#94a3b8';
+      const card = document.createElement('div');
+      card.className = 'ai-idea-card';
+      card.onclick = () => aiOpenDetail(idx);
+      card.innerHTML = `
+        <div class="ai-idea-card-num">${idx+1}</div>
+        <div class="ai-idea-card-emoji">${idea.emoji}</div>
+        <div class="ai-idea-card-title">${idea.title}</div>
+        <div class="ai-idea-card-desc">${idea.desc}</div>
+        <div class="ai-idea-card-tags">${idea.tags.map(t=>`<span class="ai-idea-tag">#${t}</span>`).join('')}</div>
+        <div class="ai-idea-card-meta">
+          <span class="ai-idea-difficulty" style="color:${diffColor}">난이도: ${idea.difficulty}</span>
+          <span class="ai-idea-potential" style="color:${potColor}">잠재력: ${idea.potential}</span>
+        </div>
+        <div class="ai-idea-card-cta">클릭하여 상세 가이드 보기 →</div>
+      `;
+      grid.appendChild(card);
+    });
+
+    btn.disabled = false;
+    btnText.style.display = 'inline';
+    btnLoader.style.display = 'none';
+  }, 1500);
+}
+
+/* ── 상세 가이드 모달 열기 ── */
+function aiOpenDetail(idx){
+  const idea = aiGeneratedIdeas[idx];
+  if(!idea || !idea.detail) return;
+  const d = idea.detail;
+  const overlay = document.getElementById('aiDetailOverlay');
+  const content = document.getElementById('aiDetailContent');
+
+  const stepsHTML = d.structure.map((step, i) => `
+    <div class="ai-detail-step">
+      <div class="ai-detail-step-num">${i+1}</div>
+      <div class="ai-detail-step-text">${step}</div>
+    </div>
+  `).join('');
+
+  const diffColor = idea.difficulty === '하' ? '#4ade80' : idea.difficulty === '중' ? '#fbbf24' : '#f87171';
+  const potColor = idea.potential === '매우 높음' ? '#4ade80' : idea.potential === '높음' ? '#fbbf24' : '#94a3b8';
+
+  content.innerHTML = `
+    <div class="ai-detail-header">
+      <div class="ai-detail-emoji">${idea.emoji}</div>
+      <div class="ai-detail-title">${idea.title}</div>
+      <div class="ai-detail-subtitle">${idea.desc}</div>
+      <div class="ai-detail-tags-row" style="justify-content:center;margin-top:12px;">
+        ${idea.tags.map(t=>`<span class="ai-detail-tag">#${t}</span>`).join('')}
+      </div>
+    </div>
+
+    <!-- 기본 정보 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-stat-grid">
+        <div class="ai-detail-stat">
+          <div class="ai-detail-stat-value" style="color:${diffColor}">${idea.difficulty}</div>
+          <div class="ai-detail-stat-label">제작 난이도</div>
+        </div>
+        <div class="ai-detail-stat">
+          <div class="ai-detail-stat-value" style="color:${potColor}">${idea.potential}</div>
+          <div class="ai-detail-stat-label">성장 잠재력</div>
+        </div>
+        <div class="ai-detail-stat">
+          <div class="ai-detail-stat-value">${idea._category}</div>
+          <div class="ai-detail-stat-label">카테고리</div>
+        </div>
+        <div class="ai-detail-stat">
+          <div class="ai-detail-stat-value">${{shorts:'쇼츠',medium:'중간(5~15분)',long:'롱폼(20분+)',live:'라이브'}[idea._style]||idea._style}</div>
+          <div class="ai-detail-stat-label">영상 스타일</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 후킹 포인트 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">🎣 후킹 포인트 (첫 5초)</div>
+      <div class="ai-detail-section-body">${d.hook}</div>
+    </div>
+
+    <!-- 영상 구성 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">🎬 영상 구성 (타임라인)</div>
+      <div class="ai-detail-section-body">${stepsHTML}</div>
+    </div>
+
+    <!-- 썸네일 전략 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">🖼️ 썸네일 전략</div>
+      <div class="ai-detail-section-body">${d.thumbnail}</div>
+    </div>
+
+    <!-- SEO / 해시태그 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">🔍 SEO 키워드 & 해시태그</div>
+      <div class="ai-detail-section-body">${d.seo}</div>
+    </div>
+
+    <!-- 필요 장비 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">🛠️ 필요 장비 & 준비물</div>
+      <div class="ai-detail-section-body">${d.equipment}</div>
+    </div>
+
+    <!-- 수익화 전략 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">💰 수익화 전략</div>
+      <div class="ai-detail-section-body">${d.monetization}</div>
+    </div>
+
+    <!-- 핵심 팁 -->
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">⭐ 핵심 제작 팁</div>
+      <div class="ai-detail-tip"><strong>PRO TIP:</strong> ${d.tip}</div>
+    </div>
+
+    <!-- 스타일별 조언 -->
+    ${idea._styleTip ? `
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">🎥 ${({shorts:'쇼츠',medium:'중간 길이',long:'롱폼',live:'라이브'})[idea._style]} 영상 제작 조언</div>
+      <div class="ai-detail-tip">${idea._styleTip}</div>
+    </div>` : ''}
+
+    <!-- 타겟별 조언 -->
+    ${idea._targetTip ? `
+    <div class="ai-detail-section">
+      <div class="ai-detail-section-title">📈 채널 성장 단계별 조언</div>
+      <div class="ai-detail-tip">${idea._targetTip}</div>
+    </div>` : ''}
+  `;
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ── 상세 가이드 모달 닫기 ── */
+function aiCloseDetail(){
+  document.getElementById('aiDetailOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+  <!-- 아이디어 카드 그리드 -->
+  <div class="ai-ideas-grid" id="aiIdeasGrid"></div>
+
+  <!-- 상세 가이드 모달 -->
+  <div class="ai-detail-overlay" id="aiDetailOverlay" onclick="if(event.target===this)aiCloseDetail()">
+    <div class="ai-detail-modal" id="aiDetailModal">
+      <button class="ai-detail-close" onclick="aiCloseDetail()">✕</button>
+      <div id="aiDetailContent"></div>
+    </div>
+  </div>
+</section>
 
     <section class="section-page" id="section-shop"></section>
   </main>
@@ -1090,6 +1680,7 @@ body {
       </div>
       <button class="ch-btn-modal-close" onclick="chCloseModal()">✕</button>
     </div>
+    
     <div class="ch-modal-body">
       <div class="ch-modal-card-area" id="chModalCardArea"></div>
       <div class="ch-modal-info" id="chModalInfo"></div>
