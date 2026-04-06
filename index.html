@@ -836,9 +836,9 @@ body {
     <section class="section-page active" id="section-hot">
       <div class="section-header"><div class="section-title">🔥 인기영상</div><div class="section-subtitle">지금 한국에서 가장 인기 있는 YouTube 영상</div></div>
       <div class="hot-tab-bar">
-        <button class="hot-tab-btn active" id="tab-shorts" data-type="shorts">🎬 쇼츠</button>
-        <button class="hot-tab-btn" id="tab-longs" data-type="longs">📹 롱폼</button>
-      </div>
+  <button class="hot-tab-btn active" id="tab-all" data-type="all">🔥 인기영상</button>
+</div>
+
       <div id="hot-loader" class="loader-wrap"><div class="spinner"></div><div style="color:var(--text-secondary);font-size:13px">인기영상 불러오는 중...</div></div>
       <div id="hot-grid" class="video-grid"></div>
       <button class="more-btn" id="hot-more-btn" onclick="renderMore()">더보기 ▼</button>
@@ -1026,8 +1026,7 @@ function pushAd(id){if(_adFlags[id])return;_adFlags[id]=true;try{(window.adsbygo
 const API_KEYS=['AIzaSyB0WidgL6qzlES2elb30y6KEXgwmauGo_g'];
 let keyIdx=0;
 const LONGS_MIN_SEC=60,PAGE=12,MAX_REQ=3;
-let shortsCache=[],longsCache=[],activeType='shorts',shortsPage=0,longsPage=0;
-
+let allCache=[],activeType='all',allPage=0;
 /* ═══ 유틸 ═══ */
 function fmt(n){n=parseInt(n,10)||0;if(n>=1e8)return(n/1e8).toFixed(1).replace(/\.0$/,'')+'억';if(n>=1e4)return(n/1e4).toFixed(1).replace(/\.0$/,'')+'만';if(n>=1e3)return(n/1e3).toFixed(1).replace(/\.0$/,'')+'천';return n.toLocaleString('ko-KR');}
 function parseDurSec(iso){if(!iso)return 0;const m=iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return 0;return(parseInt(m[1]||0)*3600)+(parseInt(m[2]||0)*60)+parseInt(m[3]||0);}
@@ -1072,13 +1071,17 @@ function showSec(id){
 }
 
 /* ═══ 인기영상 ═══ */
-async function loadHot(){
-  document.getElementById('hot-loader').style.display='flex';document.getElementById('hot-grid').innerHTML='';document.getElementById('hot-more-btn').style.display='none';
-  let all=[],pt='',rc=0;
-  try{do{const d=await apiFetch('https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50'+(pt?'&pageToken='+pt:''));(d.items||[]).forEach(i=>all.push(i));pt=d.nextPageToken||'';rc++;}while(pt&&rc<MAX_REQ);}catch(e){showGlobalError('인기영상 로드 실패: '+e.message);}
-  shortsCache=byViral(all.filter(isShorts));longsCache=byViral(all.filter(isLongs));shortsPage=0;longsPage=0;
-  document.getElementById('hot-loader').style.display='none';renderHotGrid(true);
+function renderHotGrid(reset=false){
+  const grid=document.getElementById('hot-grid'),btn=document.getElementById('hot-more-btn');
+  if(!allCache.length){grid.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">🔥</div><h3>데이터 없음</h3></div>`;btn.style.display='none';return;}
+  const start=reset?0:allPage*PAGE,items=allCache.slice(start,start+PAGE);
+  if(reset)grid.innerHTML='';
+  items.forEach(it=>{const el=document.createElement('div');el.className='video-card';el.innerHTML=makeVideoCard(it);el.onclick=()=>openVideoModal(it.id);grid.appendChild(el);});
+  const np=reset?1:allPage+1;
+  allPage=np;
+  btn.style.display=(np*PAGE)<allCache.length?'block':'none';
 }
+  
 function renderHotGrid(reset=false){
   const grid=document.getElementById('hot-grid'),btn=document.getElementById('hot-more-btn'),cache=activeType==='shorts'?shortsCache:longsCache,page=activeType==='shorts'?shortsPage:longsPage;
   if(!cache.length){grid.innerHTML=`<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">${activeType==='shorts'?'🎬':'📹'}</div><h3>데이터 없음</h3></div>`;btn.style.display='none';return;}
