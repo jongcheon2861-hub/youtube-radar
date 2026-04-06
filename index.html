@@ -113,6 +113,15 @@ bg.addColorStop(0,'#ffe49a');bg.addColorStop(0.25,'#f0c96a');bg.addColorStop(0.5
   </script>
 
   <style>
+.hot-search-wrap{margin-bottom:16px}
+.hot-search-bar{display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 16px;gap:10px;position:relative;transition:all 0.3s}
+.hot-search-icon{font-size:1rem;opacity:0.4}
+.hot-search-input{flex:1;background:transparent;border:none;outline:none;color:var(--text-primary);font-size:0.9rem;font-family:inherit}
+.hot-search-input::placeholder{color:rgba(255,255,255,0.25)}
+.hot-search-badge{font-size:0.65rem;font-weight:800;padding:3px 10px;border-radius:20px;background:linear-gradient(135deg,#ffe49a,#f0c96a,#e879a0,#a855f7,#7c3aed);color:#fff;white-space:nowrap;letter-spacing:0.5px}
+.hot-search-btn{background:linear-gradient(135deg,#ffe49a,#f0c96a,#e879a0,#a855f7,#7c3aed);color:#fff;border:none;border-radius:8px;padding:6px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity 0.2s}
+.hot-search-btn:hover{opacity:0.85}
+    
     /* 채널분석 패널 타이틀 그라데이션 통일 */
 .ch-panel-title,
 .ch-dp-title,
@@ -904,6 +913,15 @@ body {
   <main class="main-content">
     <section class="section-page active" id="section-hot">
       <div class="section-header"><div class="section-title">🔥 인기영상</div><div class="section-subtitle">지금 한국에서 가장 인기 있는 YouTube 영상</div></div>
+      <div class="hot-search-wrap">
+        <div class="hot-search-bar">
+          <span class="hot-search-icon">🔍</span>
+          <input type="text" class="hot-search-input" placeholder="키워드로 영상 검색 (하루 5회 제한)" onkeydown="if(event.key==='Enter')hotKeywordSearch()" />
+          <span class="hot-search-badge">오늘 5회 남음</span>
+          <button class="hot-search-btn" onclick="hotKeywordSearch()">검색</button>
+        </div>
+      </div>
+      <div class="hot-tab-bar">
       <div class="hot-tab-bar">
   <button class="hot-tab-btn active" id="tab-all" data-type="all">🔥 인기영상</button>
 </div>
@@ -1138,15 +1156,25 @@ function showSec(id){
     if(id==='shop')buildShop();
   }
 }
-<div class="hot-search-wrap">
-  <div class="hot-search-bar">
-    <span class="hot-search-icon">🔍</span>
-    <input type="text" class="hot-search-input" placeholder="키워드로 영상 검색 (하루 5회 제한)" onkeydown="if(event.key==='Enter')hotKeywordSearch()" />
-    <span class="hot-search-badge">오늘 5회 남음</span>
-    <button class="hot-search-btn" onclick="hotKeywordSearch()">검색</button>
-  </div>
-</div>
 
+async function loadHot(){
+  document.getElementById('hot-loader').style.display='flex';
+  document.getElementById('hot-grid').innerHTML='';
+  document.getElementById('hot-more-btn').style.display='none';
+  let all=[];
+  try{
+    const d=await apiFetch('https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50');
+    (d.items||[]).forEach(i=>all.push(i));
+  }catch(e){
+    showGlobalError('인기영상 로드 실패: '+e.message);
+  }
+  allCache=byViral(all);
+  allPage=0;
+  document.getElementById('hot-loader').style.display='none';
+  renderHotGrid(true);
+}
+
+function renderMore(){renderHotGrid(false);}
 /* ═══ 인기영상 ═══ */
 function renderHotGrid(reset=false){
   const grid=document.getElementById('hot-grid'),btn=document.getElementById('hot-more-btn');
@@ -1603,7 +1631,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderHeaderLogo();
   updateSearchBadge();
   setTimeout(()=>{try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}},500);
-  document.querySelectorAll('.hot-tab-btn').forEach(b=>b.addEventListener('click',()=>switchType(b.dataset.type)));
   document.getElementById('modal-close-btn').addEventListener('click',closeVideoModal);
   document.getElementById('video-modal').addEventListener('click',function(e){if(e.target===this)closeVideoModal();});
   document.getElementById('toolModal').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
