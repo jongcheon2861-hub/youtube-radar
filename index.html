@@ -1273,6 +1273,30 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('chAnalyzerInput').addEventListener('keydown',e=>{if(e.key==='Enter')chStartAnalysis();});
   sectionLoaded['hot']=true;loadHot();
 });
+    /* ═══ 상단 광고 높이 자동 감지 ═══ */
+    function updateAdLayout(){
+      const adArea = document.getElementById('topAdArea');
+      if(!adArea) return;
+      const adH = adArea.offsetHeight || 0;
+      const headerH = 60;
+      const totalTop = adH + headerH;
+
+      document.querySelector('.header').style.top = adH + 'px';
+      document.querySelector('.sidebar').style.top = totalTop + 'px';
+      const rc = document.getElementById('rightCol');
+      if(rc) rc.style.top = totalTop + 'px';
+      document.querySelector('.app-layout').style.paddingTop = totalTop + 'px';
+    }
+
+    window.addEventListener('load', function(){
+      updateAdLayout();
+      setTimeout(updateAdLayout, 1000);
+      setTimeout(updateAdLayout, 3000);
+      setTimeout(updateAdLayout, 5000);
+    });
+
+    window.addEventListener('resize', updateAdLayout);
+  
 </script>
 </body>
 </html>
