@@ -1114,19 +1114,66 @@ function showSec(id){
     if(id==='shop')buildShop();
   }
 }
-async function loadHot(){
+async function loadHot(forceRefresh){
   document.getElementById('hot-loader').style.display='flex';
   document.getElementById('hot-grid').innerHTML='';
   document.getElementById('hot-more-btn').style.display='none';
   let all=[];
-  try{
-    const d=await apiFetch('https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50');
-    (d.items||[]).forEach(i=>all.push(i));
-  }catch(e){showGlobalError('인기영상 로드 실패: '+e.message);}
+
+  // ✅ 캐시 유효 시간 설정 (분 단위)
+  const CACHE_MINUTES = 30;  // 30분 후 자동 갱신 (원하는 값으로 변경)
+
+  // ✅ 1단계: 캐시 확인 (시간 체크)
+  if(!forceRefresh){
+    try{
+      const cacheData = JSON.parse(localStorage.getItem('algo_hot_cache')||'null');
+      if(cacheData && cacheData.items && cacheData.items.length){
+        const elapsed = (Date.now() - cacheData.savedAt) / 1000 / 60; // 분 단위
+        if(elapsed < CACHE_MINUTES){
+          all = cacheData.items;
+          const remaining = Math.ceil(CACHE_MINUTES - elapsed);
+          showToast('⚡ 캐시에서 불러왔습니다 ('+remaining+'분 후 갱신)');
+        }
+      }
+    }catch(e){}
+  }
+
+  // ✅ 2단계: 캐시 없거나 만료되면 API 호출
+  if(!all.length){
+    try{
+      const d=await apiFetch('https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&hl=ko&maxResults=50');
+      if(d.items) all.push(...d.items);
+      // 성공 시 캐시 + 시간 저장
+      try{
+        localStorage.setItem('algo_hot_cache', JSON.stringify({
+          items: all.slice(0,50),
+          savedAt: Date.now()
+        }));
+      }catch(e){}
+    }catch(e){
+      // ✅ 3단계: API 실패 시 만료된 캐시라도 사용
+      try{
+        const cacheData = JSON.parse(localStorage.getItem('algo_hot_cache')||'null');
+        if(cacheData && cacheData.items && cacheData.items.length){
+          all = cacheData.items;
+          showToast('⚡ 오프라인 캐시에서 불러왔습니다');
+        }
+      }catch(e2){}
+    }
+  }
+
+  // 전부 실패 시
+  if(!all.length){
+    document.getElementById('hot-loader').style.display='none';
+    document.getElementById('hot-grid').innerHTML='<div class="no-data" style="grid-column:1/-1"><div class="no-data-icon">📡</div><h3>영상을 불러올 수 없습니다</h3><p style="color:var(--text-secondary);margin-top:8px">API 할당량이 소진되었거나 네트워크 문제입니다.</p><button class="more-btn" style="margin-top:16px" onclick="loadHot(true)">🔄 다시 시도</button></div>';
+    return;
+  }
+
   allCache=byViral(all);allPage=0;
   document.getElementById('hot-loader').style.display='none';
   renderHotGrid(true);
 }
+
 function renderMore(){renderHotGrid(false);}
 function renderHotGrid(reset=false){
   const grid=document.getElementById('hot-grid'),btn=document.getElementById('hot-more-btn');
