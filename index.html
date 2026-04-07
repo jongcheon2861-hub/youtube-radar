@@ -1301,7 +1301,38 @@ function openToolModal(name,url,desc,tag){
   document.getElementById('tmLink').href=url;
   document.getElementById('toolModal').classList.add('open');
 }
-
+/* ════════════════════════════════════
+   장비 쇼핑
+════════════════════════════════════ */
+const COUPANG_ID='YOUR_COUPANG_ID';
+const SHOP_CATS=[
+  {id:'camera', icon:'📷',label:'카메라',      desc:'유튜브·브이로그용 미러리스, 액션캠, 웹캠',  color:'#ff6b35',keyword:'유튜브 카메라 미러리스', coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+  {id:'mic',    icon:'🎙️',label:'마이크',      desc:'USB·XLR 콘덴서마이크, 핀마이크, 붐마이크', color:'#a855f7',keyword:'유튜브 마이크 콘덴서',    coupangCatUrl:'https://www.coupang.com/np/categories/205258'},
+  {id:'light',  icon:'💡', label:'조명',       desc:'링라이트, 소프트박스, 스트림 패널 조명',    color:'#f59e0b',keyword:'유튜브 조명 링라이트',    coupangCatUrl:'https://www.coupang.com/np/categories/685718'},
+  {id:'editing',icon:'🖥️',label:'편집·스트리밍',desc:'캡처보드, 스트림덱, 고성능 편집용 주변기기',color:'#06b6d4',keyword:'유튜브 캡처보드 스트림덱', coupangCatUrl:'https://www.coupang.com/np/categories/194525'},
+  {id:'acc',    icon:'🎒', label:'액세서리',   desc:'삼각대, 짐벌, SD카드, 카메라 가방',         color:'#10b981',keyword:'유튜브 삼각대 짐벌',      coupangCatUrl:'https://www.coupang.com/np/categories/393760'},
+];
+function coupangCatLink(cat){
+  return(cat.coupangCatUrl||'https://www.coupang.com/np/search?q='+encodeURIComponent(cat.keyword)+'&channel=user')+'?subId='+COUPANG_ID;
+}
+function buildShop(){
+  const section=document.getElementById('section-shop');if(!section)return;
+  section.innerHTML=`
+    <div class="section-header">
+      <div class="section-title">🛒 장비 쇼핑</div>
+      <div class="section-subtitle">유튜버 필수 장비를 카테고리별로 쿠팡에서 찾아보세요</div>
+    </div>
+    <div class="shop-notice">※ 이 링크는 쿠팡 파트너스 제휴 링크로, 구매 시 소정의 수수료가 발생할 수 있습니다.</div>
+    <div class="shop-cat-grid" id="shop-cat-grid"></div>`;
+  document.getElementById('shop-cat-grid').innerHTML=SHOP_CATS.map(cat=>
+    `<a class="shop-cat-card" href="${coupangCatLink(cat)}" target="_blank" rel="noopener sponsored" style="--cat-color:${cat.color}">
+       <div class="shop-cat-icon">${cat.icon}</div>
+       <div class="shop-cat-label">${cat.label}</div>
+       <div class="shop-cat-desc">${cat.desc}</div>
+       <div class="shop-cat-cta">쿠팡에서 보기 →</div>
+     </a>`
+  ).join('');
+}
 /* ═══ 채널 분석기 ═══ */
 let chAnalysisHistory=JSON.parse(localStorage.getItem('yt_history')||'[]');
 let chCurrentModalIdx=0,chAdInterval=null,chPendingResult=null,chAdDone=false,chAnalysisDone=false;
