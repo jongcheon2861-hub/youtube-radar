@@ -1378,18 +1378,22 @@ function chDoRenderResult(ch,sr,lv,gd){
   chRenderScoreBanner(sr,gd,lv);
   chRenderCard(ch,sr,lv,gd);
 
-  // ✅ 레벨 카드 바로 아래에 등급표 버튼 삽입
+  var oldGrade = document.getElementById('chGradeToggleBtn');
+  if(oldGrade && oldGrade.parentElement) oldGrade.parentElement.remove();
+  var oldSection = document.getElementById('chGradeSection');
+  if(oldSection) oldSection.remove();
+
   var gradeHTML = '<div style="text-align:center;margin:16px 0 8px;">'
     + '<button class="ch-btn-analyze" id="chGradeToggleBtn" onclick="chToggleGradeTable()" style="max-width:360px;margin:0 auto;font-size:0.9rem;padding:12px 28px;">'
     + '📊 알고리즘 등급표 보기</button></div>'
-    + '<div class="ch-grade-section" id="chGradeSection">'
+    + '<div class="ch-grade-section" id="chGradeSection" style="display:none;">'
     + '<div class="ch-grade-section-title"><div class="ch-panel-title" style="margin-bottom:0;">📊 알고리즘 등급표</div>'
     + '<div style="font-size:.75rem;color:var(--text-secondary);">등급을 클릭하면 레벨 카드를 미리볼 수 있습니다</div></div>'
-    + '<p class="ch-grade-desc">유튜브 알고리즘은 CTR·시청유지율·참여율·구독성장·업로드빈도 5개 지표를 종합 평가합니다.</p>'
+    + '<p class="ch-grade-desc">유튜브 알고리즘은 CTR 시청유지율 참여율 구독성장 업로드빈도 5개 지표를 종합 평가합니다.</p>'
     + '<div class="ch-grade-table-wrap"><table class="ch-grade-table"><thead><tr><th>등급</th><th>점수 범위</th><th>CTR</th><th>시청유지율</th><th>참여율</th><th>랭킹</th><th>미리보기</th></tr></thead>'
     + '<tbody id="chGradeTableBody"></tbody></table></div></div>';
   var cardEl = document.getElementById('chCardContainer');
-  if(cardEl){ cardEl.insertAdjacentHTML('afterend', gradeHTML); }
+  if(cardEl) cardEl.insertAdjacentHTML('afterend', gradeHTML);
   if(typeof chRenderGradeTable === 'function') chRenderGradeTable();
 
   chRenderMetrics(ch,sr);
@@ -1403,6 +1407,7 @@ function chDoRenderResult(ch,sr,lv,gd){
   document.getElementById('chResultSection').classList.add('show');
   document.getElementById('chResultSection').scrollIntoView({behavior:'smooth'});
 }
+
 function chE(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function chRenderChannelHeader(ch){document.getElementById('chChannelHeader').innerHTML=`<div class="ch-channel-avatar">${ch.avatar?`<img src="${ch.avatar}" onerror="this.parentElement.innerHTML='📺'">`:'📺'}</div><div class="ch-channel-info"><div class="ch-channel-name">${chE(ch.name)}</div><div class="ch-channel-handle">${chE(ch.handle)}</div><div class="ch-channel-tags">${ch.tags.map(t=>`<span class="ch-channel-tag">${t}</span>`).join('')}<span class="ch-channel-tag">🔴 실시간 API</span></div></div><div class="ch-channel-quick-stats"><div class="ch-quick-stat"><div class="ch-quick-stat-val">${ch.subs}</div><div class="ch-quick-stat-label">구독자</div></div><div class="ch-quick-stat"><div class="ch-quick-stat-val">${ch.vids.toLocaleString()}</div><div class="ch-quick-stat-label">영상</div></div><div class="ch-quick-stat"><div class="ch-quick-stat-val">${ch.avgViews}</div><div class="ch-quick-stat-label">평균 조회</div></div></div>`;}
 function chRenderScoreBanner(sr,gd,lv){const el=document.getElementById('chScoreBanner'),c=gd.color;el.style.background=`linear-gradient(135deg,${gd.colorDim.replace(/[\d.]+\)$/,'0.15)')},rgba(255,255,255,.02))`;el.style.border=`1px solid ${c}22`;el.innerHTML=`<div class="ch-score-big"><div class="ch-score-big-num" style="color:${c};text-shadow:0 0 20px ${c}66;">${sr.total}</div><div class="ch-score-big-label">ALGORITHM SCORE</div></div><div class="ch-score-divider"></div><div class="ch-score-summary"><h2>${gd.icon} ${gd.badge}</h2><p>${gd.summary}</p></div><div class="ch-score-level-badge" style="border-color:${c}33;"><div class="ch-level-badge-lv">레벨</div><div class="ch-level-badge-name" style="color:${c};">${lv==='MAX'?'LV.MAX':'LV.'+lv}</div><div class="ch-level-badge-rank">${gd.rankText}</div></div><div style="text-align:center;margin-top:20px;"><button class="ch-btn-analyze" id="chGradeToggleBtn" onclick="chToggleGradeTable()" style="max-width:360px;margin:0 auto;font-size:0.9rem;padding:12px 28px;">📊 알고리즘 등급표 보기</button></div><div class="ch-grade-section" id="chGradeSection"><div class="ch-grade-section-title"><div class="ch-panel-title" style="margin-bottom:0;">📊 알고리즘 등급표</div><div style="font-size:.75rem;color:var(--text-secondary);">등급을 클릭하면 레벨 카드를 미리볼 수 있습니다</div></div><p class="ch-grade-desc">유튜브 알고리즘은 CTR·시청유지율·참여율·구독성장·업로드빈도 5개 지표를 종합 평가합니다.</p><div class="ch-grade-table-wrap"><table class="ch-grade-table"><thead><tr><th>등급</th><th>점수 범위</th><th>CTR</th><th>시청유지율</th><th>참여율</th><th>랭킹</th><th>미리보기</th></tr></thead><tbody id="chGradeTableBody"></tbody></table></div></div>`;
