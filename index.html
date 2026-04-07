@@ -1209,15 +1209,98 @@ function aiOpenDetail(idx){const idea=aiGeneratedIdeas[idx];if(!idea||!idea.deta
 function aiCloseDetail(){document.getElementById('aiDetailOverlay').classList.remove('open');document.body.style.overflow='';}
 
 /* ═══ 유튜버 도구 ═══ */
-const TOOLS_DATA={'영상편집':[{name:'Vrew',url:'https://vrew.voyagerx.com',desc:'AI 자막 영상 편집.',tag:'freemium'},{name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve',desc:'프로 무료 편집.',tag:'free'},{name:'Premiere Pro',url:'https://www.adobe.com/kr/products/premiere.html',desc:'유튜버 표준.',tag:'paid'},{name:'CapCut',url:'https://www.capcut.com',desc:'쇼츠 특화 무료.',tag:'free'}],'썸네일':[{name:'Canva',url:'https://www.canva.com',desc:'온라인 디자인.',tag:'freemium'},{name:'Photoshop',url:'https://www.adobe.com/kr/products/photoshop.html',desc:'전문 편집.',tag:'paid'},{name:'Remove.bg',url:'https://www.remove.bg',desc:'AI 배경 제거.',tag:'freemium'}],'AI 도구':[{name:'ChatGPT',url:'https://chat.openai.com',desc:'스크립트 작성 AI.',tag:'freemium'},{name:'Claude',url:'https://claude.ai',desc:'긴 스크립트 작성.',tag:'freemium'},{name:'ElevenLabs',url:'https://elevenlabs.io',desc:'AI 음성 생성.',tag:'freemium'}]};
-let curToolCat=Object.keys(TOOLS_DATA)[0];
-function renderTools(){document.getElementById('toolTabs').innerHTML=Object.keys(TOOLS_DATA).map(k=>`<button class="tool-tab${k===curToolCat?' active':''}" onclick="selToolCat('${k}')">${k}</button>`).join('');document.getElementById('toolGrid').innerHTML=(TOOLS_DATA[curToolCat]||[]).map(t=>{const d=new URL(t.url).hostname,ic=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64`,e=s=>s.replace(/'/g,"\\'");return`<div class="tool-card" onclick="openToolModal('${e(t.name)}','${t.url}','${e(t.desc)}')"><img class="tool-icon" src="${ic}" alt=""/><div class="tool-name">${t.name}</div><span class="tool-badge tb-${t.tag}">${t.tag==='free'?'무료':t.tag==='paid'?'유료':'무료+유료'}</span></div>`;}).join('');}
-function selToolCat(c){curToolCat=c;renderTools();}
-function openToolModal(n,u,d){const dm=new URL(u).hostname;document.getElementById('tmIcon').src=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(dm)}&sz=64`;document.getElementById('tmName').textContent=n;document.getElementById('tmDesc').textContent=d;document.getElementById('tmLink').href=u;document.getElementById('toolModal').classList.add('open');}
-const SHOP_CATS=[{icon:'📷',label:'카메라',desc:'미러리스, 액션캠',color:'#ff6b35',url:'https://www.coupang.com/np/categories/393760'},{icon:'🎙️',label:'마이크',desc:'USB·XLR 마이크',color:'#a855f7',url:'https://www.coupang.com/np/categories/205258'},{icon:'💡',label:'조명',desc:'링라이트, 패널',color:'#f59e0b',url:'https://www.coupang.com/np/categories/685718'},{icon:'🖥️',label:'편집PC',desc:'캡처보드, 주변기기',color:'#06b6d4',url:'https://www.coupang.com/np/categories/194525'},{icon:'🎒',label:'액세서리',desc:'삼각대, 짐벌, SD카드',color:'#10b981',url:'https://www.coupang.com/np/categories/393760'}];
-function buildShop(){document.getElementById('section-shop').innerHTML=`<div class="section-header"><div class="section-title">🛒 장비 쇼핑</div><div class="section-subtitle">유튜버 필수 장비를 쿠팡에서 찾아보세요</div></div><div class="shop-notice">※ 쿠팡 파트너스 제휴 링크입니다.</div><div class="shop-cat-grid">${SHOP_CATS.map(c=>`<a class="shop-cat-card" href="${c.url}?subId=AF8853448" target="_blank" rel="noopener sponsored" style="--cat-color:${c.color}"><div class="shop-cat-icon">${c.icon}</div><div class="shop-cat-label">${c.label}</div><div class="shop-cat-desc">${c.desc}</div><div class="shop-cat-cta">쿠팡에서 보기 →</div></a>`).join('')}</div>`;}
-function showCpPopup(){document.getElementById('cp-popup').classList.add('show');}
-function closeCpPopup(){document.getElementById('cp-popup').classList.remove('show');}
+/* ═══ TOOLS (SEO 없음, 인기 도구 확충) ═══ */
+const TOOLS_DATA = {
+  '영상편집':[
+    {name:'Vrew',         url:'https://vrew.voyagerx.com',                          desc:'AI 자막 자동 생성 영상 편집 툴. 음성 인식으로 자막을 자동으로 달아줍니다.',tag:'freemium'},
+    {name:'DaVinci Resolve',url:'https://www.blackmagicdesign.com/products/davinciresolve',desc:'프로 수준 무료 영상 편집 소프트웨어. 색보정·사운드·VFX 올인원.',tag:'free'},
+    {name:'Premiere Pro', url:'https://www.adobe.com/kr/products/premiere.html',    desc:'어도비 프리미어 프로. 유튜버 및 방송국 표준 편집 툴.',tag:'paid'},
+    {name:'CapCut',       url:'https://www.capcut.com',                             desc:'모바일·PC 모두 지원하는 무료 편집 앱. 쇼츠/릴스 특화.',tag:'free'},
+    {name:'Final Cut Pro',url:'https://www.apple.com/final-cut-pro',               desc:'Mac 전용 프로급 편집 소프트웨어. 렌더링 속도 최강.',tag:'paid'},
+    {name:'iMovie',       url:'https://www.apple.com/imovie',                      desc:'Mac·iOS 기본 탑재 무료 편집 앱. 입문자에게 최적.',tag:'free'},
+    {name:'Clipchamp',    url:'https://clipchamp.com',                             desc:'Microsoft 제공 무료 브라우저 기반 영상 편집기. Windows 기본 탑재.',tag:'free'},
+    {name:'Filmora',      url:'https://filmora.wondershare.com',                   desc:'직관적 UI의 입문·중급 영상 편집 툴. 다양한 이펙트 내장.',tag:'freemium'},
+    {name:'Adobe Express', url:'https://www.adobe.com/express',                    desc:'어도비의 쉬운 영상·이미지·SNS 콘텐츠 제작 툴.',tag:'freemium'},
+    {name:'InShot',       url:'https://inshot.com',                                desc:'모바일 전용 인기 편집 앱. 쇼츠·릴스 제작에 최적화.',tag:'freemium'},
+  ],
+  '썸네일':[
+    {name:'Canva',        url:'https://www.canva.com',                             desc:'드래그 앤 드롭으로 썸네일·채널아트를 만드는 온라인 디자인 툴.',tag:'freemium'},
+    {name:'Photoshop',    url:'https://www.adobe.com/kr/products/photoshop.html',  desc:'전문가용 이미지 편집. 섬세한 합성·리터칭 가능.',tag:'paid'},
+    {name:'Adobe Firefly',url:'https://firefly.adobe.com',                        desc:'AI 이미지 생성 툴. 텍스트로 원하는 이미지를 즉시 생성.',tag:'freemium'},
+    {name:'Remove.bg',    url:'https://www.remove.bg',                            desc:'AI 배경 제거 툴. 썸네일 인물 배경 제거에 필수.',tag:'freemium'},
+    {name:'Snappa',       url:'https://snappa.com',                               desc:'유튜브 썸네일 전용 템플릿이 풍부한 온라인 디자인 툴.',tag:'freemium'},
+    {name:'Fotor',        url:'https://www.fotor.com',                            desc:'AI 기반 이미지 편집·배경제거·업스케일링 원스톱 툴.',tag:'freemium'},
+    {name:'PicsArt',      url:'https://picsart.com',                              desc:'AI 스티커·배경·효과 편집 앱. 모바일 썸네일 제작에 인기.',tag:'freemium'},
+    {name:'Pixlr',        url:'https://pixlr.com',                                desc:'브라우저 기반 무료 포토샵 대체 툴. 설치 없이 사용 가능.',tag:'freemium'},
+  ],
+  '음향·음악':[
+    {name:'Audacity',     url:'https://www.audacityteam.org',                     desc:'무료 오픈소스 오디오 편집. 잡음 제거·이퀄라이저·믹싱 지원.',tag:'free'},
+    {name:'Adobe Audition',url:'https://www.adobe.com/kr/products/audition.html', desc:'전문 오디오 편집. 노이즈 리덕션 품질이 탁월합니다.',tag:'paid'},
+    {name:'Epidemic Sound',url:'https://www.epidemicsound.com',                  desc:'저작권 프리 BGM 라이브러리. 유튜브 수익화 안전.',tag:'paid'},
+    {name:'Artlist',      url:'https://artlist.io',                               desc:'무제한 음악·효과음 라이선스. 연간 구독제 인기 플랫폼.',tag:'paid'},
+    {name:'Pixabay Music', url:'https://pixabay.com/music',                      desc:'무료 CC0 음악 라이브러리. 상업 이용 가능.',tag:'free'},
+    {name:'YT 오디오 보관함',url:'https://studio.youtube.com',                   desc:'YouTube 스튜디오 내 무료 저작권 프리 음악·효과음.',tag:'free'},
+    {name:'AIVA',         url:'https://www.aiva.ai',                             desc:'AI 작곡 플랫폼. 원하는 분위기의 BGM을 자동으로 생성.',tag:'freemium'},
+    {name:'Suno AI',      url:'https://suno.com',                                desc:'텍스트 입력만으로 완성된 노래를 생성하는 AI 음악 툴.',tag:'freemium'},
+  ],
+  'AI 도구':[
+    {name:'ChatGPT',      url:'https://chat.openai.com',                          desc:'스크립트·제목·설명란 작성에 활용할 수 있는 AI 챗봇.',tag:'freemium'},
+    {name:'Claude',       url:'https://claude.ai',                               desc:'Anthropic AI. 긴 스크립트 작성 및 아이디어 발굴에 탁월.',tag:'freemium'},
+    {name:'Runway',       url:'https://runwayml.com',                            desc:'AI 영상 생성·편집. 텍스트→영상, 배경 제거, 인페인팅.',tag:'freemium'},
+    {name:'ElevenLabs',   url:'https://elevenlabs.io',                           desc:'고품질 AI 음성 생성. 내레이션 영상 제작에 필수.',tag:'freemium'},
+    {name:'HeyGen',       url:'https://www.heygen.com',                          desc:'AI 아바타로 영상을 자동 생성. 다국어 더빙·번역 지원.',tag:'freemium'},
+    {name:'Synthesia',    url:'https://www.synthesia.io',                        desc:'AI 아바타 영상 제작 플랫폼. 텍스트→영상 변환.',tag:'paid'},
+    {name:'Pictory',      url:'https://pictory.ai',                              desc:'블로그·스크립트를 AI로 영상으로 자동 변환.',tag:'freemium'},
+    {name:'Descript',     url:'https://www.descript.com',                        desc:'텍스트 기반 영상 편집. 대본 수정하듯 영상을 편집.',tag:'freemium'},
+    {name:'Opus Clip',    url:'https://www.opus.pro',                            desc:'긴 영상을 AI가 자동으로 숏클립·쇼츠로 분리 편집.',tag:'freemium'},
+    {name:'Captions',     url:'https://www.captions.ai',                         desc:'AI 자막·번역·영상 편집 모바일 앱. 쇼츠 제작 특화.',tag:'freemium'},
+  ],
+  '방송·스트리밍':[
+    {name:'OBS Studio',   url:'https://obsproject.com',                          desc:'무료 오픈소스 방송·녹화 소프트웨어. 라이브 스트리밍 표준.',tag:'free'},
+    {name:'Streamlabs',   url:'https://streamlabs.com',                          desc:'OBS 기반 방송 툴 + 경고창·채팅봇 통합. 초보자 추천.',tag:'freemium'},
+    {name:'StreamYard',   url:'https://streamyard.com',                          desc:'브라우저 기반 라이브 방송 툴. 게스트 초대·자막 삽입.',tag:'freemium'},
+    {name:'Ecamm Live',   url:'https://www.ecamm.com/mac/ecammlive',             desc:'Mac 전용 인기 라이브 방송 소프트웨어.',tag:'paid'},
+    {name:'Restream',     url:'https://restream.io',                            desc:'유튜브·트위치 등 다중 동시 방송 플랫폼.',tag:'freemium'},
+  ],
+  '영상·이미지 소스':[
+    {name:'Pexels',       url:'https://www.pexels.com/videos',                   desc:'무료 HD/4K 스톡 영상. 상업 이용 무료.',tag:'free'},
+    {name:'Pixabay',      url:'https://pixabay.com/videos',                      desc:'CC0 라이선스 영상·이미지·음악.',tag:'free'},
+    {name:'Mixkit',       url:'https://mixkit.co',                               desc:'무료 스톡 영상·애니메이션·음악. 유튜브 영상 내 무료 사용.',tag:'free'},
+    {name:'Unsplash',     url:'https://unsplash.com',                            desc:'고해상도 무료 사진 라이브러리. 상업 사용 가능.',tag:'free'},
+    {name:'Freepik',      url:'https://www.freepik.com',                         desc:'무료 벡터·PSD·아이콘·이미지. 썸네일 제작에 유용.',tag:'freemium'},
+    {name:'Storyblocks',  url:'https://www.storyblocks.com',                     desc:'구독제 스톡 영상·음악·이미지 라이브러리.',tag:'paid'},
+    {name:'Shutterstock', url:'https://www.shutterstock.com',                    desc:'세계 최대 스톡 이미지·영상 플랫폼.',tag:'paid'},
+    {name:'Flaticon',     url:'https://www.flaticon.com',                        desc:'수백만 개 무료 아이콘. 썸네일·인포그래픽 활용.',tag:'freemium'},
+  ],
+};
+let currentToolCat=Object.keys(TOOLS_DATA)[0];
+
+function renderTools(){
+  const tabs=document.getElementById('toolTabs');
+  tabs.innerHTML=Object.keys(TOOLS_DATA).map(k=>`
+    <button class="tool-tab${k===currentToolCat?' active':''}" onclick="selectToolCat('${k}')">${k}</button>`).join('');
+  const tools=TOOLS_DATA[currentToolCat]||[];
+  document.getElementById('toolGrid').innerHTML=tools.map(t=>{
+    const domain=new URL(t.url).hostname;
+    const icon=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+    const esc=s=>s.replace(/'/g,"\\'");
+    return `
+    <div class="tool-card" onclick="openToolModal('${esc(t.name)}','${t.url}','${esc(t.desc)}','${t.tag}')">
+      <img class="tool-icon" src="${icon}" alt="${t.name}" onerror="this.style.background='var(--bg3)'">
+      <div class="tool-name">${t.name}</div>
+      <span class="tool-badge tb-${t.tag}">${t.tag==='free'?'무료':t.tag==='paid'?'유료':'무료+유료'}</span>
+    </div>`;
+  }).join('');
+}
+function selectToolCat(cat){currentToolCat=cat;renderTools();}
+function openToolModal(name,url,desc,tag){
+  const domain=new URL(url).hostname;
+  document.getElementById('tmIcon').src=`https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
+  document.getElementById('tmName').textContent=name;
+  document.getElementById('tmDesc').textContent=desc;
+  document.getElementById('tmLink').href=url;
+  document.getElementById('toolModal').classList.add('open');
+}
 
 /* ═══ 채널 분석기 ═══ */
 let chAnalysisHistory=JSON.parse(localStorage.getItem('yt_history')||'[]');
