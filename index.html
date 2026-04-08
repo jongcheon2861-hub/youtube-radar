@@ -900,6 +900,24 @@ background:rgba(255,71,87,0.92);color:#fff;padding:10px 24px;font-size:14px;font
 
     <!-- ★★★ AI 아이디어 섹션 (수정됨) ★★★ -->
     <section class="section-page" id="section-ai">
+      <div id="aiAdOverlay" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);align-items:center;justify-content:center;flex-direction:column;gap:20px;">
+  <div style="color:#fff;font-size:0.75rem;opacity:0.5;margin-bottom:8px;">AI 분석 중 · advertisement</div>
+  <div id="aiAdOverlayBox" style="width:100%;max-width:600px;min-height:250px;display:flex;align-items:center;justify-content:center;">
+    <ins class="adsbygoogle" id="aiAdOverlayIns" style="display:block;width:100%;min-height:250px" data-ad-client="ca-pub-4409875039737384" data-ad-slot="4097173660" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+  <div style="width:100%;max-width:600px;">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+      <span id="aiAdStatus" style="color:#fff;font-size:0.85rem;"><div class="spinner" style="display:inline-block;width:16px;height:16px;"></div> AI가 트렌드를 분석중입니다...</span>
+      <span id="aiAdTimerSec" style="color:var(--algo-gold);font-weight:700;">5초</span>
+    </div>
+    <div style="width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">
+      <div id="aiAdTimerFill" style="width:0%;height:100%;background:linear-gradient(90deg,var(--algo-gold),#a855f7);border-radius:2px;transition:width 0.1s;"></div>
+    </div>
+  </div>
+  <button id="aiAdCloseBtn" onclick="aiAdClose()" style="display:none;padding:14px 36px;background:linear-gradient(135deg,var(--algo-gold),#a855f7);color:#1a1a2e;border:none;border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;">✅ AI 아이디어 확인하기</button>
+</div>
+
       <div class="section-header">
         <div class="section-title">💡 AI 아이디어</div>
         <div class="section-subtitle">AI가 트렌드를 분석하여 유튜브 영상 아이디어를 제안합니다</div>
@@ -1215,7 +1233,121 @@ const AI_IDEA_DB={"테크/IT":[{emoji:"🤖",title:"ChatGPT vs Gemini vs Claude 
 const AI_IDEA_GENERAL=[{emoji:"📊",title:"구독자 0에서 1000명까지 걸린 시간과 방법",desc:"실제 채널 성장 과정을 데이터와 함께 분석.",tags:["유튜브성장","초보유튜버","데이터분석"],difficulty:"중",potential:"높음",detail:{hook:"'6개월간의 데이터를 전부 공개합니다'",structure:["채널 상태 공개 (1분)","월별 성장 분석 (4분)","효과 전략 TOP5 (5분)","실패 시도 (3분)","초보 조언 (2분)"],thumbnail:"구독자 그래프+0→1000",seo:"#유튜브성장 #구독자늘리기 #초보유튜버",equipment:"채널 분석 데이터, 화면 녹화",monetization:"유튜브 교육 플랫폼 협찬",tip:"실제 수치 공개가 신뢰도와 공유율을 높입니다."}},{emoji:"🎙️",title:"하루 루틴 브이로그 - 직업별 24시간",desc:"특정 직업인의 하루 밀착 촬영 시리즈.",tags:["브이로그","하루루틴","직업"],difficulty:"하",potential:"높음",detail:{hook:"알람과 함께 시작되는 새벽 5시",structure:["기상+모닝루틴 (2분)","출근 (2분)","업무 하이라이트 (5분)","점심 (2분)","오후 일과 (3분)","퇴근+저녁 (2분)"],thumbnail:"시계+직업 아이콘, '24시간 밀착'",seo:"#하루루틴 #브이로그 #직업소개",equipment:"브이로그 카메라, 마이크, 짐벌",monetization:"카메라 장비 협찬",tip:"자막으로 시간을 표시하면 구조감이 생깁니다."}},{emoji:"💡",title:"10가지 생활 꿀팁 모아보기",desc:"일상에서 바로 써먹는 꿀팁 모음.",tags:["꿀팁","라이프핵","생활"],difficulty:"하",potential:"높음",detail:{hook:"'3번 팁은 인생이 바뀝니다'",structure:["주방 꿀팁 (3분)","청소 꿀팁 (3분)","수납 꿀팁 (2분)","절약 꿀팁 (2분)","보너스 팁 (1분)"],thumbnail:"전구+놀란 표정, '몰랐던 꿀팁 10'",seo:"#꿀팁 #생활꿀팁 #라이프핵",equipment:"카메라, 소품",monetization:"생활용품 제휴링크, 쿠팡 파트너스",tip:"쇼츠로 개별 팁을 올리면 본편 유입도 늘어납니다."}},{emoji:"🏃",title:"30일 챌린지 변화 기록",desc:"30일간 챌린지 수행하며 변화 기록.",tags:["챌린지","30일","자기계발"],difficulty:"중",potential:"매우 높음",detail:{hook:"Day1 vs Day30 비포/애프터 먼저 보여주기",structure:["챌린지 선언 (1분)","Week1: 설렘 (3분)","Week2: 슬럼프 (3분)","Week3: 변화 시작 (3분)","Week4: 최종 결과 (3분)","데이터+소감 (2분)"],thumbnail:"비포/애프터 나란히, '30일의 기적'",seo:"#30일챌린지 #자기계발 #변화기록",equipment:"매일 기록 카메라, 측정 도구",monetization:"운동/건강 제품 협찬",tip:"매일 쇼츠로 올리면 시리즈 구독 효과가 있습니다."}},{emoji:"🧪",title:"유튜브 알고리즘 실험 결과 공개",desc:"다양한 업로드 전략 실험+결과 데이터 분석.",tags:["알고리즘","실험","데이터"],difficulty:"상",potential:"매우 높음",detail:{hook:"'이 한 가지를 바꿨더니 조회수가 5배'",structure:["실험 설계 (2분)","업로드 시간 비교 (3분)","썸네일 A/B 테스트 (3분)","제목 패턴 비교 (3분)","종합 분석 (3분)","결론+추천 (2분)"],thumbnail:"그래프+돋보기, '알고리즘 해킹?'",seo:"#유튜브알고리즘 #조회수올리기 #유튜브전략",equipment:"유튜브 스튜디오 데이터, 화면 녹화",monetization:"유튜브 교육 강의 협찬",tip:"구체적 숫자와 그래프가 핵심입니다."}},{emoji:"🎭",title:"직접 해본 부업 솔직 후기 랭킹",desc:"직접 체험한 부업 5가지 실제 수익·난이도 솔직 랭킹.",tags:["부업","수익","솔직후기"],difficulty:"중",potential:"매우 높음",detail:{hook:"'이 부업은 절대 하지 마세요' 역발상 오프닝",structure:["선정 기준 (1분)","블로그 (3분)","스마트스토어 (3분)","배달 (3분)","프리랜서 (3분)","투자 (3분)","종합 순위 (2분)"],thumbnail:"돈 아이콘+순위 표, '부업 랭킹'",seo:"#부업추천 #부업순위 #투잡 #수익공개",equipment:"각 부업 인증 자료, 수익 스크린샷",monetization:"재테크 플랫폼 협찬, 클래스 광고",tip:"실제 수익 공개가 조회수를 폭발시킵니다."}}];
 const STYLE_TIPS={shorts:"쇼츠는 첫 1초가 생명입니다. 결론/반전을 먼저 보여주고, 세로(9:16)로 촬영하세요.",medium:"5~15분은 챕터를 나누고 2분마다 시각적 변화를 주세요. 인트로 30초 이내.",long:"20분 이상은 스토리라인이 핵심. 중간중간 미니 클라이맥스를 넣으세요.",live:"라이브는 예고 쇼츠를 올리고 채팅 반응을 활용하세요. 하이라이트를 별도 편집."};
 const TARGET_TIPS={beginner:"초보는 니치 주제에 집중하세요. 작은 시장 1위가 되면 알고리즘이 추천을 시작합니다. 주 3회 이상 업로드.",growing:"1천~1만은 시리즈 콘텐츠로 재방문율을 높이세요. 커뮤니티 게시판을 활용.",established:"1만~10만은 브랜딩 강화 시기. 일관된 인트로/아웃트로, 멤버십, 협찬 기준을 정립.",top:"10만 이상은 팀 빌딩과 콘텐츠 다각화. 쇼츠+본편+라이브 3가지 병행."};
-function aiGenerateIdeas(){const btn=document.getElementById('aiGenerateBtn'),btnText=document.getElementById('aiGenBtnText'),btnLoader=document.getElementById('aiGenBtnLoader'),grid=document.getElementById('aiIdeasGrid'),category=document.getElementById('aiCategory').value,style=document.getElementById('aiStyle').value,target=document.getElementById('aiTarget').value,keyword=document.getElementById('aiKeyword').value.trim();btn.disabled=true;btnText.style.display='none';btnLoader.style.display='inline';grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 20px;"><div style="font-size:2.5rem;margin-bottom:16px;animation:spin 1.5s linear infinite">🧠</div><div style="color:var(--text-secondary);font-size:0.9rem;">AI가 트렌드를 분석하고 있습니다...</div></div>`;setTimeout(()=>{let pool=AI_IDEA_DB[category]?[...AI_IDEA_DB[category]]:[];let generalPool=[...AI_IDEA_GENERAL];if(keyword){const kw=keyword.toLowerCase();const scoreItem=item=>{let s=0;if(item.title.toLowerCase().includes(kw))s+=3;if(item.desc.toLowerCase().includes(kw))s+=2;if(item.tags.some(t=>t.toLowerCase().includes(kw)))s+=2;return s;};pool.sort((a,b)=>scoreItem(b)-scoreItem(a));generalPool.sort((a,b)=>scoreItem(b)-scoreItem(a));}const shuffle=arr=>{for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;};let selected=[];if(pool.length>=4){selected=shuffle(pool).slice(0,4);selected=selected.concat(shuffle(generalPool).slice(0,2));}else{selected=[...pool];selected=selected.concat(shuffle(generalPool).slice(0,6-selected.length));}selected=shuffle(selected).slice(0,6);selected.forEach(item=>{item._styleTip=STYLE_TIPS[style]||'';item._targetTip=TARGET_TIPS[target]||'';item._style=style;item._target=target;item._category=category;item._keyword=keyword;});aiGeneratedIdeas=selected;grid.innerHTML='';selected.forEach((idea,idx)=>{const diffColor=idea.difficulty==='하'?'#4ade80':idea.difficulty==='중'?'#fbbf24':'#f87171';const potColor=idea.potential==='매우 높음'?'#4ade80':idea.potential==='높음'?'#fbbf24':'#94a3b8';const card=document.createElement('div');card.className='ai-idea-card';card.onclick=()=>aiOpenDetail(idx);card.innerHTML=`<div class="ai-idea-card-num">${idx+1}</div><div class="ai-idea-card-emoji">${idea.emoji}</div><div class="ai-idea-card-title">${idea.title}</div><div class="ai-idea-card-desc">${idea.desc}</div><div class="ai-idea-card-tags">${idea.tags.map(t=>'<span class="ai-idea-tag">#'+t+'</span>').join('')}</div><div class="ai-idea-card-meta"><span class="ai-idea-difficulty" style="color:${diffColor}">난이도: ${idea.difficulty}</span><span class="ai-idea-potential" style="color:${potColor}">잠재력: ${idea.potential}</span></div><div class="ai-idea-card-cta">클릭하여 상세 가이드 보기 →</div>`;grid.appendChild(card);});btn.disabled=false;btnText.style.display='inline';btnLoader.style.display='none';},1500);}
+var aiAdInterval=null;
+var aiPendingResult=null;
+
+function aiGenerateIdeas(){
+  var btn=document.getElementById('aiGenerateBtn');
+  var btnText=document.getElementById('aiGenBtnText');
+  var btnLoader=document.getElementById('aiGenBtnLoader');
+  var grid=document.getElementById('aiIdeasGrid');
+  var category=document.getElementById('aiCategory').value;
+  var style=document.getElementById('aiStyle').value;
+  var target=document.getElementById('aiTarget').value;
+  var keyword=document.getElementById('aiKeyword').value.trim();
+  btn.disabled=true;btnText.style.display='none';btnLoader.style.display='inline';
+
+  // 광고 오버레이 표시
+  var ov=document.getElementById('aiAdOverlay');
+  var fill=document.getElementById('aiAdTimerFill');
+  var sec=document.getElementById('aiAdTimerSec');
+  var st=document.getElementById('aiAdStatus');
+  var closeBtn=document.getElementById('aiAdCloseBtn');
+  ov.style.display='flex';
+  closeBtn.style.display='none';
+  fill.style.width='0%';
+  st.innerHTML='<div class="spinner" style="display:inline-block;width:16px;height:16px;"></div> AI가 트렌드를 분석중입니다...';
+  sec.textContent='5초';
+
+  // 5초 타이머
+  var elapsed=0;
+  var total=50;
+  clearInterval(aiAdInterval);
+  aiAdInterval=setInterval(function(){
+    elapsed++;
+    fill.style.width=(elapsed/total*100).toFixed(1)+'%';
+    var rem=Math.ceil((total-elapsed)/10);
+    sec.textContent=rem>0?rem+'초':'완료';
+    if(elapsed>=total){
+      clearInterval(aiAdInterval);
+      st.innerHTML='✅ AI 분석이 완료되었습니다!';
+      sec.textContent='완료';
+      closeBtn.style.display='inline-block';
+    }
+  },100);
+
+  // 백그라운드에서 아이디어 생성
+  setTimeout(function(){
+    var pool=AI_IDEA_DB[category]?AI_IDEA_DB[category].slice():[];
+    var generalPool=AI_IDEA_GENERAL.slice();
+    if(keyword){
+      var kw=keyword.toLowerCase();
+      var scoreItem=function(item){
+        var s=0;
+        if(item.title.toLowerCase().indexOf(kw)>=0)s+=3;
+        if(item.desc.toLowerCase().indexOf(kw)>=0)s+=2;
+        if(item.tags.some(function(t){return t.toLowerCase().indexOf(kw)>=0;}))s+=2;
+        return s;
+      };
+      pool.sort(function(a,b){return scoreItem(b)-scoreItem(a);});
+      generalPool.sort(function(a,b){return scoreItem(b)-scoreItem(a);});
+    }
+    var shuffle=function(arr){
+      for(var i=arr.length-1;i>0;i--){
+        var j=Math.floor(Math.random()*(i+1));
+        var temp=arr[i];arr[i]=arr[j];arr[j]=temp;
+      }
+      return arr;
+    };
+    var selected=[];
+    if(pool.length>=4){
+      selected=shuffle(pool).slice(0,4);
+      selected=selected.concat(shuffle(generalPool).slice(0,2));
+    }else{
+      selected=pool.slice();
+      selected=selected.concat(shuffle(generalPool).slice(0,6-selected.length));
+    }
+    selected=shuffle(selected).slice(0,6);
+    selected.forEach(function(item){
+      item._styleTip=STYLE_TIPS[style]||'';
+      item._targetTip=TARGET_TIPS[target]||'';
+      item._style=style;
+      item._target=target;
+      item._category=category;
+      item._keyword=keyword;
+    });
+    aiPendingResult={selected:selected,grid:grid,btn:btn,btnText:btnText,btnLoader:btnLoader};
+  },500);
+}
+
+function aiAdClose(){
+  document.getElementById('aiAdOverlay').style.display='none';
+  clearInterval(aiAdInterval);
+  if(aiPendingResult){
+    var r=aiPendingResult;
+    aiGeneratedIdeas=r.selected;
+    r.grid.innerHTML='';
+    r.selected.forEach(function(idea,idx){
+      var diffColor=idea.difficulty==='하'?'#4ade80':idea.difficulty==='중'?'#fbbf24':'#f87171';
+      var potColor=idea.potential==='매우 높음'?'#4ade80':idea.potential==='높음'?'#fbbf24':'#94a3b8';
+      var card=document.createElement('div');
+      card.className='ai-idea-card';
+      card.onclick=function(){aiOpenDetail(idx);};
+      card.innerHTML='<div class="ai-idea-card-num">'+(idx+1)+'</div>'
+        +'<div class="ai-idea-card-emoji">'+idea.emoji+'</div>'
+        +'<div class="ai-idea-card-title">'+idea.title+'</div>'
+        +'<div class="ai-idea-card-desc">'+idea.desc+'</div>'
+        +'<div class="ai-idea-card-tags">'+idea.tags.map(function(t){return '<span class="ai-idea-tag">#'+t+'</span>';}).join('')+'</div>'
+        +'<div class="ai-idea-card-meta"><span class="ai-idea-difficulty" style="color:'+diffColor+'">난이도: '+idea.difficulty+'</span><span class="ai-idea-potential" style="color:'+potColor+'">잠재력: '+idea.potential+'</span></div>'
+        +'<div class="ai-idea-card-cta">클릭하여 상세 가이드 보기 →</div>';
+      r.grid.appendChild(card);
+    });
+    r.btn.disabled=false;
+    r.btnText.style.display='inline';
+    r.btnLoader.style.display='none';
+    aiPendingResult=null;
+  }
+}
 function aiOpenDetail(idx){const idea=aiGeneratedIdeas[idx];if(!idea||!idea.detail)return;const d=idea.detail,overlay=document.getElementById('aiDetailOverlay'),content=document.getElementById('aiDetailContent');const stepsHTML=d.structure.map((step,i)=>`<div class="ai-detail-step"><div class="ai-detail-step-num">${i+1}</div><div class="ai-detail-step-text">${step}</div></div>`).join('');const diffColor=idea.difficulty==='하'?'#4ade80':idea.difficulty==='중'?'#fbbf24':'#f87171';const potColor=idea.potential==='매우 높음'?'#4ade80':idea.potential==='높음'?'#fbbf24':'#94a3b8';const styleNames={shorts:'쇼츠',medium:'중간(5~15분)',long:'롱폼(20분+)',live:'라이브'};content.innerHTML=`<div class="ai-detail-header"><div class="ai-detail-emoji">${idea.emoji}</div><div class="ai-detail-title">${idea.title}</div><div class="ai-detail-subtitle">${idea.desc}</div><div class="ai-detail-tags-row" style="justify-content:center;margin-top:12px;">${idea.tags.map(t=>'<span class="ai-detail-tag">#'+t+'</span>').join('')}</div></div><div class="ai-detail-section"><div class="ai-detail-stat-grid"><div class="ai-detail-stat"><div class="ai-detail-stat-value" style="color:${diffColor}">${idea.difficulty}</div><div class="ai-detail-stat-label">제작 난이도</div></div><div class="ai-detail-stat"><div class="ai-detail-stat-value" style="color:${potColor}">${idea.potential}</div><div class="ai-detail-stat-label">성장 잠재력</div></div><div class="ai-detail-stat"><div class="ai-detail-stat-value">${idea._category}</div><div class="ai-detail-stat-label">카테고리</div></div><div class="ai-detail-stat"><div class="ai-detail-stat-value">${styleNames[idea._style]||idea._style}</div><div class="ai-detail-stat-label">영상 스타일</div></div></div></div><div class="ai-detail-section"><div class="ai-detail-section-title">🎣 후킹 포인트 (첫 5초)</div><div class="ai-detail-section-body">${d.hook}</div></div><div class="ai-detail-section"><div class="ai-detail-section-title">🎬 영상 구성 (타임라인)</div><div class="ai-detail-section-body">${stepsHTML}</div></div><div class="ai-detail-section"><div class="ai-detail-section-title">🖼️ 썸네일 전략</div><div class="ai-detail-section-body">${d.thumbnail}</div></div><div class="ai-detail-section"><div class="ai-detail-section-title">🔍 SEO 키워드 & 해시태그</div><div class="ai-detail-section-body">${d.seo}</div></div><div class="ai-detail-section"><div class="ai-detail-section-title">🛠️ 필요 장비 & 준비물</div><div class="ai-detail-section-body">${d.equipment}</div></div><div class="ai-detail-section"><div class="ai-detail-section-title">💰 수익화 전략</div><div class="ai-detail-section-body">${d.monetization}</div></div><div class="ai-detail-section"><div class="ai-detail-section-title">⭐ 핵심 제작 팁</div><div class="ai-detail-tip"><strong>PRO TIP:</strong> ${d.tip}</div></div>${idea._styleTip?'<div class="ai-detail-section"><div class="ai-detail-section-title">🎥 '+(styleNames[idea._style]||'')+' 영상 제작 조언</div><div class="ai-detail-tip">'+idea._styleTip+'</div></div>':''}${idea._targetTip?'<div class="ai-detail-section"><div class="ai-detail-section-title">📈 채널 성장 단계별 조언</div><div class="ai-detail-tip">'+idea._targetTip+'</div></div>':''}`;overlay.classList.add('open');document.body.style.overflow='hidden';}
 function aiCloseDetail(){document.getElementById('aiDetailOverlay').classList.remove('open');document.body.style.overflow='';}
 
