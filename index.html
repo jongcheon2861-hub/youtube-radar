@@ -181,7 +181,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
 /* ═══ 헤더 (광고 아래로 이동) ═══ */
 .header{
   position: fixed;
-  top: 90px;               /* ✅ 광고 높이만큼 아래로 */
+  top: 0px;               /* ✅ 광고 높이만큼 아래로 */
   left: 0;
   right: 0;
   z-index: 100;
@@ -1760,12 +1760,16 @@ function updateAdLayout(){
   if(layout) layout.style.paddingTop = totalTop + 'px';
 }
 
-    window.addEventListener('load', function(){
+      window.addEventListener('load', function(){
       updateAdLayout();
       setTimeout(updateAdLayout, 1000);
       setTimeout(updateAdLayout, 3000);
       setTimeout(updateAdLayout, 5000);
-    });
+      var adObs = new MutationObserver(updateAdLayout);
+      var topAd = document.getElementById('topAdArea');
+      if(topAd) adObs.observe(topAd, {childList:true, subtree:true, attributes:true});
+      setInterval(updateAdLayout, 2000);
+   });
 
     window.addEventListener('resize', updateAdLayout);
   function mobileNav(id){
