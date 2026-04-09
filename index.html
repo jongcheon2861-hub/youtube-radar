@@ -1782,37 +1782,21 @@ function updateAdLayout(){
   if(layout) layout.style.paddingTop = totalTop + 'px';
 }
 
-      window.addEventListener('load', function(){
-      updateAdLayout();
-      setTimeout(updateAdLayout, 1000);
-      setTimeout(updateAdLayout, 3000);
-      setTimeout(updateAdLayout, 5000);
-      var adObs = new MutationObserver(updateAdLayout);
-      var topAd = document.getElementById('topAdArea');
-      if(topAd) adObs.observe(topAd, {childList:true, subtree:true, attributes:true});
-      setInterval(updateAdLayout, 2000);
-   });
-
-    window.addEventListener('resize', updateAdLayout);
-  function mobileNav(id){
-  showSec(id);
-  document.querySelectorAll('.mobile-nav-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.mobile-nav-btn[data-section="'+id+'"]')?.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-  window.addEventListener('load', function(){
+    window.addEventListener('load', function(){
   setTimeout(function(){
-    var testAd = document.createElement('ins');
-    testAd.className = 'adsbygoogle';
-    testAd.style.cssText = 'display:block;position:absolute;top:-9999px;width:1px;height:1px';
-    document.body.appendChild(testAd);
-    try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
-    setTimeout(function(){
-      if(testAd.offsetHeight === 0 || !window.adsbygoogle || window.adsbygoogle.loaded === false){
-        document.getElementById('adblock-banner').style.display='block';
-      }
-      testAd.remove();
-    }, 2000);
+    var blocked = false;
+    try{
+      var testEl = document.createElement('div');
+      testEl.innerHTML = '&nbsp;';
+      testEl.className = 'adsbox';
+      testEl.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:1px;height:1px;';
+      document.body.appendChild(testEl);
+      setTimeout(function(){
+        if(testEl.offsetHeight === 0){blocked = true;}
+        testEl.remove();
+        if(blocked){document.getElementById('adblock-banner').style.display='block';}
+      }, 100);
+    }catch(e){}
   }, 3000);
 });
 </script>
