@@ -407,6 +407,24 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
 .rev-result-val{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--algo-gold),var(--algo-violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
 .rev-result-lbl{font-size:12px;color:var(--text-secondary)}
 .rev-tip{margin-top:8px;padding:12px 16px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);text-align:center}
+.rev-tab-bar{display:flex;gap:8px;margin-bottom:16px;padding:0 4px}
+.rev-tab{flex:1;padding:10px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-secondary);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.rev-tab.active{background:linear-gradient(135deg,var(--algo-purple),var(--algo-violet));color:#fff;border-color:transparent}
+.rev-tab:hover:not(.active){background:var(--bg-hover);color:var(--text-primary)}
+.tax-input-section{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.tax-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-secondary);color:var(--text-primary);font-size:15px;font-weight:600;outline:none;transition:border .2s}
+.tax-input:focus{border-color:var(--algo-purple)}
+.tax-input-hint{font-size:11px;color:var(--text-secondary);margin-top:4px}
+.tax-results-grid{grid-template-columns:repeat(2,1fr)!important}
+.tax-bracket-section{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-top:12px}
+.tax-bracket-title{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text-primary)}
+.tax-bracket-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.tax-bracket-row.active{color:var(--algo-gold);font-weight:700}
+.tax-bracket-row:last-child{border-bottom:none}
+.tax-tips{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-top:12px}
+.tax-tip-title{font-size:14px;font-weight:700;margin-bottom:10px}
+.tax-tip-item{font-size:13px;color:var(--text-secondary);padding:4px 0;line-height:1.6}
+@media(max-width:640px){.tax-results-grid{grid-template-columns:1fr!important}} 
 #cp-popup{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.88);align-items:center;justify-content:center;flex-direction:column;padding-bottom:20vh}
 #cp-popup.show{display:flex}
 .cp-popup-box{background:var(--bg-card);border-radius:24px;border:2px solid var(--algo-gold);padding:48px 36px;max-width:500px;width:92%;text-align:center;animation:fadeInUp 0.35s ease}
@@ -1135,10 +1153,43 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg-primary);color:va
       <div class="tool-grid" id="toolGrid"></div>
     </section>
     
-    <section class="section-page" id="section-revenue">
-      <div class="section-header"><div class="section-title">💰 유튜브 수익 계산기</div><div class="section-subtitle">유튜브 예상 수익을 무료로 계산하는 수익 시뮬레이터</div></div>
-      <div class="rev-wrap"><div id="revInputs"></div><div class="rev-results-grid" id="revResults"></div><div class="rev-tip" id="revTip"></div></div>
-    </section>
+   <section class="section-page" id="section-revenue">
+  <div class="section-header"><div class="section-title">💰 유튜브 수익 계산기</div><div class="section-subtitle">유튜브 예상 수익을 무료로 계산하는 수익 시뮬레이터</div></div>
+  <div class="rev-tab-bar">
+    <button class="rev-tab active" onclick="switchRevTab('calc')">💰 수익 계산</button>
+    <button class="rev-tab" onclick="switchRevTab('tax')">🧾 세금 계산</button>
+  </div>
+  <div class="rev-wrap" id="revCalcPanel">
+    <div id="revInputs"></div>
+    <div class="rev-results-grid" id="revResults"></div>
+    <div class="rev-tip" id="revTip"></div>
+  </div>
+  <div class="rev-wrap" id="revTaxPanel" style="display:none">
+    <div class="tax-input-section">
+      <div class="rev-input-card">
+        <div class="rev-label">💵 연간 유튜브 총수익 (원)</div>
+        <input type="number" id="taxIncome" class="tax-input" value="30000000" min="0" step="1000000" oninput="calcTax()">
+        <div class="tax-input-hint">애드센스 연간 총 입금액을 입력하세요</div>
+      </div>
+      <div class="rev-input-card">
+        <div class="rev-label">📂 경비 처리 금액 (원)</div>
+        <input type="number" id="taxExpense" class="tax-input" value="5000000" min="0" step="500000" oninput="calcTax()">
+        <div class="tax-input-hint">장비, 소프트웨어, 스튜디오, 교통비 등</div>
+      </div>
+      <div class="rev-input-card">
+        <div class="rev-label">🏢 사업자 유형</div>
+        <select id="taxBizType" class="tax-input" onchange="calcTax()">
+          <option value="none">프리랜서 (사업자 미등록)</option>
+          <option value="simple">간이과세자</option>
+          <option value="general">일반과세자</option>
+        </select>
+      </div>
+    </div>
+    <div class="rev-results-grid tax-results-grid" id="taxResults"></div>
+    <div class="tax-bracket-section" id="taxBracket"></div>
+    <div class="tax-tips" id="taxTips"></div>
+  </div>
+</section>
 
     <!-- ★★★ AI 아이디어 섹션 (수정됨) ★★★ -->
     <section class="section-page" id="section-ai">
@@ -1482,7 +1533,91 @@ function applyDrag(e,id){const inp=REV_INPUTS.find(x=>x.id===id),t=document.getE
 function adjRev(id,dir){const inp=REV_INPUTS.find(x=>x.id===id);revVals[id]=Math.min(Math.max(revVals[id]+inp.step*dir,inp.min),inp.max);updateRevGauge(inp);calcRevenue();}
 function updateRevGauge(inp){const pct=((revVals[inp.id]-inp.min)/(inp.max-inp.min)*100).toFixed(1);document.getElementById('fill_'+inp.id).style.width=pct+'%';document.getElementById('val_'+inp.id).textContent=inp.fmt(revVals[inp.id])+' '+inp.unit;}
 function calcRevenue(){const{views,rpm,ctr,cpc}=revVals,rr=Math.round(views/1000*rpm),cc=Math.round(views*(ctr/100)),mo=Math.round((rr+cc*cpc)/2),fw=n=>n.toLocaleString('ko-KR')+'원';document.getElementById('revResults').innerHTML=`<div class="rev-result-card"><div class="rev-result-val">${fw(mo)}</div><div class="rev-result-lbl">월 예상 수익</div></div><div class="rev-result-card"><div class="rev-result-val">${fw(mo*12)}</div><div class="rev-result-lbl">연 예상 수익</div></div><div class="rev-result-card"><div class="rev-result-val">${fw(rr)}</div><div class="rev-result-lbl">RPM 기반</div></div><div class="rev-result-card"><div class="rev-result-val">${cc.toLocaleString()}회</div><div class="rev-result-lbl">CTR 클릭수</div></div>`;document.getElementById('revTip').textContent=mo>=5e6?'🔥 상위 1%!':mo>=1e6?'💪 전업 가능!':mo>=3e5?'📈 성장 중!':'🌱 시작 단계!';}
+function switchRevTab(tab){
+  document.querySelectorAll('.rev-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.rev-tab[onclick*="${tab}"]`).classList.add('active');
+  document.getElementById('revCalcPanel').style.display=tab==='calc'?'':'none';
+  document.getElementById('revTaxPanel').style.display=tab==='tax'?'':'none';
+  if(tab==='tax')calcTax();
+}
 
+function calcTax(){
+  const income=parseInt(document.getElementById('taxIncome').value)||0;
+  const expense=parseInt(document.getElementById('taxExpense').value)||0;
+  const bizType=document.getElementById('taxBizType').value;
+  
+  let taxableIncome=Math.max(0,income-expense);
+  if(bizType==='none'){
+    const stdDeduct=Math.min(income*0.6,20000000);
+    taxableIncome=Math.max(0,income-Math.max(expense,stdDeduct));
+  }
+  
+  const brackets=[
+    {limit:14000000,rate:0.06,deduct:0},
+    {limit:50000000,rate:0.15,deduct:1260000},
+    {limit:88000000,rate:0.24,deduct:5760000},
+    {limit:150000000,rate:0.35,deduct:15440000},
+    {limit:300000000,rate:0.38,deduct:19940000},
+    {limit:500000000,rate:0.40,deduct:25940000},
+    {limit:1000000000,rate:0.42,deduct:35940000},
+    {limit:Infinity,rate:0.45,deduct:65940000}
+  ];
+  
+  let incomeTax=0,activeBracketIdx=0;
+  for(let i=0;i<brackets.length;i++){
+    if(taxableIncome<=brackets[i].limit){
+      incomeTax=taxableIncome*brackets[i].rate-brackets[i].deduct;
+      activeBracketIdx=i;
+      break;
+    }
+  }
+  incomeTax=Math.max(0,Math.round(incomeTax));
+  
+  const localTax=Math.round(incomeTax*0.1);
+  const totalTax=incomeTax+localTax;
+  
+  let healthIns=0;
+  if(bizType==='none'){
+    healthIns=Math.round(Math.max(0,taxableIncome)*0.0799*0.5);
+  }else{
+    healthIns=Math.round(Math.max(0,taxableIncome)*0.0799*0.5);
+  }
+  const nationalPension=Math.round(Math.min(taxableIncome,5530000*12)*0.09*0.5);
+  
+  const totalDeductions=totalTax+healthIns+nationalPension;
+  const netIncome=income-totalDeductions;
+  const effectiveRate=income>0?(totalTax/income*100):0;
+  
+  const fw=n=>(n<0?'-':'')+Math.abs(n).toLocaleString('ko-KR')+'원';
+  
+  document.getElementById('taxResults').innerHTML=
+    `<div class="rev-result-card"><div class="rev-result-val" style="color:#66ffdd">${fw(netIncome)}</div><div class="rev-result-lbl">연간 실수령액</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val" style="color:#ff6680">${fw(totalTax)}</div><div class="rev-result-lbl">종합소득세 + 지방세</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val">${fw(Math.round(netIncome/12))}</div><div class="rev-result-lbl">월 실수령액</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val">${effectiveRate.toFixed(1)}%</div><div class="rev-result-lbl">실효세율</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val">${fw(incomeTax)}</div><div class="rev-result-lbl">소득세</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val">${fw(localTax)}</div><div class="rev-result-lbl">지방소득세 (10%)</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val">${fw(healthIns)}</div><div class="rev-result-lbl">건강보험료 (연)</div></div>`+
+    `<div class="rev-result-card"><div class="rev-result-val">${fw(nationalPension)}</div><div class="rev-result-lbl">국민연금 (연)</div></div>`;
+  
+  const bracketLabels=['1,400만 이하','1,400~5,000만','5,000~8,800만','8,800~1.5억','1.5~3억','3~5억','5~10억','10억 초과'];
+  const bracketRates=['6%','15%','24%','35%','38%','40%','42%','45%'];
+  document.getElementById('taxBracket').innerHTML=
+    `<div class="tax-bracket-title">📊 2024 종합소득세 세율표</div>`+
+    brackets.map((b,i)=>`<div class="tax-bracket-row${i===activeBracketIdx?' active':''}">`+
+      `<span>${bracketLabels[i]}</span><span>${bracketRates[i]}</span></div>`).join('');
+  
+  const tips=[];
+  if(bizType==='none')tips.push('💡 사업자 등록 시 경비 처리 범위가 넓어져 절세 효과가 큽니다.');
+  if(expense<income*0.3)tips.push('💡 장비·소프트웨어·인터넷비·교통비 등 경비를 더 확보하면 세금이 줄어듭니다.');
+  if(income>=50000000)tips.push('💡 연소득 5천만원 이상이면 세무사 상담을 추천합니다 (비용 대비 절세 효과 큼).');
+  if(income>=24000000&&bizType==='none')tips.push('💡 연소득 2,400만원 이상이면 사업자 등록이 유리할 수 있습니다.');
+  tips.push('💡 유튜브 수익은 5월 종합소득세 신고 대상입니다.');
+  
+  document.getElementById('taxTips').innerHTML=
+    `<div class="tax-tip-title">💰 유튜버 절세 팁</div>`+
+    tips.map(t=>`<div class="tax-tip-item">${t}</div>`).join('');
+}
 /* ═══ AI 아이디어 (다중 카드 + 상세 가이드) ═══ */
 let aiGeneratedIdeas=[];
 const AI_IDEA_DB={"테크/IT":[{emoji:"🤖",title:"ChatGPT vs Gemini vs Claude 실사용 비교",desc:"3대 AI를 동일 과제로 테스트하고 솔직 리뷰. 코딩, 글쓰기, 이미지 생성 등 5가지 미션을 수행시켜 점수를 매깁니다.",tags:["AI비교","챗GPT","제미나이"],difficulty:"중",potential:"매우 높음",detail:{hook:"'AI 전쟁의 승자는?' 같은 도발적 질문으로 시작",structure:["인트로: 3개 AI 소개 + 평가 기준 (1분)","미션1: 블로그 글 비교 (3분)","미션2: 코드 작성 비교 (3분)","미션3: 이미지 비교 (3분)","미션4: 수학/논리 문제 (2분)","미션5: 창의적 글쓰기 (2분)","종합 점수표 + 결론 (2분)"],thumbnail:"화면 3분할 각 AI 로고, 가운데 VS 이펙트, '최종 승자는?' 텍스트",seo:"#AI비교 #ChatGPT #Gemini #Claude #AI추천",equipment:"화면 녹화(OBS), 각 AI 유료 계정, 비교 템플릿",monetization:"AI 도구 제휴링크, 강의 플랫폼 협찬, IT 광고 CPM $8~15",tip:"결과를 표로 정리하고 시각적으로 점수 차이를 보여주세요."}},{emoji:"⌨️",title:"비전공자가 2주 만에 앱 만드는 과정",desc:"코딩 경험 없는 사람이 AI 도구만으로 실제 앱을 만드는 리얼 도전기.",tags:["노코드","앱개발","도전"],difficulty:"상",potential:"높음",detail:{hook:"'코딩 1도 모르는 제가 앱을 출시했습니다' 결과물 먼저 보여주기",structure:["Day1-2: 아이디어+세팅 (3분)","Day3-5: 기본 화면 시행착오 (4분)","Day6-9: 핵심 기능 구현 (4분)","Day10-12: 디자인+버그 수정 (3분)","Day13-14: 배포+최종 결과 (3분)","비용 정리+소감 (2분)"],thumbnail:"노트북 앞 놀란 표정, 완성된 앱 UI, '2주만에 앱 출시?!'",seo:"#앱만들기 #노코드 #AI개발 #비전공자코딩",equipment:"AI 코딩 도구, 화면 녹화, 타임랩스 카메라",monetization:"AI 코딩 도구 제휴링크, 강의 플랫폼 협찬",tip:"실패 과정을 솔직하게 보여줄수록 공감을 얻습니다."}},{emoji:"🔒",title:"내 개인정보 얼마나 유출됐나 직접 확인",desc:"무료 도구로 개인정보 유출 현황을 확인하고 보안 설정을 강화하는 튜토리얼.",tags:["보안","개인정보","필수시청"],difficulty:"하",potential:"매우 높음",detail:{hook:"'여러분의 비밀번호, 이미 다크웹에 있을 수 있습니다'",structure:["개인정보 유출 실태 통계 (1분)","Have I Been Pwned 확인 (3분)","구글 비밀번호 관리자 점검 (2분)","2단계 인증 설정 (3분)","비밀번호 관리자 추천+세팅 (3분)","보안 습관 3가지 (2분)"],thumbnail:"깨진 자물쇠+빨간 경고, '비밀번호 유출됨' 텍스트",seo:"#개인정보보호 #비밀번호유출 #보안설정 #해킹방지",equipment:"화면 녹화, 보안 사이트 목록",monetization:"VPN 협찬, 비밀번호 관리앱 제휴링크",tip:"자신의 이메일을 실제 검색하는 라이브 반응이 핵심입니다."}},{emoji:"🏠",title:"5만원으로 스마트홈 구축하기",desc:"가성비 IoT 기기로 자취방을 스마트홈으로 바꾸는 과정.",tags:["스마트홈","IoT","가성비"],difficulty:"중",potential:"높음",detail:{hook:"'OK 구글, 퇴근 모드' 한마디에 조명+에어컨+TV 동시 켜짐",structure:["Before: 일반 자취방 (1분)","5만원 쇼핑 리스트 (2분)","기기 설치 (5분)","자동화 루틴 세팅 (4분)","After: 스마트홈 시연 (3분)","한달 후기+추가 추천 (2분)"],thumbnail:"방 절반 어둡고 절반 네온조명, '5만원으로 이게 가능?'",seo:"#스마트홈 #IoT #가성비 #자취방꾸미기",equipment:"스마트 전구, 플러그, 센서, 스마트 스피커",monetization:"쿠팡 파트너스 링크, 스마트홈 기기 협찬",tip:"비포/애프터를 극적으로 보여주세요."}},{emoji:"📱",title:"2025 가성비 스마트폰 TOP5 실사용 랭킹",desc:"직접 한달씩 사용한 스마트폰들의 솔직 랭킹.",tags:["스마트폰","가성비","랭킹"],difficulty:"상",potential:"매우 높음",detail:{hook:"'비싼 폰이 무조건 좋다? 이 결과 보면 생각 바뀝니다'",structure:["선정 기준 (1분)","5위~1위 역순 리뷰 (10분)","카메라 블라인드 테스트 (3분)","배터리 실측 비교 (2분)","최종 1위 발표+총평 (2분)"],thumbnail:"스마트폰 5대 부채꼴, 1위에 왕관, 'No.1은?'",seo:"#가성비폰 #스마트폰추천 #폰비교 #2025스마트폰",equipment:"비교 대상 폰 5대, 카메라 테스트 차트",monetization:"통신사 제휴, 기기 판매 링크, IT 광고 높음",tip:"블라인드 테스트로 시청자 참여도를 높이세요."}},{emoji:"🖥️",title:"AI로 유튜브 영상 자동 편집하는 법",desc:"무료 AI 편집 도구로 편집 시간을 90% 줄이는 워크플로우.",tags:["AI편집","자동화","유튜브팁"],difficulty:"중",potential:"높음",detail:{hook:"'8시간 걸리던 편집, 이제 30분이면 끝납니다'",structure:["기존 vs AI 편집 비교 (2분)","추천 AI 도구 3개 (3분)","실제 영상 AI 편집 시연 (6분)","수동 보정 부분 (2분)","최종 결과물 비교 (2분)"],thumbnail:"타임라인 위 AI 로봇, '편집 시간 -90%' 텍스트",seo:"#AI영상편집 #자동편집 #유튜브팁 #영상제작",equipment:"CapCut, Descript 등 무료 AI 편집 도구",monetization:"편집 도구 제휴링크, 강의 플랫폼 협찬",tip:"타임랩스+핵심 정상속도 설명이 집중도를 높입니다."}}],"게임":[{emoji:"🏆",title:"신작 게임 입문자 가이드 완벽판",desc:"화제의 신작 게임 초보 필수 세팅·조작법·초반 공략.",tags:["게임공략","입문","신작"],difficulty:"중",potential:"매우 높음",detail:{hook:"'이것만 알면 초반 10시간 아낄 수 있습니다'",structure:["게임 소개 (1분)","최적 세팅 (2분)","캐릭터 추천 (3분)","초반 퀘스트 루트 (4분)","초보 실수 TOP5 (3분)","중반 로드맵 (2분)"],thumbnail:"게임 캐릭터+초보 마크, '이것만 보세요'",seo:"#게임공략 #초보가이드 #신작게임",equipment:"캡처 카드/OBS, 마이크",monetization:"게임 굿즈 협찬, 게이밍 기어 제휴",tip:"출시 첫 주에 올리면 검색 유입이 폭발합니다."}},{emoji:"🎯",title:"게이머 손목/허리 스트레칭 루틴",desc:"장시간 게임 통증 예방 5분 스트레칭.",tags:["건강","스트레칭","게이머"],difficulty:"하",potential:"높음",detail:{hook:"'손목 터널 증후군 걸리고 나서 후회하지 마세요'",structure:["게이머 직업병 (1분)","손목 스트레칭 3가지 (2분)","목/어깨 3가지 (2분)","허리/골반 (2분)","자세 교정 팁 (2분)","루틴 요약 (1분)"],thumbnail:"게이밍 체어에서 스트레칭, '5분이면 충분'",seo:"#게이머스트레칭 #손목터널 #게임건강",equipment:"카메라, 마이크",monetization:"게이밍 의자·헬스 앱 협찬",tip:"프로게이머 부상 사례를 인용하면 설득력이 높아집니다."}},{emoji:"💰",title:"게임으로 월 100만원 버는 현실적 방법",desc:"프로게이머 아니어도 게임으로 수익 내는 방법 직접 검증.",tags:["수익화","부업","게임머니"],difficulty:"중",potential:"매우 높음",detail:{hook:"'취미 게임이 월급보다 벌어다 줍니다'",structure:["방법1: 유튜브/트위치 (3분)","방법2: 코칭 (2분)","방법3: 아이템 거래 (2분)","방법4: 대회 참가 (2분)","방법5: 테스터/QA (2분)","수익 공개+추천 (2분)"],thumbnail:"컨트롤러에서 돈 나오는 일러스트, '월100만원?'",seo:"#게임수익 #게임부업 #게임으로돈벌기",equipment:"수익 인증 스크린샷",monetization:"게이밍 장비 제휴, 코칭 플랫폼 협찬",tip:"실제 수익 인증이 있으면 신뢰도가 크게 올라갑니다."}},{emoji:"⚔️",title:"역대급 보스전 리액션 모음",desc:"명작 게임 전설적 보스전 첫 플레이 리액션 하이라이트.",tags:["리액션","보스전","명장면"],difficulty:"하",potential:"높음",detail:{hook:"첫 보스전 충격 리액션 3초 미리보기",structure:["게임1: 첫 보스 도전 (3분)","게임2: 멘붕 구간 (3분)","게임3: 감동 보스 (3분)","게임4: 역대급 난이도 (3분)","최종 랭킹+소감 (2분)"],thumbnail:"놀란 표정+보스 이미지, 'OMG'",seo:"#보스전 #게임리액션 #명작게임",equipment:"페이스캠, 캡처 카드",monetization:"게임 제휴링크, 모니터 협찬",tip:"자연스러운 리액션이 생명입니다. 진짜 처음 플레이하세요."}},{emoji:"🔧",title:"10만원 이하 게이밍 세팅 도전기",desc:"극한 가성비 게이밍 환경 구축 전 과정.",tags:["가성비","게이밍세팅","도전"],difficulty:"중",potential:"높음",detail:{hook:"'10만원으로 배그를 돌린다고?' 완성 세팅 먼저 보여주기",structure:["예산+계획 (1분)","중고 마켓 쇼핑 (3분)","조립 과정 (4분)","세팅 최적화 (3분)","게임 구동 테스트 (3분)","총 비용+소감 (2분)"],thumbnail:"10만원 지폐+PC, '이 가격에 이 성능?'",seo:"#가성비PC #게이밍세팅 #조립PC",equipment:"카메라, 중고 부품",monetization:"부품 쿠팡 링크, 기어 협찬",tip:"예산 긴장감이 컨텐츠의 재미입니다."}},{emoji:"🧩",title:"숨겨진 인디 게임 명작 BEST 7",desc:"대형 게임에 가려진 인디 게임 필수 플레이 작품들.",tags:["인디게임","추천","명작"],difficulty:"하",potential:"중",detail:{hook:"'AAA보다 재밌는 게임이 5천원입니다'",structure:["선정 기준 (1분)","7위~4위 소개 (6분)","3위~1위 심층 리뷰 (7.5분)","구매 팁+세일 정보 (1.5분)"],thumbnail:"인디 게임 콜라주+'숨겨진 명작'",seo:"#인디게임 #게임추천 #명작게임 #스팀추천",equipment:"각 게임 플레이 캡처",monetization:"스팀 제휴링크, 게임 키 사이트 협찬",tip:"각 게임 인상적 장면 10초를 보여주면 클릭률 상승."}}],"먹방/요리":[{emoji:"🍜",title:"편의점 재료로 레스토랑급 요리 도전",desc:"편의점 재료만으로 고급 요리를 만드는 도전.",tags:["편의점요리","도전","자취생"],difficulty:"하",potential:"매우 높음",detail:{hook:"'이게 편의점 재료로 만든 거라고?' 완성 요리 클로즈업",structure:["편의점 장보기 (2분)","재료+메뉴 발표 (1분)","조리 (6분)","플레이팅 (2분)","시식+원가 공개 (2분)","레스토랑 가격 비교 (1분)"],thumbnail:"편의점 봉투 vs 고급 접시, '5천원 vs 5만원'",seo:"#편의점요리 #자취요리 #가성비요리 #요리도전",equipment:"카메라, 기본 조리도구",monetization:"식품/키친 브랜드 협찬, 쿠팡 주방용품",tip:"가격 대비 퀄리티 갭이 클수록 반응이 좋습니다."}},{emoji:"🌍",title:"세계 이색 길거리 음식 리뷰 시리즈",desc:"각 나라 특이한 길거리 음식 직접 만들거나 리뷰.",tags:["세계음식","길거리음식","리뷰"],difficulty:"중",potential:"높음",detail:{hook:"'이 나라에서는 이걸 간식으로 먹습니다' 충격 비주얼",structure:["나라+음식 문화 (2분)","만들기/방문 (5분)","시식 리액션 (3분)","맛 평가+점수 (2분)","다음 편 예고 (1분)"],thumbnail:"특이한 음식+국기, '이게 음식?'",seo:"#세계음식 #길거리음식 #음식리뷰 #먹방",equipment:"카메라, 해외 식재료",monetization:"식재료 배송 협찬, 여행 광고",tip:"시리즈로 만들면 구독 전환율이 높아집니다."}},{emoji:"⏰",title:"5분 안에 만드는 야식 레시피 5가지",desc:"자취생/직장인 위한 초간단 야식 레시피 모음.",tags:["야식","간단요리","5분레시피"],difficulty:"하",potential:"높음",detail:{hook:"'배고픈데 귀찮을 때, 이것만 따라하세요'",structure:["치즈계란밥 (1분)","참치마요 덮밥 (1분)","라면 업그레이드 (2분)","원팬 볶음면 (2분)","전자레인지 떡볶이 (2분)","재료비 총정리 (1분)"],thumbnail:"야식 5가지 그리드, '5분이면 완성'",seo:"#야식레시피 #자취요리 #간단요리 #5분요리",equipment:"기본 조리도구, 탑뷰 삼각대",monetization:"주방용품 링크, 식재료 협찬",tip:"탑뷰 촬영+타이머가 깔끔합니다."}},{emoji:"🔥",title:"매운맛 단계별 도전 먹방",desc:"순한 맛부터 지옥 매운맛까지 단계별 도전 리액션.",tags:["매운맛","도전먹방","리액션"],difficulty:"하",potential:"매우 높음",detail:{hook:"마지막 단계 고통 표정 3초 미리보기",structure:["규칙 설명 (1분)","Level1-3 순한맛 (3분)","Level4-6 매운맛 (4분)","Level7-9 극한 (4분)","Level10 사망맛 (3분)","후기+위장약 (1분)"],thumbnail:"빨간 얼굴+불꽃, 'Level10 도전'",seo:"#매운맛도전 #먹방 #도전먹방 #핵매운",equipment:"카메라, 단계별 매운 소스, 우유",monetization:"소스 브랜드 협찬, 식품 광고",tip:"스코빌 지수를 표시하면 교육적+재미있습니다."}},{emoji:"👨‍🍳",title:"프로 셰프 vs 초보 같은 재료 요리 대결",desc:"동일 재료로 프로 셰프와 초보의 결과물 비교.",tags:["요리대결","셰프","비교"],difficulty:"중",potential:"매우 높음",detail:{hook:"같은 재료인데 완전히 다른 두 결과물 나란히 보여주기",structure:["규칙+재료 공개 (2분)","초보 조리 (4분)","셰프 조리 (4분)","블라인드 시식 (3분)","결과 발표+셰프 팁 (2분)"],thumbnail:"접시 2개 나란히(엉망 vs 완벽), 'VS'",seo:"#요리대결 #셰프vs초보 #쿠킹배틀",equipment:"카메라 2대, 동일 재료 2세트",monetization:"요리 클래스 협찬, 주방용품 제휴",tip:"초보가 의외로 잘하는 반전이 대박입니다."}},{emoji:"🧮",title:"만원의 행복 - 1만원으로 하루 세끼",desc:"하루 식비 1만원으로 세끼 해결 알뜰 식단.",tags:["가성비","절약","식단"],difficulty:"하",potential:"높음",detail:{hook:"'식비 절약 끝판왕, 1만원으로 하루 세끼'",structure:["예산+장보기 (2분)","아침 (2분)","점심 (3분)","저녁 (3분)","영양 분석+총 비용 (2분)","일주일 도전 예고 (1분)"],thumbnail:"1만원+세끼 사진, '이게 다 만원?'",seo:"#만원식단 #절약식단 #자취요리 #식비절약",equipment:"카메라, 저예산 식재료",monetization:"마트/배송 협찬, 가계부 앱 광고",tip:"영수증을 보여주며 실시간 계산하면 신뢰도 상승."}}]};
