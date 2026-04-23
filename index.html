@@ -1541,10 +1541,16 @@ async function apiFetch(url){
 const sectionLoaded={};
 function showSec(id){
   document.querySelectorAll('.section-page').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item,.nav-sidebar-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.guide-page').forEach(s=>s.style.display='none');
+  document.querySelectorAll('.nav-item,.nav-sidebar-btn,.mobile-nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('section-'+id)?.classList.add('active');
   document.querySelector(`.nav-item[data-section="${id}"]`)?.classList.add('active');
-document.querySelector(`.nav-sidebar-btn[data-section="${id}"]`)?.classList.add('active');
+  document.querySelector(`.nav-sidebar-btn[data-section="${id}"]`)?.classList.add('active');
+  document.querySelector(`.mobile-nav-btn[data-section="${id}"]`)?.classList.add('active');
+  if(id==='revenue'){
+    document.getElementById('guide-tax').style.display='';
+    document.getElementById('guide-biz').style.display='';
+  }
   if(!sectionLoaded[id]){sectionLoaded[id]=true;
     if(id==='hot')loadHot();
     if(id==='channel'){chRenderGradeTable();chRenderHistory();}
@@ -1552,6 +1558,7 @@ document.querySelector(`.nav-sidebar-btn[data-section="${id}"]`)?.classList.add(
     if(id==='tools')renderTools();
     if(id==='shop')buildShop();
   }
+  window.scrollTo(0,0);
 }
 async function loadHot(forceRefresh){
   document.getElementById('hot-loader').style.display='flex';
@@ -2186,13 +2193,13 @@ function updateAdLayout(){}
 });
 
 </script>
-  <nav class="mobile-nav" id="mobileNav">
-  <button class="mobile-nav-btn active" data-section="hot" onclick="mobileNav('hot')"><span>🔥</span><span>인기</span></button>
-  <button class="mobile-nav-btn" data-section="channel" onclick="mobileNav('channel')"><span>📊</span><span>분석</span></button>
-  <button class="mobile-nav-btn" data-section="tools" onclick="mobileNav('tools')"><span>🛠️</span><span>도구</span></button>
-  <button class="mobile-nav-btn" data-section="revenue" onclick="mobileNav('revenue')"><span>💰</span><span>수익</span></button>
-  <button class="mobile-nav-btn" data-section="ai" onclick="mobileNav('ai')"><span>🤖</span><span>AI</span></button>
-  <button class="mobile-nav-btn" data-section="shop" onclick="mobileNav('shop')"><span>🛒</span><span>장비</span></button>
+  <nav class="mobile-nav" id="mobileNavBar">
+  <button class="mobile-nav-btn active" data-section="hot" onclick="showSec('hot')"><span>🔥</span><span>인기</span></button>
+  <button class="mobile-nav-btn" data-section="channel" onclick="showSec('channel')"><span>📊</span><span>분석</span></button>
+  <button class="mobile-nav-btn" data-section="tools" onclick="showSec('tools')"><span>🛠️</span><span>도구</span></button>
+  <button class="mobile-nav-btn" data-section="revenue" onclick="showSec('revenue')"><span>💰</span><span>수익</span></button>
+  <button class="mobile-nav-btn" data-section="ai" onclick="showSec('ai')"><span>🤖</span><span>AI</span></button>
+  <button class="mobile-nav-btn" data-section="shop" onclick="showSec('shop')"><span>🛒</span><span>장비</span></button>
 </nav>
 </body>
 </html>
